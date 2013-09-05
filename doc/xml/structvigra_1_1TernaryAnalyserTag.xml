@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1TernaryAnalyserTag" kind="struct" prot="public">
+    <compoundname>vigra::TernaryAnalyserTag</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="51" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="51" bodyend="51"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

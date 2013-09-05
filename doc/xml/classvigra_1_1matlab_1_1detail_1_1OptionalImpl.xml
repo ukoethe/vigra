@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1detail_1_1OptionalImpl" kind="class" prot="public">
+    <compoundname>vigra::matlab::detail::OptionalImpl</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a0b4339767368001445ee95c86de99524" prot="public" static="no" mutable="yes">
+        <type>bool *</type>
+        <definition>bool* argumentWasProvided_</definition>
+        <argsstring></argsstring>
+        <name>argumentWasProvided_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="575" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a643ddb61388bddab82d84d6e80d650aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void argumentWasProvided</definition>
+        <argsstring>() const </argsstring>
+        <name>argumentWasProvided</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="584" bodyend="588"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a91f8b44c601610c488c9d70137a142f9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>OptionalImpl</definition>
+        <argsstring>(bool *argFlag=0)</argsstring>
+        <name>OptionalImpl</name>
+        <param>
+          <type>bool *</type>
+          <declname>argFlag</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="579" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="577" bodyend="582"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="573" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="572" bodyend="589"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a643ddb61388bddab82d84d6e80d650aa" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::OptionalImpl</scope><name>argumentWasProvided</name></member>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a0b4339767368001445ee95c86de99524" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::OptionalImpl</scope><name>argumentWasProvided_</name></member>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1OptionalImpl_1a91f8b44c601610c488c9d70137a142f9" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::OptionalImpl</scope><name>OptionalImpl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

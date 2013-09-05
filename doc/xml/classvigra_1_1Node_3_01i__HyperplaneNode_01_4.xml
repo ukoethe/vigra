@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4" kind="class" prot="public">
+    <compoundname>vigra::Node&lt; i_HyperplaneNode &gt;</compoundname>
+    <basecompoundref refid="classvigra_1_1NodeBase" prot="public" virt="non-virtual">NodeBase</basecompoundref>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a364e695864a337dd48ec8f68c1262b7e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref></type>
+        <definition>typedef NodeBase BT</definition>
+        <argsstring></argsstring>
+        <name>BT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="447" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="447" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1aa02eb80753ab78fbe9dcef8d540218bc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double const &amp;</type>
+        <definition>double const&amp; intercept</definition>
+        <argsstring>() const </argsstring>
+        <name>intercept</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="483" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="482" bodyend="485"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a3f820c02b3a48575c4792169a559739f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; intercept</definition>
+        <argsstring>()</argsstring>
+        <name>intercept</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="486" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ac662446d54eafbc966c10f9d193dd987" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>BT::INT</type>
+        <definition>BT::INT next</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;feature) const </argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>feature</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="503" bodyend="522"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a855e7787bc3423fe37f71f1f518c9206" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(int nCol, BT::T_Container_type &amp;topology, BT::P_Container_type &amp;split_param)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>int</type>
+          <declname>nCol</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> &amp;</type>
+          <declname>split_param</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>constructors </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="451" bodyend="457"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ad3ce2b7dcd0df9906d500dbfc08eb91e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(BT::T_Container_type const &amp;topology, BT::P_Container_type const &amp;split_param, int n)</argsstring>
+        <name>Node</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> const &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> const &amp;</type>
+          <declname>split_param</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="463" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="459" bodyend="469"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ad63d5e08a848d53812d4b8d42570b5b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(BT &amp;node_)</argsstring>
+        <name>Node</name>
+        <param>
+          <type><ref refid="classvigra_1_1NodeBase" kindref="compound">BT</ref> &amp;</type>
+          <declname>node_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="473" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="471" bodyend="479"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1aa6bd1fe3a65596889006d82a9f9fcae1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BT::Parameter_type</type>
+        <definition>BT::Parameter_type weights</definition>
+        <argsstring>() const </argsstring>
+        <name>weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="491" bodyend="494"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a9bf4ffec7e3e63ef81dac6157f99477a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BT::Parameter_type</type>
+        <definition>BT::Parameter_type weights</definition>
+        <argsstring>()</argsstring>
+        <name>weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="496" bodyend="499"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1182">
+        <label>Node&lt; i_HyperplaneNode &gt;</label>
+        <childnode refid="1183" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1183">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1184">
+        <label>Node&lt; i_HyperplaneNode &gt;</label>
+        <childnode refid="1185" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1185">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="444" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="442" bodyend="523"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a364e695864a337dd48ec8f68c1262b7e" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>BT</name></member>
+      <member refid="classvigra_1_1NodeBase_1afbee722241ea157626d951705d92765a" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1aef1d376bdbb67276c2ca594efb80a8ec" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3fccf09f4a699b59bdaaef92cf57421d" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>classCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa1b5f48a16c72fa7bc0eebe5b6f567ff" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>column_data</name></member>
+      <member refid="classvigra_1_1NodeBase_1aff0b528dc48e3783d3d114ba59d03cf0" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>columns_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1a98316670a4ba476aa898e878e07150" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>columns_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1af681aefe39dee326f0c384c06876d2df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>columns_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8abe81cffd3fdf2d3a263a8cf8535820" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>copy</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab1cb33e6d4bdf35450953a9e8e5936b5" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>data</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2fdc050911157bc63d2c34ffec04ebb1" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>featureCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7691d58cca0888fcc7eb864cae64af82" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>hasData_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3c27387e011446faece596a3512747e3" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>INT</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1aa02eb80753ab78fbe9dcef8d540218bc" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>intercept</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a3f820c02b3a48575c4792169a559739f" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>intercept</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ac662446d54eafbc966c10f9d193dd987" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>next</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a855e7787bc3423fe37f71f1f518c9206" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ad3ce2b7dcd0df9906d500dbfc08eb91e" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1ad63d5e08a848d53812d4b8d42570b5b2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab0d2335945496a120d668b209f14140c" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab9e2534c9a671cc64c318142d423b1df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a828aadf61afa6b1cf6224d98f23f3f72" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a10f09963f49d9080438d223173545eaa" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a63012063efba7f30e3862efa38cc1ec3" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ac53d1493afb00198446c7345cea663fe" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2772ac823499b142d7a6121088de74dd" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>P_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7af73990cbba31c405b745c28b602aa8" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2ec7aa5eacd1493d9ce3642e3a14d8ed" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a20634f6eb739ff8272c00f3bf7294199" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameter_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4efdd224735574a9c5526311b3f0ce9b" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>Parameter_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa695a5aa261abef117dfc8b87bca85a2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameters_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1d5a8a3e2a5f05941bdb3bbde4faa508" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameters_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9b4ea98e352b479140a1b621c46a24dc" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameters_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a62c4da34c22c0b66c21ad3eaa09c6f73" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>parameters_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8ee8474c7bc7881ddbaa51b02cb350df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>T_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a91e7e3aab813bf8964cc8567c9f8a7fc" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>topology_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6b3a692effa8129f2bc91079c8810fe2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>topology_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6932a1eef19e5e598c7a2321cfd82efe" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>topology_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a67bbba8f267817ce7ad546f8807df676" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>topology_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a060308950bc46d8353295dbde5b60491" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>topology_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9dd576b4c7c93f5ddda63365a6138846" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>Topology_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4aeb85940eb4eb34739f29b01a576286" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4eef16cc017527b5189bd7ce0b2a6dce" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1aa6bd1fe3a65596889006d82a9f9fcae1" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>weights</name></member>
+      <member refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4_1a9bf4ffec7e3e63ef81dac6157f99477a" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_HyperplaneNode &gt;</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

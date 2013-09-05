@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1acc_1_1CoordMoment2__2Pass" kind="struct" prot="public">
+    <compoundname>vigra::acc::CoordMoment2_2Pass</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">gen_central_moment2_acc2&lt; T, detail::accumulable_coord_access, CoordMean, CoordMoment2_2Pass &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="850" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="847" bodyend="850"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1implies__template_1aa822f73f2fb4312fb60d5797ced9e4ff" prot="public" virt="non-virtual"><scope>vigra::acc::CoordMoment2_2Pass</scope><name>implies_types</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

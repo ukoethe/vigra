@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ImageDataStructures" kind="page">
+    <compoundname>ImageDataStructures</compoundname>
+    <title>Image Data Structures and Iterators</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Fundamental class template for images </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Class template for images that use external memory</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__StandardImageTypes" kindref="compound">Standard Image Types</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>The most common instantiations of <ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref></emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1SplineImageView" kindref="compound">vigra::SplineImageView</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Wrap a discrete image as a continous function</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VigraImpex" kindref="compound">Image Import/Export Facilities</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Image import/export</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ImageContainers" kindref="compound">Image Containers</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Classes to manage multiple images (ImageArray..)</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__PixelNeighborhood" kindref="compound">Utilities to manage pixel neighborhoods</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Easy access to the 4- and 8-neighbors of a pixel</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ImageIterators" kindref="compound">Image Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Basic image iterator implementations </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ImageIteratorAdapters" kindref="compound">Image Iterator Adapters</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Iterate over rows, columns, and other image subsets </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__DataAccessors" kindref="compound">Data Accessors</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Basic templates to encapsulate access to the data of an iterator</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Factory functions to create argument objects which simplify long argument lists </emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

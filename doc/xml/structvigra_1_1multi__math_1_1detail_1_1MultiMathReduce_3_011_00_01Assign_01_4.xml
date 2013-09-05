@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::detail::MultiMathReduce&lt; 1, Assign &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Assign</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4_1a0ed680fdb405e7195d9f14032851eebb" prot="public" static="no">
+        <name>@30</name>
+        <enumvalue id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4_1a0ed680fdb405e7195d9f14032851eebbaa4b1e64b6e370537f87e5806385ee069" prot="public">
+          <name>LEVEL</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="785" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="785" bodyend="785"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4_1a6bdc91c0ef4ec3bb4b56c5d798a9dcfd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class Expression</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(T &amp;t, Shape const &amp;shape, Expression const &amp;e)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>Expression const &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="789" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="788" bodyend="795"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="784" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="783" bodyend="796"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4_1a6bdc91c0ef4ec3bb4b56c5d798a9dcfd" prot="public" virt="non-virtual"><scope>vigra::multi_math::detail::MultiMathReduce&lt; 1, Assign &gt;</scope><name>exec</name></member>
+      <member refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4_1a0ed680fdb405e7195d9f14032851eebbaa4b1e64b6e370537f87e5806385ee069" prot="public" virt="non-virtual"><scope>vigra::multi_math::detail::MultiMathReduce&lt; 1, Assign &gt;</scope><name>LEVEL</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,637 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1NeighborOffsetCirculator" kind="class" prot="public">
+    <compoundname>vigra::NeighborOffsetCirculator</compoundname>
+    <includes refid="pixelneighborhood_8hxx" local="no">vigra/pixelneighborhood.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>NEIGHBORCODE</declname>
+        <defname>NEIGHBORCODE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s difference type (argument type of <computeroutput>circ[diff]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="697" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="697" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" prot="public" static="no">
+        <type>NEIGHBORCODE::Direction</type>
+        <definition>typedef NEIGHBORCODE::Direction Direction</definition>
+        <argsstring></argsstring>
+        <name>Direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return type of <ref refid="classvigra_1_1NeighborOffsetCirculator_1ae27d15312f61f9d7502d6e91e0351bb1" kindref="member">direction()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="677" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="677" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1a21d75791edbaea6532ee2ee56f718b19" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" kindref="member">value_type</ref> const &amp;</type>
+        <definition>typedef value_type const&amp; index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s index reference type (return type of <computeroutput>circ[n]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="689" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1ada13b579e2acfbf8fa4cf9ebdd093025" prot="public" static="no">
+        <type>random_access_circulator_tag</type>
+        <definition>typedef random_access_circulator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator tag (random access iterator) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="701" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="701" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1af297c28d42b00c1325ee931bdb695b32" prot="public" static="no">
+        <type>NEIGHBORCODE</type>
+        <definition>typedef NEIGHBORCODE NeighborCode</definition>
+        <argsstring></argsstring>
+        <name>NeighborCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="673" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1abb6330f0199837b81c65e179dbb4a750" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" kindref="member">value_type</ref> const *</type>
+        <definition>typedef value_type const* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s pointer type (return type of <computeroutput>operator-&gt;</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="693" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="693" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1af9b72ce3ab39c3c4266fcad2e76c211c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" kindref="member">value_type</ref> const &amp;</type>
+        <definition>typedef value_type const&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s reference type (return type of <computeroutput>*circ</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="685" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" prot="public" static="no">
+        <type>NEIGHBORCODE::difference_type</type>
+        <definition>typedef NEIGHBORCODE::difference_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="681" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="681" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1NeighborOffsetCirculator_1a5810761555d70cb3d0a00e18a953c51d" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+        <definition>Direction direction_</definition>
+        <argsstring></argsstring>
+        <name>direction_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="704" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="704" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a3fa9e867b909e2d6a3cf1de7163087d9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af9b72ce3ab39c3c4266fcad2e76c211c" kindref="member">reference</ref></type>
+        <definition>reference diff</definition>
+        <argsstring>() const </argsstring>
+        <name>diff</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get offset from center to current neighbor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="851" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="850" bodyend="853"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1ae27d15312f61f9d7502d6e91e0351bb1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+        <definition>Direction direction</definition>
+        <argsstring>() const </argsstring>
+        <name>direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get current direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="895" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="894" bodyend="897"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a0e98f1f7d2e02553c92a951b6adcc0b8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+        <definition>Direction direction</definition>
+        <argsstring>(difference_type offset) const </argsstring>
+        <name>direction</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get direction code at offset of current direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="923" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="922" bodyend="928"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a64963c87370a61f18c4c46dc6b4d0783" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int directionBit</definition>
+        <argsstring>() const </argsstring>
+        <name>directionBit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get current direction bit. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="902" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="901" bodyend="904"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a303ccbca209af64fefd0a68b06f9cfc3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int dX</definition>
+        <argsstring>() const </argsstring>
+        <name>dX</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>X-component of <ref refid="classvigra_1_1NeighborOffsetCirculator_1a3fa9e867b909e2d6a3cf1de7163087d9" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="875" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="874" bodyend="877"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1adfeadb505910674bcf5b8bbdece4d4f1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int dY</definition>
+        <argsstring>() const </argsstring>
+        <name>dY</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Y-component of <ref refid="classvigra_1_1NeighborOffsetCirculator_1a3fa9e867b909e2d6a3cf1de7163087d9" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="881" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="880" bodyend="883"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a84c5b8f35866c567185c13806e4c854c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isDiagonal</definition>
+        <argsstring>() const </argsstring>
+        <name>isDiagonal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether current direction is a diagonal one. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="888" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="887" bodyend="890"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a6042500371dab81017233f9ec5aa32d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NeighborOffsetCirculator</definition>
+        <argsstring>(Direction dir=NEIGHBORCODE::InitialDirection)</argsstring>
+        <name>NeighborOffsetCirculator</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+          <declname>dir</declname>
+          <defval>NEIGHBORCODE::InitialDirection</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create circulator referring to the given direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="711" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="709" bodyend="712"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1acb1c91839bd5f91ac2d40fda069deed7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(NeighborOffsetCirculator const &amp;o) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>inequality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="820" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="819" bodyend="822"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af9b72ce3ab39c3c4266fcad2e76c211c" kindref="member">reference</ref></type>
+        <definition>reference operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>dereference </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="832" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="831" bodyend="834"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a61505df2900b1d632d77e3ebbca2de3e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref></type>
+        <definition>NeighborOffsetCirculator operator+</definition>
+        <argsstring>(difference_type d) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>addition </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="764" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="763" bodyend="766"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a3284cd1b40b67bab550361ab900206a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>pre-increment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="716" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="715" bodyend="719"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a0368155f0f4855744e38d1197ae6e0d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref></type>
+        <definition>NeighborOffsetCirculator operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>post-increment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="730" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="729" bodyend="734"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1aa34a3303ff6fc3d9fdbf9d1688cc11dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; operator+=</definition>
+        <argsstring>(difference_type d)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>add-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="746" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="745" bodyend="751"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a5938570c9998383f7cee830224ffb306" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref></type>
+        <definition>NeighborOffsetCirculator operator-</definition>
+        <argsstring>(difference_type d) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtraction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="770" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="769" bodyend="772"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a9110abbc1180d4168c14098e3e062fa4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+        <definition>difference_type operator-</definition>
+        <argsstring>(NeighborOffsetCirculator const &amp;o) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtraction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="826" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="825" bodyend="828"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1acf63f406acc6f5066bb5c442ffb15c63" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>pre-decrement </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="723" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="722" bodyend="726"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a55446187e7291d36556582395e3ac4f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref></type>
+        <definition>NeighborOffsetCirculator operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>post-decrement </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="738" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="737" bodyend="742"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1abda2f89fd0d1e2e4509844f2bc19cc03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; operator-=</definition>
+        <argsstring>(difference_type d)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtract-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="755" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="754" bodyend="760"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1abb6330f0199837b81c65e179dbb4a750" kindref="member">pointer</ref></type>
+        <definition>pointer operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>member access </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="844" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="843" bodyend="846"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1ab32a1e17f4c462c1d815d88172c2d213" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(NeighborOffsetCirculator const &amp;o) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>equality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="814" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="813" bodyend="816"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a2f1b4e51938edae47e2317f7635e6c08" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a21d75791edbaea6532ee2ee56f718b19" kindref="member">index_reference</ref></type>
+        <definition>index_reference operator[]</definition>
+        <argsstring>(difference_type d) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>index </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="838" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="837" bodyend="840"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a17b09f8caa3d9a8ba6e7c5ca398b719c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+        <definition>Direction opposite</definition>
+        <argsstring>() const </argsstring>
+        <name>opposite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get opposite of current direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="909" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="908" bodyend="911"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a78e9958f74ad598e0a680a0530e5409a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int oppositeDirectionBit</definition>
+        <argsstring>() const </argsstring>
+        <name>oppositeDirectionBit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get opposite bit of current direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="916" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="915" bodyend="918"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a9f9ca8f81ebcd10627353fb5e4c26a5e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" kindref="member">value_type</ref></type>
+        <definition>value_type relativeDiff</definition>
+        <argsstring>(difference_type offset) const </argsstring>
+        <name>relativeDiff</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" kindref="member">difference_type</ref></type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get relative distance from current neighbor to neighbor at given offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="866" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="865" bodyend="871"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1ac8f1629a27179e939d327b660b7d1427" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; turnLeft</definition>
+        <argsstring>()</argsstring>
+        <name>turnLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the direction that is &apos;left&apos; relative to the current direction. This is equivalent to <computeroutput>four_circulator++</computeroutput> and <computeroutput>eight_circulator += 2</computeroutput> respectively. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="789" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="788" bodyend="792"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1abeb545ea78305988882b2e09226fb888" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; turnRight</definition>
+        <argsstring>()</argsstring>
+        <name>turnRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the direction that is &apos;right&apos; relative to the current direction. This is equivalent to <computeroutput>four_circulator<ndash/></computeroutput> and <computeroutput>eight_circulator -= 2</computeroutput> respectively. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="779" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="778" bodyend="782"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a198618f2fbd2b98e81dacf9026fbb636" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; turnRound</definition>
+        <argsstring>()</argsstring>
+        <name>turnRound</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the opposite direction of the current direction. This is equivalent to <computeroutput>four_circulator += 2</computeroutput> and <computeroutput>eight_circulator += 4</computeroutput> respectively. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="799" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="798" bodyend="802"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1a2d0e9b0bed3cbe12ecb08709672e801b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> &amp;</type>
+        <definition>NeighborOffsetCirculator&amp; turnTo</definition>
+        <argsstring>(Direction d)</argsstring>
+        <name>turnTo</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the given direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="806" bodyend="810"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1NeighborOffsetCirculator_1abfda14e741e47a498aae693e11240f24" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1af9b72ce3ab39c3c4266fcad2e76c211c" kindref="member">reference</ref></type>
+        <definition>static reference diff</definition>
+        <argsstring>(Direction dir)</argsstring>
+        <name>diff</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+          <declname>dir</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get offset to given direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="858" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="857" bodyend="860"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Circulator that walks around a given location. </para>    </briefdescription>
+    <detaileddescription>
+<para>The template parameter defines the kind of neighborhood used, e.g.</para><para><programlisting><codeline><highlight class="normal">NeighborOffsetCirculator&lt;EightNeighborCode&gt;<sp/>eight_circulator;</highlight></codeline>
+<codeline><highlight class="normal">NeighborOffsetCirculator&lt;FourNeighborCode&gt;<sp/><sp/>four_circulator;</highlight></codeline>
+</programlisting></para><para>Since this circulator doesn&apos;t know about the pixels in any particular image, you usually don&apos;t use it directly but rather as a base class or helper for neighborhood circulators referring to a particular image (e.g. <ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">NeighborhoodCirculator</ref>)</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="669" bodyend="929"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a3fa9e867b909e2d6a3cf1de7163087d9" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>diff</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1abfda14e741e47a498aae693e11240f24" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>diff</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1ae1e359864f6fce787ce08ee3d43ebf34" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>Direction</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1ae27d15312f61f9d7502d6e91e0351bb1" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>direction</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a0e98f1f7d2e02553c92a951b6adcc0b8" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>direction</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a5810761555d70cb3d0a00e18a953c51d" prot="protected" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>direction_</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a64963c87370a61f18c4c46dc6b4d0783" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>directionBit</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a303ccbca209af64fefd0a68b06f9cfc3" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>dX</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1adfeadb505910674bcf5b8bbdece4d4f1" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>dY</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a21d75791edbaea6532ee2ee56f718b19" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a84c5b8f35866c567185c13806e4c854c" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>isDiagonal</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1ada13b579e2acfbf8fa4cf9ebdd093025" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1af297c28d42b00c1325ee931bdb695b32" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>NeighborCode</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a6042500371dab81017233f9ec5aa32d9" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>NeighborOffsetCirculator</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1acb1c91839bd5f91ac2d40fda069deed7" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a61505df2900b1d632d77e3ebbca2de3e" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a3284cd1b40b67bab550361ab900206a5" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a0368155f0f4855744e38d1197ae6e0d7" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1aa34a3303ff6fc3d9fdbf9d1688cc11dd" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a5938570c9998383f7cee830224ffb306" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a9110abbc1180d4168c14098e3e062fa4" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1acf63f406acc6f5066bb5c442ffb15c63" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a55446187e7291d36556582395e3ac4f2" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1abda2f89fd0d1e2e4509844f2bc19cc03" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1ab32a1e17f4c462c1d815d88172c2d213" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a2f1b4e51938edae47e2317f7635e6c08" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a17b09f8caa3d9a8ba6e7c5ca398b719c" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>opposite</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a78e9958f74ad598e0a680a0530e5409a" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>oppositeDirectionBit</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1abb6330f0199837b81c65e179dbb4a750" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1af9b72ce3ab39c3c4266fcad2e76c211c" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a9f9ca8f81ebcd10627353fb5e4c26a5e" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>relativeDiff</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1ac8f1629a27179e939d327b660b7d1427" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>turnLeft</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1abeb545ea78305988882b2e09226fb888" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>turnRight</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a198618f2fbd2b98e81dacf9026fbb636" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>turnRound</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1a2d0e9b0bed3cbe12ecb08709672e801b" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>turnTo</name></member>
+      <member refid="classvigra_1_1NeighborOffsetCirculator_1af2cce17682309fd3b2f83e6753e26be7" prot="public" virt="non-virtual"><scope>vigra::NeighborOffsetCirculator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

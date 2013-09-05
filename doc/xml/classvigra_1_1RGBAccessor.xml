@@ -1,0 +1,505 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RGBAccessor" kind="class" prot="public">
+    <compoundname>vigra::RGBAccessor</compoundname>
+    <basecompoundref refid="classvigra_1_1VectorAccessor" prot="public" virt="non-virtual">VectorAccessor&lt; RGBVALUE &gt;</basecompoundref>
+    <includes refid="rgbvalue_8hxx" local="no">vigra/rgbvalue.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class RGBVALUE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RGBAccessor_1ae256ced69b351aafc0d901cd68c734f0" prot="public" static="no">
+        <type>RGBVALUE::value_type</type>
+        <definition>typedef RGBVALUE::value_type component_type</definition>
+        <argsstring></argsstring>
+        <name>component_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="952" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="952" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1afb6f3d89393ca65046b7071a0ffd5ce2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; blue</definition>
+        <argsstring>(RGBIterator const &amp;rgb) const </argsstring>
+        <name>blue</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the blue component </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1033" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1032" bodyend="1035"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a5d43b15f10c1b2d078058b8809da4ce6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; blue</definition>
+        <argsstring>(RGBIterator const &amp;rgb, DIFFERENCE d) const </argsstring>
+        <name>blue</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the blue component at an offset </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1050" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1049" bodyend="1052"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a778081dacdccc1a2cfef4a0802461d69" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; green</definition>
+        <argsstring>(RGBIterator const &amp;rgb) const </argsstring>
+        <name>green</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the green component </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="999" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="998" bodyend="1001"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a32cfecd432c9f90a3771f445d5f2fa4c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; green</definition>
+        <argsstring>(RGBIterator const &amp;rgb, DIFFERENCE d) const </argsstring>
+        <name>green</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the green component at an offset </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1016" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1015" bodyend="1018"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a4d1287fc45c631792a604ed8dba3cfe5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; red</definition>
+        <argsstring>(RGBIterator const &amp;rgb) const </argsstring>
+        <name>red</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the red component </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="958" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="957" bodyend="960"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a82f5c7b9816c7561b6d107df62cc7932" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; red</definition>
+        <argsstring>(RGBIterator const &amp;rgb, DIFFERENCE diff) const </argsstring>
+        <name>red</name>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get value of the red component at an offset </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="982" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="981" bodyend="984"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1abf485dc237a24f552530428b7806ba7f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setBlue</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb) const </argsstring>
+        <name>setBlue</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the blue component. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1042" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1041" bodyend="1044"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a939ed877607a79e94db5fd20b8f20638" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setBlue</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb, DIFFERENCE d) const </argsstring>
+        <name>setBlue</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the blue component at an offset. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1059" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1058" bodyend="1061"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a850a8c56440269a21d8d400bfa77a697" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setGreen</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb) const </argsstring>
+        <name>setGreen</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the green component. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1008" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1007" bodyend="1010"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1a8829165f47824f0e748f5cccf97f2d62" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setGreen</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb, DIFFERENCE d) const </argsstring>
+        <name>setGreen</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the green component at an offset. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="1025" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="1024" bodyend="1027"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1afe31e86ffd1764765cf45e5824bb3892" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setRed</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb) const </argsstring>
+        <name>setRed</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the red component. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="974" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="973" bodyend="976"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1aff4f8482d5366b587ca7565da7ce156b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setRed</definition>
+        <argsstring>(V value, RGBIterator const &amp;rgb, DIFFERENCE diff) const </argsstring>
+        <name>setRed</name>
+        <param>
+          <type>V</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set value of the red component at an offset. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="991" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="990" bodyend="993"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGBAccessor_1ad55cdc0ef08e445f9a162a097700ed5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class RGBIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setRGB</definition>
+        <argsstring>(V r, V g, V b, RGBIterator const &amp;rgb) const </argsstring>
+        <name>setRGB</name>
+        <param>
+          <type>V</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>V</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>V</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>RGBIterator const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="964" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="963" bodyend="966"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><verbatim>Encapsulate access to rgb values.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="rgbvalue_8hxx_source" kindref="compound">vigra/rgbvalue.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2203">
+        <label>SequenceAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1SequenceAccessor"/>
+        <childnode refid="2204" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2202">
+        <label>VectorAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1VectorAccessor"/>
+        <childnode refid="2203" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2201">
+        <label>RGBAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1RGBAccessor"/>
+        <childnode refid="2202" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2204">
+        <label>StandardAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1StandardAccessor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2207">
+        <label>SequenceAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1SequenceAccessor"/>
+        <childnode refid="2208" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2206">
+        <label>VectorAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1VectorAccessor"/>
+        <childnode refid="2207" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2205">
+        <label>RGBAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1RGBAccessor"/>
+        <childnode refid="2206" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2208">
+        <label>StandardAccessor&lt; RGBVALUE &gt;</label>
+        <link refid="classvigra_1_1StandardAccessor"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="949" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="947" bodyend="1063"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SequenceAccessor_1ac627712df1aaa7de9309106f1ee6bff6" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>begin</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a55613b9ba07429232ec18e1a9bf579d1" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>begin</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1afb6f3d89393ca65046b7071a0ffd5ce2" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>blue</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a5d43b15f10c1b2d078058b8809da4ce6" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>blue</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1ae256ced69b351aafc0d901cd68c734f0" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>component_type</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a184070be108879ef237c7fc37a6f27a6" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>ElementAccessor</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1acae2ec02131d37ece846351e0fb8bdc9" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>end</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a999a8398b2558e0dd600fbdcf79e2413" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>end</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a75c782b99ca13bed01bfca842f8d383a" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1aacd0e3c27a08826066ddc442bfc1e385" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a778081dacdccc1a2cfef4a0802461d69" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>green</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a32cfecd432c9f90a3771f445d5f2fa4c" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>green</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a7b1f60c2252c085369571363f5e0cb32" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a7185a8540aa9b9eff7646eaf17da2b33" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ab04eb46243731d05b605996d0d423692" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ac33fe3dcf9a78edeb4c32a423acfe2e2" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a4d1287fc45c631792a604ed8dba3cfe5" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>red</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a82f5c7b9816c7561b6d107df62cc7932" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>red</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a7cb2c9deaa4edb5bf641f1a190c76685" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a3f5b81992ea9ecceb42c0cd607074355" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a548cdb2243d69b4cce0fa66084d0bee9" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1abf485dc237a24f552530428b7806ba7f" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setBlue</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a939ed877607a79e94db5fd20b8f20638" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setBlue</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1aee32b776e76e452e150421707a3e3154" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a721f8e2b70b81d65776337a28bbaac50" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a850a8c56440269a21d8d400bfa77a697" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setGreen</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1a8829165f47824f0e748f5cccf97f2d62" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setGreen</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1afe31e86ffd1764765cf45e5824bb3892" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setRed</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1aff4f8482d5366b587ca7565da7ce156b" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setRed</name></member>
+      <member refid="classvigra_1_1RGBAccessor_1ad55cdc0ef08e445f9a162a097700ed5a" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>setRGB</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1aaa2cbf44aa60205ca08c7e95ab63c05b" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>size</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a448bee3c0efb6f11a3927d3a26d6dbed" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>size</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" virt="non-virtual"><scope>vigra::RGBAccessor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

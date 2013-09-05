@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CodecDesc" kind="struct" prot="public">
+    <compoundname>vigra::CodecDesc</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1ab22191efa9d46140448e348da68383d1" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; bandNumbers</definition>
+        <argsstring></argsstring>
+        <name>bandNumbers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1a06e966a87856a3da3c53bf32bae79b16" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; compressionTypes</definition>
+        <argsstring></argsstring>
+        <name>compressionTypes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1ad03233d4f3cd0537f0a1056c3e0958e3" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; fileExtensions</definition>
+        <argsstring></argsstring>
+        <name>fileExtensions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1af0308b22b7db602f011d365fe222cf45" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string fileType</definition>
+        <argsstring></argsstring>
+        <name>fileType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1a8af3cbb0ce768cac3b1802e531d58dc7" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::vector&lt; char &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;char&gt; &gt; magicStrings</definition>
+        <argsstring></argsstring>
+        <name>magicStrings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1CodecDesc_1a61257bc0a0efc9cd9fe546d0fc562e2a" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; pixelTypes</definition>
+        <argsstring></argsstring>
+        <name>pixelTypes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="130" bodyend="138"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CodecDesc_1ab22191efa9d46140448e348da68383d1" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>bandNumbers</name></member>
+      <member refid="structvigra_1_1CodecDesc_1a06e966a87856a3da3c53bf32bae79b16" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>compressionTypes</name></member>
+      <member refid="structvigra_1_1CodecDesc_1ad03233d4f3cd0537f0a1056c3e0958e3" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>fileExtensions</name></member>
+      <member refid="structvigra_1_1CodecDesc_1af0308b22b7db602f011d365fe222cf45" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>fileType</name></member>
+      <member refid="structvigra_1_1CodecDesc_1a8af3cbb0ce768cac3b1802e531d58dc7" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>magicStrings</name></member>
+      <member refid="structvigra_1_1CodecDesc_1a61257bc0a0efc9cd9fe546d0fc562e2a" prot="public" virt="non-virtual"><scope>vigra::CodecDesc</scope><name>pixelTypes</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

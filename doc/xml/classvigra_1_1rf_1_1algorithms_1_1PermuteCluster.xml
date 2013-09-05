@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::PermuteCluster</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Iter</type>
+      </param>
+      <param>
+        <type>class DT</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="876" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="876" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1acf51d84bbe3bb68538ec305868212672" prot="public" static="no" mutable="no">
+        <type>DT const &amp;</type>
+        <definition>DT const&amp; dt</definition>
+        <argsstring></argsstring>
+        <name>dt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="883" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="883" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a82a7e0f8468d3f10a8812ef802f9ee79" prot="public" static="no" mutable="no">
+        <type>Matrix&lt; double &gt;</type>
+        <definition>Matrix&lt;double&gt; feats_</definition>
+        <argsstring></argsstring>
+        <name>feats_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="880" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="880" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a750b5d744c39a06bfb13e6eb010e35d0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int index</definition>
+        <argsstring></argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="884" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="884" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a13244dd7058f7e5326ab7a474ce74df5" prot="public" static="no" mutable="no">
+        <type>Matrix&lt; int &gt;</type>
+        <definition>Matrix&lt;int&gt; labels_</definition>
+        <argsstring></argsstring>
+        <name>labels_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="881" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="881" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a1574a5f8d62d1cba18903eec616aa815" prot="public" static="no" mutable="no">
+        <type>const int</type>
+        <definition>const int nPerm</definition>
+        <argsstring></argsstring>
+        <name>nPerm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="882" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="882" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a319e1a48ba777a98155f0611a3176c9b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int oob_size</definition>
+        <argsstring></argsstring>
+        <name>oob_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="885" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="885" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1ac9ba23610327478cb9bedc6489e3b907" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArrayView&lt;2, double&gt; orig_imp</definition>
+        <argsstring></argsstring>
+        <name>orig_imp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="879" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="879" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a5a06371bb2c455cb8598dd59875680b5" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArrayView&lt;2, double&gt; perm_imp</definition>
+        <argsstring></argsstring>
+        <name>perm_imp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="878" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="878" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a729cab2ea999787f6291d822fd8eb29c" prot="public" static="no" mutable="no">
+        <type>Matrix&lt; double &gt;</type>
+        <definition>Matrix&lt;double&gt; tmp_mem_</definition>
+        <argsstring></argsstring>
+        <name>tmp_mem_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="877" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="877" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Node</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(Node &amp;node)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Node &amp;</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="918" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="917" bodyend="959"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1af857ccf8c62f7e3c033294ac8adea663" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Feat_T</type>
+          </param>
+          <param>
+            <type>class Label_T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>PermuteCluster</definition>
+        <argsstring>(Iter a, Iter b, Feat_T const &amp;feats, Label_T const &amp;labls, MultiArrayView&lt; 2, double &gt; p_imp, MultiArrayView&lt; 2, double &gt; o_imp, int np, DT const &amp;dt_)</argsstring>
+        <name>PermuteCluster</name>
+        <param>
+          <type>Iter</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Feat_T const &amp;</type>
+          <declname>feats</declname>
+        </param>
+        <param>
+          <type>Label_T const &amp;</type>
+          <declname>labls</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+          <declname>p_imp</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+          <declname>o_imp</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>np</declname>
+        </param>
+        <param>
+          <type>DT const &amp;</type>
+          <declname>dt_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="905" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="888" bodyend="914"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Perform Permutation importance on <ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> clusters (See visit_after_tree() method of visitors::VariableImportance to see the basic idea. (Just that we apply the permutation not only to variables but also to clusters)) </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="1379">
+        <label>PermuteCluster&lt; Iter, DT &gt;</label>
+        <link refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster"/>
+        <childnode refid="1380" relation="usage">
+          <edgelabel>orig_imp</edgelabel>
+          <edgelabel>perm_imp</edgelabel>
+        </childnode>
+      </node>
+      <node id="1380">
+        <label>MultiArrayView&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1381" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="1381">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="874" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="873" bodyend="960"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1acf51d84bbe3bb68538ec305868212672" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>dt</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a82a7e0f8468d3f10a8812ef802f9ee79" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>feats_</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a750b5d744c39a06bfb13e6eb010e35d0" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>index</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a13244dd7058f7e5326ab7a474ce74df5" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>labels_</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a1574a5f8d62d1cba18903eec616aa815" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>nPerm</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a319e1a48ba777a98155f0611a3176c9b" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>oob_size</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1ac9ba23610327478cb9bedc6489e3b907" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>orig_imp</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a5a06371bb2c455cb8598dd59875680b5" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>perm_imp</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1af857ccf8c62f7e3c033294ac8adea663" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>PermuteCluster</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>Shp</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster_1a729cab2ea999787f6291d822fd8eb29c" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::PermuteCluster</scope><name>tmp_mem_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

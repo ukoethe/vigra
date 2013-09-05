@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ContractViolation" kind="class" prot="public">
+    <compoundname>vigra::ContractViolation</compoundname>
+    <derivedcompoundref refid="classvigra_1_1InvariantViolation" prot="public" virt="non-virtual">InvariantViolation</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1PostconditionViolation" prot="public" virt="non-virtual">PostconditionViolation</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1PreconditionViolation" prot="public" virt="non-virtual">PreconditionViolation</derivedcompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ContractViolation_1a415baaef606c6f5e5e1104719a84dc72" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string what_</definition>
+        <argsstring></argsstring>
+        <name>what_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="168" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1a4e211143fcba68a6826f6baedbecaca4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ContractViolation</definition>
+        <argsstring>()</argsstring>
+        <name>ContractViolation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="128" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1ac8fe168ac0bcb2556fba1c1bcb388d66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ContractViolation</definition>
+        <argsstring>(char const *prefix, char const *message, char const *file, int line)</argsstring>
+        <name>ContractViolation</name>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="131" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1a3ebe9c6a02ef5f528328a972c3230dfd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ContractViolation</definition>
+        <argsstring>(char const *prefix, char const *message)</argsstring>
+        <name>ContractViolation</name>
+        <param>
+          <type>char const *</type>
+          <declname>prefix</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="138" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1a738ff5978b79e600c673508ad295e0cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>ContractViolation &amp;</type>
+        <definition>ContractViolation&amp; operator&lt;&lt;</definition>
+        <argsstring>(T const &amp;data)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="148" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="147" bodyend="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1aff06f49065b54a8a86e02e9a2441a8ba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>const char *</type>
+        <definition>virtual const char* what</definition>
+        <argsstring>() const </argsstring>
+        <name>what</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="155" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ContractViolation_1a72c050065b5ec8e881e355cb3809b330" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~ContractViolation</definition>
+        <argsstring>()</argsstring>
+        <name>~ContractViolation</name>
+        <exceptions> throw ()</exceptions>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="143" bodyend="144"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="125" bodyend="169"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ContractViolation_1a4e211143fcba68a6826f6baedbecaca4" prot="public" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1ac8fe168ac0bcb2556fba1c1bcb388d66" prot="public" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a3ebe9c6a02ef5f528328a972c3230dfd" prot="public" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a738ff5978b79e600c673508ad295e0cb" prot="public" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classvigra_1_1ContractViolation_1aff06f49065b54a8a86e02e9a2441a8ba" prot="public" virt="virtual"><scope>vigra::ContractViolation</scope><name>what</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a415baaef606c6f5e5e1104719a84dc72" prot="private" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>what_</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a72c050065b5ec8e881e355cb3809b330" prot="public" virt="non-virtual"><scope>vigra::ContractViolation</scope><name>~ContractViolation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

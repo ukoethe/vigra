@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacestd" kind="namespace">
+    <compoundname>std</compoundname>
+    <innerclass refid="classstd_1_1allocator_3_01vigra_1_1FFTWComplex_3_01Real_01_4_01_4" prot="public">std::allocator&lt; vigra::FFTWComplex&lt; Real &gt; &gt;</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacestd_1a765a3a09f4a29efa554c1e396e79e6e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;os, vigra::Quaternion&lt; ValueType &gt; const &amp;q)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">vigra::Quaternion</ref>&lt; ValueType &gt; const &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="538" bodyend="542"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1af27b0ffebb53b7da08344c3c984e65e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, vigra::ArrayVectorView&lt; T &gt; const &amp;a)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">vigra::ArrayVectorView</ref>&lt; T &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="904" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="903" bodyend="910"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1a685b589790293547ec32cefa692e24ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Real</type>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, vigra::FFTWComplex&lt; Real &gt; const &amp;v)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref>&lt; Real &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1101" bodyend="1105"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1a53984f5884f5685057c650319613c648" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;o, vigra::PolynomialView&lt; T &gt; const &amp;p)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1PolynomialView" kindref="compound">vigra::PolynomialView</ref>&lt; T &gt; const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="1104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="1103" bodyend="1109"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1ae60bcaee3a9fd67a5b6d64fa260829c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;o, vigra::Diff2D const &amp;d)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Output a <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref> as a tuple. Example Diff2D(-12, 13) -&gt; &quot;(-12, 13)&quot; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1394" bodyend="1398"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1a2ccc8fbf43a059be5e5791043519aa64" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, vigra::Size2D const &amp;d)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">vigra::Size2D</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Output a <ref refid="classvigra_1_1Size2D" kindref="compound">vigra::Size2D</ref>. Example Size2D(100, 200) -&gt; &quot;(100x200)&quot; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1406" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1405" bodyend="1409"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1a12ca60fa0befbfec666694fcf745805a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, vigra::Rect2D const &amp;r)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Output a description of a <ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref>. Example Rect2D(10, 10, 30, 20) -&gt; &quot;[(10, 10) to (30, 20) = (20x10)]&quot; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1417" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1416" bodyend="1421"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1aaed844d71c445b37265d8274007ad102" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>vigra::FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, vigra::FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">vigra::FixedPoint16</ref>&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1774" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1773" bodyend="1777"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LinearAlgebraFunctions_1ga27a75391e3fb0a6fe7ee7bfaac6eed5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>ostream &amp;</type>
+        <definition>ostream&amp; std::operator&lt;&lt;</definition>
+        <argsstring>(ostream &amp;s, const vigra::MultiArrayView&lt; 2, T, C &gt; &amp;m)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>ostream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>&lt; 2, T, C &gt; &amp;</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>print a matrix \a m to the stream \a s.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="matrix_8hxx_source" kindref="compound">vigra/matrix.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespace: std </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="2296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="2295" bodyend="2310"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacestd_1a5029d5ad7da8b7be7134b8806b39a70a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>istream &amp;</type>
+        <definition>istream&amp; std::operator&gt;&gt;</definition>
+        <argsstring>(istream &amp;is, vigra::Quaternion&lt; ValueType &gt; &amp;q)</argsstring>
+        <name>operator&gt;&gt;</name>
+        <param>
+          <type>istream &amp;</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">vigra::Quaternion</ref>&lt; ValueType &gt; &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="546" bodyend="555"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="900"/>
+  </compounddef>
+</doxygen>

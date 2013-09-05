@@ -1,0 +1,737 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Kernel2D" kind="class" prot="public">
+    <compoundname>vigra::Kernel2D</compoundname>
+    <includes refid="stdconvolution_8hxx" local="no">vigra/stdconvolution.hxx</includes>
+    <innerclass refid="structvigra_1_1Kernel2D_1_1InitProxy" prot="public">vigra::Kernel2D::InitProxy</innerclass>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ARITHTYPE</declname>
+        <defname>ARITHTYPE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Kernel2D_1aeddc84bb8bfbd3dbb8adbf5f852ab5d7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;::<ref refid="classvigra_1_1Kernel2D_1aeddc84bb8bfbd3dbb8adbf5f852ab5d7" kindref="member">Accessor</ref></type>
+        <definition>typedef BasicImage&lt;value_type&gt;::Accessor Accessor</definition>
+        <argsstring></argsstring>
+        <name>Accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the kernel&apos;s accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="835" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="835" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Kernel2D_1a0152662c2a68dc9bf22b2a2c78386367" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;::<ref refid="classvigra_1_1Kernel2D_1a0152662c2a68dc9bf22b2a2c78386367" kindref="member">ConstAccessor</ref></type>
+        <definition>typedef BasicImage&lt;value_type&gt;::ConstAccessor ConstAccessor</definition>
+        <argsstring></argsstring>
+        <name>ConstAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the kernel&apos;s const accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="839" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="839" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Kernel2D_1aa08b6f9af8bb438d78fa52b62aa6c905" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;::const_traverser</type>
+        <definition>typedef BasicImage&lt;value_type&gt;::const_traverser ConstIterator</definition>
+        <argsstring></argsstring>
+        <name>ConstIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const 2D random access iterator over the kernel&apos;s values </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="831" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="831" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;::traverser</type>
+        <definition>typedef BasicImage&lt;value_type&gt;::traverser Iterator</definition>
+        <argsstring></argsstring>
+        <name>Iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>2D random access iterator over the kernel&apos;s values </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="827" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="827" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" prot="public" static="no">
+        <type>ARITHTYPE</type>
+        <definition>typedef ARITHTYPE value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the kernel&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="823" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="823" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Kernel2D_1adf6f18ab23ed47ea40ef2b744eee8df8" prot="private" static="no" mutable="no">
+        <type>BorderTreatmentMode</type>
+        <definition>BorderTreatmentMode border_treatment_</definition>
+        <argsstring></argsstring>
+        <name>border_treatment_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1323" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Kernel2D_1a26fdbf612f373fc206e71473a2729bd2" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;</type>
+        <definition>BasicImage&lt;value_type&gt; kernel_</definition>
+        <argsstring></argsstring>
+        <name>kernel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1320" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1320" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Kernel2D_1aee9749b0267454a3e1e220232d505bc7" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D left_</definition>
+        <argsstring></argsstring>
+        <name>left_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1321" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Kernel2D_1ae941ce86d718854a47ff51d9663d8861" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+        <definition>value_type norm_</definition>
+        <argsstring></argsstring>
+        <name>norm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1322" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1322" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Kernel2D_1a5eb1d4f30494284fca1210ed4b9e9144" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D right_</definition>
+        <argsstring></argsstring>
+        <name>right_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1321" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a66018859461121f0957fc48b6e228c67" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+        <definition>static value_type one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="881" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="881" bodyend="881"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1ac1e543db9ce291e86b9023cdb9202b5b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aeddc84bb8bfbd3dbb8adbf5f852ab5d7" kindref="member">Accessor</ref></type>
+        <definition>Accessor accessor</definition>
+        <argsstring>()</argsstring>
+        <name>accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The kernels default accessor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1241" bodyend="1241"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a40e8567a7e13dacc22cadde2f9d1dcd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1a0152662c2a68dc9bf22b2a2c78386367" kindref="member">ConstAccessor</ref></type>
+        <definition>ConstAccessor accessor</definition>
+        <argsstring>() const </argsstring>
+        <name>accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The kernels default const accessor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1245" bodyend="1245"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a69dbff83a4127cc415a7eb796d95051e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BorderTreatmentMode</type>
+        <definition>BorderTreatmentMode borderTreatment</definition>
+        <argsstring>() const </argsstring>
+        <name>borderTreatment</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>current border treatment mode </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1294" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1293" bodyend="1294"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a9a60a2e967d61c6890fb8d8a6e966fdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" kindref="member">Iterator</ref></type>
+        <definition>Iterator center</definition>
+        <argsstring>()</argsstring>
+        <name>center</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> that points to the center of the kernel (coordinate (0,0)). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1209" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1209" bodyend="1209"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a14409d27693bc7b318cbbb8d00932b86" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa08b6f9af8bb438d78fa52b62aa6c905" kindref="member">ConstIterator</ref></type>
+        <definition>ConstIterator center</definition>
+        <argsstring>() const </argsstring>
+        <name>center</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> that points to the center of the kernel (coordinate (0,0)). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1213" bodyend="1213"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Height of the kernel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1205" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1205" bodyend="1205"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1aa39a25ecb7ca303cb16e344e88ee0037" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initDisk</definition>
+        <argsstring>(int radius)</argsstring>
+        <name>initDisk</name>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init the 2D kernel as a circular averaging filter. The norm will be calculated as <computeroutput>NumericTraits&lt;value_type&gt;::one() / (number of non-zero kernel values)</computeroutput>. The kernel&apos;s value_type must be a linear space.</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref><sp/>v<sp/>=<sp/>vigra::NumericTraits&lt;value_type&gt;::one();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>d<sp/>*<sp/>v;</highlight></codeline>
+</programlisting></para><para><bold> Precondition:</bold></para><para><programlisting><codeline><highlight class="normal">radius<sp/>&gt;<sp/>0;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1095" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1094" bodyend="1134"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D" kindref="compound">Kernel2D</ref> &amp;</type>
+        <definition>Kernel2D&amp; initExplicitly</definition>
+        <argsstring>(Diff2D upperleft, Diff2D lowerright)</argsstring>
+        <name>initExplicitly</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+          <declname>lowerright</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init the kernel by an explicit initializer list. The upper left and lower right corners of the kernel must be passed. A comma-separated initializer list is given after the assignment operator. This function is used like this:</para><para><programlisting><codeline><highlight class="comment">//<sp/>define<sp/>horizontal<sp/>Sobel<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D" kindref="compound" tooltip="Generic 2 dimensional convolution kernel.">vigra::Kernel2D&lt;float&gt;</ref><sp/>sobel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sobel.<ref refid="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" kindref="member">initExplicitly</ref>(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=</highlight></codeline>
+<codeline><highlight class="normal">0.125,<sp/>0.0,<sp/>-0.125,</highlight></codeline>
+<codeline><highlight class="normal">0.25,<sp/><sp/>0.0,<sp/>-0.25,</highlight></codeline>
+<codeline><highlight class="normal">0.125,<sp/>0.0,<sp/>-0.125;</highlight></codeline>
+</programlisting></para><para>The norm is set to the sum of the initializer values. If the wrong number of values is given, a run-time error results. It is, however, possible to give just one initializer. This creates an averaging filter with the given constant:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D" kindref="compound" tooltip="Generic 2 dimensional convolution kernel.">vigra::Kernel2D&lt;float&gt;</ref><sp/>average3x3;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">average3x3.<ref refid="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" kindref="member">initExplicitly</ref>(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=<sp/>1.0/9.0;</highlight></codeline>
+</programlisting></para><para>Here, the norm is set to value*width()*height().</para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">1.<sp/>upperleft.x<sp/>&lt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">2.<sp/>upperleft.y<sp/>&lt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">3.<sp/>lowerright.x<sp/>&gt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">4.<sp/>lowerright.y<sp/>&gt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">5.<sp/>the<sp/>number<sp/>of<sp/>values<sp/>in<sp/>the<sp/>initializer<sp/>list</highlight></codeline>
+<codeline><highlight class="normal">is<sp/>1<sp/>or<sp/>equals<sp/>the<sp/>size<sp/>of<sp/>the<sp/>kernel.</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1174" bodyend="1189"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a27d9971d7859098dc18549fd6b8b996f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initGaussian</definition>
+        <argsstring>(double std_dev, value_type norm)</argsstring>
+        <name>initGaussian</name>
+        <param>
+          <type>double</type>
+          <declname>std_dev</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init as a 2D <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> function with given standard deviation and norm. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1061" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1060" bodyend="1065"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1abba907ac90270c3dd8aac14af93f7b58" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initGaussian</definition>
+        <argsstring>(double std_dev)</argsstring>
+        <name>initGaussian</name>
+        <param>
+          <type>double</type>
+          <declname>std_dev</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init as a 2D <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> function with given standard deviation and unit norm. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1070" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1069" bodyend="1072"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a81077ef2f36aabde9a3d68a18d4030a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initSeparable</definition>
+        <argsstring>(Kernel1D&lt; value_type &gt; const &amp;kx, Kernel1D&lt; value_type &gt; const &amp;ky)</argsstring>
+        <name>initSeparable</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D" kindref="compound">Kernel1D</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt; const &amp;</type>
+          <declname>kx</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D" kindref="compound">Kernel1D</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt; const &amp;</type>
+          <declname>ky</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init the 2D kernel as the cartesian product of two 1D kernels of type <ref refid="classvigra_1_1Kernel1D" kindref="compound">Kernel1D</ref>. The norm becomes the product of the two original norms.</para><para><bold> Required Interface:</bold></para><para>The kernel&apos;s value_type must be a linear algebra.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D" kindref="compound" tooltip="Generic 2 dimensional convolution kernel.">vigra::Kernel2D</ref>&lt;...&gt;<ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">::value_type</ref><sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>v<sp/>*<sp/>v;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="969" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="967" bodyend="993"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a5701c88dff5ab69d7d439103f8899cdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void initSeparable</definition>
+        <argsstring>(KernelIterator kxcenter, int xleft, int xright, KernelIterator kycenter, int yleft, int yright)</argsstring>
+        <name>initSeparable</name>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kxcenter</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>xleft</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>xright</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kycenter</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>yleft</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>yright</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init the 2D kernel as the cartesian product of two 1D kernels given explicitly by iterators and sizes. The norm becomes the sum of the resulting kernel values.</para><para><bold> Required Interface:</bold></para><para>The kernel&apos;s value_type must be a linear algebra.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D" kindref="compound" tooltip="Generic 2 dimensional convolution kernel.">vigra::Kernel2D</ref>&lt;...&gt;<ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">::value_type</ref><sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>v<sp/>*<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>+=<sp/>v;</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">xleft<sp/>&lt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">xright<sp/>&gt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">yleft<sp/>&lt;=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">yright<sp/>&gt;=<sp/>0;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1021" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1019" bodyend="1056"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1aefe235a4d206f89751e2e5cae3cdfc72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Kernel2D</definition>
+        <argsstring>()</argsstring>
+        <name>Kernel2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default constructor. Creates a kernel of size 1x1 which would copy the signal unchanged. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="893" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="887" bodyend="893"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a8e21e1fa13dfbcd66450e6c0a2612a2c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Kernel2D</definition>
+        <argsstring>(Kernel2D const &amp;k)</argsstring>
+        <name>Kernel2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D" kindref="compound">Kernel2D</ref> const &amp;</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="903" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="897" bodyend="903"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1ab46e7406df6ef44f731decc65e11d649" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D lowerRight</definition>
+        <argsstring>() const </argsstring>
+        <name>lowerRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Coordinates of the lower right corner of the kernel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1197" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1197" bodyend="1197"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1aac41cd63a48de00144dbd94e4c38ead6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+        <definition>value_type norm</definition>
+        <argsstring>() const </argsstring>
+        <name>norm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Norm of the kernel (i.e. sum of its elements). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1237" bodyend="1237"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1aabb9f9c24fd174d83422aec09dd52402" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void normalize</definition>
+        <argsstring>(value_type norm)</argsstring>
+        <name>normalize</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalize the kernel to the given value. (The norm is the sum of all kernel elements.) The kernel&apos;s value_type must be a division algebra or algebraic field.</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref><sp/>v<sp/>=<sp/>vigra::NumericTraits&lt;value_type&gt;::one();<sp/></highlight><highlight class="comment">//<sp/>if<sp/>norm<sp/>is<sp/>not</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>given<sp/>explicitly</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">v<sp/>+=<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>v<sp/>*<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>v<sp/>/<sp/>v;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1262" bodyend="1282"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1acd0de676568888d848beb97dcc53ae47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void normalize</definition>
+        <argsstring>()</argsstring>
+        <name>normalize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalize the kernel to norm 1. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1286" bodyend="1289"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a8a9c4d47e4236f7320763d19ce8bb463" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &amp;</type>
+        <definition>value_type&amp; operator()</definition>
+        <argsstring>(int x, int y)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access kernel entry at given position. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1217" bodyend="1218"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a1aa1443883949b197613312b3993ca3b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+        <definition>value_type operator()</definition>
+        <argsstring>(int x, int y) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read kernel entry at given position. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1222" bodyend="1223"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a2993693548f007d4716e3dac032d6e99" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D" kindref="compound">Kernel2D</ref> &amp;</type>
+        <definition>Kernel2D&amp; operator=</definition>
+        <argsstring>(Kernel2D const &amp;k)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D" kindref="compound">Kernel2D</ref> const &amp;</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="908" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="907" bodyend="918"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a4fd821bdc684b1cdad02afe53dd043dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>InitProxy</type>
+        <definition>InitProxy operator=</definition>
+        <argsstring>(value_type const &amp;v)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialization. This initializes the kernel with the given constant. The norm becomes v*width()*height().</para><para>Instead of a single value an initializer list of length <ref refid="classvigra_1_1Kernel2D_1a369399896761e31ae71db57fdd0ba431" kindref="member">width()</ref>*height() can be used like this:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D" kindref="compound" tooltip="Generic 2 dimensional convolution kernel.">vigra::Kernel2D&lt;float&gt;</ref><sp/>binom;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">binom.<ref refid="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" kindref="member">initExplicitly</ref>(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=</highlight></codeline>
+<codeline><highlight class="normal">0.0625,<sp/>0.125,<sp/>0.0625,</highlight></codeline>
+<codeline><highlight class="normal">0.125,<sp/><sp/>0.25,<sp/><sp/>0.125,</highlight></codeline>
+<codeline><highlight class="normal">0.0625,<sp/>0.125,<sp/>0.0625;</highlight></codeline>
+</programlisting></para><para>In this case, the norm will be set to the sum of the init values. An initializer list of wrong length will result in a run-time error. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="940" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="939" bodyend="947"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1ac69571b2bfa4fca07fea1e8b18f59535" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &amp;</type>
+        <definition>value_type&amp; operator[]</definition>
+        <argsstring>(Diff2D const &amp;d)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access kernel entry at given position. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1228" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1227" bodyend="1228"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1ada6e33ca66729265e468e459593b99cb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref></type>
+        <definition>value_type operator[]</definition>
+        <argsstring>(Diff2D const &amp;d) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read kernel entry at given position. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1233" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1232" bodyend="1233"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a647df9e68cc4da54a5c9d2ba13768c9a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setBorderTreatment</definition>
+        <argsstring>(BorderTreatmentMode new_mode)</argsstring>
+        <name>setBorderTreatment</name>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>new_mode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set border treatment mode. Only <computeroutput>BORDER_TREATMENT_CLIP</computeroutput> and <computeroutput>BORDER_TREATMENT_AVOID</computeroutput> are currently allowed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1301" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1300" bodyend="1316"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a9ae2a37034cbd0ee615347eced462dee" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D upperLeft</definition>
+        <argsstring>() const </argsstring>
+        <name>upperLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Coordinates of the upper left corner of the kernel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1193" bodyend="1193"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Width of the kernel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="1201" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="1201" bodyend="1201"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Kernel2D_1a8699da4381378943d1e85fcb738a85a6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~Kernel2D</definition>
+        <argsstring>()</argsstring>
+        <name>~Kernel2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Destructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="952" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="951" bodyend="952"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Generic 2 dimensional convolution kernel. </para>    </briefdescription>
+    <detaileddescription>
+<para>This kernel may be used for convolution of 2 dimensional signals.</para><para>Convolution functions access the kernel via an <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> which they get by calling <ref refid="classvigra_1_1Kernel2D_1a9a60a2e967d61c6890fb8d8a6e966fdd" kindref="member">center()</ref>. This iterator points to the center of the kernel. The kernel&apos;s size is given by its <ref refid="classvigra_1_1Kernel2D_1a9ae2a37034cbd0ee615347eced462dee" kindref="member">upperLeft()</ref> (<ref refid="classvigra_1_1Kernel2D_1a9ae2a37034cbd0ee615347eced462dee" kindref="member">upperLeft()</ref>.x &lt;= 0, <ref refid="classvigra_1_1Kernel2D_1a9ae2a37034cbd0ee615347eced462dee" kindref="member">upperLeft()</ref>.y &lt;= 0) and <ref refid="classvigra_1_1Kernel2D_1ab46e7406df6ef44f731decc65e11d649" kindref="member">lowerRight()</ref> (<ref refid="classvigra_1_1Kernel2D_1ab46e7406df6ef44f731decc65e11d649" kindref="member">lowerRight()</ref>.x &gt;= 0, <ref refid="classvigra_1_1Kernel2D_1ab46e7406df6ef44f731decc65e11d649" kindref="member">lowerRight()</ref>.y &gt;= 0) methods. The desired border treatment mode is returned by <ref refid="classvigra_1_1Kernel2D_1a69dbff83a4127cc415a7eb796d95051e" kindref="member">borderTreatment()</ref>. (Note that the <ref refid="group__StandardConvolution" kindref="compound">2D convolution functions</ref> don&apos;t currently support all modes.)</para><para>The different init functions create a kernel with the specified properties. The requirements for the kernel&apos;s value_type depend on the init function used. At least NumericTraits must be defined.</para><para>The kernel defines a factory function kernel2d() to create an argument object (see <ref refid="KernelArgumentObjectFactories" kindref="compound">Kernel Argument Object Factories</ref>).</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="stdconvolution_8hxx_source" kindref="compound">vigra/stdconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>horizontal<sp/>Sobel<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::Kernel2D&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>sobel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sobel.<ref refid="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" kindref="member">initExplicitly</ref>(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=<sp/><sp/></highlight><highlight class="comment">//<sp/>upper<sp/>left<sp/>and<sp/>lower<sp/>right</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.125,<sp/>0.0,<sp/>-0.125,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.25,<sp/><sp/>0.0,<sp/>-0.25,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.125,<sp/>0.0,<sp/>-0.125;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">vigra::convolveImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>kernel2d(sobel));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref><sp/>v<sp/>=<sp/>NumericTraits&lt;value_type&gt;::one();</highlight></codeline>
+</programlisting></para><para>See also the init functions. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="819" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="818" bodyend="1324"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Kernel2D_1aeddc84bb8bfbd3dbb8adbf5f852ab5d7" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>Accessor</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ac1e543db9ce291e86b9023cdb9202b5b" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>accessor</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a40e8567a7e13dacc22cadde2f9d1dcd0" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>accessor</name></member>
+      <member refid="classvigra_1_1Kernel2D_1adf6f18ab23ed47ea40ef2b744eee8df8" prot="private" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>border_treatment_</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a69dbff83a4127cc415a7eb796d95051e" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>borderTreatment</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a9a60a2e967d61c6890fb8d8a6e966fdd" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>center</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a14409d27693bc7b318cbbb8d00932b86" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>center</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a0152662c2a68dc9bf22b2a2c78386367" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>ConstAccessor</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aa08b6f9af8bb438d78fa52b62aa6c905" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>ConstIterator</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>height</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aa39a25ecb7ca303cb16e344e88ee0037" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initDisk</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a655f2e66826607be6901a295d1216c9f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initExplicitly</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a27d9971d7859098dc18549fd6b8b996f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initGaussian</name></member>
+      <member refid="classvigra_1_1Kernel2D_1abba907ac90270c3dd8aac14af93f7b58" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initGaussian</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a81077ef2f36aabde9a3d68a18d4030a3" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initSeparable</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a5701c88dff5ab69d7d439103f8899cdd" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>initSeparable</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>Iterator</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aefe235a4d206f89751e2e5cae3cdfc72" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>Kernel2D</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a8e21e1fa13dfbcd66450e6c0a2612a2c" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>Kernel2D</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a26fdbf612f373fc206e71473a2729bd2" prot="private" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>kernel_</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aee9749b0267454a3e1e220232d505bc7" prot="private" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>left_</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ab46e7406df6ef44f731decc65e11d649" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>lowerRight</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aac41cd63a48de00144dbd94e4c38ead6" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>norm</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ae941ce86d718854a47ff51d9663d8861" prot="private" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>norm_</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aabb9f9c24fd174d83422aec09dd52402" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>normalize</name></member>
+      <member refid="classvigra_1_1Kernel2D_1acd0de676568888d848beb97dcc53ae47" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>normalize</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a66018859461121f0957fc48b6e228c67" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>one</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a8a9c4d47e4236f7320763d19ce8bb463" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a1aa1443883949b197613312b3993ca3b" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a2993693548f007d4716e3dac032d6e99" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a4fd821bdc684b1cdad02afe53dd043dc" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ac69571b2bfa4fca07fea1e8b18f59535" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Kernel2D_1ada6e33ca66729265e468e459593b99cb" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a5eb1d4f30494284fca1210ed4b9e9144" prot="private" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>right_</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a647df9e68cc4da54a5c9d2ba13768c9a" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>setBorderTreatment</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a9ae2a37034cbd0ee615347eced462dee" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>upperLeft</name></member>
+      <member refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>width</name></member>
+      <member refid="classvigra_1_1Kernel2D_1a8699da4381378943d1e85fcb738a85a6" prot="public" virt="non-virtual"><scope>vigra::Kernel2D</scope><name>~Kernel2D</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

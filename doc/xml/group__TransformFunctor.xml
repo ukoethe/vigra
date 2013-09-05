@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__TransformFunctor" kind="group">
+    <compoundname>TransformFunctor</compoundname>
+    <title>Functors to Transform Images</title>
+    <innerclass refid="classvigra_1_1BrightnessContrastFunctor" prot="public">vigra::BrightnessContrastFunctor</innerclass>
+    <innerclass refid="classvigra_1_1BrightnessContrastFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4" prot="public">vigra::BrightnessContrastFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BrightnessContrastFunctor_3_01RGBValue_3_01unsigned_01char_01_4_01_4" prot="public">vigra::BrightnessContrastFunctor&lt; RGBValue&lt; unsigned char &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4" prot="public">vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01LinearIntensityTransform_3_01DestValueType_00_01Multiplier_01_4_01_4" prot="public">vigra::FunctorTraits&lt; LinearIntensityTransform&lt; DestValueType, Multiplier &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01ScalarIntensityTransform_3_01DestValueType_00_01Multiplier_01_4_01_4" prot="public">vigra::FunctorTraits&lt; ScalarIntensityTransform&lt; DestValueType, Multiplier &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Threshold_3_01SrcValueType_00_01DestValueType_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Threshold&lt; SrcValueType, DestValueType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01VectorNormFunctor_3_01ValueType_01_4_01_4" prot="public">vigra::FunctorTraits&lt; VectorNormFunctor&lt; ValueType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01VectorNormSqFunctor_3_01ValueType_01_4_01_4" prot="public">vigra::FunctorTraits&lt; VectorNormSqFunctor&lt; ValueType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1GammaFunctor" prot="public">vigra::GammaFunctor</innerclass>
+    <innerclass refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4" prot="public">vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01unsigned_01char_01_4_01_4" prot="public">vigra::GammaFunctor&lt; RGBValue&lt; unsigned char &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1GammaFunctor_3_01unsigned_01char_01_4" prot="public">vigra::GammaFunctor&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1LinearIntensityTransform" prot="public">vigra::LinearIntensityTransform</innerclass>
+    <innerclass refid="classvigra_1_1ScalarIntensityTransform" prot="public">vigra::ScalarIntensityTransform</innerclass>
+    <innerclass refid="classvigra_1_1Threshold" prot="public">vigra::Threshold</innerclass>
+    <innerclass refid="classvigra_1_1VectorNormFunctor" prot="public">vigra::VectorNormFunctor</innerclass>
+    <innerclass refid="classvigra_1_1VectorNormSqFunctor" prot="public">vigra::VectorNormSqFunctor</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__TransformFunctor_1gaf4b4d2cc02b2dd950838a452847dee0e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Multiplier</type>
+          </param>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+        </templateparamlist>
+        <type>LinearIntensityTransform&lt; DestValueType, Multiplier &gt;</type>
+        <definition>LinearIntensityTransform&lt;DestValueType, Multiplier&gt; vigra::linearIntensityTransform</definition>
+        <argsstring>(Multiplier scale, DestValueType offset)</argsstring>
+        <name>linearIntensityTransform</name>
+        <param>
+          <type>Multiplier</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>Apply a linear transform to the source pixel values. </para>        </briefdescription>
+        <detaileddescription>
+<para>Factory function for a functor that linearly transforms the source pixel values. The functor applies the transform &apos;<computeroutput>destvalue = scale * (srcvalue + offset)</computeroutput>&apos; to every pixel. This can, for example, be used to transform images into the visible range 0...255 or to invert an image.</para><para>If you leave out the second parameter / offset, you will get an optimized version of the functor which only scales by the given factor, however you have to make the template parameter (pixel type) explicit then.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryFunctor</computeroutput> is true (<computeroutput>VigraTrueType</computeroutput>)</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Multiplier,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>LinearIntensityTransform&lt;DestValueType,<sp/>Multiplier&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1gaf4b4d2cc02b2dd950838a452847dee0e" kindref="member" tooltip="Apply a linear transform to the source pixel values.">linearIntensityTransform</ref>(Multiplier<sp/>scale,<sp/>DestValueType<sp/>offset);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestValueType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Multiplier&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ScalarIntensityTransform&lt;DestValueType,<sp/>Multiplier&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1gaf4b4d2cc02b2dd950838a452847dee0e" kindref="member" tooltip="Apply a linear transform to the source pixel values.">linearIntensityTransform</ref>(Multiplier<sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/transformimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>src(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>dest(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::FindMinMax&lt;<ref refid="classvigra_1_1BasicImage_1ac8456b73e94855de7203e3e337f2b872" kindref="member">IImage::PixelType</ref>&gt;<sp/>minmax;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>functor<sp/>to<sp/>find<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">vigra::inspectImage</ref>(srcImageRange(src),<sp/>minmax);<sp/></highlight><highlight class="comment">//<sp/>find<sp/>original<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>transform<sp/>to<sp/>range<sp/>0...255</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1gaf4b4d2cc02b2dd950838a452847dee0e" kindref="member" tooltip="Apply a linear transform to the source pixel values.">linearIntensityTransform</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>255.0<sp/>/<sp/>(minmax.max<sp/>-<sp/>minmax.min),<sp/></highlight><highlight class="comment">//<sp/>scaling</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-<sp/>minmax.min));<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>offset</highlight></codeline>
+</programlisting></para><para>The one-parameter version can be used like this:</para><para><programlisting><codeline><highlight class="comment">//<sp/>scale<sp/>from<sp/>0..255<sp/>to<sp/>0..1.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>dest(src.size());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>linearIntensityTransform&lt;float&gt;(1.0<sp/>/<sp/>255));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>The source and destination value types must be models of <ref refid="AlgebraicConcepts_1LinearSpace" kindref="member">LinearSpace</ref> in both cases. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="682" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="681" bodyend="684"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformFunctor_1ga412a23da1436369d9670e6ba87d95bd7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+          <param>
+            <type>class Multiplier</type>
+          </param>
+        </templateparamlist>
+        <type>ScalarIntensityTransform&lt; DestValueType, Multiplier &gt;</type>
+        <definition>ScalarIntensityTransform&lt;DestValueType, Multiplier&gt; vigra::linearIntensityTransform</definition>
+        <argsstring>(Multiplier scale)</argsstring>
+        <name>linearIntensityTransform</name>
+        <param>
+          <type>Multiplier</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="688" bodyend="691"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+        </templateparamlist>
+        <type>LinearIntensityTransform&lt; DestValueType, typename NumericTraits&lt; DestValueType &gt;::RealPromote &gt;</type>
+        <definition>LinearIntensityTransform&lt;DestValueType, typename NumericTraits&lt;DestValueType&gt;::RealPromote&gt; vigra::linearRangeMapping</definition>
+        <argsstring>(SrcValueType src_min, SrcValueType src_max, DestValueType dest_min, DestValueType dest_max)</argsstring>
+        <name>linearRangeMapping</name>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_min</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_max</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_min</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_max</declname>
+        </param>
+        <briefdescription>
+<para>Map a source intensity range linearly to a destination range. </para>        </briefdescription>
+        <detaileddescription>
+<para>Factory function for a functor that linearly transforms the source pixel values. The functor applies the transform &apos;<computeroutput>destvalue = scale * (srcvalue + offset)</computeroutput>&apos; to every pixel, where <computeroutput>scale = (dest_max - dest_min) / (src_max - src_min)</computeroutput> and <computeroutput>offset = dest_min / scale - src_min</computeroutput>. As a result, the pixel values <computeroutput>src_max</computeroutput>, <computeroutput>src_min</computeroutput> in the source image are mapped onto <computeroutput>dest_max</computeroutput>, <computeroutput>dest_min</computeroutput> respectively. This works for scalar as well as vector pixel types. Instead of <computeroutput>src_min</computeroutput> and <computeroutput>src_max</computeroutput>, you may also pass a functor <ref refid="classvigra_1_1FindMinMax" kindref="compound">FindMinMax</ref>.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValueType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>LinearIntensityTransform&lt;DestValueType,<sp/>typename<sp/>NumericTraits&lt;DestValueType&gt;::RealPromote&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" kindref="member" tooltip="Map a source intensity range linearly to a destination range.">linearRangeMapping</ref>(SrcValueType<sp/>src_min,<sp/>SrcValueType<sp/>src_max,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValueType<sp/>dest_min,<sp/>DestValueType<sp/>dest_max<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValueType,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>LinearIntensityTransform&lt;DestValueType,<sp/>typename<sp/>NumericTraits&lt;DestValueType&gt;::RealPromote&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" kindref="member" tooltip="Map a source intensity range linearly to a destination range.">linearRangeMapping</ref>(SrcValueType<sp/>src_min,<sp/>SrcValueType<sp/>src_max,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValueType<sp/>dest_min,<sp/>DestValueType<sp/>dest_max<sp/>);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/transformimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>src(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>dest(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::FindMinMax&lt;<ref refid="classvigra_1_1BasicImage_1ac8456b73e94855de7203e3e337f2b872" kindref="member">IImage::PixelType</ref>&gt;<sp/>minmax;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>functor<sp/>to<sp/>find<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">vigra::inspectImage</ref>(srcImageRange(src),<sp/>minmax);<sp/></highlight><highlight class="comment">//<sp/>find<sp/>original<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>transform<sp/>to<sp/>range<sp/>0...255</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" kindref="member" tooltip="Map a source intensity range linearly to a destination range.">linearRangeMapping</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>minmax.min,<sp/>minmax.max,<sp/><sp/></highlight><highlight class="comment">//<sp/>src<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>255)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dest<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>equivalent,<sp/>but<sp/>shorter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" kindref="member" tooltip="Map a source intensity range linearly to a destination range.">linearRangeMapping</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>minmax,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>src<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>255)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dest<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>The source and destination value types must be models of <ref refid="AlgebraicConcepts_1LinearSpace" kindref="member">LinearSpace</ref> in both cases. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="765" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="763" bodyend="768"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformFunctor_1ga562b99cf9c8032e68a61b280a0b2d194" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+        </templateparamlist>
+        <type>LinearIntensityTransform&lt; DestValueType, typename NumericTraits&lt; DestValueType &gt;::RealPromote &gt;</type>
+        <definition>LinearIntensityTransform&lt;DestValueType, typename NumericTraits&lt;DestValueType&gt;::RealPromote&gt; vigra::linearRangeMapping</definition>
+        <argsstring>(FindMinMax&lt; SrcValueType &gt; const &amp;src, DestValueType dest_min, DestValueType dest_max)</argsstring>
+        <name>linearRangeMapping</name>
+        <param>
+          <type>FindMinMax&lt; SrcValueType &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_min</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="774" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="772" bodyend="777"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformFunctor_1ga5584edcc8b7d330d6355e97a1486827b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+        </templateparamlist>
+        <type>LinearIntensityTransform&lt; DestValueType, typename NumericTraits&lt; DestValueType &gt;::RealPromote &gt;</type>
+        <definition>LinearIntensityTransform&lt;DestValueType, typename NumericTraits&lt;DestValueType&gt;::RealPromote&gt; vigra::linearRangeMapping</definition>
+        <argsstring>(SrcValueType src_min, SrcValueType src_max, DestValueType dest_min, DestValueType dest_max, VigraTrueType)</argsstring>
+        <name>linearRangeMapping</name>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_min</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_max</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_min</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_max</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="785" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="781" bodyend="793"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformFunctor_1ga6e347890dbe9dcc0fbab1d6e74f1e12c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+          <param>
+            <type>class DestValueType</type>
+          </param>
+        </templateparamlist>
+        <type>LinearIntensityTransform&lt; DestValueType, typename NumericTraits&lt; DestValueType &gt;::RealPromote &gt;</type>
+        <definition>LinearIntensityTransform&lt;DestValueType, typename NumericTraits&lt;DestValueType&gt;::RealPromote&gt; vigra::linearRangeMapping</definition>
+        <argsstring>(SrcValueType src_min, SrcValueType src_max, DestValueType dest_min, DestValueType dest_max, VigraFalseType)</argsstring>
+        <name>linearRangeMapping</name>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_min</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+          <declname>src_max</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_min</declname>
+        </param>
+        <param>
+          <type>DestValueType</type>
+          <declname>dest_max</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="801" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="797" bodyend="814"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Note that the unary functors of the STL can also be used in connection with <ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member">transformImage()</ref>. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

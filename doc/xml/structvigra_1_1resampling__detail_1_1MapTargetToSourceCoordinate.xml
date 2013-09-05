@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate" kind="struct" prot="public">
+    <compoundname>vigra::resampling_detail::MapTargetToSourceCoordinate</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa4c2a5552e9bc49b1816ff532f558c74" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int a</definition>
+        <argsstring></argsstring>
+        <name>a</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a148e3876077787926724625411d6e7a9" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int b</definition>
+        <argsstring></argsstring>
+        <name>b</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a4e1e0e72dd773439e333c84dd762a9c3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int c</definition>
+        <argsstring></argsstring>
+        <name>c</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a188144b53946e28608d38aea71bc8636" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isExpand2</definition>
+        <argsstring>() const </argsstring>
+        <name>isExpand2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="81" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a590fe9d2c0eebcba852c5b8587315c17" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isReduce2</definition>
+        <argsstring>() const </argsstring>
+        <name>isReduce2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="86" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a9a66e6db7e684cb88f3e48b5c392eb31" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MapTargetToSourceCoordinate</definition>
+        <argsstring>(Rational&lt; int &gt; const &amp;samplingRatio, Rational&lt; int &gt; const &amp;offset)</argsstring>
+        <name>MapTargetToSourceCoordinate</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; int &gt; const &amp;</type>
+          <declname>samplingRatio</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; int &gt; const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="60" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="55" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa22f2780fd87d742f7c83675891de147" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int operator()</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="66" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa4da293ba9117a681d79948df7e3fc94" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double toDouble</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>toDouble</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="71" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a66bcae0c8f8503736f4631a4b9e762a8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; int &gt;</type>
+        <definition>Rational&lt;int&gt; toRational</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>toRational</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="76" bodyend="79"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="54" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="53" bodyend="92"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa4c2a5552e9bc49b1816ff532f558c74" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>a</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a148e3876077787926724625411d6e7a9" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>b</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a4e1e0e72dd773439e333c84dd762a9c3" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>c</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a188144b53946e28608d38aea71bc8636" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>isExpand2</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a590fe9d2c0eebcba852c5b8587315c17" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>isReduce2</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a9a66e6db7e684cb88f3e48b5c392eb31" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>MapTargetToSourceCoordinate</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa22f2780fd87d742f7c83675891de147" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1aa4da293ba9117a681d79948df7e3fc94" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>toDouble</name></member>
+      <member refid="structvigra_1_1resampling__detail_1_1MapTargetToSourceCoordinate_1a66bcae0c8f8503736f4631a4b9e762a8" prot="public" virt="non-virtual"><scope>vigra::resampling_detail::MapTargetToSourceCoordinate</scope><name>toRational</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,315 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1linalg_1_1detail_1_1LarsData" kind="struct" prot="public">
+    <compoundname>vigra::linalg::detail::LarsData</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class C1</type>
+      </param>
+      <param>
+        <type>class C2</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1ac9bc5d3acd82b9d768d648d30fb39327" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shape</definition>
+        <argsstring></argsstring>
+        <name>Shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="456" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="456" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a010210afcd0a41378584f17cd7311ed2" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt;</type>
+        <definition>MultiArrayView&lt;2, T, C1&gt; A</definition>
+        <argsstring></argsstring>
+        <name>A</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="459" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="459" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1aaff553282a3a3c8e67d2288fee3ae92d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int activeSetSize</definition>
+        <argsstring></argsstring>
+        <name>activeSetSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="458" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="458" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1aaf799e8b665d7e701eef093cfad787f9" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt;</type>
+        <definition>MultiArrayView&lt;2, T, C2&gt; b</definition>
+        <argsstring></argsstring>
+        <name>b</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="460" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="460" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a7d1302854b2bd0829dab2a244d81476e" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref> &gt;</type>
+        <definition>ArrayVector&lt;MultiArrayIndex&gt; columnPermutation</definition>
+        <argsstring></argsstring>
+        <name>columnPermutation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="462" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1aef70d3db9b6f18272d3ca6715a9bd54c" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; lars_prediction</definition>
+        <argsstring></argsstring>
+        <name>lars_prediction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1ac4658ccae9beb2eaf55a03fb8245fe10" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; lars_solution</definition>
+        <argsstring></argsstring>
+        <name>lars_solution</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1adc4b16b314cbe7421e992bd5adff07d3" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; next_lsq_prediction</definition>
+        <argsstring></argsstring>
+        <name>next_lsq_prediction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a3c8bbfb25b4bf8e4196da52a6ce8f626" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; next_lsq_solution</definition>
+        <argsstring></argsstring>
+        <name>next_lsq_solution</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1afd5117f2402333cd2c149030649ae41f" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; qtb</definition>
+        <argsstring></argsstring>
+        <name>qtb</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a41e9651bfae5454eef59ecb91e545a2d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; R</definition>
+        <argsstring></argsstring>
+        <name>R</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a8129b11cc54efee1f334b4d98418d24e" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt;</type>
+        <definition>Matrix&lt;T&gt; searchVector</definition>
+        <argsstring></argsstring>
+        <name>searchVector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1af3bfd2dc57973ce468571efbc5b147f3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LarsData</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;Ai, MultiArrayView&lt; 2, T, C2 &gt; const &amp;bi)</argsstring>
+        <name>LarsData</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>Ai</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>bi</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="471" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="465" bodyend="474"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1linalg_1_1detail_1_1LarsData_1a3eb368836f3b53514ea484c7132334b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LarsData</definition>
+        <argsstring>(LarsData const &amp;d, int asetSize)</argsstring>
+        <name>LarsData</name>
+        <param>
+          <type>LarsData const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>asetSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="484" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="477" bodyend="487"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="974">
+        <label>LarsData&lt; T, C1, C2 &gt;</label>
+        <childnode refid="975" relation="usage">
+          <edgelabel>A</edgelabel>
+        </childnode>
+        <childnode refid="977" relation="usage">
+          <edgelabel>next_lsq_solution</edgelabel>
+          <edgelabel>next_lsq_prediction</edgelabel>
+          <edgelabel>searchVector</edgelabel>
+          <edgelabel>qtb</edgelabel>
+          <edgelabel>lars_prediction</edgelabel>
+          <edgelabel>lars_solution</edgelabel>
+          <edgelabel>R</edgelabel>
+        </childnode>
+        <childnode refid="980" relation="usage">
+          <edgelabel>columnPermutation</edgelabel>
+        </childnode>
+        <childnode refid="982" relation="usage">
+          <edgelabel>b</edgelabel>
+        </childnode>
+      </node>
+      <node id="982">
+        <label>MultiArrayView&lt; 2, T, C2 &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="976" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="980">
+        <label>ArrayVector&lt; MultiArrayIndex &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="981" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="981">
+        <label>ArrayVectorView&lt; MultiArrayIndex &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="979">
+        <label>MultiArrayView&lt; N, T &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="976" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="977">
+        <label>Matrix&lt; T &gt;</label>
+        <link refid="classvigra_1_1linalg_1_1Matrix"/>
+        <childnode refid="978" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="976">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="978">
+        <label>MultiArray&lt; 2, T, std::allocator&lt; T &gt; &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="979" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="975">
+        <label>MultiArrayView&lt; 2, T, C1 &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="976" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="454" bodyend="488"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a010210afcd0a41378584f17cd7311ed2" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>A</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1aaff553282a3a3c8e67d2288fee3ae92d" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>activeSetSize</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1aaf799e8b665d7e701eef093cfad787f9" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>b</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a7d1302854b2bd0829dab2a244d81476e" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>columnPermutation</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1aef70d3db9b6f18272d3ca6715a9bd54c" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>lars_prediction</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1ac4658ccae9beb2eaf55a03fb8245fe10" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>lars_solution</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1af3bfd2dc57973ce468571efbc5b147f3" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>LarsData</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a3eb368836f3b53514ea484c7132334b1" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>LarsData</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1adc4b16b314cbe7421e992bd5adff07d3" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>next_lsq_prediction</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a3c8bbfb25b4bf8e4196da52a6ce8f626" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>next_lsq_solution</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1afd5117f2402333cd2c149030649ae41f" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>qtb</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a41e9651bfae5454eef59ecb91e545a2d" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>R</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1a8129b11cc54efee1f334b4d98418d24e" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>searchVector</name></member>
+      <member refid="structvigra_1_1linalg_1_1detail_1_1LarsData_1ac9bc5d3acd82b9d768d648d30fb39327" prot="public" virt="non-virtual"><scope>vigra::linalg::detail::LarsData</scope><name>Shape</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

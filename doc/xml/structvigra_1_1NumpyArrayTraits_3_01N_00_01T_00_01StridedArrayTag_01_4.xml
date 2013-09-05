@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1aeaca8635594e11a10084e38faf5182a3" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T dtype</definition>
+        <argsstring></argsstring>
+        <name>dtype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="245" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a265a253612b46abed17c61b0a5e5ce30" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="246" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a4dc1b47f61a0eeb5091daeb8c0c14600" prot="public" static="no">
+        <type>NumpyArrayValuetypeTraits&lt; T &gt;</type>
+        <definition>typedef NumpyArrayValuetypeTraits&lt;T&gt; ValuetypeTraits</definition>
+        <argsstring></argsstring>
+        <name>ValuetypeTraits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a0d51ab961661b605845aa7dfb81e0dfd" prot="public" static="yes" mutable="no">
+        <type>NPY_TYPES const</type>
+        <definition>NPY_TYPES const typeCode</definition>
+        <argsstring></argsstring>
+        <name>typeCode</name>
+        <initializer> ValuetypeTraits::typeCode</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="248" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="248" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1afa778978c90bc13ad44e55f730624301" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void finalizeTaggedShape</definition>
+        <argsstring>(TaggedShape &amp;tagged_shape)</argsstring>
+        <name>finalizeTaggedShape</name>
+        <param>
+          <type>TaggedShape &amp;</type>
+          <declname>tagged_shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="302" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="301" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a260bde956efc3168b354aa4ddbc97a53" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isArray</definition>
+        <argsstring>(PyObject *obj)</argsstring>
+        <name>isArray</name>
+        <param>
+          <type>PyObject *</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="250" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a6386b7307ff26ae4e1454664d23d27a0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isPropertyCompatible</definition>
+        <argsstring>(PyArrayObject *obj)</argsstring>
+        <name>isPropertyCompatible</name>
+        <param>
+          <type>PyArrayObject *</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="272" bodyend="275"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1ab21e26620663281d83ace57e2e9c9001" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isShapeCompatible</definition>
+        <argsstring>(PyArrayObject *array)</argsstring>
+        <name>isShapeCompatible</name>
+        <param>
+          <type>PyArrayObject *</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="260" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1ab72ace6519224687789e3a3d788dc789" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isValuetypeCompatible</definition>
+        <argsstring>(PyArrayObject *obj)</argsstring>
+        <name>isValuetypeCompatible</name>
+        <param>
+          <type>PyArrayObject *</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="255" bodyend="258"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a7ea40ec430fd62434207317d8e87b924" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void permutationToSetupOrder</definition>
+        <argsstring>(python_ptr array, ArrayVector&lt; U &gt; &amp;permute)</argsstring>
+        <name>permutationToSetupOrder</name>
+        <param>
+          <type>python_ptr</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; U &gt; &amp;</type>
+          <declname>permute</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="331" bodyend="341"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1aa5feca678f43bdd2904e5267ea404bf4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ARRAY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void permuteLikewise</definition>
+        <argsstring>(python_ptr array, ARRAY const &amp;data, ARRAY &amp;res)</argsstring>
+        <name>permuteLikewise</name>
+        <param>
+          <type>python_ptr</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>ARRAY const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>ARRAY &amp;</type>
+          <declname>res</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="314" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="313" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a0977decbeaa59cf0237d29bb586aacf6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>TaggedShape</type>
+        <definition>static TaggedShape taggedShape</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;shape, PyAxisTags axistags)</argsstring>
+        <name>taggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>PyAxisTags</type>
+          <declname>axistags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="281" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="280" bodyend="283"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a3de698d42e651bee88d0dca578f4d5ad" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>TaggedShape</type>
+        <definition>static TaggedShape taggedShape</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;shape, std::string const &amp;=&quot;&quot;)</argsstring>
+        <name>taggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="289" bodyend="297"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a889d860a5cec2183b3e0d1876ab9fc13" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>python_ptr</type>
+        <definition>static python_ptr unsafeConstructorFromData</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;shape, T *data, TinyVector&lt; U, N &gt; const &amp;stride)</argsstring>
+        <name>unsafeConstructorFromData</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>stride</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="350" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="348" bodyend="354"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="243" bodyend="355"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1aeaca8635594e11a10084e38faf5182a3" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>dtype</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1afa778978c90bc13ad44e55f730624301" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>finalizeTaggedShape</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a260bde956efc3168b354aa4ddbc97a53" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>isArray</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a6386b7307ff26ae4e1454664d23d27a0" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>isPropertyCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1ab21e26620663281d83ace57e2e9c9001" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>isShapeCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1ab72ace6519224687789e3a3d788dc789" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>isValuetypeCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a7ea40ec430fd62434207317d8e87b924" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>permutationToSetupOrder</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1aa5feca678f43bdd2904e5267ea404bf4" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>permuteLikewise</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a0977decbeaa59cf0237d29bb586aacf6" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>taggedShape</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a3de698d42e651bee88d0dca578f4d5ad" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>taggedShape</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a0d51ab961661b605845aa7dfb81e0dfd" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>typeCode</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a889d860a5cec2183b3e0d1876ab9fc13" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>unsafeConstructorFromData</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>value_type</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01T_00_01StridedArrayTag_01_4_1a4dc1b47f61a0eeb5091daeb8c0c14600" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, T, StridedArrayTag &gt;</scope><name>ValuetypeTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

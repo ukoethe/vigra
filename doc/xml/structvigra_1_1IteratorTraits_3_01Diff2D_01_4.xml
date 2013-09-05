@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4" kind="struct" prot="public">
+    <compoundname>vigra::IteratorTraits&lt; Diff2D &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1af9fdae97c604300cb72878ad86abe7df" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1ac75bad7e399418ac4061dd934993e1bf" kindref="member">iterator::column_iterator</ref></type>
+        <definition>typedef iterator::column_iterator column_iterator</definition>
+        <argsstring></argsstring>
+        <name>column_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="455" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1ae69299834f6c87f878d174f3921e55e9" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Iterator</ref></type>
+        <definition>typedef Iterator const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="446" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="446" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a7e1b09da71c5545a5bc3a79a7beb89a1" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardConstValueAccessor" kindref="compound">StandardConstValueAccessor</ref>&lt; <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &gt;</type>
+        <definition>typedef StandardConstValueAccessor&lt;Diff2D&gt; default_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="457" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="457" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a1c13ae5d82865d291372505aad7bd4dd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardConstValueAccessor" kindref="compound">StandardConstValueAccessor</ref>&lt; <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &gt;</type>
+        <definition>typedef StandardConstValueAccessor&lt;Diff2D&gt; DefaultAccessor</definition>
+        <argsstring></argsstring>
+        <name>DefaultAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="456" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="456" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a87620e2a4084ce6188670670e9fc2615" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">iterator::difference_type</ref></type>
+        <definition>typedef iterator::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="453" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="453" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a578ba7fe728777d5c68a278732b30a62" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType hasConstantStrides</definition>
+        <argsstring></argsstring>
+        <name>hasConstantStrides</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="458" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="458" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a5f2af54b83d22c3b24012095756606e4" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1a6a40fe33dbf4ec6dce362f1ebed51fc8" kindref="member">iterator::index_reference</ref></type>
+        <definition>typedef iterator::index_reference index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="451" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="451" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a1183f6d753c8f8309dcc03055398bbcd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+        <definition>typedef Diff2D Iterator</definition>
+        <argsstring></argsstring>
+        <name>Iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="444" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="444" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a24eac9892806755705990e0fa3d554ef" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Iterator</ref></type>
+        <definition>typedef Iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="445" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="445" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a003269a9876ddf5df074ca53ff0b0ac0" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1a93321121482225e0577a134820fc5c6b" kindref="member">iterator::iterator_category</ref></type>
+        <definition>typedef iterator::iterator_category iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="448" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="448" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1ae25503eab63a289091b067e5626b9acd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1a8d2fe1a221037bbf75f37e76cc37660f" kindref="member">iterator::pointer</ref></type>
+        <definition>typedef iterator::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="452" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="452" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a6e997adfc98892497219c84757d0bd6b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1abf455d8c2da42e8ac3789512a3e45fd5" kindref="member">iterator::reference</ref></type>
+        <definition>typedef iterator::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="450" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="450" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1af9751c08e77cdb2ce65996c153f532c7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1a5dbf61d6be79bdde2b8312cb86ebb759" kindref="member">iterator::row_iterator</ref></type>
+        <definition>typedef iterator::row_iterator row_iterator</definition>
+        <argsstring></argsstring>
+        <name>row_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="454" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="454" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1aac03fcf05950c2c26b7e7d82a5cd6cb5" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D_1ad9f0e1f6ec90dd3417c628b3f30e77c0" kindref="member">iterator::value_type</ref></type>
+        <definition>typedef iterator::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="449" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="449" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="443" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="442" bodyend="460"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1af9fdae97c604300cb72878ad86abe7df" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>column_iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1ae69299834f6c87f878d174f3921e55e9" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>const_iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a7e1b09da71c5545a5bc3a79a7beb89a1" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>default_accessor</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a1c13ae5d82865d291372505aad7bd4dd" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>DefaultAccessor</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a87620e2a4084ce6188670670e9fc2615" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>difference_type</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a578ba7fe728777d5c68a278732b30a62" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>hasConstantStrides</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a5f2af54b83d22c3b24012095756606e4" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>index_reference</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a24eac9892806755705990e0fa3d554ef" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a1183f6d753c8f8309dcc03055398bbcd" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>Iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a003269a9876ddf5df074ca53ff0b0ac0" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>iterator_category</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1ae25503eab63a289091b067e5626b9acd" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>pointer</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1a6e997adfc98892497219c84757d0bd6b" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>reference</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1af9751c08e77cdb2ce65996c153f532c7" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>row_iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4_1aac03fcf05950c2c26b7e7d82a5cd6cb5" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; Diff2D &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumericTraits_3_01Singleband_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::NumericTraits&lt; T &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="65" bodyend="67"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumericTraits_1acf802ea90b9a8f9b1af9afd2f9255ff5" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>ComplexPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_1a95b687828864464a76632df114fba258" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>isComplex</name></member>
+      <member refid="structvigra_1_1NumericTraits_1a525d133dd729146de8fdfc8de04909fe" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>isIntegral</name></member>
+      <member refid="structvigra_1_1NumericTraits_1afbc65a75c53f38d3897df410d4b89fa1" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>isOrdered</name></member>
+      <member refid="structvigra_1_1NumericTraits_1af3fe4de812fbf7e15ac2dd50419a407b" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>isScalar</name></member>
+      <member refid="structvigra_1_1NumericTraits_1a13f9e7e7cd5a8890c779fd2c7442cf98" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>isSigned</name></member>
+      <member refid="structvigra_1_1NumericTraits_1a87d4d78573741bdfb0bab5955bf51f56" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1NumericTraits_1ab41be083fa3a3f1ff47e5fc290b77875" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>RealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_1a9350d20a51b5702b3f5fde31e8670f3a" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>Type</name></member>
+      <member refid="structvigra_1_1NumericTraits_1afbac17bcbe274dcab58f1c732c8497a7" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>UnsignedPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_1ac3952f517cd49cf58b31ceff2aa5b26e" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; Singleband&lt; T &gt; &gt;</scope><name>ValueType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

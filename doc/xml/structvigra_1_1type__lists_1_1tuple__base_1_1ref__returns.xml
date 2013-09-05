@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::tuple_base::ref_returns</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a8caa0b778915d1a7fe86dabcbd99f725" prot="public" static="no">
+        <type>const ref_finder_type &amp;</type>
+        <definition>typedef const ref_finder_type&amp; const_type</definition>
+        <argsstring></argsstring>
+        <name>const_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1609" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a01a1fa5f2801f12677ba40cbdb349c62" prot="public" static="no">
+        <type>ref_finder&lt; T, tuple_base &gt;</type>
+        <definition>typedef ref_finder&lt;T, tuple_base&gt; finder</definition>
+        <argsstring></argsstring>
+        <name>finder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1606" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1606" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a615e77a48cd8530ee48cdb3732872a0d" prot="public" static="no">
+        <type>finder::type</type>
+        <definition>typedef finder::type ref_finder_type</definition>
+        <argsstring></argsstring>
+        <name>ref_finder_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1607" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1607" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a9d87b87d5fc97c6df2ce63e2abba6b19" prot="public" static="no">
+        <type>ref_finder_type &amp;</type>
+        <definition>typedef ref_finder_type&amp; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1608" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1608" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1605" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1604" bodyend="1610"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a8caa0b778915d1a7fe86dabcbd99f725" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base::ref_returns</scope><name>const_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a01a1fa5f2801f12677ba40cbdb349c62" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base::ref_returns</scope><name>finder</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a615e77a48cd8530ee48cdb3732872a0d" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base::ref_returns</scope><name>ref_finder_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1_1ref__returns_1a9d87b87d5fc97c6df2ce63e2abba6b19" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base::ref_returns</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

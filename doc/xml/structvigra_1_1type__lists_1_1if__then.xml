@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1if__then" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::if_then</compoundname>
+    <templateparamlist>
+      <param>
+        <type>bool</type>
+        <declname>cond</declname>
+        <defname>cond</defname>
+      </param>
+      <param>
+        <type>class EX</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1if__then_1a494538f90b81432ed05d62ad2245134f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void call</definition>
+        <argsstring>(TUPLE &amp;t, B &amp;b, const TBASE &amp;z)</argsstring>
+        <name>call</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1277" bodyend="1280"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1if__then_1a6fe1718a7ebb4fa81044c66a8e8a5d92" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(TUPLE &amp;t, B &amp;b, const TBASE &amp;z)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1272" bodyend="1275"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1269" bodyend="1281"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1if__then_1a494538f90b81432ed05d62ad2245134f" prot="public" virt="non-virtual"><scope>vigra::type_lists::if_then</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1if__then_1a6fe1718a7ebb4fa81044c66a8e8a5d92" prot="public" virt="non-virtual"><scope>vigra::type_lists::if_then</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

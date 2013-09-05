@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1acc_1_1Moment2" kind="struct" prot="public">
+    <compoundname>vigra::acc::Moment2</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">gen_sum_squared_diff_acc&lt; T, detail::accumulable_value_access, Moment2, Mean &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="531" bodyend="535"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

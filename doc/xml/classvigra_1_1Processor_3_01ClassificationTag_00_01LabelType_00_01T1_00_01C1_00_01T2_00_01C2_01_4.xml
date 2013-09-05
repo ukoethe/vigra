@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4" kind="class" prot="public">
+    <compoundname>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</compoundname>
+    <includes refid="rf__preprocessing_8hxx" local="no">vigra/random_forest/rf_preprocessing.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class LabelType</type>
+      </param>
+      <param>
+        <type>class T1</type>
+      </param>
+      <param>
+        <type>class C1</type>
+      </param>
+      <param>
+        <type>class T2</type>
+      </param>
+      <param>
+        <type>class C2</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a9977ebc8487a168dec4a2b270e952042" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt;</type>
+        <definition>typedef MultiArrayView&lt;2, T1, C1&gt; Feature_t</definition>
+        <argsstring></argsstring>
+        <name>Feature_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a35765c8d1b285e97d24ab19ba43a40f1" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, T1 &gt;</type>
+        <definition>typedef MultiArray&lt;2, T1&gt; FeatureWithMemory_t</definition>
+        <argsstring></argsstring>
+        <name>FeatureWithMemory_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="162" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a517c0ca7f7e487b6cb5cb3991c33669a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, LabelInt &gt;</type>
+        <definition>typedef MultiArrayView&lt;2,LabelInt&gt; Label_t</definition>
+        <argsstring></argsstring>
+        <name>Label_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3b5213d6ffd905fbec75b06cb582c4e7" prot="public" static="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>typedef Int32 LabelInt</definition>
+        <argsstring></argsstring>
+        <name>LabelInt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3f3ddfe32c4e7804d4002891a37491a1" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt; const &amp;</type>
+        <definition>MultiArrayView&lt;2, T1, C1&gt; const&amp; features_</definition>
+        <argsstring></argsstring>
+        <name>features_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a2b09a65708c23d9162f52ee5a4d6d944" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, LabelInt &gt;</type>
+        <definition>MultiArray&lt;2, LabelInt&gt; intLabels_</definition>
+        <argsstring></argsstring>
+        <name>intLabels_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a1570819f490e956ae38db49bff1a1af5" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, LabelInt &gt;</type>
+        <definition>MultiArrayView&lt;2, LabelInt&gt; strata_</definition>
+        <argsstring></argsstring>
+        <name>strata_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="166" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1acab12ae64d9cc5996b7c87465b5c7cb7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt; const &amp;</type>
+        <definition>MultiArrayView&lt;2, T1, C1&gt; const&amp; features</definition>
+        <argsstring>()</argsstring>
+        <name>features</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access the processed features </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="231" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a7e7f8f6c6babd5507ee55f351538402e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>Processor</definition>
+        <argsstring>(MultiArrayView&lt; 2, T1, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T2, C2 &gt;const &amp;response, RandomForestOptions &amp;options, ProblemSpec&lt; T &gt; &amp;ext_param)</argsstring>
+        <name>Processor</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C2 &gt;const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">RandomForestOptions</ref> &amp;</type>
+          <declname>options</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; &amp;</type>
+          <declname>ext_param</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="169" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1aa89ed0c66540f1ada00748cb66d70f66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, LabelInt &gt; &amp;</type>
+        <definition>MultiArrayView&lt;2, LabelInt&gt;&amp; response</definition>
+        <argsstring>()</argsstring>
+        <name>response</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access processed labels </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="238" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1addb52a8f910cca16a80066a9f77da76c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; LabelInt &gt;</type>
+        <definition>ArrayVectorView&lt; LabelInt&gt; strata</definition>
+        <argsstring>()</argsstring>
+        <name>strata</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access processed strata </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="246" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="245" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3942ea10e74645e12c6c6eca30efef65" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; double &gt;</type>
+        <definition>ArrayVectorView&lt; double&gt; strata_prob</definition>
+        <argsstring>()</argsstring>
+        <name>strata_prob</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access strata fraction sized - not used currently </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="253" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="252" bodyend="255"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Preprocessor used during Classification</para><para>This class converts the labels int Integral labels which are used by the standard split functor to address memory in the node objects. </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="1422">
+        <label>MultiArray&lt; 2, LabelInt &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="1423" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1423">
+        <label>MultiArrayView&lt; N, LabelInt &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1424" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="1425">
+        <label>MultiArrayView&lt; 2, LabelInt &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1424" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="1421">
+        <label>Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</label>
+        <link refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4"/>
+        <childnode refid="1422" relation="usage">
+          <edgelabel>intLabels_</edgelabel>
+        </childnode>
+        <childnode refid="1425" relation="usage">
+          <edgelabel>strata_</edgelabel>
+        </childnode>
+        <childnode refid="1426" relation="usage">
+          <edgelabel>features_</edgelabel>
+        </childnode>
+      </node>
+      <node id="1424">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="1426">
+        <label>MultiArrayView&lt; 2, T1, C1 &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1424" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_preprocessing.hxx" bodystart="157" bodyend="256"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a9977ebc8487a168dec4a2b270e952042" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>Feature_t</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1acab12ae64d9cc5996b7c87465b5c7cb7" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>features</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3f3ddfe32c4e7804d4002891a37491a1" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>features_</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a35765c8d1b285e97d24ab19ba43a40f1" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>FeatureWithMemory_t</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a2b09a65708c23d9162f52ee5a4d6d944" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>intLabels_</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a517c0ca7f7e487b6cb5cb3991c33669a" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>Label_t</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3b5213d6ffd905fbec75b06cb582c4e7" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>LabelInt</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a7e7f8f6c6babd5507ee55f351538402e" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>Processor</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1aa89ed0c66540f1ada00748cb66d70f66" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>response</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1addb52a8f910cca16a80066a9f77da76c" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>strata</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a1570819f490e956ae38db49bff1a1af5" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>strata_</name></member>
+      <member refid="classvigra_1_1Processor_3_01ClassificationTag_00_01LabelType_00_01T1_00_01C1_00_01T2_00_01C2_01_4_1a3942ea10e74645e12c6c6eca30efef65" prot="public" virt="non-virtual"><scope>vigra::Processor&lt; ClassificationTag, LabelType, T1, C1, T2, C2 &gt;</scope><name>strata_prob</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

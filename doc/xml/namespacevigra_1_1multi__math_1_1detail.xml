@@ -1,0 +1,369 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1multi__math_1_1detail" kind="namespace">
+    <compoundname>vigra::multi_math::detail</compoundname>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec" prot="public">vigra::multi_math::detail::MultiMathExec</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_3_011_00_01Assign_01_4" prot="public">vigra::multi_math::detail::MultiMathExec&lt; 1, Assign &gt;</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce" prot="public">vigra::multi_math::detail::MultiMathReduce</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduce_3_011_00_01Assign_01_4" prot="public">vigra::multi_math::detail::MultiMathReduce&lt; 1, Assign &gt;</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduceAll" prot="public">vigra::multi_math::detail::MultiMathReduceAll</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduceAny" prot="public">vigra::multi_math::detail::MultiMathReduceAny</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a1cfe9e5273dd4d7c07c561796f12ff7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::assign</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>assign</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="605"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a91fac429a5b9eea63fcd9a54c0eb8a1c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::assignOrResize</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; &amp;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>assignOrResize</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; &amp;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="620"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a19dcc09e7eacf525a1e6df5a60e2d47d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::divideAssign</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>divideAssign</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="617"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1af0f98fc0c3f464c70757ca503c789c3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::divideAssignOrResize</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; &amp;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>divideAssignOrResize</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; &amp;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="632"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a58facc3bb9f50325249850947020365e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::minusAssign</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>minusAssign</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="611"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a592c88fd9efa65d25a8eb7efffc20673" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::minusAssignOrResize</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; &amp;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>minusAssignOrResize</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; &amp;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="626"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a90080c8cc87c6eaab24a74b85a357375" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::multiplyAssign</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>multiplyAssign</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="614"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a2c5e18c227b699e1fbfbf4bd0f916f12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::multiplyAssignOrResize</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; &amp;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>multiplyAssignOrResize</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; &amp;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="629"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a495b75f09d05fab69951b89ae468da3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::plusAssign</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>plusAssign</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="608"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1_1detail_1a6d7ec7bf7da6de61b5a5c148d461df33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multi_math::detail::plusAssignOrResize</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; &amp;, MultiMathOperand&lt; E &gt; const &amp;)</argsstring>
+        <name>plusAssignOrResize</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; &amp;</type>
+        </param>
+        <param>
+          <type>MultiMathOperand&lt; E &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="623"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="602"/>
+  </compounddef>
+</doxygen>

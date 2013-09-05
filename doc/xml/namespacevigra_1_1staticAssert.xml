@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1staticAssert" kind="namespace">
+    <compoundname>vigra::staticAssert</compoundname>
+    <innerclass refid="structvigra_1_1staticAssert_1_1Assert_3_01VigraFalseType_01_4" prot="public">vigra::staticAssert::Assert&lt; VigraFalseType &gt;</innerclass>
+    <innerclass refid="structvigra_1_1staticAssert_1_1Assert_3_01VigraTrueType_01_4" prot="public">vigra::staticAssert::Assert&lt; VigraTrueType &gt;</innerclass>
+    <innerclass refid="structvigra_1_1staticAssert_1_1AssertBool_3_01false_01_4" prot="public">vigra::staticAssert::AssertBool&lt; false &gt;</innerclass>
+    <innerclass refid="structvigra_1_1staticAssert_1_1AssertBool_3_01true_01_4" prot="public">vigra::staticAssert::AssertBool&lt; true &gt;</innerclass>
+    <innerclass refid="structvigra_1_1staticAssert_1_1failure" prot="public">vigra::staticAssert::failure</innerclass>
+    <innerclass refid="structvigra_1_1staticAssert_1_1success" prot="public">vigra::staticAssert::success</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1staticAssert_1a47e4b89462916a0f590c87a8ff0e86c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Predicate</type>
+          </param>
+        </templateparamlist>
+        <type>failure ************Predicate::************</type>
+        <definition>failure************Predicate::************ vigra::staticAssert::assertImpl</definition>
+        <argsstring>(void(*)(Predicate), typename Predicate::not_type)</argsstring>
+        <name>assertImpl</name>
+        <param>
+          <type>void(*)(Predicate)</type>
+        </param>
+        <param>
+          <type>typename Predicate::not_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/static_assert.hxx" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1staticAssert_1a6eefdddf1a1d20531dccf49c3900fcc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Predicate</type>
+          </param>
+        </templateparamlist>
+        <type>success</type>
+        <definition>success vigra::staticAssert::assertImpl</definition>
+        <argsstring>(void(*)(Predicate), typename Predicate::type)</argsstring>
+        <name>assertImpl</name>
+        <param>
+          <type>void(*)(Predicate)</type>
+        </param>
+        <param>
+          <type>typename Predicate::type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/static_assert.hxx" line="93"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1staticAssert_1a67dedfe5f3802926d3217e10927f8653" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int vigra::staticAssert::check</definition>
+        <argsstring>(success)</argsstring>
+        <name>check</name>
+        <param>
+          <type>success</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/static_assert.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/static_assert.hxx" bodystart="84" bodyend="84"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/static_assert.hxx" line="46"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__virtual__tuple_1_1type" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_virtual_tuple::type</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::type_lists::cond_virtual_tuple_base&lt; ITL, ACXTT&lt; T, ITL &gt;, T, Z, TEST &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class ITL</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+        <defval>true_test</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1882" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1881" bodyend="1882"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a2b538297d18c1a60a51000c05bd86419" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>at</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1abd1bc6370241af36be5e781030759b56" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a20f9ab8d6cbd4179fdaed80e01a3cc79" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1ab16d7b0e560de73fecd793073d073d4f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1aa68153907833cf9fa885f33b5417711c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a0aef72ebd7db328a143cb59209904567" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a03cb7d92e5aae807b87166f7c4d968e3" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a57168f1771c25d9c6748f922f8ae798e" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call_bound</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a54d22af553d7a47c2228843ac6c93a65" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>call_bound_op</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__virtual__tuple__base_1ad48bdb7f0fac64c0a982f99c7e359414" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>derived_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a859216eca8e70847833a4786f5133dbb" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>exec_bound</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a4374e509ad1e27bab984819575bac8ef" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>exec_bound_op</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a9bec4099344296e57f95a7e33f152b69" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>finder_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a9b5a3fc101a92e0884c13bebefad25e9" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>first</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a009b2284591b60b4de1c6fa5f212769f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>first_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a2f3800971aeced0944706bdf04d133db" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>global_data_base_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a8b5223b647670a52b3bb1a2aea27c53a" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>is_set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a7ad0efb9c0c89e8253f61f51b71e9c03" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>list_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a5ccbdeb5350ba8528eab7e4cc49fc68b" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a3563468dcbe023719960482a96299335" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a78b17723011ca760dc53b330156acc18" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1ae39b6563f976f6790562debb09f34591" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1af1744e5d97b541184d409c649cd402a4" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a378db1f70ece0b609e50fe415241776d" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a0a8e84d4f4f65d5feb35ad6c85121e3b" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a3d158996718943b305d70c16625cdcb3" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1aaa3d81381728198edfaddfb81db29a2b" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1ae373b652d139431d5ca8b82ac69ec4e2" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a313a7ab0b9e1b4346d0a3b4577131c29" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>operator=</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1aa2bf84bd9c00498f5cfb8fa08edfa288" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>ref</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a9d965f6c768f8fd7d6d647b0dc0c04ac" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>ref</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1ae07201134b670685e40b076735318de8" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>ref_finder_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a28e30979a4f8ea8c1dac475f5adea98d" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>rest</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1ab7907ac60a3d69bdaaf8b38db557b48a" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>rest_list_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a2d1ae46698a1836a27cdddf73030355f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>rest_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a3fbe91f74734add7e1df567f6b1b8139" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a4a2ba53cb4b5cd99c60822635358c372" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>set_if_not</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a5d74be4917424115c9d1e177cf34db1c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>transfer_set_to</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a187a253483dc8f565902ce7cb9e00c77" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>tuple_base</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a85b122535372e4e295db288b60806a0e" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>tuple_base</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_1a81c7869dd5dc1452954a9e0b64b861fa" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_tuple::type</scope><name>tuple_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

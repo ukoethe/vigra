@@ -1,0 +1,602 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="gaussians_8hxx" kind="file">
+    <compoundname>gaussians.hxx</compoundname>
+    <includes local="no">cmath</includes>
+    <includes refid="config_8hxx" local="yes">config.hxx</includes>
+    <includes refid="mathutil_8hxx" local="yes">mathutil.hxx</includes>
+    <includes refid="array__vector_8hxx" local="yes">array_vector.hxx</includes>
+    <includes refid="error_8hxx" local="yes">error.hxx</includes>
+    <includedby refid="separableconvolution_8hxx" local="yes">vigra/separableconvolution.hxx</includedby>
+    <incdepgraph>
+      <node id="2538">
+        <label>functional</label>
+      </node>
+      <node id="2531">
+        <label>limits</label>
+      </node>
+      <node id="2528">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="2529" relation="include">
+        </childnode>
+        <childnode refid="2531" relation="include">
+        </childnode>
+      </node>
+      <node id="2539">
+        <label>iterator</label>
+      </node>
+      <node id="2537">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="2529" relation="include">
+        </childnode>
+      </node>
+      <node id="2535">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="2536">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="2528" relation="include">
+        </childnode>
+        <childnode refid="2533" relation="include">
+        </childnode>
+        <childnode refid="2537" relation="include">
+        </childnode>
+        <childnode refid="2532" relation="include">
+        </childnode>
+        <childnode refid="2538" relation="include">
+        </childnode>
+        <childnode refid="2539" relation="include">
+        </childnode>
+      </node>
+      <node id="2516">
+        <label>cmath</label>
+      </node>
+      <node id="2519">
+        <label>stdexcept</label>
+      </node>
+      <node id="2525">
+        <label>string</label>
+      </node>
+      <node id="2534">
+        <label>cfloat</label>
+      </node>
+      <node id="2515">
+        <label>vigra/gaussians.hxx</label>
+        <link refid="gaussians.hxx"/>
+        <childnode refid="2516" relation="include">
+        </childnode>
+        <childnode refid="2517" relation="include">
+        </childnode>
+        <childnode refid="2520" relation="include">
+        </childnode>
+        <childnode refid="2540" relation="include">
+        </childnode>
+        <childnode refid="2523" relation="include">
+        </childnode>
+      </node>
+      <node id="2518">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="2526">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="2527" relation="include">
+        </childnode>
+      </node>
+      <node id="2520">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="2516" relation="include">
+        </childnode>
+        <childnode refid="2521" relation="include">
+        </childnode>
+        <childnode refid="2522" relation="include">
+        </childnode>
+        <childnode refid="2517" relation="include">
+        </childnode>
+        <childnode refid="2523" relation="include">
+        </childnode>
+        <childnode refid="2526" relation="include">
+        </childnode>
+        <childnode refid="2528" relation="include">
+        </childnode>
+        <childnode refid="2533" relation="include">
+        </childnode>
+        <childnode refid="2536" relation="include">
+        </childnode>
+      </node>
+      <node id="2517">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="2518" relation="include">
+        </childnode>
+        <childnode refid="2519" relation="include">
+        </childnode>
+      </node>
+      <node id="2533">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="2530" relation="include">
+        </childnode>
+        <childnode refid="2531" relation="include">
+        </childnode>
+        <childnode refid="2534" relation="include">
+        </childnode>
+        <childnode refid="2522" relation="include">
+        </childnode>
+        <childnode refid="2529" relation="include">
+        </childnode>
+        <childnode refid="2528" relation="include">
+        </childnode>
+        <childnode refid="2535" relation="include">
+        </childnode>
+      </node>
+      <node id="2527">
+        <label>utility</label>
+      </node>
+      <node id="2524">
+        <label>sstream</label>
+      </node>
+      <node id="2523">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="2519" relation="include">
+        </childnode>
+        <childnode refid="2524" relation="include">
+        </childnode>
+        <childnode refid="2525" relation="include">
+        </childnode>
+        <childnode refid="2517" relation="include">
+        </childnode>
+      </node>
+      <node id="2540">
+        <label>array_vector.hxx</label>
+        <link refid="array__vector_8hxx_source"/>
+        <childnode refid="2523" relation="include">
+        </childnode>
+        <childnode refid="2541" relation="include">
+        </childnode>
+        <childnode refid="2533" relation="include">
+        </childnode>
+        <childnode refid="2542" relation="include">
+        </childnode>
+        <childnode refid="2532" relation="include">
+        </childnode>
+        <childnode refid="2543" relation="include">
+        </childnode>
+      </node>
+      <node id="2543">
+        <label>iosfwd</label>
+      </node>
+      <node id="2521">
+        <label>cstdlib</label>
+      </node>
+      <node id="2530">
+        <label>climits</label>
+      </node>
+      <node id="2529">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="2517" relation="include">
+        </childnode>
+        <childnode refid="2530" relation="include">
+        </childnode>
+        <childnode refid="2531" relation="include">
+        </childnode>
+        <childnode refid="2532" relation="include">
+        </childnode>
+      </node>
+      <node id="2522">
+        <label>complex</label>
+      </node>
+      <node id="2532">
+        <label>algorithm</label>
+      </node>
+      <node id="2541">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="2529" relation="include">
+        </childnode>
+      </node>
+      <node id="2542">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2553">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="2555">
+        <label>vigra/orientedtensorfilters.hxx</label>
+        <link refid="orientedtensorfilters_8hxx_source"/>
+      </node>
+      <node id="2556">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="2557" relation="include">
+        </childnode>
+        <childnode refid="2563" relation="include">
+        </childnode>
+      </node>
+      <node id="2565">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="2563">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="2545">
+        <label>vigra/separableconvolution.hxx</label>
+        <link refid="separableconvolution_8hxx_source"/>
+        <childnode refid="2546" relation="include">
+        </childnode>
+        <childnode refid="2547" relation="include">
+        </childnode>
+        <childnode refid="2556" relation="include">
+        </childnode>
+        <childnode refid="2550" relation="include">
+        </childnode>
+        <childnode refid="2564" relation="include">
+        </childnode>
+        <childnode refid="2565" relation="include">
+        </childnode>
+        <childnode refid="2551" relation="include">
+        </childnode>
+        <childnode refid="2554" relation="include">
+        </childnode>
+      </node>
+      <node id="2557">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="2558" relation="include">
+        </childnode>
+        <childnode refid="2550" relation="include">
+        </childnode>
+        <childnode refid="2559" relation="include">
+        </childnode>
+        <childnode refid="2560" relation="include">
+        </childnode>
+      </node>
+      <node id="2561">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="2548">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="2544">
+        <label>vigra/gaussians.hxx</label>
+        <link refid="gaussians.hxx"/>
+        <childnode refid="2545" relation="include">
+        </childnode>
+      </node>
+      <node id="2550">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="2551" relation="include">
+        </childnode>
+      </node>
+      <node id="2547">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="2548" relation="include">
+        </childnode>
+        <childnode refid="2549" relation="include">
+        </childnode>
+        <childnode refid="2550" relation="include">
+        </childnode>
+        <childnode refid="2552" relation="include">
+        </childnode>
+        <childnode refid="2553" relation="include">
+        </childnode>
+        <childnode refid="2554" relation="include">
+        </childnode>
+      </node>
+      <node id="2558">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="2547" relation="include">
+        </childnode>
+      </node>
+      <node id="2551">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="2564">
+        <label>vigra/multi_convolution.hxx</label>
+        <link refid="multi__convolution_8hxx_source"/>
+      </node>
+      <node id="2554">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="2559">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="2560" relation="include">
+        </childnode>
+        <childnode refid="2562" relation="include">
+        </childnode>
+      </node>
+      <node id="2560">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="2561" relation="include">
+        </childnode>
+      </node>
+      <node id="2552">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="2546">
+        <label>vigra/stdconvolution.hxx</label>
+        <link refid="stdconvolution_8hxx_source"/>
+        <childnode refid="2547" relation="include">
+        </childnode>
+        <childnode refid="2555" relation="include">
+        </childnode>
+      </node>
+      <node id="2562">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="2561" relation="include">
+        </childnode>
+      </node>
+      <node id="2549">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classvigra_1_1Gaussian" prot="public">vigra::Gaussian</innerclass>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2004<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_GAUSSIANS_HXX</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_GAUSSIANS_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;config.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;mathutil.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;array_vector.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;error.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>0</highlight></codeline>
+<codeline lineno="48"><highlight class="preprocessor"></highlight><highlight class="comment">/**<sp/>\addtogroup<sp/>MathFunctions<sp/>Mathematical<sp/>Functions</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">*/</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">//@{</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="52"><highlight class="preprocessor"></highlight><highlight class="comment">/*!<sp/>The<sp/>Gaussian<sp/>function<sp/>and<sp/>its<sp/>derivatives.</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/>Implemented<sp/>as<sp/>a<sp/>unary<sp/>functor.<sp/>Since<sp/>it<sp/>supports<sp/>the<sp/>&lt;tt&gt;radius()&lt;/tt&gt;<sp/>function</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/>it<sp/>can<sp/>also<sp/>be<sp/>used<sp/>as<sp/>a<sp/>kernel<sp/>in<sp/>\ref<sp/>resamplingConvolveImage().</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"></highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/gaussians.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"></highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/>\ingroup<sp/>MathFunctions</highlight></codeline>
+<codeline lineno="61"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T<sp/>=<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;</highlight></codeline>
+<codeline lineno="63" refid="classvigra_1_1Gaussian" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref></highlight></codeline>
+<codeline lineno="64"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>the<sp/>value<sp/>type<sp/>if<sp/>used<sp/>as<sp/>a<sp/>kernel<sp/>in<sp/>\ref<sp/>resamplingConvolveImage().</highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classvigra_1_1Gaussian_1a265a253612b46abed17c61b0a5e5ce30" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>T<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Gaussian_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref>;</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>the<sp/>functor&apos;s<sp/>argument<sp/>type</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72" refid="classvigra_1_1Gaussian_1ae45326fbc1e2bb968bbb688bd8da81f1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>T<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Gaussian_1ae45326fbc1e2bb968bbb688bd8da81f1" kindref="member">argument_type</ref>;</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>the<sp/>functor&apos;s<sp/>result<sp/>type</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="classvigra_1_1Gaussian_1ab774fc5d25855517e772c39f7d9d5f09" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>T<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Gaussian_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref>;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>Create<sp/>functor<sp/>for<sp/>the<sp/>given<sp/>standard<sp/>deviation<sp/>&lt;tt&gt;sigma&lt;/tt&gt;<sp/>and</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>derivative<sp/>order<sp/>&lt;i&gt;n&lt;/i&gt;.<sp/>The<sp/>functor<sp/>then<sp/>realizes<sp/>the<sp/>function</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"></highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\f[<sp/>f_{\sigma,n}(x)=\frac{\partial^n}{\partial<sp/>x^n}</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}}</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\f]</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Precondition:</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sigma<sp/>&gt;<sp/>0.0</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="classvigra_1_1Gaussian_1a102b14bdc6b865a700d8f08aea8e7d6d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">explicit</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1Gaussian_1a102b14bdc6b865a700d8f08aea8e7d6d" kindref="member">Gaussian</ref>(T<sp/><ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref><sp/>=<sp/>1.0,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" kindref="member">derivativeOrder</ref><sp/>=<sp/>0)</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>sigma_(<ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref>),</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sigma2_(T(-0.5<sp/>/<sp/><ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref><sp/>/<sp/><ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref>)),</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>norm_(0.0),</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>order_(<ref refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" kindref="member">derivativeOrder</ref>),</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>hermitePolynomial_(<ref refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" kindref="member">derivativeOrder</ref><sp/>/<sp/>2<sp/>+<sp/>1)</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra_precondition(sigma_<sp/>&gt;<sp/>0.0,</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;Gaussian::Gaussian():<sp/>sigma<sp/>&gt;<sp/>0<sp/>required.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(order_)</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>2:</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>norm_<sp/>=<sp/>T(-1.0<sp/>/<sp/>(<ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">VIGRA_CSTD::sqrt</ref>(2.0<sp/>*<sp/>M_PI)<sp/>*<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(<ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref>)<sp/>*<sp/><ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref>));</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>3:</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>norm_<sp/>=<sp/>T(1.0<sp/>/<sp/>(<ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">VIGRA_CSTD::sqrt</ref>(2.0<sp/>*<sp/>M_PI)<sp/>*<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(sigma)<sp/>*<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(sigma)<sp/>*<sp/>sigma));</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>norm_<sp/>=<sp/>T(1.0<sp/>/<sp/><ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">VIGRA_CSTD::sqrt</ref>(2.0<sp/>*<sp/>M_PI)<sp/>/<sp/>sigma);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>calculateHermitePolynomial();</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>Function<sp/>(functor)<sp/>call.</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Gaussian_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref><sp/><ref refid="classvigra_1_1Gaussian_1a22f7d384c9346863c51f33bb6f28a7e9" kindref="member">operator()</ref>(<ref refid="classvigra_1_1Gaussian_1ae45326fbc1e2bb968bbb688bd8da81f1" kindref="member">argument_type</ref><sp/>x)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>Get<sp/>the<sp/>standard<sp/>deviation<sp/>of<sp/>the<sp/>Gaussian.</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Gaussian_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref><sp/><ref refid="classvigra_1_1Gaussian_1a97961f5a62de038713b3576b9de625de" kindref="member">sigma</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="120"><highlight class="keyword"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>sigma_;<sp/>}</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>Get<sp/>the<sp/>derivative<sp/>order<sp/>of<sp/>the<sp/>Gaussian.</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="124" refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" kindref="member">derivativeOrder</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="125"><highlight class="keyword"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>order_;<sp/>}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>Get<sp/>the<sp/>required<sp/>filter<sp/>radius<sp/>for<sp/>a<sp/>discrete<sp/>approximation<sp/>of<sp/>the<sp/>Gaussian.</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>radius<sp/>is<sp/>given<sp/>as<sp/>a<sp/>multiple<sp/>of<sp/>the<sp/>Gaussian&apos;s<sp/>standard<sp/>deviation</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(default:<sp/>&lt;tt&gt;sigma<sp/>*<sp/>(3<sp/>+<sp/>1/2<sp/>*<sp/>derivativeOrder()&lt;/tt&gt;<sp/>--<sp/>the<sp/>second<sp/>term</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>accounts<sp/>for<sp/>the<sp/>fact<sp/>that<sp/>the<sp/>derivatives<sp/>of<sp/>the<sp/>Gaussian<sp/>become<sp/>wider</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>with<sp/>increasing<sp/>order).<sp/>The<sp/>result<sp/>is<sp/>rounded<sp/>to<sp/>the<sp/>next<sp/>higher<sp/>integer.</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133" refid="classvigra_1_1Gaussian_1ad1a950833b93d33468e42be8cbf3393b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1Gaussian_1ad1a950833b93d33468e42be8cbf3393b" kindref="member">radius</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigmaMultiple<sp/>=<sp/>3.0)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="134"><highlight class="keyword"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__FixedPointOperations_1ga14fe7b9ffa21e091c6ff4ede68717c30" kindref="member" tooltip="rounding up.">VIGRA_CSTD::ceil</ref>(sigma_<sp/>*<sp/>(sigmaMultiple<sp/>+<sp/>0.5<sp/>*<sp/><ref refid="classvigra_1_1Gaussian_1adb43d0799ebe95a4baa5adda651f0aa7" kindref="member">derivativeOrder</ref>()));<sp/>}</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>calculateHermitePolynomial();</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>horner(T<sp/>x)<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>sigma_,<sp/>sigma2_,<sp/>norm_;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>order_;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector&lt;T&gt;</ref><sp/>hermitePolynomial_;</highlight></codeline>
+<codeline lineno="143"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Gaussian&lt;T&gt;::result_type</highlight></codeline>
+<codeline lineno="147" refid="classvigra_1_1Gaussian_1a22f7d384c9346863c51f33bb6f28a7e9" refkind="member"><highlight class="normal"><ref refid="classvigra_1_1Gaussian_1a22f7d384c9346863c51f33bb6f28a7e9" kindref="member">Gaussian&lt;T&gt;::operator()</ref>(<ref refid="classvigra_1_1Gaussian_1ae45326fbc1e2bb968bbb688bd8da81f1" kindref="member">argument_type</ref><sp/>x)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="148"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>x2<sp/>=<sp/>x<sp/>*<sp/>x;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>g<sp/><sp/>=<sp/>norm_<sp/>*<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">VIGRA_CSTD::exp</ref>(x2<sp/>*<sp/>sigma2_);</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(order_)</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast(g);</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast(x<sp/>*<sp/>g);</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>2:</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast((1.0<sp/>-<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(x<sp/>/<sp/>sigma_))<sp/>*<sp/>g);</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>3:</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast((3.0<sp/>-<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(x<sp/>/<sp/>sigma_))<sp/>*<sp/>x<sp/>*<sp/>g);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>order_<sp/>%<sp/>2<sp/>==<sp/>0<sp/>?</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast(g<sp/>*<sp/>horner(x2))</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>detail::RequiresExplicitCast&lt;result_type&gt;::cast(x<sp/>*<sp/>g<sp/>*<sp/>horner(x2));</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="169"><highlight class="normal">T<sp/><ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian&lt;T&gt;::horner</ref>(T<sp/>x)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="170"><highlight class="keyword"></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>order_<sp/>/<sp/>2;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>res<sp/>=<sp/>hermitePolynomial_[i];</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(--i;<sp/>i<sp/>&gt;=<sp/>0;<sp/>--i)</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>res<sp/>=<sp/>x<sp/>*<sp/>res<sp/>+<sp/>hermitePolynomial_[i];</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>res;</highlight></codeline>
+<codeline lineno="176"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>Gaussian&lt;T&gt;::calculateHermitePolynomial()</highlight></codeline>
+<codeline lineno="180"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(order_<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hermitePolynomial_[0]<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(order_<sp/>==<sp/>1)</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hermitePolynomial_[0]<sp/>=<sp/>T(-1.0<sp/>/<sp/>sigma_<sp/>/<sp/>sigma_);</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>calculate<sp/>Hermite<sp/>polynomial<sp/>for<sp/>requested<sp/>derivative</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>recursively<sp/>according<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/>(0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>h<sp/><sp/><sp/>(x)<sp/>=<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/>(1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>h<sp/><sp/><sp/>(x)<sp/>=<sp/>-x<sp/>/<sp/>s^2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/>(n+1)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(n)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(n-1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>h<sp/><sp/><sp/><sp/><sp/>(x)<sp/>=<sp/>-1<sp/>/<sp/>s^2<sp/>*<sp/>[<sp/>x<sp/>*<sp/>h<sp/><sp/><sp/>(x)<sp/>+<sp/>n<sp/>*<sp/>h<sp/><sp/><sp/><sp/><sp/>(x)<sp/>]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>T<sp/>s2<sp/>=<sp/>T(-1.0<sp/>/<sp/>sigma_<sp/>/<sp/>sigma_);</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ArrayVector&lt;T&gt;<sp/>hn(3*order_+3,<sp/>0.0);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ArrayVector&lt;T&gt;::iterator<sp/>hn0<sp/>=<sp/>hn.begin(),</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn1<sp/>=<sp/>hn0<sp/>+<sp/>order_+1,</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn2<sp/>=<sp/>hn1<sp/>+<sp/>order_+1,</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ht;</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn2[0]<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn1[1]<sp/>=<sp/>s2;</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>2;<sp/>i<sp/>&lt;=<sp/>order_;<sp/>++i)</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn0[0]<sp/>=<sp/>s2<sp/>*<sp/>(i-1)<sp/>*<sp/>hn2[0];</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j<sp/>=<sp/>1;<sp/>j<sp/>&lt;=<sp/>i;<sp/>++j)</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn0[j]<sp/>=<sp/>s2<sp/>*<sp/>(hn1[j-1]<sp/>+<sp/>(i-1)<sp/>*<sp/>hn2[j]);</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ht<sp/>=<sp/>hn2;</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn2<sp/>=<sp/>hn1;</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn1<sp/>=<sp/>hn0;</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn0<sp/>=<sp/>ht;</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>keep<sp/>only<sp/>non-zero<sp/>coefficients<sp/>of<sp/>the<sp/>polynomial</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>hermitePolynomial_.size();<sp/>++i)</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hermitePolynomial_[i]<sp/>=<sp/>order_<sp/>%<sp/>2<sp/>==<sp/>0<sp/>?</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hn1[2*i]</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>hn1[2*i+1];</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="226"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="229"><highlight class="comment">////@}</highlight></codeline>
+<codeline lineno="230"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>VIGRA_GAUSSIANS_HXX<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaussians.hxx"/>
+  </compounddef>
+</doxygen>

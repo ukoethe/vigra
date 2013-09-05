@@ -1,0 +1,1212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Morphology" kind="group">
+    <compoundname>Morphology</compoundname>
+    <title>Basic Morphological Operations</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__Morphology_1gaa6b2b4e1d0fab80e25aa7bb349ac3da3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilation</definition>
+        <argsstring>(...)</argsstring>
+        <name>discDilation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply dilation (maximum) filter with disc of given radius to image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the rank order filter with rank = 1.0. See <ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member">discRankOrderFilter()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gaa6b2b4e1d0fab80e25aa7bb349ac3da3" kindref="member" tooltip="Apply dilation (maximum) filter with disc of given radius to image.">discDilation</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gaa6b2b4e1d0fab80e25aa7bb349ac3da3" kindref="member" tooltip="Apply dilation (maximum) filter with disc of given radius to image.">discDilation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="475"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gab7496eae42efbc4eaf09c6ec1c1b5610" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilation</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discDilation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="484" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="480" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga2a53b6c2ef6c6144847eafc23068450c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discDilation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="494" bodyend="503"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gab630e6ea20d029d5dd5823f276367d29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilationWithMask</definition>
+        <argsstring>(...)</argsstring>
+        <name>discDilationWithMask</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply dilation (maximum) filter with disc of given radius to image using a mask. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the masked rank order filter with rank = 1.0. See <ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member">discRankOrderFilterWithMask()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gab630e6ea20d029d5dd5823f276367d29" kindref="member" tooltip="Apply dilation (maximum) filter with disc of given radius to image using a mask.">discDilationWithMask</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/>upperleftm,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>group arguments (use in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref>): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gab630e6ea20d029d5dd5823f276367d29" kindref="member" tooltip="Apply dilation (maximum) filter with disc of given radius to image using a mask.">discDilationWithMask</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1072"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gad8e5fbebb5c20d3f52fea5f6d7e27a6c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilationWithMask</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, MaskIterator upperleftm, MaskAccessor mask, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discDilationWithMask</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>upperleftm</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1083" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="1078" bodyend="1090"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga01834cdb029bbb22915bddbe4b14578e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discDilationWithMask</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discDilationWithMask</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="1096" bodyend="1107"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosion</definition>
+        <argsstring>(...)</argsstring>
+        <name>discErosion</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply erosion (minimum) filter with disc of given radius to image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the rank order filter with rank = 0.0. See <ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member">discRankOrderFilter()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" kindref="member" tooltip="Apply erosion (minimum) filter with disc of given radius to image.">discErosion</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" kindref="member" tooltip="Apply erosion (minimum) filter with disc of given radius to image.">discErosion</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="405"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gad06db8f2e119b98bcce166de759d809d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosion</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discErosion</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="414" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="410" bodyend="419"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga4c6baae006cdcf20140015060570f88b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosion</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discErosion</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="424" bodyend="433"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga6eb67a2fe627ccc4abc757c7aafffe2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosionWithMask</definition>
+        <argsstring>(...)</argsstring>
+        <name>discErosionWithMask</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply erosion (minimum) filter with disc of given radius to image using a mask. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the masked rank order filter with rank = 0.0. See <ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member">discRankOrderFilterWithMask()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga6eb67a2fe627ccc4abc757c7aafffe2e" kindref="member" tooltip="Apply erosion (minimum) filter with disc of given radius to image using a mask.">discErosionWithMask</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/>upperleftm,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>group arguments (use in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref>): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga6eb67a2fe627ccc4abc757c7aafffe2e" kindref="member" tooltip="Apply erosion (minimum) filter with disc of given radius to image using a mask.">discErosionWithMask</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="990"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gabcc10e0c0c29955351a373cd3607f158" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosionWithMask</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, MaskIterator upperleftm, MaskAccessor mask, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discErosionWithMask</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>upperleftm</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1001" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="996" bodyend="1008"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga8cb51825ccb2fb1cb93bfb092e43017e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discErosionWithMask</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discErosionWithMask</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1018" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="1014" bodyend="1025"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga6f7f27916f6f43016aa268e8730be59b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedian</definition>
+        <argsstring>(...)</argsstring>
+        <name>discMedian</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply median filter with disc of given radius to image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the rank order filter with rank = 0.5. See <ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member">discRankOrderFilter()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga6f7f27916f6f43016aa268e8730be59b" kindref="member" tooltip="Apply median filter with disc of given radius to image.">discMedian</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga6f7f27916f6f43016aa268e8730be59b" kindref="member" tooltip="Apply median filter with disc of given radius to image.">discMedian</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="545"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gad5067072a1c1eef015e4fbb9411f50bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedian</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discMedian</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="550" bodyend="559"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga1c976792eb417adf1399663f85eccc5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedian</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discMedian</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="567" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="564" bodyend="573"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga64d2e88ce00c13337e446e3c24be54a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedianWithMask</definition>
+        <argsstring>(...)</argsstring>
+        <name>discMedianWithMask</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply median filter with disc of given radius to image using a mask. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is an abbreviation vor the masked rank order filter with rank = 0.5. See <ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member">discRankOrderFilterWithMask()</ref> for more information.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga64d2e88ce00c13337e446e3c24be54a6" kindref="member" tooltip="Apply median filter with disc of given radius to image using a mask.">discMedianWithMask</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/>upperleftm,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>group arguments (use in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref>): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1ga64d2e88ce00c13337e446e3c24be54a6" kindref="member" tooltip="Apply median filter with disc of given radius to image using a mask.">discMedianWithMask</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gaae89eab9096e3ddeac2022c6a4660667" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedianWithMask</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, MaskIterator upperleftm, MaskAccessor mask, DestIterator upperleft2, DestAccessor da, int radius)</argsstring>
+        <name>discMedianWithMask</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>upperleftm</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="1160" bodyend="1172"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga02949705d8e44d8fb72df9b6ade19b3f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discMedianWithMask</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, int radius)</argsstring>
+        <name>discMedianWithMask</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="1182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="1178" bodyend="1189"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gac7b008c2289213251fe917f8855f9667" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>discRankOrderFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply rank order filter with disc structuring function to the image. </para>        </briefdescription>
+        <detaileddescription>
+<para>The pixel values of the source image <bold> must</bold> be in the range 0...255. Radius must be &gt;= 0. Rank must be in the range 0.0 &lt;= rank &lt;= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median if rank = 0.5, and as a maximum filter if rank = 1.0. Accessor are used to access the pixel data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image.">discRankOrderFilter</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>rank)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image.">discRankOrderFilter</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>rank)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/flatmorphology.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vigra::CImage<sp/>src,<sp/>dest;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>do<sp/>median<sp/>filtering</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Morphology_1gac7b008c2289213251fe917f8855f9667" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image.">vigra::discRankOrderFilter</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>10,<sp/>0.5);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x,<sp/>y;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>value;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>value_type<sp/>of<sp/>accessor<sp/>must<sp/>be<sp/>convertible<sp/>to<sp/>unsigned<sp/>char</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">value<sp/>=<sp/>src_accessor(src_upperleft,<sp/>x,<sp/>y);<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(value,<sp/>dest_upperleft,<sp/>x,<sp/>y);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>all<sp/>source<sp/>pixels:<sp/>0<sp/>&lt;=<sp/>value<sp/>&lt;=<sp/>255</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(rank<sp/>&gt;=<sp/>0.0)<sp/>&amp;&amp;<sp/>(rank<sp/>&lt;=<sp/>1.0)</highlight></codeline>
+<codeline><highlight class="normal">radius<sp/>&gt;=<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="134"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga31269319bc4cd723629bef27dd12879b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilter</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, DestIterator upperleft2, DestAccessor da, int radius, float rank)</argsstring>
+        <name>discRankOrderFilter</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>rank</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="139" bodyend="351"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga449ca5b42e283ccf3c22f6c7bda13760" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilter</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, int radius, float rank)</argsstring>
+        <name>discRankOrderFilter</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>rank</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="359" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="356" bodyend="363"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilterWithMask</definition>
+        <argsstring>(...)</argsstring>
+        <name>discRankOrderFilterWithMask</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply rank order filter with disc structuring function to the image using a mask. </para>        </briefdescription>
+        <detaileddescription>
+<para>The pixel values of the source image <bold> must</bold> be in the range 0...255. Radius must be &gt;= 0. Rank must be in the range 0.0 &lt;= rank &lt;= 1.0. The filter acts as a minimum filter if rank = 0.0, as a median if rank = 0.5, and as a maximum filter if rank = 1.0. Accessor are used to access the pixel data.</para><para>The mask is only applied to th input image, i.e. the function generates an output wherever the current disc contains at least one pixel with mask value &apos;true&apos;. Source pixels with mask value &apos;false&apos; are ignored during the calculation of the rank order.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image using a mask.">discRankOrderFilterWithMask</ref>(SrcIterator<sp/>upperleft1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerright1,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/>upperleftm,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleft2,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>rank)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>group arguments (use in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref>): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image using a mask.">discRankOrderFilterWithMask</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>rank)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="flatmorphology_8hxx_source" kindref="compound">vigra/flatmorphology.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vigra::CImage<sp/>src,<sp/>dest,<sp/>mask;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>do<sp/>median<sp/>filtering</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Morphology_1gad40782f8126b8b9b4a009fe8d8ddaaa3" kindref="member" tooltip="Apply rank order filter with disc structuring function to the image using a mask.">vigra::discRankOrderFilterWithMask</ref>(srcImageRange(src),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(mask),<sp/>destImage(dest),<sp/>10,<sp/>0.5);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">MaskIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x,<sp/>y;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>value;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">mask_accessor(mask_upperleft,<sp/>x,<sp/>y)<sp/></highlight><highlight class="comment">//<sp/>convertible<sp/>to<sp/>bool</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>value_type<sp/>of<sp/>accessor<sp/>must<sp/>be<sp/>convertible<sp/>to<sp/>unsigned<sp/>char</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">value<sp/>=<sp/>src_accessor(src_upperleft,<sp/>x,<sp/>y);<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(value,<sp/>dest_upperleft,<sp/>x,<sp/>y);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>all<sp/>source<sp/>pixels:<sp/>0<sp/>&lt;=<sp/>value<sp/>&lt;=<sp/>255</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">(rank<sp/>&gt;=<sp/>0.0)<sp/>&amp;&amp;<sp/>(rank<sp/>&lt;=<sp/>1.0)</highlight></codeline>
+<codeline><highlight class="normal">radius<sp/>&gt;=<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="671"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga28dba47e8a83e96999cc782e91aab47a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilterWithMask</definition>
+        <argsstring>(SrcIterator upperleft1, SrcIterator lowerright1, SrcAccessor sa, MaskIterator upperleftm, MaskAccessor mask, DestIterator upperleft2, DestAccessor da, int radius, float rank)</argsstring>
+        <name>discRankOrderFilterWithMask</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>upperleftm</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>rank</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="682" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="677" bodyend="928"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Morphology_1ga2a60758cd8c1c885b0138a6e27c1c646" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::discRankOrderFilterWithMask</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, int radius, float rank)</argsstring>
+        <name>discRankOrderFilterWithMask</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>radius</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>rank</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" line="938" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/flatmorphology.hxx" bodystart="934" bodyend="943"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Perform erosion, dilation, and median with disc structuring functions</para><para>See also: <ref refid="group__MultiArrayMorphology" kindref="compound">Morphological operators for multi-dimensional arrays.</ref> Separable morphology with parabola structuring functions in arbitrary dimensions </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

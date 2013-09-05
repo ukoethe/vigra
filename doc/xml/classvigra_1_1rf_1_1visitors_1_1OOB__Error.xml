@@ -1,0 +1,365 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1visitors_1_1OOB__Error" kind="class" prot="public">
+    <compoundname>vigra::rf::visitors::OOB_Error</compoundname>
+    <basecompoundref refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase" prot="public" virt="non-virtual">VisitorBase</basecompoundref>
+    <includes refid="rf__visitors_8hxx" local="no">vigra/random_forest/rf_visitors.hxx</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="group__MachineLearning_1ga606073e25407c2ef974c7aa4c25d2edd" prot="private" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="854" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="854" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1ga882a88530b6e08e1303d6828321dc7fb" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int class_count</definition>
+        <argsstring></argsstring>
+        <name>class_count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="855" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="855" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga1252c8e0c4a9c0cbd41fc84fa1e58214" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool is_weighted</definition>
+        <argsstring></argsstring>
+        <name>is_weighted</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="856" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="856" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga78edaf84006368768a3606698c1972cb" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2,double&gt; tmp_prob</definition>
+        <argsstring></argsstring>
+        <name>tmp_prob</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="857" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="857" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1gaac1ae8f8d411473b19eec589745ac215" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; int &gt;</type>
+        <definition>ArrayVector&lt; int&gt; indices</definition>
+        <argsstring></argsstring>
+        <name>indices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="866" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="866" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga1f3b7456eb9396ffeae179c1cf81539e" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double oob_breiman</definition>
+        <argsstring></argsstring>
+        <name>oob_breiman</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ensemble oob error rate </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="863" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="863" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaa0a521055a659f847f5fada87197f5df" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; oobCount</definition>
+        <argsstring></argsstring>
+        <name>oobCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="865" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="865" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaac2ed7b6ec02c33fab2f47b744db8a39" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; prob_oob</definition>
+        <argsstring></argsstring>
+        <name>prob_oob</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="860" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="860" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="group__MachineLearning_1ga5ed3bd21db6d4f7321a8d72fdaddbd4b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>OOB_Error</definition>
+        <argsstring>()</argsstring>
+        <name>OOB_Error</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="867" bodyend="867"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+          <param>
+            <type>class SM</type>
+          </param>
+          <param>
+            <type>class ST</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_after_tree</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr, SM &amp;sm, ST &amp;st, int index)</argsstring>
+        <name>visit_after_tree</name>
+        <reimplements refid="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76">visit_after_tree</reimplements>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <param>
+          <type>SM &amp;</type>
+          <declname>sm</declname>
+        </param>
+        <param>
+          <type>ST &amp;</type>
+          <declname>st</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>do something after each tree has been learned</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the random forest object that called this visitor </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the preprocessor that processed the input </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sm</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the sampler object </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>st</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the first stack entry </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>index of current tree </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="902" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="901" bodyend="978"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gaffd2adc4dcde9e125aab33b2dc1d5c8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_at_beginning</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr)</argsstring>
+        <name>visit_at_beginning</name>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="884" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="883" bodyend="898"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga8680ab265a8c9c57f39c75bd51a186e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_at_end</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr)</argsstring>
+        <name>visit_at_end</name>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalise variable importance after the number of trees is known. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="984" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="983" bodyend="998"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Visitor that calculates the oob error of the ensemble This rate should be used to estimate the crossvalidation error rate. Here each sample is put down those trees, for which this sample is OOB i.e. if sample #1 is OOB for trees 1, 3 and 5 we calculate the output using the ensemble consisting only of trees 1 3 and 5.</para><para>Using normal bagged sampling each sample is OOB for approx. 33% of trees The error rate obtained as such therefore corresponds to crossvalidation rate obtained using a ensemble containing 33% of the trees. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="1349">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+      <node id="1348">
+        <label>OOB_Error</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1OOB__Error"/>
+        <childnode refid="1349" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1352">
+        <label>MultiArray&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="1353" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1353">
+        <label>MultiArrayView&lt; N, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1354" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="1355">
+        <label>ArrayVector&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="1356" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1351">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+      <node id="1350">
+        <label>OOB_Error</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1OOB__Error"/>
+        <childnode refid="1351" relation="public-inheritance">
+        </childnode>
+        <childnode refid="1352" relation="usage">
+          <edgelabel>oobCount</edgelabel>
+          <edgelabel>prob_oob</edgelabel>
+        </childnode>
+        <childnode refid="1355" relation="usage">
+          <edgelabel>indices</edgelabel>
+        </childnode>
+      </node>
+      <node id="1356">
+        <label>ArrayVectorView&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="1354">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="853" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="852" bodyend="999"/>
+    <listofallmembers>
+      <member refid="group__MachineLearning_1ga8011fcbeb5efeda20bd2dbffbbb70165" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>activate</name></member>
+      <member refid="group__MachineLearning_1ga121aee969503dcc0f2d4ff4879d9c4d9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>active_</name></member>
+      <member refid="group__MachineLearning_1ga882a88530b6e08e1303d6828321dc7fb" prot="private" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>class_count</name></member>
+      <member refid="group__MachineLearning_1ga8308b4bb6079733f4b77ced9d46da7a9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>deactivate</name></member>
+      <member refid="group__MachineLearning_1gaff96f61c8d66b4def05fcb5ab514d688" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>has_value</name></member>
+      <member refid="group__MachineLearning_1gaac1ae8f8d411473b19eec589745ac215" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>indices</name></member>
+      <member refid="group__MachineLearning_1gadc5260e7eba946182b172d0385d19c7e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>is_active</name></member>
+      <member refid="group__MachineLearning_1ga1252c8e0c4a9c0cbd41fc84fa1e58214" prot="private" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>is_weighted</name></member>
+      <member refid="group__MachineLearning_1ga1f3b7456eb9396ffeae179c1cf81539e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>oob_breiman</name></member>
+      <member refid="group__MachineLearning_1ga5ed3bd21db6d4f7321a8d72fdaddbd4b" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>OOB_Error</name></member>
+      <member refid="group__MachineLearning_1gaa0a521055a659f847f5fada87197f5df" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>oobCount</name></member>
+      <member refid="group__MachineLearning_1gaac2ed7b6ec02c33fab2f47b744db8a39" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>prob_oob</name></member>
+      <member refid="group__MachineLearning_1gad23fdebbe022fdb6fee05ddede523bdc" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>return_val</name></member>
+      <member refid="group__MachineLearning_1ga606073e25407c2ef974c7aa4c25d2edd" prot="private" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>Shp</name></member>
+      <member refid="group__MachineLearning_1ga78edaf84006368768a3606698c1972cb" prot="private" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>tmp_prob</name></member>
+      <member refid="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_after_split</name></member>
+      <member refid="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_after_tree</name></member>
+      <member refid="group__MachineLearning_1gaffd2adc4dcde9e125aab33b2dc1d5c8b" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_at_beginning</name></member>
+      <member refid="group__MachineLearning_1ga0bb047133b5a592d0ade412044bd1495" prot="public" virt="non-virtual" ambiguityscope="vigra::rf::visitors::VisitorBase::"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_at_beginning</name></member>
+      <member refid="group__MachineLearning_1ga8680ab265a8c9c57f39c75bd51a186e7" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_at_end</name></member>
+      <member refid="group__MachineLearning_1gab8c2515ae9343881cc5999fc61821fdc" prot="public" virt="non-virtual" ambiguityscope="vigra::rf::visitors::VisitorBase::"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_at_end</name></member>
+      <member refid="group__MachineLearning_1ga29d5e6cebbbae7f0a170f82ed7a98fc3" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_external_node</name></member>
+      <member refid="group__MachineLearning_1ga0be1525336a154f011efa8f86e56db7c" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>visit_internal_node</name></member>
+      <member refid="group__MachineLearning_1ga94a7dec8e9fdb7896ac8012817e60cc7" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OOB_Error</scope><name>VisitorBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

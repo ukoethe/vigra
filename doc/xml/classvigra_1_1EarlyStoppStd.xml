@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1EarlyStoppStd" kind="class" prot="public">
+    <compoundname>vigra::EarlyStoppStd</compoundname>
+    <includes refid="rf__common_8hxx" local="no">vigra/random_forest/rf_common.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1EarlyStoppStd_1ab22c5390e44344a4ec8be37b1d938497" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int min_split_node_size_</definition>
+        <argsstring></argsstring>
+        <name>min_split_node_size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="885" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="885" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1EarlyStoppStd_1a138de3143b144351880fd8387515470c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class WeightIter</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool after_prediction</definition>
+        <argsstring>(WeightIter, int, MultiArrayView&lt; 2, T, C &gt;, double)</argsstring>
+        <name>after_prediction</name>
+        <param>
+          <type>WeightIter</type>
+        </param>
+        <param>
+          <type>int</type>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt;</type>
+        </param>
+        <param>
+          <type>double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="904" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="903" bodyend="906"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1EarlyStoppStd_1a5075cdce11fc67057383802d2caaf78d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Opt</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>EarlyStoppStd</definition>
+        <argsstring>(Opt opt)</argsstring>
+        <name>EarlyStoppStd</name>
+        <param>
+          <type>Opt</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="890" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="888" bodyend="890"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1EarlyStoppStd_1a18c7de329151c7ee91ecc0bc10a920af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Region</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(Region &amp;region)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Region &amp;</type>
+          <declname>region</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="898" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="897" bodyend="900"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1EarlyStoppStd_1a6910478cf26fa38011133e89340dcbd3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_external_parameters</definition>
+        <argsstring>(ProblemSpec&lt; T &gt;const &amp;, int=0, bool=false)</argsstring>
+        <name>set_external_parameters</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt;const &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="894" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="893" bodyend="894"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Standard early stopping criterion. </para>    </briefdescription>
+    <detaileddescription>
+<para>Stop if region.size() &lt; min_split_node_size_; </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" line="883" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_common.hxx" bodystart="882" bodyend="907"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1EarlyStoppStd_1a138de3143b144351880fd8387515470c" prot="public" virt="non-virtual"><scope>vigra::EarlyStoppStd</scope><name>after_prediction</name></member>
+      <member refid="classvigra_1_1EarlyStoppStd_1a5075cdce11fc67057383802d2caaf78d" prot="public" virt="non-virtual"><scope>vigra::EarlyStoppStd</scope><name>EarlyStoppStd</name></member>
+      <member refid="classvigra_1_1EarlyStoppStd_1ab22c5390e44344a4ec8be37b1d938497" prot="public" virt="non-virtual"><scope>vigra::EarlyStoppStd</scope><name>min_split_node_size_</name></member>
+      <member refid="classvigra_1_1EarlyStoppStd_1a18c7de329151c7ee91ecc0bc10a920af" prot="public" virt="non-virtual"><scope>vigra::EarlyStoppStd</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1EarlyStoppStd_1a6910478cf26fa38011133e89340dcbd3" prot="public" virt="non-virtual"><scope>vigra::EarlyStoppStd</scope><name>set_external_parameters</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

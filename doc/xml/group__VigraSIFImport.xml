@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__VigraSIFImport" kind="group">
+    <compoundname>VigraSIFImport</compoundname>
+    <title>Import of Images from Andor Cameras</title>
+    <innerclass refid="classvigra_1_1SIFImportInfo" prot="public">vigra::SIFImportInfo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__VigraSIFImport_1ga4045e24531efe890492fa597ddd5dd5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; vigra::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const SIFImportInfo &amp;info)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const SIFImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Output all information such as shutter, Temperature etc. 
+</verbatim> as human readable output.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="sifImport_8hxx_source" kindref="compound">vigra/sifImport.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">SIFImportInfo<sp/>info(filename);</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>info<sp/>&lt;&lt;<sp/>std::endl;<sp/></highlight><highlight class="comment">//<sp/>print<sp/>infos<sp/>to<sp/>the<sp/>console</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="220"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraSIFImport_1ga6d4fea3f886159b3e14ac64880cdb794" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::readSIF</definition>
+        <argsstring>(const SIFImportInfo &amp;info, MultiArrayView&lt; 3, float, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readSIF</name>
+        <param>
+          <type>const SIFImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 3, float, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+<para>Read the image data specified by the given <ref refid="classvigra_1_1SIFImportInfo" kindref="compound">vigra::SIFImportInfo</ref> object and write them into the given &apos;array&apos;. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array must have the correct number of dimensions and shape for the dataset represented by &apos;info&apos;.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraSIFImport_1ga6d4fea3f886159b3e14ac64880cdb794" kindref="member" tooltip="Read the image data specified by the given vigra::SIFImportInfo object and write them into the given ...">readSIF</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>SIFImportInfo<sp/>&amp;info,<sp/>MultiArrayView&lt;3,<sp/>float,<sp/>UnstridedArrayTag&gt;<sp/>array);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="sifImport_8hxx_source" kindref="compound">vigra/sifImport.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">SIFImportInfo<sp/>info(filename);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>3D<sp/>array<sp/>of<sp/>appropriate<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>MultiArray&lt;3,<sp/>float&gt;::difference_type<sp/>Shape;</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>in(Shape(info.width(),<sp/>info.height(),<sp/>info.stacksize()));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__VigraSIFImport_1ga6d4fea3f886159b3e14ac64880cdb794" kindref="member" tooltip="Read the image data specified by the given vigra::SIFImportInfo object and write them into the given ...">readSIF</ref>(info,<sp/>in);<sp/></highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="202"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraSIFImport_1gab8dbd510326aecda64129a34ebbfaab0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::readSIFBlock</definition>
+        <argsstring>(const SIFImportInfo &amp;info, Shape3 offset, Shape3 shape, MultiArrayView&lt; 3, float, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readSIFBlock</name>
+        <param>
+          <type>const SIFImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>Shape3</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>Shape3</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 3, float, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+<para>Read parts of the image data from an Andor SIF file specified with an SIFImportinfo object and write them into the <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> array. </para>        </briefdescription>
+        <detaileddescription>
+<para><programlisting><codeline><highlight class="normal">SIFImportInfo<sp/>info(filename);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>3D<sp/>array<sp/>of<sp/>appropriate<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>in(<ref refid="group__MultiIteratorGroup_1gac70cfe6730d928789a2b3ce1f37ae379" kindref="member" tooltip="shape type for MultiArray&amp;lt;3, T&amp;gt;">Shape3</ref>(info.width(),<sp/>info.height(),<sp/>1));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">readBlock(info,<sp/><ref refid="group__MultiIteratorGroup_1gac70cfe6730d928789a2b3ce1f37ae379" kindref="member" tooltip="shape type for MultiArray&amp;lt;3, T&amp;gt;">Shape3</ref>(0,0,0),<sp/><ref refid="group__MultiIteratorGroup_1gac70cfe6730d928789a2b3ce1f37ae379" kindref="member" tooltip="shape type for MultiArray&amp;lt;3, T&amp;gt;">Shape3</ref>(w,h,1),<sp/>im);<sp/></highlight><highlight class="comment">//<sp/>read<sp/>the<sp/>first<sp/>frame<sp/>only</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="218"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Read an Andor SIF file into a <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

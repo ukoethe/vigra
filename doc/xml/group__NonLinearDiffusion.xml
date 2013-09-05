@@ -1,0 +1,873 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__NonLinearDiffusion" kind="group">
+    <compoundname>NonLinearDiffusion</compoundname>
+    <title>Non-linear Diffusion and Total Variation</title>
+    <innerclass refid="classvigra_1_1DiffusivityFunctor" prot="public">vigra::DiffusivityFunctor</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01DiffusivityFunctor_3_01ValueType_01_4_01_4" prot="public">vigra::FunctorTraits&lt; DiffusivityFunctor&lt; ValueType &gt; &gt;</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__NonLinearDiffusion_1gab03d88e6a6ccf3dd060534d58b8db5b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::anisotropicTotalVariationFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>anisotropicTotalVariationFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs Anisotropic Total Variation Regularization. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm minimizes <formula id="105">\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2 + \sqrt{\nabla u^\top A \nabla u}\;dx\qquad\qquad(2) \]</formula></para><para>where <emphasis> <formula id="90">$ f=f(x)$</formula> </emphasis> are the noisy data, <emphasis> <formula id="91">$ u=u(x)$</formula> </emphasis> are the smoothed data,<emphasis> <formula id="106">$ \nabla u $</formula> </emphasis> is the image gradient in the sense of Total Variation and <emphasis> <formula id="107">$ A $</formula> </emphasis> is a locally varying symmetric, positive definite 2x2 matrix.</para><para>Matrix <emphasis> <formula id="107">$ A $</formula> </emphasis> is described by providing for each data point a normalized eigenvector (via angle <formula id="108">$ \phi $</formula>) and two eigenvalues <formula id="109">$ \alpha&gt;0 $</formula> and <formula id="110">$ \beta&gt;0 $</formula>.</para><para><ref refid="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" kindref="member">getAnisotropy()</ref> can be use to set up such data <formula id="111">$ \phi,\alpha,\beta $</formula> by providing a vector field normal to edges.</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e1,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e2,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e3,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e4,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e5,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e6&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1gab03d88e6a6ccf3dd060534d58b8db5b8" kindref="member" tooltip="Performs Anisotropic Total Variation Regularization.">anisotropicTotalVariationFilter</ref>(MultiArrayView&lt;2,double,stride1&gt;<sp/>data,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride2&gt;<sp/>weight,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride3&gt;<sp/>phi,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride4&gt;<sp/>alpha,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride5&gt;<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride6&gt;<sp/>out,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>steps);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><ref refid="group__NonLinearDiffusion_1gab03d88e6a6ccf3dd060534d58b8db5b8" kindref="member">anisotropicTotalVariationFilter()</ref> implements a primal-dual algorithm to solve (2).</para><para>Input: <table rows="4" cols="2"><row>
+<entry thead="no"><para><emphasis>data</emphasis>:</para></entry><entry thead="no"><para>input data to be filtered.  </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>steps</emphasis>:</para></entry><entry thead="no"><para>iteration steps. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>weight</emphasis> :</para></entry><entry thead="no"><para>a point-wise weight ( <formula id="94">$ \ge 0 $</formula> ) for the data term. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>phi</emphasis>,<emphasis>alpha</emphasis> and <emphasis>beta</emphasis> :</para></entry><entry thead="no"><para>describe matrix <formula id="107">$ A $</formula>, see above. </para></entry></row>
+</table>
+</para><para>Output: <table rows="1" cols="2"><row>
+<entry thead="no"><para><emphasis>out</emphasis> :</para></entry><entry thead="no"><para>contains filtered data. </para></entry></row>
+</table>
+</para><para><bold> Usage:</bold></para><para>E.g. with a solution-dependent adaptivity cf. [1], by updating the matrix <formula id="112">$ A=A(u)$</formula> in an outer loop:</para><para><bold>#include</bold> &lt;<ref refid="tv__filter_8hxx_source" kindref="compound">vigra/tv_filter.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>data(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>out<sp/>(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>weight(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>phi<sp/><sp/>(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>alpha(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>beta<sp/>(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha0,beta0,sigma,rho,K;<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>outer_steps,inner_steps;</highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">out=data;<sp/></highlight><highlight class="comment">//<sp/>data<sp/>serves<sp/>as<sp/>initial<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;i&lt;outer_steps;i++){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" kindref="member" tooltip="Sets up directional data for anisotropic regularization.">getAnisotropy</ref>(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);<sp/><sp/></highlight><highlight class="comment">//<sp/>sets<sp/>phi,<sp/>alpha,<sp/>beta</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="group__NonLinearDiffusion_1gab03d88e6a6ccf3dd060534d58b8db5b8" kindref="member" tooltip="Performs Anisotropic Total Variation Regularization.">anisotropicTotalVariationFilter</ref>(data,weight,phi,alpha,beta,out,inner_steps);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+</programlisting></para><para>[1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn<umlaut char="o"/>rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="462"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga5b486d222c7c5bd0c29cc20068f02c13" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class stride1</type>
+          </param>
+          <param>
+            <type>class stride2</type>
+          </param>
+          <param>
+            <type>class stride3</type>
+          </param>
+          <param>
+            <type>class stride4</type>
+          </param>
+          <param>
+            <type>class stride5</type>
+          </param>
+          <param>
+            <type>class stride6</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::anisotropicTotalVariationFilter</definition>
+        <argsstring>(MultiArrayView&lt; 2, double, stride1 &gt; data, MultiArrayView&lt; 2, double, stride2 &gt; weight, MultiArrayView&lt; 2, double, stride3 &gt; phi, MultiArrayView&lt; 2, double, stride4 &gt; alpha, MultiArrayView&lt; 2, double, stride5 &gt; beta, MultiArrayView&lt; 2, double, stride6 &gt; out, int steps)</argsstring>
+        <name>anisotropicTotalVariationFilter</name>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride1 &gt;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride2 &gt;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride3 &gt;</type>
+          <declname>phi</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride4 &gt;</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride5 &gt;</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride6 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>steps</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" bodystart="465" bodyend="523"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::getAnisotropy</definition>
+        <argsstring>(...)</argsstring>
+        <name>getAnisotropy</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Sets up directional data for anisotropic regularization. </para>        </briefdescription>
+        <detaileddescription>
+<para>This routine provides a two-dimensional normalized vector field <formula id="95">$ v $</formula>, which is normal to edges in the given data, found as the eigenvector of the structure tensor belonging to the largest eigenvalue. <formula id="95">$ v $</formula> is encoded by a scalar field <formula id="96">$ \varphi $</formula> of angles, i.e. <formula id="97">$ v(x)=(\cos(\varphi(x)),\sin(\varphi(x)))^\top $</formula>.</para><para>In addition, two scalar fields <formula id="98">$ \alpha $</formula> and <formula id="99">$ \beta $</formula> are generated from scalar parameters <formula id="100">$ \alpha_{par}$</formula> and <formula id="101">$ \beta_{par}$</formula>, such that <center> <table rows="3" cols="1"><row>
+<entry thead="no"><para><formula id="102">$ \alpha(x)= \alpha_{par}$</formula> at edges, </para></entry></row>
+<row>
+<entry thead="no"><para><formula id="103">$ \alpha(x)= \beta_{par}$</formula> in homogeneous regions, </para></entry></row>
+<row>
+<entry thead="no"><para><formula id="104">$ \beta(x)=\beta_{par}$</formula> . </para></entry></row>
+</table>
+</center></para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" kindref="member" tooltip="Sets up directional data for anisotropic regularization.">getAnisotropy</ref>(MultiArrayView&lt;2,double,stride1&gt;<sp/>data,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride2&gt;<sp/>phi,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride3&gt;<sp/>alpha,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride4&gt;<sp/>beta,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha_par,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>beta_par,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma_par,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>rho_par,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>K_par);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Output: <table rows="1" cols="1"><row>
+<entry thead="no"><para>Three scalar fields <emphasis>phi</emphasis>, <emphasis>alpha</emphasis> and <emphasis>beta</emphasis>. </para></entry></row>
+</table>
+</para><para>Input: <table rows="5" cols="2"><row>
+<entry thead="no"><para><emphasis>data</emphasis>:</para></entry><entry thead="no"><para>two-dimensional scalar field. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>alpha_par,beta_par</emphasis>:</para></entry><entry thead="no"><para>two positive values for setting up the scalar fields alpha and beta </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>sigma_par</emphasis>:</para></entry><entry thead="no"><para>non-negative parameter for presmoothing the data. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>rho_par</emphasis>:</para></entry><entry thead="no"><para>non-negative parameter for presmoothing the structure tensor. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>K_par</emphasis>:</para></entry><entry thead="no"><para>positive edge sensitivity parameter. </para></entry></row>
+</table>
+</para><para>(see <ref refid="group__NonLinearDiffusion_1gab03d88e6a6ccf3dd060534d58b8db5b8" kindref="member">anisotropicTotalVariationFilter()</ref> and <ref refid="group__NonLinearDiffusion_1ga80e6e77f9e1a94080a3791981bb4fc0c" kindref="member">secondOrderTotalVariationFilter()</ref> for usage in an application). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="334"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga493d66a4688bfba5ed358bd66e795928" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class stride1</type>
+          </param>
+          <param>
+            <type>class stride2</type>
+          </param>
+          <param>
+            <type>class stride3</type>
+          </param>
+          <param>
+            <type>class stride4</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::getAnisotropy</definition>
+        <argsstring>(MultiArrayView&lt; 2, double, stride1 &gt; data, MultiArrayView&lt; 2, double, stride2 &gt; phi, MultiArrayView&lt; 2, double, stride3 &gt; alpha, MultiArrayView&lt; 2, double, stride4 &gt; beta, double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par)</argsstring>
+        <name>getAnisotropy</name>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride1 &gt;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride2 &gt;</type>
+          <declname>phi</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride3 &gt;</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride4 &gt;</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>alpha_par</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>beta_par</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma_par</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>rho_par</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>K_par</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="339" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" bodystart="337" bodyend="382"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga5e1b97e494a4304df8b7ef26f7b57bc7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class WeightIterator</type>
+          </param>
+          <param>
+            <type>class WeightAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::internalNonlinearDiffusionExplicitStep</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor as, WeightIterator wul, WeightAccessor aw, DestIterator dul, DestAccessor ad, double time_step)</argsstring>
+        <name>internalNonlinearDiffusionExplicitStep</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>WeightIterator</type>
+          <declname>wul</declname>
+        </param>
+        <param>
+          <type>WeightAccessor</type>
+          <declname>aw</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>time_step</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="372" bodyend="558"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::nonlinearDiffusion</definition>
+        <argsstring>(...)</argsstring>
+        <name>nonlinearDiffusion</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Perform edge-preserving smoothing at the given scale. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm solves the non-linear diffusion equation</para><para><formula id="66">\[ \frac{\partial}{\partial t} u = \frac{\partial}{\partial x} \left( g(|\nabla u|) \frac{\partial}{\partial x} u \right) \]</formula></para><para>where <emphasis> t</emphasis> is the time, <bold> x</bold> is the location vector, <emphasis> u(</emphasis><bold> x</bold><emphasis> , t)</emphasis> is the smoothed image at time <emphasis> t</emphasis>, and <emphasis> g(.)</emphasis> is the location dependent diffusivity. At time zero, the image <emphasis> u(</emphasis><bold> x</bold><emphasis> , 0)</emphasis> is simply the original image. The time is proportional to the square of the scale parameter: <formula id="67">$t = s^2$</formula>. The diffusion equation is solved iteratively according to the Additive Operator Splitting Scheme (AOS) from</para><para>J. Weickert: <emphasis>&quot;Recursive Separable Schemes for Nonlinear Diffusion
+Filters&quot;</emphasis>, in: B. ter Haar Romeny, L. Florack, J. Koenderingk, M. Viergever (eds.): 1st Intl. Conf. on Scale-Space Theory in Computer Vision 1997, Springer LNCS 1252</para><para><computeroutput><ref refid="classvigra_1_1DiffusivityFunctor" kindref="compound">DiffusivityFunctor</ref></computeroutput> implements the gradient dependent local diffusivity. It is passed as an argument to <ref refid="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" kindref="member">gradientBasedTransform()</ref>. The return value must be between 0 and 1 and determines the weight a pixel gets when its neighbors are smoothed. Weickert recommends the use of the diffusivity implemented by class <ref refid="classvigra_1_1DiffusivityFunctor" kindref="compound">DiffusivityFunctor</ref>. It&apos;s also possible to use other functors, for example one that always returns 1, in which case we obtain the solution to the linear diffusion equation, i.e. <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> convolution.</para><para>The source value type must be a linear space with internal addition, scalar multiplication, and NumericTraits defined. The value_type of the <ref refid="classvigra_1_1DiffusivityFunctor" kindref="compound">DiffusivityFunctor</ref> must be the scalar field over wich the source value type&apos;s linear space is defined.</para><para>In addition to <computeroutput><ref refid="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" kindref="member">nonlinearDiffusion()</ref></computeroutput>, there is an algorithm <computeroutput>nonlinearDiffusionExplicit()</computeroutput> which implements the Explicit Scheme described in the above article. Both algorithms have the same interface, but the explicit scheme gives slightly more accurate approximations of the diffusion process at the cost of much slower processing.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DiffusivityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" kindref="member" tooltip="Perform edge-preserving smoothing at the given scale.">nonlinearDiffusion</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>ad,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DiffusivityFunctor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>weight,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DiffusivityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" kindref="member" tooltip="Perform edge-preserving smoothing at the given scale.">nonlinearDiffusion</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DiffusivityFunctor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>weight,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="nonlineardiffusion_8hxx_source" kindref="compound">vigra/nonlineardiffusion.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>edge_threshold,<sp/>scale;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">nonlinearDiffusion(srcImageRange(src),<sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DiffusivityFunctor&lt;float&gt;(edge_threshold),<sp/>scale);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><itemizedlist>
+<listitem>
+<para><computeroutput>SrcIterator</computeroutput> and <computeroutput>DestIterator</computeroutput> are models of <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> </para></listitem>
+<listitem>
+<para><computeroutput>SrcAccessor</computeroutput> and <computeroutput>DestAccessor</computeroutput> are models of <ref refid="classvigra_1_1StandardAccessor" kindref="compound">StandardAccessor</ref> </para></listitem>
+<listitem>
+<para><computeroutput>SrcAccessor::value_type</computeroutput> is a linear space </para></listitem>
+<listitem>
+<para><computeroutput><ref refid="classvigra_1_1DiffusivityFunctor" kindref="compound">DiffusivityFunctor</ref></computeroutput> conforms to the requirements of <ref refid="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" kindref="member">gradientBasedTransform()</ref>. Its range is between 0 and 1. </para></listitem>
+<listitem>
+<para><computeroutput><ref refid="classvigra_1_1DiffusivityFunctor_1a04f69f8f2936ff309627511179c1709b" kindref="member">DiffusivityFunctor::value_type</ref></computeroutput> is an algebraic field</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Precondition:</bold></para><para><computeroutput>scale &gt; 0</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="304"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga2ed7b468ad709e2b2f0a84ca71dabd65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DiffusivityFunc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::nonlinearDiffusion</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor as, DestIterator dul, DestAccessor ad, DiffusivityFunc const &amp;weight, double scale)</argsstring>
+        <name>nonlinearDiffusion</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>DiffusivityFunc const &amp;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="312" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="309" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga7b4a008e7b7c5453fc88f09638b201fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DiffusivityFunc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::nonlinearDiffusion</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DiffusivityFunc const &amp;weight, double scale)</argsstring>
+        <name>nonlinearDiffusion</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DiffusivityFunc const &amp;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="359" bodyend="367"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga4493f7b536f087a9236ed54cb9601471" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DiffusivityFunc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::nonlinearDiffusionExplicit</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor as, DestIterator dul, DestAccessor ad, DiffusivityFunc const &amp;weight, double scale)</argsstring>
+        <name>nonlinearDiffusionExplicit</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>DiffusivityFunc const &amp;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="566" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="563" bodyend="607"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1gafc75533e05aa46a95292436bd6daa118" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DiffusivityFunc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::nonlinearDiffusionExplicit</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DiffusivityFunc const &amp;weight, double scale)</argsstring>
+        <name>nonlinearDiffusionExplicit</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DiffusivityFunc const &amp;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="617" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="613" bodyend="621"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga80e6e77f9e1a94080a3791981bb4fc0c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::secondOrderTotalVariationFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>secondOrderTotalVariationFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs Anisotropic Total Variation Regularization. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm minimizes</para><para><formula id="113">\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2 + \sqrt{\nabla u^\top A \nabla u} + \gamma |Hu|_F\;dx \qquad\qquad (3) \]</formula> where <emphasis> <formula id="90">$ f=f(x)$</formula> </emphasis> are the noisy data, <emphasis> <formula id="91">$ u=u(x)$</formula> </emphasis> are the smoothed data,<emphasis> <formula id="106">$ \nabla u $</formula> </emphasis> is the image gradient in the sense of Total Variation, <emphasis> <formula id="107">$ A $</formula> </emphasis> is a locally varying symmetric, positive-definite 2x2 matrix and <emphasis> <formula id="114">$ |Hu|_F $</formula></emphasis> is the Frobenius norm of the Hessian of <formula id="115">$ u $</formula>.</para><para>Matrix <emphasis> <formula id="107">$ A $</formula> </emphasis> is described by providing for each data point a normalized eigenvector (via angle <formula id="108">$ \phi $</formula>) and two eigenvalues <formula id="109">$ \alpha&gt;0 $</formula> and <formula id="110">$ \beta&gt;0 $</formula>. <ref refid="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" kindref="member">getAnisotropy()</ref> can be use to set up such data <formula id="116">$ \phi,\alpha, \beta $</formula> by providing a vector field normal to edges.</para><para><formula id="117">$ \gamma&gt;0 $</formula> is the locally varying regularization parameter for second order.</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">stride1,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">stride2,...,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">stride9&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga80e6e77f9e1a94080a3791981bb4fc0c" kindref="member" tooltip="Performs Anisotropic Total Variation Regularization.">secondOrderTotalVariationFilter</ref>(MultiArrayView&lt;2,double,stride1&gt;<sp/>data,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride2&gt;<sp/>weight,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride3&gt;<sp/>phi,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride4&gt;<sp/>alpha,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride5&gt;<sp/>beta,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride6&gt;<sp/><ref refid="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" kindref="member">gamma</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride7&gt;<sp/>xedges,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride8&gt;<sp/>yedges,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride9&gt;<sp/>out,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>steps);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><ref refid="group__NonLinearDiffusion_1ga80e6e77f9e1a94080a3791981bb4fc0c" kindref="member">secondOrderTotalVariationFilter()</ref> implements a primal-dual algorithm to solve (3).</para><para>Input: <table rows="6" cols="2"><row>
+<entry thead="no"><para><emphasis>data</emphasis>: </para></entry><entry thead="no"><para>the input data to be filtered.  </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>steps</emphasis> : </para></entry><entry thead="no"><para>number of iteration steps. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>out</emphasis> : </para></entry><entry thead="no"><para>contains the filtered data. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>weight</emphasis> : </para></entry><entry thead="no"><para>point-wise weight ( <formula id="118">$ \ge 0$</formula> ) for the data term. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>phi</emphasis>,<emphasis>alpha</emphasis>,<emphasis>beta</emphasis>: </para></entry><entry thead="no"><para>describe matrix <formula id="119">$ A$</formula>, see above. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis> xedges </emphasis> and <emphasis> yedges </emphasis>: </para></entry><entry thead="no"><para>binary arrays indicating the presence of horizontal (between (x,y) and (x+1,y)) and vertical edges (between (x,y) and (x,y+1)). These data are considered in the calculation of <formula id="120">$ Hu$</formula>, such that finite differences across edges are artificially set to zero to avoid second order smoothing over edges. </para></entry></row>
+</table>
+</para><para><bold> Usage:</bold></para><para>E.g. with a solution-dependent adaptivity (cf.[1]), by updating the matrix <formula id="112">$ A=A(u)$</formula> in an outer loop:</para><para><bold>#include</bold> &lt;<ref refid="tv__filter_8hxx_source" kindref="compound">vigra/tv_filter.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>data(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>out(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>weight(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height)));<sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>phi(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>alpha(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>beta(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/><ref refid="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" kindref="member">gamma</ref>(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>xedges(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>yedges(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha0,beta0,sigma,rho,K;<sp/><sp/></highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>outer_steps,inner_steps;</highlight><highlight class="comment">//to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">out=data;<sp/></highlight><highlight class="comment">//<sp/>data<sp/>serves<sp/>as<sp/>initial<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;i&lt;outer_steps;i++){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="group__NonLinearDiffusion_1ga826a11a3e56ff35a8f3dc38f2c7c9a5e" kindref="member" tooltip="Sets up directional data for anisotropic regularization.">getAnisotropy</ref>(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);<sp/><sp/></highlight><highlight class="comment">//<sp/>sets<sp/>phi,<sp/>alpha,<sp/>beta</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="group__NonLinearDiffusion_1ga80e6e77f9e1a94080a3791981bb4fc0c" kindref="member" tooltip="Performs Anisotropic Total Variation Regularization.">secondOrderTotalVariationFilter</ref>(data,weight,phi,alpha,beta,<ref refid="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" kindref="member">gamma</ref>,xedges,yedges,out,inner_steps);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>[1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn<umlaut char="o"/>rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="615"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga6241e74aaa90186310567d733d56efa2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class stride1</type>
+          </param>
+          <param>
+            <type>class stride2</type>
+          </param>
+          <param>
+            <type>class stride3</type>
+          </param>
+          <param>
+            <type>class stride4</type>
+          </param>
+          <param>
+            <type>class stride5</type>
+          </param>
+          <param>
+            <type>class stride6</type>
+          </param>
+          <param>
+            <type>class stride7</type>
+          </param>
+          <param>
+            <type>class stride8</type>
+          </param>
+          <param>
+            <type>class stride9</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::secondOrderTotalVariationFilter</definition>
+        <argsstring>(MultiArrayView&lt; 2, double, stride1 &gt; data, MultiArrayView&lt; 2, double, stride2 &gt; weight, MultiArrayView&lt; 2, double, stride3 &gt; phi, MultiArrayView&lt; 2, double, stride4 &gt; alpha, MultiArrayView&lt; 2, double, stride5 &gt; beta, MultiArrayView&lt; 2, double, stride6 &gt; gamma, MultiArrayView&lt; 2, double, stride7 &gt; xedges, MultiArrayView&lt; 2, double, stride8 &gt; yedges, MultiArrayView&lt; 2, double, stride9 &gt; out, int steps)</argsstring>
+        <name>secondOrderTotalVariationFilter</name>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride1 &gt;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride2 &gt;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride3 &gt;</type>
+          <declname>phi</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride4 &gt;</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride5 &gt;</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride6 &gt;</type>
+          <declname>gamma</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride7 &gt;</type>
+          <declname>xedges</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride8 &gt;</type>
+          <declname>yedges</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride9 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>steps</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="624" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" bodystart="618" bodyend="752"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::totalVariationFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>totalVariationFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs standard Total Variation Regularization. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm minimizes</para><para><formula id="89">\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2\;dx + \alpha TV(u)\qquad\qquad (1) \]</formula> where <emphasis> <formula id="90">$ f=f(x)$</formula></emphasis> are the two dimensional noisy data, <emphasis> <formula id="91">$ u=u(x)$</formula></emphasis> are the smoothed data,<emphasis> <formula id="92">$ \alpha \ge 0 $</formula></emphasis> is the filter parameter and <emphasis> <formula id="93">$ TV(u)$</formula> </emphasis> is the total variation semi-norm.</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e1,</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" kindref="member" tooltip="Performs standard Total Variation Regularization.">totalVariationFilter</ref>(MultiArrayView&lt;2,double,stride1&gt;<sp/>data,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride2&gt;<sp/>out,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>steps,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>eps=0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" kindref="member" tooltip="Performs standard Total Variation Regularization.">totalVariationFilter</ref>(MultiArrayView&lt;2,double,stride1&gt;<sp/>data,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride2&gt;<sp/>weight,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,double,stride3&gt;<sp/>out,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>steps,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>eps=0);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><ref refid="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" kindref="member">totalVariationFilter()</ref> implements a primal-dual algorithm to solve (1).</para><para>Input: <table rows="4" cols="2"><row>
+<entry thead="no"><para><emphasis>data</emphasis>: </para></entry><entry thead="no"><para>input data to be smoothed.  </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>alpha</emphasis>: </para></entry><entry thead="no"><para>smoothing parameter. </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>steps</emphasis>: </para></entry><entry thead="no"><para>maximal number of iteration steps.  </para></entry></row>
+<row>
+<entry thead="no"><para><emphasis>eps</emphasis>: </para></entry><entry thead="no"><para>The algorithm stops, if the primal-dual gap is below the threshold <emphasis>eps</emphasis>. </para></entry></row>
+</table>
+</para><para>Output:</para><para><emphasis>out</emphasis> contains the filtered data.</para><para>In addition, a point-wise weight ( <formula id="94">$ \ge 0 $</formula>) for the data term can be provided (overloaded function).</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tv__filter_8hxx_source" kindref="compound">vigra/tv_filter.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>data(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));<sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>out(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,double&gt;<sp/>weight(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(width,height)));<sp/></highlight><highlight class="comment">//optional<sp/>argument<sp/>in<sp/>overloaded<sp/>function,<sp/>to<sp/>be<sp/>initialized<sp/>if<sp/>used</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>steps;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>alpha,eps;<sp/></highlight><highlight class="comment">//<sp/>to<sp/>be<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" kindref="member" tooltip="Performs standard Total Variation Regularization.">totalVariationFilter</ref>(data,out,alpha,steps,eps);</highlight></codeline>
+</programlisting> or <programlisting><codeline><highlight class="normal"><ref refid="group__NonLinearDiffusion_1ga60041a186e8c6a6a7fb98a432bbee319" kindref="member" tooltip="Performs standard Total Variation Regularization.">totalVariationFilter</ref>(data,weight,out,alpha,steps,eps);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="137"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga23c70b162ece9c9fedba0769f93e83b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class stride1</type>
+          </param>
+          <param>
+            <type>class stride2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::totalVariationFilter</definition>
+        <argsstring>(MultiArrayView&lt; 2, double, stride1 &gt; data, MultiArrayView&lt; 2, double, stride2 &gt; out, double alpha, int steps, double eps=0)</argsstring>
+        <name>totalVariationFilter</name>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride1 &gt;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>steps</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>eps</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" bodystart="140" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NonLinearDiffusion_1ga9d22ba59748412b17da1b7dcd4761bde" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class stride1</type>
+          </param>
+          <param>
+            <type>class stride2</type>
+          </param>
+          <param>
+            <type>class stride3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::totalVariationFilter</definition>
+        <argsstring>(MultiArrayView&lt; 2, double, stride1 &gt; data, MultiArrayView&lt; 2, double, stride2 &gt; weight, MultiArrayView&lt; 2, double, stride3 &gt; out, double alpha, int steps, double eps=0)</argsstring>
+        <name>totalVariationFilter</name>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride1 &gt;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride2 &gt;</type>
+          <declname>weight</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, stride3 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>steps</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>eps</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" line="209" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tv_filter.hxx" bodystart="209" bodyend="274"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Perform edge-preserving smoothing. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

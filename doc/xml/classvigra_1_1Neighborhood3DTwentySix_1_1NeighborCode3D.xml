@@ -1,0 +1,1405 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D" kind="class" prot="public">
+    <compoundname>vigra::Neighborhood3DTwentySix::NeighborCode3D</compoundname>
+    <includes refid="voxelneighborhood_8hxx" local="no">vigra/voxelneighborhood.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aef2fa4419e73b420673dd27574a74ec0" prot="public" static="no">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref></type>
+        <definition>typedef Diff3D difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="485" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" prot="public" static="no">
+        <name>Direction</name>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4dfd42ec49d09d8c6555c218301cc30f" prot="public">
+          <name>Error</name>
+          <initializer> -1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa34b3e7bec3a76fc641c8e98144080601" prot="public">
+          <name>InFrontNorthWest</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa55757ddef3396bfda801f3e74bdfdde2" prot="public">
+          <name>InFrontNorth</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa516221acc3baaa577382358391ae8e5b" prot="public">
+          <name>InFrontNorthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4c25c152eebcd16e55e9fff62d79f6b7" prot="public">
+          <name>InFrontWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa9f156c033bd659651e1ebccbabbc4e12" prot="public">
+          <name>InFront</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaae33f7d0f367781bd2cf1bb3ccc528bb0" prot="public">
+          <name>InFrontEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaf9d1fb34fb06ebff80405d76ca277451" prot="public">
+          <name>InFrontSouthWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4fd1b8178bd8e0284c21e7f633669f8f" prot="public">
+          <name>InFrontSouth</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaac5943c1dc81232ebcbf8911813fc888c" prot="public">
+          <name>InFrontSouthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaad3768262dddc98c8e37f4a7c20496ab4" prot="public">
+          <name>NorthWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaaeb9634ef4d4fd4a5297ada06f89c3fe" prot="public">
+          <name>North</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa1e7b90df2366909c5e445f790e167872" prot="public">
+          <name>NorthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" prot="public">
+          <name>West</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" prot="public">
+          <name>East</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa1154cc523fb20e3db29f51f9156ce6aa" prot="public">
+          <name>SouthWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaac15660611b40cfc69e36003c8607311a" prot="public">
+          <name>South</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa5170d8d1f4d6ebe3d8c43f545e260d4a" prot="public">
+          <name>SouthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaef0e052e52c5f48a6abed71a9ba1b329" prot="public">
+          <name>BehindNorthWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa6d396699671360aec405864948eea6f0" prot="public">
+          <name>BehindNorth</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4e32941dd9d491258a27b1dcdbf30f41" prot="public">
+          <name>BehindNorthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa3bf4e519f9fe5e085c8eac62e7a03c87" prot="public">
+          <name>BehindWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa11443d53572b6d0d9139a80927067ecd" prot="public">
+          <name>Behind</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaabda0a2567004b5064bc2afb220dd13b6" prot="public">
+          <name>BehindEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa2f8d11fe43cb382cc9fe5a8fbc7979bc" prot="public">
+          <name>BehindSouthWest</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa524e2508c27d7b0e42db0b27b3eee4d4" prot="public">
+          <name>BehindSouth</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa465c31d3af83432532c4651f9c8fe9e9" prot="public">
+          <name>BehindSouthEast</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa412bddbd66ec635d9afe1fa212063b0b" prot="public">
+          <name>DirectionCount</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaf4a7c98c1d85f2ceac24e4b7d46c3862" prot="public">
+          <name>CausalFirst</name>
+          <initializer> InFrontNorthWest</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa2a66d75381d44600cbc187f9c5c88ca7" prot="public">
+          <name>CausalLast</name>
+          <initializer> West</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa3d180c36ebea2570df8a97e0eab42b5f" prot="public">
+          <name>AntiCausalFirst</name>
+          <initializer> BehindSouthEast</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa828471d2a2cfe70c2ac96d203e84141c" prot="public">
+          <name>AntiCausalLast</name>
+          <initializer> East</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaeba9b6f0c26228097a6ea2f1850da531" prot="public">
+          <name>InitialDirection</name>
+          <initializer> InFrontNorthWest</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaed13eab39716cb73590c7af1b87b7a24" prot="public">
+          <name>OppositeDirPrefix</name>
+          <initializer> -1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaabf8b21ace3b3c47b3439dac9c4b1b27e" prot="public">
+          <name>OppositeOffset</name>
+          <initializer> 25</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>provides enumeration of all directions. DirectionCount may be used for portable loop termination conditions. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="490" bodyend="530"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae786d7b5bfe8ed46b600c706e4b3132c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behind</definition>
+        <argsstring>()</argsstring>
+        <name>behind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1555" bodyend="1554"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a20f116ce6d5bfd56cd2f014e85e9175a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindEast</definition>
+        <argsstring>()</argsstring>
+        <name>behindEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1554" bodyend="1553"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9c1ed856b371c75d3bc097b8a802a428" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindNorth</definition>
+        <argsstring>()</argsstring>
+        <name>behindNorth</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-north neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1552" bodyend="1551"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aa7eae0a533bb46c682fd5af033db8e48" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindNorthEast</definition>
+        <argsstring>()</argsstring>
+        <name>behindNorthEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-north-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1553" bodyend="1552"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a106f17775004e6dade4fdc05567c876a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindNorthWest</definition>
+        <argsstring>()</argsstring>
+        <name>behindNorthWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-north-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1551" bodyend="1549"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a6d40972a7194202ccf4020024076bcbb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindSouth</definition>
+        <argsstring>()</argsstring>
+        <name>behindSouth</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-south neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1558" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1558" bodyend="1557"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1afd64f6f4338e3ad337432317ba5c05a5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindSouthEast</definition>
+        <argsstring>()</argsstring>
+        <name>behindSouthEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-south-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1559" bodyend="1558"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a24c77376da695f0065aacbde984ba2f9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindSouthWest</definition>
+        <argsstring>()</argsstring>
+        <name>behindSouthWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-south-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1557" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1557" bodyend="1556"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a370429d3f73a3615f8de13e8a8f77545" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; behindWest</definition>
+        <argsstring>()</argsstring>
+        <name>behindWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the behind-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1556" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1556" bodyend="1555"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a4ed1a8708bdd9c3e1d4a0236641ca74c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; bottom</definition>
+        <argsstring>()</argsstring>
+        <name>bottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the bottom neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1517" bodyend="1516"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a04d4f8bada16d76bb2a036891b945257" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; bottomLeft</definition>
+        <argsstring>()</argsstring>
+        <name>bottomLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the bottom-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1516" bodyend="1515"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a29da62144bb7caad69e441f982803191" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; bottomRight</definition>
+        <argsstring>()</argsstring>
+        <name>bottomRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the bottom-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1518" bodyend="1517"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a225df974e5cc30c01efb730d4e053f30" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction code</definition>
+        <argsstring>(Neighborhood3DSix::Direction d)</argsstring>
+        <name>code</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DSix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Neighborhood3DSix::Direction</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>transform 6-neighborhood code into 26-neighborhood code. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1396" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1395" bodyend="1414"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1afc7c9812c65bee9901031d5d930fa9c0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction code</definition>
+        <argsstring>(Diff3D const &amp;diff)</argsstring>
+        <name>code</name>
+        <param>
+          <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>transform Diff3D offset into corresponding direction code. The code <computeroutput>Direction::Error</computeroutput> will be returned if <computeroutput>diff</computeroutput> is not in the 3DTwentySix-Neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1421" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1420" bodyend="1487"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; diff</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>diff</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>transform direction code into corresponding Diff3D offset. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1286" bodyend="1318"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aad0894d4e7d93a0d1065d57fc3d587b6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; diff</definition>
+        <argsstring>(int code)</argsstring>
+        <name>diff</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to <computeroutput>diff(static_cast&lt;Direction&gt;(code))</computeroutput>. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1323" bodyend="1323"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af5f17b2bd071316a8e164803ee25b8ba" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int diff</definition>
+        <argsstring>(Direction code, int dim)</argsstring>
+        <name>diff</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to <computeroutput>diff(code)[dim]</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1326" bodyend="1326"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a36356b43b268b2516279f66be9b0fcf9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>static unsigned int directionBit</definition>
+        <argsstring>(Direction d)</argsstring>
+        <name>directionBit</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="532" bodyend="565"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a03e237fcbfbfc9d7e60224bf4827dccf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dX</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>dX</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>X-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1380" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1380" bodyend="1380"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a14116247b9c3e4a405add103573d143b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dX</definition>
+        <argsstring>(int code)</argsstring>
+        <name>dX</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>X-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1387" bodyend="1387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8605c1a59d576be143a8594243e9b654" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dY</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>dY</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Y-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1382" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1382" bodyend="1382"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac7587cc7166385b3c01b4a78b2a18f8c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dY</definition>
+        <argsstring>(int code)</argsstring>
+        <name>dY</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Y-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1389" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1389" bodyend="1389"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1add848d0dde72056ae4f88393eda40744" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dZ</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>dZ</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Z-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1384" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1384" bodyend="1384"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9c4d7bb68f0b002d64ff89d6ad64e087" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dZ</definition>
+        <argsstring>(int code)</argsstring>
+        <name>dZ</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Z-component of <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1391" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1391" bodyend="1391"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2778c9194eaad38f972a00fe2635c3cf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; east</definition>
+        <argsstring>()</argsstring>
+        <name>east</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1546" bodyend="1545"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a85ab4b5db464a58d7b6efec64ba2661a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; front</definition>
+        <argsstring>()</argsstring>
+        <name>front</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1505" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1505" bodyend="1504"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acf587fbb2b70c791cf83246740901132" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontBottom</definition>
+        <argsstring>()</argsstring>
+        <name>frontBottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-bottom neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1508" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1508" bodyend="1507"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a860578668c90ea66be2ac489808afae0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontBottomLeft</definition>
+        <argsstring>()</argsstring>
+        <name>frontBottomLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-bottom-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1507" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1507" bodyend="1506"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a7487e8010a0c1362de739aa19138def6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontBottomRight</definition>
+        <argsstring>()</argsstring>
+        <name>frontBottomRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-bottom-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1509" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1509" bodyend="1508"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af65e60aa8e230a9a6eb5310789e5e6c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontLeft</definition>
+        <argsstring>()</argsstring>
+        <name>frontLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1504" bodyend="1503"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af26bec051e218fe00e230f805b63ceb1" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontRight</definition>
+        <argsstring>()</argsstring>
+        <name>frontRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1506" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1506" bodyend="1505"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac1ee87e241fa32de6fc70f07ca32f262" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontTop</definition>
+        <argsstring>()</argsstring>
+        <name>frontTop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-top neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1502" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1502" bodyend="1501"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a95c138cdea66093b796a394a5b5a7fba" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontTopLeft</definition>
+        <argsstring>()</argsstring>
+        <name>frontTopLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-top-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1501" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1501" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aba3677cb18a3f83e1707206b7b00fb4a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; frontTopRight</definition>
+        <argsstring>()</argsstring>
+        <name>frontTopRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the front-top-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1503" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1503" bodyend="1502"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a37f9e41737c6a88a09cc3471322be9c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infront</definition>
+        <argsstring>()</argsstring>
+        <name>infront</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1536" bodyend="1535"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac892c040f5bd7d3a1eabded51f2baf38" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontEast</definition>
+        <argsstring>()</argsstring>
+        <name>infrontEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1537" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1537" bodyend="1536"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a3dab2bd0b3b17f54bb7653ed11ea8d26" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontNorth</definition>
+        <argsstring>()</argsstring>
+        <name>infrontNorth</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-north neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1533" bodyend="1532"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a1aba93e21cc7d023fc2afc8e86cc8d55" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontNorthEast</definition>
+        <argsstring>()</argsstring>
+        <name>infrontNorthEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-north-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1534" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1534" bodyend="1533"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2fb69c4be6f1f5d42a7d9903b6291e80" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontNorthWest</definition>
+        <argsstring>()</argsstring>
+        <name>infrontNorthWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-north-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1532" bodyend="1528"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a01cbc6c3426cb1bf4fe964a7eaed2a5e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontSouth</definition>
+        <argsstring>()</argsstring>
+        <name>infrontSouth</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-south neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1539" bodyend="1538"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac71b1612eb4827a7ea3c4f7b32898548" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontSouthEast</definition>
+        <argsstring>()</argsstring>
+        <name>infrontSouthEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-south-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1540" bodyend="1539"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1abf8d2db4cd2bc02389098a6f2f3678c5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontSouthWest</definition>
+        <argsstring>()</argsstring>
+        <name>infrontSouthWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-south-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1538" bodyend="1537"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acd1edc88f23e2603870a22516a969aad" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; infrontWest</definition>
+        <argsstring>()</argsstring>
+        <name>infrontWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the infront-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1535" bodyend="1534"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2b07c23b55c80d9a5a6c2ba8261ce74f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isDiagonal</definition>
+        <argsstring>(Direction dir)</argsstring>
+        <name>isDiagonal</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>dir</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether a code refers to a diagonal direction. Useful if you want to abstract the differences between 6- and 26-neighborhood. Always <computeroutput>false</computeroutput> for 6-neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1493" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1493" bodyend="1499"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9d2f65bed9c7930e103e3cf6873b03c6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; left</definition>
+        <argsstring>()</argsstring>
+        <name>left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1514" bodyend="1513"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a46be80165bc38cfd9228a83083732790" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>static unsigned int nearBorderDirectionCount</definition>
+        <argsstring>(AtVolumeBorder b)</argsstring>
+        <name>nearBorderDirectionCount</name>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtVolumeBorder</ref></type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of valid neighbors if the current center is at the volume border. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="571" bodyend="579"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2b9dbeec8a98f2b435ac567c14c45793" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction nearBorderDirections</definition>
+        <argsstring>(AtVolumeBorder b, int index)</argsstring>
+        <name>nearBorderDirections</name>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtVolumeBorder</ref></type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The valid direction codes when the center is at the volume border. <emphasis>index</emphasis> must be in the range <computeroutput>0...nearBorderDirectionCount(b)-1</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="584" bodyend="1031"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acd856c9953c0a54869eb847955c87b57" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction nearBorderDirectionsCausal</definition>
+        <argsstring>(AtVolumeBorder b, int index)</argsstring>
+        <name>nearBorderDirectionsCausal</name>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtVolumeBorder</ref></type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The valid direction three codes in anti causal direction (means: look back in scanline direction)when the center is at the volume border. Should be used with isAtVolumeBorderCausal to determine the Directions, as this avoids using of the nonesense border ids (e.g. 0,1,8,9...) of this table. <emphasis>index</emphasis> must be in the range <computeroutput>0...nearBorderDirectionCount(b)-1</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1040" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1039" bodyend="1281"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a16a08a0b34846f0f93330fbcfd0bb38f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; north</definition>
+        <argsstring>()</argsstring>
+        <name>north</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the north neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1543" bodyend="1542"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae304cba098145138223dae5c4164609f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; northEast</definition>
+        <argsstring>()</argsstring>
+        <name>northEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the north-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1544" bodyend="1543"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ab292290a1af93a8af333fe07b93d48f7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; northWest</definition>
+        <argsstring>()</argsstring>
+        <name>northWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the north-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1542" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1542" bodyend="1540"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8b7602a4bc193922d1f62ffa41f08839" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rear</definition>
+        <argsstring>()</argsstring>
+        <name>rear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1524" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1524" bodyend="1523"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a66093cd4982bc630ecfcca5ace6c7c7a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearBottom</definition>
+        <argsstring>()</argsstring>
+        <name>rearBottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-bottom neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1527" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1527" bodyend="1526"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ad84bdf547b3dbc61a9b032479addbebf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearBottomLeft</definition>
+        <argsstring>()</argsstring>
+        <name>rearBottomLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-bottom-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1526" bodyend="1525"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a549ce9ad937c11d09019c92742596c0a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearBottomRight</definition>
+        <argsstring>()</argsstring>
+        <name>rearBottomRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-bottom-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1528" bodyend="1527"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a3e714977924b4a97be4ef7ffb8a36d3a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearLeft</definition>
+        <argsstring>()</argsstring>
+        <name>rearLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1523" bodyend="1522"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae50a78ac8f6ea82efc2815b5c5bcd609" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearRight</definition>
+        <argsstring>()</argsstring>
+        <name>rearRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1525" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1525" bodyend="1524"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a0b8d046adba1837e48995b454b17a89c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearTop</definition>
+        <argsstring>()</argsstring>
+        <name>rearTop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-top neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1521" bodyend="1520"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a4e33f86518ee9da4ab898c6632a541da" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearTopLeft</definition>
+        <argsstring>()</argsstring>
+        <name>rearTopLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-top-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1520" bodyend="1518"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af60b9a47d68d20f078faf685106c7c8e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; rearTopRight</definition>
+        <argsstring>()</argsstring>
+        <name>rearTopRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the rear-top-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1522" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1522" bodyend="1521"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1adfaffd6de8e98fb1aa89aed260376745" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const</type>
+        <definition>static Diff3D const relativeDiff</definition>
+        <argsstring>(Direction fromCode, Direction toCode)</argsstring>
+        <name>relativeDiff</name>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>fromCode</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>toCode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Get the relative offset from one neighbor to the other.
+</verbatim> For example, <computeroutput>relativeDiff(East, West) == multi_differencetype(-2,0,0)</computeroutput>. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1332" bodyend="1369"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae683d10bc22b48d05a5fddc60ab0b273" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const</type>
+        <definition>static Diff3D const relativeDiff</definition>
+        <argsstring>(int fromCode, int toCode)</argsstring>
+        <name>relativeDiff</name>
+        <param>
+          <type>int</type>
+          <declname>fromCode</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toCode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to relativeDiff(static_cast&lt;Direction&gt;(fromCode), static_cast&lt;Direction&gt;(toCode)). (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1375" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1374" bodyend="1377"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a036f1999ba46c8bea2efea40d4c23ec0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; right</definition>
+        <argsstring>()</argsstring>
+        <name>right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1515" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1515" bodyend="1514"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9ebae8d7c73e9ab475296691b8b585b2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; south</definition>
+        <argsstring>()</argsstring>
+        <name>south</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the south neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1548" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1548" bodyend="1547"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a01cfa3021522412157663aa2e86a8b1e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; southEast</definition>
+        <argsstring>()</argsstring>
+        <name>southEast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the south-east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1549" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1549" bodyend="1548"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a06bc5884d1b267fd64a662cef48b2a94" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; southWest</definition>
+        <argsstring>()</argsstring>
+        <name>southWest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the south-west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1547" bodyend="1546"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a6e8de0deaccd8c5b0a397029aa8a4b84" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; top</definition>
+        <argsstring>()</argsstring>
+        <name>top</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the top neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1512" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1512" bodyend="1511"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aa1992427038f4206f8b00b1c2940f141" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; topLeft</definition>
+        <argsstring>()</argsstring>
+        <name>topLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the top-left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1511" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1511" bodyend="1509"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ab1a9826e4f1813d0f998555963921698" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; topRight</definition>
+        <argsstring>()</argsstring>
+        <name>topRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the top-right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1513" bodyend="1512"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a839e8fee2461a0cdd92420dd7d1439d6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" kindref="member">Diff3D</ref> const &amp;</type>
+        <definition>static Diff3D const&amp; west</definition>
+        <argsstring>()</argsstring>
+        <name>west</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1545" bodyend="1544"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Encapsulation of direction management of neighbors for a 3D 26-neighborhood. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="482" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="481" bodyend="1560"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa3d180c36ebea2570df8a97e0eab42b5f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>AntiCausalFirst</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa828471d2a2cfe70c2ac96d203e84141c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>AntiCausalLast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa11443d53572b6d0d9139a80927067ecd" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>Behind</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae786d7b5bfe8ed46b600c706e4b3132c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behind</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a20f116ce6d5bfd56cd2f014e85e9175a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaabda0a2567004b5064bc2afb220dd13b6" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9c1ed856b371c75d3bc097b8a802a428" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindNorth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa6d396699671360aec405864948eea6f0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindNorth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4e32941dd9d491258a27b1dcdbf30f41" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindNorthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aa7eae0a533bb46c682fd5af033db8e48" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindNorthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaef0e052e52c5f48a6abed71a9ba1b329" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindNorthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a106f17775004e6dade4fdc05567c876a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindNorthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a6d40972a7194202ccf4020024076bcbb" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindSouth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa524e2508c27d7b0e42db0b27b3eee4d4" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindSouth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1afd64f6f4338e3ad337432317ba5c05a5" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindSouthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa465c31d3af83432532c4651f9c8fe9e9" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindSouthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a24c77376da695f0065aacbde984ba2f9" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindSouthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa2f8d11fe43cb382cc9fe5a8fbc7979bc" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindSouthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a370429d3f73a3615f8de13e8a8f77545" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>behindWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa3bf4e519f9fe5e085c8eac62e7a03c87" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>BehindWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a4ed1a8708bdd9c3e1d4a0236641ca74c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>bottom</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a04d4f8bada16d76bb2a036891b945257" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>bottomLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a29da62144bb7caad69e441f982803191" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>bottomRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaf4a7c98c1d85f2ceac24e4b7d46c3862" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>CausalFirst</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa2a66d75381d44600cbc187f9c5c88ca7" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>CausalLast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a225df974e5cc30c01efb730d4e053f30" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>code</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1afc7c9812c65bee9901031d5d930fa9c0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>code</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8da006258178d014f2dc560eb67d4188" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>diff</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aad0894d4e7d93a0d1065d57fc3d587b6" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>diff</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af5f17b2bd071316a8e164803ee25b8ba" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>diff</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aef2fa4419e73b420673dd27574a74ec0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>Direction</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a36356b43b268b2516279f66be9b0fcf9" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>directionBit</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa412bddbd66ec635d9afe1fa212063b0b" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>DirectionCount</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a03e237fcbfbfc9d7e60224bf4827dccf" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dX</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a14116247b9c3e4a405add103573d143b" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dX</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8605c1a59d576be143a8594243e9b654" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dY</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac7587cc7166385b3c01b4a78b2a18f8c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dY</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1add848d0dde72056ae4f88393eda40744" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dZ</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9c4d7bb68f0b002d64ff89d6ad64e087" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>dZ</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>East</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2778c9194eaad38f972a00fe2635c3cf" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>east</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4dfd42ec49d09d8c6555c218301cc30f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>Error</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a85ab4b5db464a58d7b6efec64ba2661a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>front</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acf587fbb2b70c791cf83246740901132" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontBottom</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a860578668c90ea66be2ac489808afae0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontBottomLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a7487e8010a0c1362de739aa19138def6" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontBottomRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af65e60aa8e230a9a6eb5310789e5e6c7" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af26bec051e218fe00e230f805b63ceb1" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac1ee87e241fa32de6fc70f07ca32f262" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontTop</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a95c138cdea66093b796a394a5b5a7fba" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontTopLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aba3677cb18a3f83e1707206b7b00fb4a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>frontTopRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa9f156c033bd659651e1ebccbabbc4e12" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFront</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a37f9e41737c6a88a09cc3471322be9c7" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infront</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaae33f7d0f367781bd2cf1bb3ccc528bb0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac892c040f5bd7d3a1eabded51f2baf38" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a3dab2bd0b3b17f54bb7653ed11ea8d26" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontNorth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa55757ddef3396bfda801f3e74bdfdde2" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontNorth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa516221acc3baaa577382358391ae8e5b" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontNorthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a1aba93e21cc7d023fc2afc8e86cc8d55" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontNorthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa34b3e7bec3a76fc641c8e98144080601" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontNorthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2fb69c4be6f1f5d42a7d9903b6291e80" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontNorthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a01cbc6c3426cb1bf4fe964a7eaed2a5e" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontSouth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4fd1b8178bd8e0284c21e7f633669f8f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontSouth</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ac71b1612eb4827a7ea3c4f7b32898548" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontSouthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaac5943c1dc81232ebcbf8911813fc888c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontSouthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1abf8d2db4cd2bc02389098a6f2f3678c5" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontSouthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaf9d1fb34fb06ebff80405d76ca277451" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontSouthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acd1edc88f23e2603870a22516a969aad" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>infrontWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa4c25c152eebcd16e55e9fff62d79f6b7" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InFrontWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaeba9b6f0c26228097a6ea2f1850da531" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>InitialDirection</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2b07c23b55c80d9a5a6c2ba8261ce74f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>isDiagonal</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9d2f65bed9c7930e103e3cf6873b03c6" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>left</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a46be80165bc38cfd9228a83083732790" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>nearBorderDirectionCount</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a2b9dbeec8a98f2b435ac567c14c45793" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>nearBorderDirections</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1acd856c9953c0a54869eb847955c87b57" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>nearBorderDirectionsCausal</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a16a08a0b34846f0f93330fbcfd0bb38f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>north</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaaeb9634ef4d4fd4a5297ada06f89c3fe" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>North</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae304cba098145138223dae5c4164609f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>northEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa1e7b90df2366909c5e445f790e167872" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>NorthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ab292290a1af93a8af333fe07b93d48f7" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>northWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaad3768262dddc98c8e37f4a7c20496ab4" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>NorthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaed13eab39716cb73590c7af1b87b7a24" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>OppositeDirPrefix</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaabf8b21ace3b3c47b3439dac9c4b1b27e" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>OppositeOffset</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a8b7602a4bc193922d1f62ffa41f08839" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rear</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a66093cd4982bc630ecfcca5ace6c7c7a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearBottom</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ad84bdf547b3dbc61a9b032479addbebf" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearBottomLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a549ce9ad937c11d09019c92742596c0a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearBottomRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a3e714977924b4a97be4ef7ffb8a36d3a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae50a78ac8f6ea82efc2815b5c5bcd609" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a0b8d046adba1837e48995b454b17a89c" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearTop</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a4e33f86518ee9da4ab898c6632a541da" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearTopLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1af60b9a47d68d20f078faf685106c7c8e" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>rearTopRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1adfaffd6de8e98fb1aa89aed260376745" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>relativeDiff</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ae683d10bc22b48d05a5fddc60ab0b273" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>relativeDiff</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a036f1999ba46c8bea2efea40d4c23ec0" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>right</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a9ebae8d7c73e9ab475296691b8b585b2" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>south</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaac15660611b40cfc69e36003c8607311a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>South</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a01cfa3021522412157663aa2e86a8b1e" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>southEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa5170d8d1f4d6ebe3d8c43f545e260d4a" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>SouthEast</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaa1154cc523fb20e3db29f51f9156ce6aa" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>SouthWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a06bc5884d1b267fd64a662cef48b2a94" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>southWest</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a6e8de0deaccd8c5b0a397029aa8a4b84" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>top</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1aa1992427038f4206f8b00b1c2940f141" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>topLeft</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1ab1a9826e4f1813d0f998555963921698" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>topRight</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a839e8fee2461a0cdd92420dd7d1439d6" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>west</name></member>
+      <member refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" prot="public" virt="non-virtual"><scope>vigra::Neighborhood3DTwentySix::NeighborCode3D</scope><name>West</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

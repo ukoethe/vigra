@@ -1,0 +1,1096 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="iteratortags_8hxx" kind="file">
+    <compoundname>iteratortags.hxx</compoundname>
+    <includes local="no">iterator</includes>
+    <includedby refid="diff2d_8hxx" local="yes">vigra/diff2d.hxx</includedby>
+    <includedby refid="multi__iterator_8hxx" local="yes">vigra/multi_iterator.hxx</includedby>
+    <incdepgraph>
+      <node id="3564">
+        <label>iterator</label>
+      </node>
+      <node id="3563">
+        <label>vigra/iteratortags.hxx</label>
+        <link refid="iteratortags.hxx"/>
+        <childnode refid="3564" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3605">
+        <label>vigra/splineimageview.hxx</label>
+        <link refid="splineimageview_8hxx_source"/>
+        <childnode refid="3570" relation="include">
+        </childnode>
+        <childnode refid="3583" relation="include">
+        </childnode>
+      </node>
+      <node id="3587">
+        <label>vigra/quaternion.hxx</label>
+        <link refid="quaternion_8hxx_source"/>
+        <childnode refid="3586" relation="include">
+        </childnode>
+        <childnode refid="3588" relation="include">
+        </childnode>
+      </node>
+      <node id="3570">
+        <label>vigra/affine_registration.hxx</label>
+        <link refid="affine__registration_8hxx_source"/>
+      </node>
+      <node id="3595">
+        <label>vigra/multi_pointoperators.hxx</label>
+        <link refid="multi__pointoperators_8hxx_source"/>
+        <childnode refid="3569" relation="include">
+        </childnode>
+        <childnode refid="3596" relation="include">
+        </childnode>
+        <childnode refid="3598" relation="include">
+        </childnode>
+        <childnode refid="3599" relation="include">
+        </childnode>
+        <childnode refid="3600" relation="include">
+        </childnode>
+        <childnode refid="3601" relation="include">
+        </childnode>
+        <childnode refid="3602" relation="include">
+        </childnode>
+        <childnode refid="3603" relation="include">
+        </childnode>
+      </node>
+      <node id="3666">
+        <label>vigra/contourcirculator.hxx</label>
+        <link refid="contourcirculator_8hxx_source"/>
+      </node>
+      <node id="3629">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="3650">
+        <label>vigra/python_utility.hxx</label>
+        <link refid="python__utility_8hxx_source"/>
+        <childnode refid="3614" relation="include">
+        </childnode>
+        <childnode refid="3651" relation="include">
+        </childnode>
+      </node>
+      <node id="3660">
+        <label>vigra/basicimage.hxx</label>
+        <link refid="basicimage_8hxx_source"/>
+        <childnode refid="3605" relation="include">
+        </childnode>
+        <childnode refid="3637" relation="include">
+        </childnode>
+        <childnode refid="3626" relation="include">
+        </childnode>
+        <childnode refid="3661" relation="include">
+        </childnode>
+        <childnode refid="3628" relation="include">
+        </childnode>
+      </node>
+      <node id="3647">
+        <label>vigra/box.hxx</label>
+        <link refid="box_8hxx_source"/>
+      </node>
+      <node id="3640">
+        <label>vigra/orientedtensorfilters.hxx</label>
+        <link refid="orientedtensorfilters_8hxx_source"/>
+      </node>
+      <node id="3632">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3633" relation="include">
+        </childnode>
+      </node>
+      <node id="3668">
+        <label>vigra/tensorutilities.hxx</label>
+        <link refid="tensorutilities_8hxx_source"/>
+      </node>
+      <node id="3638">
+        <label>vigra/basicgeometry.hxx</label>
+        <link refid="basicgeometry_8hxx_source"/>
+        <childnode refid="3573" relation="include">
+        </childnode>
+      </node>
+      <node id="3568">
+        <label>vigra/multi_array.hxx</label>
+        <link refid="multi__array_8hxx_source"/>
+        <childnode refid="3569" relation="include">
+        </childnode>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3605" relation="include">
+        </childnode>
+        <childnode refid="3606" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+        <childnode refid="3597" relation="include">
+        </childnode>
+        <childnode refid="3596" relation="include">
+        </childnode>
+        <childnode refid="3608" relation="include">
+        </childnode>
+        <childnode refid="3598" relation="include">
+        </childnode>
+        <childnode refid="3599" relation="include">
+        </childnode>
+        <childnode refid="3612" relation="include">
+        </childnode>
+        <childnode refid="3610" relation="include">
+        </childnode>
+        <childnode refid="3613" relation="include">
+        </childnode>
+        <childnode refid="3600" relation="include">
+        </childnode>
+        <childnode refid="3614" relation="include">
+        </childnode>
+        <childnode refid="3616" relation="include">
+        </childnode>
+        <childnode refid="3617" relation="include">
+        </childnode>
+        <childnode refid="3590" relation="include">
+        </childnode>
+        <childnode refid="3619" relation="include">
+        </childnode>
+        <childnode refid="3620" relation="include">
+        </childnode>
+        <childnode refid="3585" relation="include">
+        </childnode>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3586">
+        <label>vigra/invariant_features3D.hxx</label>
+        <link refid="invariant__features3D_8hxx_source"/>
+      </node>
+      <node id="3665">
+        <label>vigra/pixelneighborhood.hxx</label>
+        <link refid="pixelneighborhood_8hxx_source"/>
+        <childnode refid="3661" relation="include">
+        </childnode>
+        <childnode refid="3666" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3648" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3630" relation="include">
+        </childnode>
+        <childnode refid="3611" relation="include">
+        </childnode>
+      </node>
+      <node id="3583">
+        <label>vigra/affinegeometry.hxx</label>
+        <link refid="affinegeometry_8hxx_source"/>
+      </node>
+      <node id="3575">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="3655">
+        <label>vigra/initimage.hxx</label>
+        <link refid="initimage_8hxx_source"/>
+        <childnode refid="3654" relation="include">
+        </childnode>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3640" relation="include">
+        </childnode>
+      </node>
+      <node id="3576">
+        <label>vigra/quadprog.hxx</label>
+        <link refid="quadprog_8hxx_source"/>
+      </node>
+      <node id="3593">
+        <label>vigra/random_forest/rf_region.hxx</label>
+        <link refid="rf__region_8hxx_source"/>
+        <childnode refid="3592" relation="include">
+        </childnode>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3651">
+        <label>vigra/numpy_array_taggedshape.hxx</label>
+        <link refid="numpy__array__taggedshape_8hxx_source"/>
+        <childnode refid="3616" relation="include">
+        </childnode>
+        <childnode refid="3614" relation="include">
+        </childnode>
+      </node>
+      <node id="3633">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="3574">
+        <label>vigra/linear_algebra.hxx</label>
+        <link refid="linear__algebra_8hxx_source"/>
+      </node>
+      <node id="3565">
+        <label>vigra/iteratortags.hxx</label>
+        <link refid="iteratortags.hxx"/>
+        <childnode refid="3566" relation="include">
+        </childnode>
+        <childnode refid="3645" relation="include">
+        </childnode>
+      </node>
+      <node id="3664">
+        <label>vigra/separableconvolution.hxx</label>
+        <link refid="separableconvolution_8hxx_source"/>
+        <childnode refid="3639" relation="include">
+        </childnode>
+        <childnode refid="3625" relation="include">
+        </childnode>
+        <childnode refid="3632" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3598" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+        <childnode refid="3585" relation="include">
+        </childnode>
+      </node>
+      <node id="3609">
+        <label>vigra/localminmax.hxx</label>
+        <link refid="localminmax_8hxx_source"/>
+        <childnode refid="3610" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3611" relation="include">
+        </childnode>
+      </node>
+      <node id="3656">
+        <label>vigra/copyimage.hxx</label>
+        <link refid="copyimage_8hxx_source"/>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3605" relation="include">
+        </childnode>
+        <childnode refid="3657" relation="include">
+        </childnode>
+        <childnode refid="3638" relation="include">
+        </childnode>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3634" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+        <childnode refid="3612" relation="include">
+        </childnode>
+      </node>
+      <node id="3592">
+        <label>vigra/random_forest/rf_split.hxx</label>
+        <link refid="rf__split_8hxx_source"/>
+        <childnode refid="3578" relation="include">
+        </childnode>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3654">
+        <label>vigra/basicimageview.hxx</label>
+        <link refid="basicimageview_8hxx_source"/>
+        <childnode refid="3568" relation="include">
+        </childnode>
+        <childnode refid="3596" relation="include">
+        </childnode>
+      </node>
+      <node id="3657">
+        <label>vigra/imagecontainer.hxx</label>
+        <link refid="imagecontainer_8hxx_source"/>
+        <childnode refid="3570" relation="include">
+        </childnode>
+        <childnode refid="3631" relation="include">
+        </childnode>
+        <childnode refid="3634" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+      </node>
+      <node id="3635">
+        <label>vigra/gaborfilter.hxx</label>
+        <link refid="gaborfilter_8hxx_source"/>
+      </node>
+      <node id="3608">
+        <label>vigra/labelvolume.hxx</label>
+        <link refid="labelvolume_8hxx_source"/>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3580">
+        <label>vigra/random_forest_hdf5_impex.hxx</label>
+        <link refid="random__forest__hdf5__impex_8hxx_source"/>
+      </node>
+      <node id="3623">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="3624" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3630" relation="include">
+        </childnode>
+        <childnode refid="3603" relation="include">
+        </childnode>
+      </node>
+      <node id="3571">
+        <label>vigra/linear_solve.hxx</label>
+        <link refid="linear__solve_8hxx_source"/>
+        <childnode refid="3570" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3574" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3576" relation="include">
+        </childnode>
+        <childnode refid="3577" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+      </node>
+      <node id="3659">
+        <label>vigra/recursiveconvolution.hxx</label>
+        <link refid="recursiveconvolution_8hxx_source"/>
+        <childnode refid="3605" relation="include">
+        </childnode>
+        <childnode refid="3625" relation="include">
+        </childnode>
+        <childnode refid="3632" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+      </node>
+      <node id="3619">
+        <label>vigra/random_forest/rf_online_prediction_set.hxx</label>
+        <link refid="rf__online__prediction__set_8hxx_source"/>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3604">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="3613">
+        <label>vigra/multi_math.hxx</label>
+        <link refid="multi__math_8hxx_source"/>
+        <childnode refid="3585" relation="include">
+        </childnode>
+      </node>
+      <node id="3581">
+        <label>vigra/singular_value_decomposition.hxx</label>
+        <link refid="singular__value__decomposition_8hxx_source"/>
+        <childnode refid="3571" relation="include">
+        </childnode>
+        <childnode refid="3577" relation="include">
+        </childnode>
+        <childnode refid="3582" relation="include">
+        </childnode>
+      </node>
+      <node id="3642">
+        <label>vigra/labelimage.hxx</label>
+        <link refid="labelimage_8hxx_source"/>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3611" relation="include">
+        </childnode>
+      </node>
+      <node id="3652">
+        <label>vigra/utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="3653" relation="include">
+        </childnode>
+        <childnode refid="3655" relation="include">
+        </childnode>
+        <childnode refid="3656" relation="include">
+        </childnode>
+        <childnode refid="3622" relation="include">
+        </childnode>
+        <childnode refid="3636" relation="include">
+        </childnode>
+        <childnode refid="3658" relation="include">
+        </childnode>
+        <childnode refid="3659" relation="include">
+        </childnode>
+        <childnode refid="3660" relation="include">
+        </childnode>
+        <childnode refid="3657" relation="include">
+        </childnode>
+        <childnode refid="3663" relation="include">
+        </childnode>
+        <childnode refid="3626" relation="include">
+        </childnode>
+        <childnode refid="3664" relation="include">
+        </childnode>
+        <childnode refid="3639" relation="include">
+        </childnode>
+        <childnode refid="3632" relation="include">
+        </childnode>
+        <childnode refid="3665" relation="include">
+        </childnode>
+        <childnode refid="3627" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3642" relation="include">
+        </childnode>
+        <childnode refid="3667" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+        <childnode refid="3628" relation="include">
+        </childnode>
+        <childnode refid="3597" relation="include">
+        </childnode>
+        <childnode refid="3586" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3601" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3640" relation="include">
+        </childnode>
+        <childnode refid="3630" relation="include">
+        </childnode>
+        <childnode refid="3603" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+        <childnode refid="3629" relation="include">
+        </childnode>
+        <childnode refid="3668" relation="include">
+        </childnode>
+        <childnode refid="3644" relation="include">
+        </childnode>
+        <childnode refid="3588" relation="include">
+        </childnode>
+      </node>
+      <node id="3626">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="3572">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="3573" relation="include">
+        </childnode>
+      </node>
+      <node id="3588">
+        <label>vigra/wigner-matrix.hxx</label>
+        <link refid="wigner-matrix_8hxx_source"/>
+      </node>
+      <node id="3622">
+        <label>vigra/transformimage.hxx</label>
+        <link refid="transformimage_8hxx_source"/>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3631" relation="include">
+        </childnode>
+        <childnode refid="3634" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+      </node>
+      <node id="3612">
+        <label>vigra/multi_fft.hxx</label>
+        <link refid="multi__fft_8hxx_source"/>
+      </node>
+      <node id="3625">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="3626" relation="include">
+        </childnode>
+        <childnode refid="3627" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3628" relation="include">
+        </childnode>
+        <childnode refid="3629" relation="include">
+        </childnode>
+        <childnode refid="3585" relation="include">
+        </childnode>
+      </node>
+      <node id="3624">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="3625" relation="include">
+        </childnode>
+      </node>
+      <node id="3615">
+        <label>vigra/numpy_array_converters.hxx</label>
+        <link refid="numpy__array__converters_8hxx_source"/>
+      </node>
+      <node id="3669">
+        <label>vigra/codec.hxx</label>
+        <link refid="codec_8hxx_source"/>
+        <childnode refid="3646" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+      </node>
+      <node id="3641">
+        <label>vigra/distancetransform.hxx</label>
+        <link refid="distancetransform_8hxx_source"/>
+      </node>
+      <node id="3567">
+        <label>vigra/tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="3568" relation="include">
+        </childnode>
+        <childnode refid="3621" relation="include">
+        </childnode>
+        <childnode refid="3645" relation="include">
+        </childnode>
+        <childnode refid="3570" relation="include">
+        </childnode>
+        <childnode refid="3605" relation="include">
+        </childnode>
+        <childnode refid="3583" relation="include">
+        </childnode>
+        <childnode refid="3647" relation="include">
+        </childnode>
+        <childnode refid="3606" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+        <childnode refid="3586" relation="include">
+        </childnode>
+        <childnode refid="3587" relation="include">
+        </childnode>
+        <childnode refid="3648" relation="include">
+        </childnode>
+        <childnode refid="3649" relation="include">
+        </childnode>
+        <childnode refid="3598" relation="include">
+        </childnode>
+        <childnode refid="3613" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3650" relation="include">
+        </childnode>
+        <childnode refid="3588" relation="include">
+        </childnode>
+      </node>
+      <node id="3631">
+        <label>vigra/resampling_convolution.hxx</label>
+        <link refid="resampling__convolution_8hxx_source"/>
+        <childnode refid="3632" relation="include">
+        </childnode>
+      </node>
+      <node id="3573">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="3598">
+        <label>vigra/multi_convolution.hxx</label>
+        <link refid="multi__convolution_8hxx_source"/>
+      </node>
+      <node id="3637">
+        <label>vigra/stdimage.hxx</label>
+        <link refid="stdimage_8hxx_source"/>
+        <childnode refid="3638" relation="include">
+        </childnode>
+        <childnode refid="3639" relation="include">
+        </childnode>
+        <childnode refid="3624" relation="include">
+        </childnode>
+        <childnode refid="3632" relation="include">
+        </childnode>
+        <childnode refid="3631" relation="include">
+        </childnode>
+        <childnode refid="3627" relation="include">
+        </childnode>
+        <childnode refid="3641" relation="include">
+        </childnode>
+        <childnode refid="3572" relation="include">
+        </childnode>
+        <childnode refid="3642" relation="include">
+        </childnode>
+        <childnode refid="3634" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+        <childnode refid="3630" relation="include">
+        </childnode>
+        <childnode refid="3603" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+        <childnode refid="3629" relation="include">
+        </childnode>
+        <childnode refid="3611" relation="include">
+        </childnode>
+      </node>
+      <node id="3636">
+        <label>vigra/inspectimage.hxx</label>
+        <link refid="inspectimage_8hxx_source"/>
+        <childnode refid="3622" relation="include">
+        </childnode>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3607" relation="include">
+        </childnode>
+      </node>
+      <node id="3594">
+        <label>vigra/random_forest_deprec.hxx</label>
+        <link refid="random__forest__deprec_8hxx_source"/>
+      </node>
+      <node id="3620">
+        <label>vigra/sifImport.hxx</label>
+        <link refid="sifImport_8hxx_source"/>
+      </node>
+      <node id="3578">
+        <label>vigra/random_forest/rf_ridge_split.hxx</label>
+        <link refid="rf__ridge__split_8hxx_source"/>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3591">
+        <label>vigra/random_forest/rf_nodeproxy.hxx</label>
+        <link refid="rf__nodeproxy_8hxx_source"/>
+        <childnode refid="3590" relation="include">
+        </childnode>
+        <childnode refid="3592" relation="include">
+        </childnode>
+        <childnode refid="3578" relation="include">
+        </childnode>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3648">
+        <label>vigra/voxelneighborhood.hxx</label>
+        <link refid="voxelneighborhood_8hxx_source"/>
+        <childnode refid="3608" relation="include">
+        </childnode>
+        <childnode refid="3609" relation="include">
+        </childnode>
+        <childnode refid="3603" relation="include">
+        </childnode>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3582">
+        <label>vigra/unsupervised_decomposition.hxx</label>
+        <link refid="unsupervised__decomposition_8hxx_source"/>
+      </node>
+      <node id="3618">
+        <label>vigra/random_forest/rf_algorithm.hxx</label>
+        <link refid="rf__algorithm_8hxx_source"/>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3653">
+        <label>vigra/imageiterator.hxx</label>
+        <link refid="imageiterator_8hxx_source"/>
+        <childnode refid="3654" relation="include">
+        </childnode>
+        <childnode refid="3568" relation="include">
+        </childnode>
+      </node>
+      <node id="3579">
+        <label>vigra/random_forest.hxx</label>
+        <link refid="random__forest_8hxx_source"/>
+        <childnode refid="3580" relation="include">
+        </childnode>
+      </node>
+      <node id="3644">
+        <label>vigra/tiff.hxx</label>
+        <link refid="tiff_8hxx_source"/>
+      </node>
+      <node id="3646">
+        <label>vigra/imageinfo.hxx</label>
+        <link refid="imageinfo_8hxx_source"/>
+        <childnode refid="3607" relation="include">
+        </childnode>
+      </node>
+      <node id="3577">
+        <label>vigra/regression.hxx</label>
+        <link refid="regression_8hxx_source"/>
+        <childnode refid="3578" relation="include">
+        </childnode>
+      </node>
+      <node id="3589">
+        <label>vigra/matlab.hxx</label>
+        <link refid="matlab_8hxx_source"/>
+      </node>
+      <node id="3667">
+        <label>vigra/flatmorphology.hxx</label>
+        <link refid="flatmorphology_8hxx_source"/>
+      </node>
+      <node id="3661">
+        <label>vigra/cellimage.hxx</label>
+        <link refid="cellimage_8hxx_source"/>
+        <childnode refid="3662" relation="include">
+        </childnode>
+      </node>
+      <node id="3663">
+        <label>vigra/axistags.hxx</label>
+        <link refid="axistags_8hxx_source"/>
+        <childnode refid="3651" relation="include">
+        </childnode>
+      </node>
+      <node id="3621">
+        <label>vigra/rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="3568" relation="include">
+        </childnode>
+        <childnode refid="3622" relation="include">
+        </childnode>
+        <childnode refid="3636" relation="include">
+        </childnode>
+        <childnode refid="3637" relation="include">
+        </childnode>
+        <childnode refid="3643" relation="include">
+        </childnode>
+        <childnode refid="3613" relation="include">
+        </childnode>
+        <childnode refid="3644" relation="include">
+        </childnode>
+      </node>
+      <node id="3566">
+        <label>vigra/diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="3567" relation="include">
+        </childnode>
+        <childnode refid="3652" relation="include">
+        </childnode>
+        <childnode refid="3669" relation="include">
+        </childnode>
+        <childnode refid="3646" relation="include">
+        </childnode>
+        <childnode refid="3670" relation="include">
+        </childnode>
+        <childnode refid="3649" relation="include">
+        </childnode>
+      </node>
+      <node id="3590">
+        <label>vigra/random_forest/rf_decisionTree.hxx</label>
+        <link refid="rf__decisionTree_8hxx_source"/>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3670">
+        <label>vigra/interpolating_accessor.hxx</label>
+        <link refid="interpolating__accessor_8hxx_source"/>
+      </node>
+      <node id="3599">
+        <label>vigra/multi_distance.hxx</label>
+        <link refid="multi__distance_8hxx_source"/>
+        <childnode refid="3600" relation="include">
+        </childnode>
+      </node>
+      <node id="3585">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="3649">
+        <label>vigra/meshgrid.hxx</label>
+        <link refid="meshgrid_8hxx_source"/>
+      </node>
+      <node id="3645">
+        <label>vigra/multi_iterator.hxx</label>
+        <link refid="multi__iterator_8hxx_source"/>
+        <childnode refid="3568" relation="include">
+        </childnode>
+        <childnode refid="3606" relation="include">
+        </childnode>
+        <childnode refid="3646" relation="include">
+        </childnode>
+      </node>
+      <node id="3607">
+        <label>vigra/impex.hxx</label>
+        <link refid="impex_8hxx"/>
+        <childnode refid="3597" relation="include">
+        </childnode>
+        <childnode refid="3596" relation="include">
+        </childnode>
+        <childnode refid="3585" relation="include">
+        </childnode>
+      </node>
+      <node id="3600">
+        <label>vigra/multi_morphology.hxx</label>
+        <link refid="multi__morphology_8hxx_source"/>
+      </node>
+      <node id="3630">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="3603" relation="include">
+        </childnode>
+        <childnode refid="3611" relation="include">
+        </childnode>
+      </node>
+      <node id="3617">
+        <label>vigra/random_forest/splices.hxx</label>
+        <link refid="splices_8hxx_source"/>
+        <childnode refid="3618" relation="include">
+        </childnode>
+      </node>
+      <node id="3610">
+        <label>vigra/multi_localminmax.hxx</label>
+        <link refid="multi__localminmax_8hxx_source"/>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3603">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3628">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="3616">
+        <label>vigra/numpy_array_traits.hxx</label>
+        <link refid="numpy__array__traits_8hxx_source"/>
+        <childnode refid="3614" relation="include">
+        </childnode>
+      </node>
+      <node id="3662">
+        <label>vigra/cellconfigurations.hxx</label>
+        <link refid="cellconfigurations_8hxx_source"/>
+      </node>
+      <node id="3639">
+        <label>vigra/stdconvolution.hxx</label>
+        <link refid="stdconvolution_8hxx_source"/>
+        <childnode refid="3625" relation="include">
+        </childnode>
+        <childnode refid="3640" relation="include">
+        </childnode>
+      </node>
+      <node id="3611">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="3604" relation="include">
+        </childnode>
+      </node>
+      <node id="3584">
+        <label>vigra/eigensystem.hxx</label>
+        <link refid="eigensystem_8hxx_source"/>
+        <childnode refid="3574" relation="include">
+        </childnode>
+        <childnode refid="3585" relation="include">
+        </childnode>
+      </node>
+      <node id="3658">
+        <label>vigra/combineimages.hxx</label>
+        <link refid="combineimages_8hxx_source"/>
+        <childnode refid="3595" relation="include">
+        </childnode>
+        <childnode refid="3626" relation="include">
+        </childnode>
+        <childnode refid="3623" relation="include">
+        </childnode>
+        <childnode refid="3625" relation="include">
+        </childnode>
+        <childnode refid="3627" relation="include">
+        </childnode>
+        <childnode refid="3634" relation="include">
+        </childnode>
+        <childnode refid="3635" relation="include">
+        </childnode>
+        <childnode refid="3628" relation="include">
+        </childnode>
+        <childnode refid="3575" relation="include">
+        </childnode>
+      </node>
+      <node id="3627">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+      <node id="3601">
+        <label>vigra/multi_tensorutilities.hxx</label>
+        <link refid="multi__tensorutilities_8hxx_source"/>
+      </node>
+      <node id="3643">
+        <label>vigra/colorconversions.hxx</label>
+        <link refid="colorconversions_8hxx_source"/>
+      </node>
+      <node id="3606">
+        <label>vigra/coordinate_iterator.hxx</label>
+        <link refid="coordinate__iterator_8hxx_source"/>
+      </node>
+      <node id="3569">
+        <label>vigra/matrix.hxx</label>
+        <link refid="matrix_8hxx_source"/>
+        <childnode refid="3570" relation="include">
+        </childnode>
+        <childnode refid="3571" relation="include">
+        </childnode>
+        <childnode refid="3581" relation="include">
+        </childnode>
+        <childnode refid="3583" relation="include">
+        </childnode>
+        <childnode refid="3584" relation="include">
+        </childnode>
+        <childnode refid="3586" relation="include">
+        </childnode>
+        <childnode refid="3587" relation="include">
+        </childnode>
+        <childnode refid="3574" relation="include">
+        </childnode>
+        <childnode refid="3589" relation="include">
+        </childnode>
+        <childnode refid="3576" relation="include">
+        </childnode>
+        <childnode refid="3590" relation="include">
+        </childnode>
+        <childnode refid="3591" relation="include">
+        </childnode>
+        <childnode refid="3593" relation="include">
+        </childnode>
+        <childnode refid="3592" relation="include">
+        </childnode>
+        <childnode refid="3577" relation="include">
+        </childnode>
+        <childnode refid="3579" relation="include">
+        </childnode>
+        <childnode refid="3594" relation="include">
+        </childnode>
+        <childnode refid="3582" relation="include">
+        </childnode>
+        <childnode refid="3588" relation="include">
+        </childnode>
+      </node>
+      <node id="3602">
+        <label>vigra/random_forest/rf_visitors.hxx</label>
+        <link refid="rf__visitors_8hxx_source"/>
+        <childnode refid="3590" relation="include">
+        </childnode>
+        <childnode refid="3579" relation="include">
+        </childnode>
+      </node>
+      <node id="3597">
+        <label>vigra/hdf5impex.hxx</label>
+        <link refid="hdf5impex_8hxx_source"/>
+        <childnode refid="3580" relation="include">
+        </childnode>
+      </node>
+      <node id="3596">
+        <label>vigra/multi_impex.hxx</label>
+        <link refid="multi__impex_8hxx_source"/>
+        <childnode refid="3597" relation="include">
+        </childnode>
+      </node>
+      <node id="3614">
+        <label>vigra/numpy_array.hxx</label>
+        <link refid="numpy__array_8hxx_source"/>
+        <childnode refid="3615" relation="include">
+        </childnode>
+      </node>
+      <node id="3634">
+        <label>vigra/fftw3.hxx</label>
+        <link refid="fftw3_8hxx_source"/>
+        <childnode refid="3612" relation="include">
+        </childnode>
+        <childnode refid="3573" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structbidirectional__circulator__tag" prot="public">bidirectional_circulator_tag</innerclass>
+    <innerclass refid="structforward__circulator__tag" prot="public">forward_circulator_tag</innerclass>
+    <innerclass refid="structimage__traverser__tag" prot="public">image_traverser_tag</innerclass>
+    <innerclass refid="structmulti__dimensional__traverser__tag" prot="public">multi_dimensional_traverser_tag</innerclass>
+    <innerclass refid="structrandom__access__circulator__tag" prot="public">random_access_circulator_tag</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2003<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_ITERATORTAGS_HXX</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_ITERATORTAGS_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iterator&gt;</highlight><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>iterator<sp/>tags</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">image_traverser_tag<sp/>{};</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">multi_dimensional_traverser_tag<sp/>{};</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">forward_circulator_tag<sp/>{};</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">bidirectional_circulator_tag<sp/>{};</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">random_access_circulator_tag<sp/>{};</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>VIGRA_ITERATORTAGS_HXX<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/iteratortags.hxx"/>
+  </compounddef>
+</doxygen>

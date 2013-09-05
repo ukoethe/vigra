@@ -1,0 +1,1365 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__VigraImpex" kind="group">
+    <compoundname>VigraImpex</compoundname>
+    <title>Image Import/Export Facilities</title>
+    <innerclass refid="classvigra_1_1ImageExportInfo" prot="public">vigra::ImageExportInfo</innerclass>
+    <innerclass refid="classvigra_1_1ImageImportInfo" prot="public">vigra::ImageImportInfo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__VigraImpex_1ga699d3c8d33ff5566d33e9f7fab0bbcab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::auto_ptr&lt; Decoder &gt;</type>
+        <definition>std::auto_ptr&lt;Decoder&gt; vigra::decoder</definition>
+        <argsstring>(const ImageImportInfo &amp;info)</argsstring>
+        <name>decoder</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="554"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga2f6234c29599041dddbc98294c8956d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::auto_ptr&lt; Encoder &gt;</type>
+        <definition>std::auto_ptr&lt;Encoder&gt; vigra::encoder</definition>
+        <argsstring>(const ImageExportInfo &amp;info)</argsstring>
+        <name>encoder</name>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="368"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gaaf0cae512da12f1d26b97c7a714273fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportFloatingScalarImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>exportFloatingScalarImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Deprecated. </para>        </briefdescription>
+        <detaileddescription>
+<para>Use <ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member">exportImage()</ref> instead.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gaaf0cae512da12f1d26b97c7a714273fa" kindref="member" tooltip="Deprecated.">exportFloatingScalarImage</ref>(<sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageExportInfo<sp/>&amp;<sp/>info<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1009"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gaa2b65026803159fe2c882473d22fbff8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportFloatingScalarImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportFloatingScalarImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1014" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1012" bodyend="1016"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga5166c9bed97f5bc7532f4eafcea0d006" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportFloatingVectorImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>exportFloatingVectorImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Deprecated. </para>        </briefdescription>
+        <detaileddescription>
+<para>Use <ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member">exportImage()</ref> instead.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga5166c9bed97f5bc7532f4eafcea0d006" kindref="member" tooltip="Deprecated.">exportFloatingVectorImage</ref>(<sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageExportInfo<sp/>&amp;<sp/>info<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="961"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga7fa5800d09241a3c04df521d7b016c10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportFloatingVectorImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportFloatingVectorImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="966" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="964" bodyend="968"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>exportImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Write an image, given an <ref refid="classvigra_1_1ImageExportInfo" kindref="compound">vigra::ImageExportInfo</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para>If the file format to be exported to supports the pixel type of the source image, the pixel type will be kept (e.g. <computeroutput>float</computeroutput> can be stored as TIFF without conversion, in contrast to most other image export toolkits). Otherwise, the pixel values are transformed to the range 0.255 and converted to <computeroutput>unsigned char</computeroutput>. Currently, the following file formats are supported. The pixel types given in brackets are those that are written without conversion:</para><para><variablelist>
+<varlistentry><term>&quot;BMP&quot;</term></varlistentry>
+<listitem><para>Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB). </para></listitem>
+<varlistentry><term>&quot;GIF&quot;</term></varlistentry>
+<listitem><para>CompuServe graphics interchange format; 8-bit color (pixel types: UINT8 as gray and RGB). </para></listitem>
+<varlistentry><term>&quot;JPEG&quot;</term></varlistentry>
+<listitem><para>Joint Photographic Experts Group JFIF format; compressed 24-bit color (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed) </para></listitem>
+<varlistentry><term>&quot;PNG&quot;</term></varlistentry>
+<listitem><para>Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels). (only available if libpng is installed) </para></listitem>
+<varlistentry><term>&quot;PBM&quot;</term></varlistentry>
+<listitem><para>Portable bitmap format (black and white). </para></listitem>
+<varlistentry><term>&quot;PGM&quot;</term></varlistentry>
+<listitem><para>Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)). </para></listitem>
+<varlistentry><term>&quot;PNM&quot;</term></varlistentry>
+<listitem><para>Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB). </para></listitem>
+<varlistentry><term>&quot;PPM&quot;</term></varlistentry>
+<listitem><para>Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB). </para></listitem>
+<varlistentry><term>&quot;SUN&quot;</term></varlistentry>
+<listitem><para>SUN Rasterfile (pixel types: UINT8 as gray and RGB). </para></listitem>
+<varlistentry><term>&quot;TIFF&quot;</term></varlistentry>
+<listitem><para>Tagged Image File Format (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels). (only available if libtiff is installed.) </para></listitem>
+<varlistentry><term>&quot;VIFF&quot;</term></varlistentry>
+<listitem><para>Khoros Visualization image file (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels). </para></listitem>
+</variablelist>
+</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member" tooltip="Write an image, given an vigra::ImageExportInfo object.">exportImage</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageExportInfo<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>info)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member" tooltip="Write an image, given an vigra::ImageExportInfo object.">exportImage</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageExportInfo<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>info)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>out(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>write<sp/>as<sp/>JPEG<sp/>image,<sp/>using<sp/>compression<sp/>quality<sp/>80</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::exportImage(srcImageRange(out),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ImageExportInfo" kindref="compound" tooltip="Argument object for the function exportImage().">vigra::ImageExportInfo</ref>(</highlight><highlight class="stringliteral">&quot;myimage.jpg&quot;</highlight><highlight class="normal">).setCompression(</highlight><highlight class="stringliteral">&quot;80&quot;</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>force<sp/>it<sp/>to<sp/>a<sp/>particular<sp/>pixel<sp/>type<sp/>(the<sp/>pixel<sp/>type<sp/>must<sp/>be<sp/>supported<sp/>by<sp/>the</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>desired<sp/>image<sp/>file<sp/>format,<sp/>otherwise<sp/>an<sp/>\ref<sp/>vigra::PreconditionViolation<sp/>exception<sp/>will<sp/>be<sp/>thrown)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member" tooltip="Write an image, given an vigra::ImageExportInfo object.">vigra::exportImage</ref>(srcImageRange(out),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ImageExportInfo" kindref="compound" tooltip="Argument object for the function exportImage().">vigra::ImageExportInfo</ref>(</highlight><highlight class="stringliteral">&quot;myINT16image.tif&quot;</highlight><highlight class="normal">).setPixelType(</highlight><highlight class="stringliteral">&quot;INT16&quot;</highlight><highlight class="normal">));</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><itemizedlist>
+<listitem>
+<para>the image file must be writable. </para></listitem>
+<listitem>
+<para>the file type must be one of the supported file types.</para><para></para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1130"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gaccc055e0473888be40ba4e8f8265aaab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1133" bodyend="1147"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gae0ff0432b018ff4b4312fd12f8567a68" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1151" bodyend="1155"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga88ba568f2ed881fe87f9bfaac68a2941" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info, VigraFalseType)</argsstring>
+        <name>exportImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1158" bodyend="1203"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga170d1d9b064991dd41b8d16b631423f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info, VigraTrueType)</argsstring>
+        <name>exportImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1206" bodyend="1250"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gad0c50ae2e4b38faddbc8e9fed0008fd1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportIntegralScalarImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>exportIntegralScalarImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Deprecated. </para>        </briefdescription>
+        <detaileddescription>
+<para>Use <ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member">exportImage()</ref> instead.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gad0c50ae2e4b38faddbc8e9fed0008fd1" kindref="member" tooltip="Deprecated.">exportIntegralScalarImage</ref>(<sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageExportInfo<sp/>&amp;<sp/>info<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1033"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga3b5a0c8ecbf1ace3e0ecfcf970699d5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportIntegralScalarImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportIntegralScalarImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="1038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="1036" bodyend="1040"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga07094f086177c224ea03ae6b93f52c8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportIntegralVectorImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>exportIntegralVectorImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Deprecated. </para>        </briefdescription>
+        <detaileddescription>
+<para>Use <ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member">exportImage()</ref> instead.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga07094f086177c224ea03ae6b93f52c8e" kindref="member" tooltip="Deprecated.">exportIntegralVectorImage</ref>(<sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sget,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageExportInfo<sp/>&amp;<sp/>info<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="985"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga8ef6633c2c7ea2814cc96f189f1ad799" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportIntegralVectorImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sget, const ImageExportInfo &amp;info)</argsstring>
+        <name>exportIntegralVectorImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sget</declname>
+        </param>
+        <param>
+          <type>const ImageExportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="990" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="988" bodyend="992"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gacdb09d8057559d89daf02641924d1e3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string vigra::impexListExtensions</definition>
+        <argsstring>()</argsstring>
+        <name>impexListExtensions</name>
+        <briefdescription>
+<para>List the file extension VIGRA understands. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is useful for creating file dialogs that only list image files VIGRA can actually import.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="imageinfo_8hxx_source" kindref="compound">vigra/imageinfo.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;supported<sp/>extensions:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__VigraImpex_1gacdb09d8057559d89daf02641924d1e3b" kindref="member" tooltip="List the file extension VIGRA understands.">vigra::impexListExtensions</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="100"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga1f42a533f86021968b8ca4d9d9644279" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string vigra::impexListFormats</definition>
+        <argsstring>()</argsstring>
+        <name>impexListFormats</name>
+        <briefdescription>
+<para>List the image formats VIGRA can read and write. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is useful for creating error messages if VIGRA encounters an image format it doesn&apos;t recognize.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="imageinfo_8hxx_source" kindref="compound">vigra/imageinfo.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;supported<sp/>formats:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__VigraImpex_1ga1f42a533f86021968b8ca4d9d9644279" kindref="member" tooltip="List the image formats VIGRA can read and write.">vigra::impexListFormats</ref>()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="83"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>importImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Read the image specified by the given <ref refid="classvigra_1_1ImageImportInfo" kindref="compound">vigra::ImageImportInfo</ref> object. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member" tooltip="Read the image specified by the given vigra::ImageImportInfo object.">importImage</ref>(ImageImportInfo<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>image,<sp/>ImageIterator<sp/>iter,<sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member" tooltip="Read the image specified by the given vigra::ImageImportInfo object.">importImage</ref>(ImageImportInfo<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>image,<sp/>pair&lt;ImageIterator,<sp/>Accessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1ImageImportInfo" kindref="compound" tooltip="Argument object for the function importImage().">vigra::ImageImportInfo</ref><sp/>info(</highlight><highlight class="stringliteral">&quot;myimage.gif&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(info.isGrayscale())</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>byte<sp/>image<sp/>of<sp/>appropriate<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>in(info.width(),<sp/>info.height());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member" tooltip="Read the image specified by the given vigra::ImageImportInfo object.">vigra::importImage</ref>(info,<sp/>destImage(in));<sp/></highlight><highlight class="comment">//<sp/>read<sp/>the<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>byte<sp/>RGB<sp/>image<sp/>of<sp/>appropriate<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>in(info.width(),<sp/>info.height());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member" tooltip="Read the image specified by the given vigra::ImageImportInfo object.">vigra::importImage</ref>(info,<sp/>destImage(in));<sp/></highlight><highlight class="comment">//<sp/>read<sp/>the<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><itemizedlist>
+<listitem>
+<para>the image file must be readable </para></listitem>
+<listitem>
+<para>the file type must be one of</para><para><variablelist>
+<varlistentry><term>&quot;BMP&quot;</term></varlistentry>
+<listitem><para>Microsoft Windows bitmap image file. </para></listitem>
+<varlistentry><term>&quot;EXR&quot;</term></varlistentry>
+<listitem><para>OpenEXR high dynamic range image format. (only available if libopenexr is installed) </para></listitem>
+<varlistentry><term>&quot;GIF&quot;</term></varlistentry>
+<listitem><para>CompuServe graphics interchange format; 8-bit color. </para></listitem>
+<varlistentry><term>&quot;HDR&quot;</term></varlistentry>
+<listitem><para>Radiance RGBE high dynamic range image format. </para></listitem>
+<varlistentry><term>&quot;JPEG&quot;</term></varlistentry>
+<listitem><para>Joint Photographic Experts Group JFIF format; compressed 24-bit color (only available if libjpeg is installed). </para></listitem>
+<varlistentry><term>&quot;PNG&quot;</term></varlistentry>
+<listitem><para>Portable Network Graphic (only available if libpng is installed). </para></listitem>
+<varlistentry><term>&quot;PBM&quot;</term></varlistentry>
+<listitem><para>Portable bitmap format (black and white). </para></listitem>
+<varlistentry><term>&quot;PGM&quot;</term></varlistentry>
+<listitem><para>Portable graymap format (gray scale). </para></listitem>
+<varlistentry><term>&quot;PNM&quot;</term></varlistentry>
+<listitem><para>Portable anymap. </para></listitem>
+<varlistentry><term>&quot;PPM&quot;</term></varlistentry>
+<listitem><para>Portable pixmap format (color). </para></listitem>
+<varlistentry><term>&quot;SUN&quot;</term></varlistentry>
+<listitem><para>SUN Rasterfile. </para></listitem>
+<varlistentry><term>&quot;TIFF&quot;</term></varlistentry>
+<listitem><para>Tagged Image File Format. (only available if libtiff is installed.) </para></listitem>
+<varlistentry><term>&quot;VIFF&quot;</term></varlistentry>
+<listitem><para>Khoros Visualization image file. </para></listitem>
+</variablelist>
+</para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="561"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga846bb714ce6987c27ec406b8b6ca5400" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, ImageIterator iter, Accessor a)</argsstring>
+        <name>importImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="564" bodyend="568"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga9ccf8d2304724d866f4a330f7df75b9d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, pair&lt; ImageIterator, Accessor &gt; dest)</argsstring>
+        <name>importImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator, Accessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="571" bodyend="574"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gab6ea7a9458ef821fd52958e931851437" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, ImageIterator iter, Accessor a, VigraFalseType)</argsstring>
+        <name>importImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="578" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="577" bodyend="580"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga1bf6851efd0e5497be8b6b497f7bd589" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, ImageIterator iter, Accessor a, VigraTrueType)</argsstring>
+        <name>importImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="584" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="583" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga7b54c94e4545dba40c2e97e5f827fbab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importScalarImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>importScalarImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>used for reading images of scalar type, such as integer and float grayscale. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga7b54c94e4545dba40c2e97e5f827fbab" kindref="member" tooltip="used for reading images of scalar type, such as integer and float grayscale.">importScalarImage</ref>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageImportInfo<sp/>&amp;<sp/>info,<sp/>ImageIterator<sp/>iter,<sp/>Accessor<sp/>a<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Parameters:</bold></para><para><variablelist>
+<varlistentry><term><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></term></varlistentry>
+<listitem><para>the image iterator type for the destination image </para></listitem>
+<varlistentry><term>Accessor</term></varlistentry>
+<listitem><para>the image accessor type for the destination image </para></listitem>
+<varlistentry><term>info</term></varlistentry>
+<listitem><para>user supplied image import information </para></listitem>
+<varlistentry><term>iter</term></varlistentry>
+<listitem><para>image iterator referencing the upper left pixel of the destination image </para></listitem>
+<varlistentry><term>a</term></varlistentry>
+<listitem><para>image accessor for the destination image </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="448"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gafd1c449c9ac89aa808358d4a7fe3bbe7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importScalarImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, ImageIterator iter, Accessor a)</argsstring>
+        <name>importScalarImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="452" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="451" bodyend="475"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga5af46483ee518d397da0f1a5c7e9bcb4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importVectorImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>importVectorImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>used for reading images of vector type, such as integer of float rgb. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga5af46483ee518d397da0f1a5c7e9bcb4" kindref="member" tooltip="used for reading images of vector type, such as integer of float rgb.">importVectorImage</ref>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageImportInfo<sp/>&amp;<sp/>info,<sp/>ImageIterator<sp/>iter,<sp/>Accessor<sp/>a<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Parameters:</bold></para><para><variablelist>
+<varlistentry><term><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></term></varlistentry>
+<listitem><para>the image iterator type for the destination image </para></listitem>
+<varlistentry><term>Accessor</term></varlistentry>
+<listitem><para>the image accessor type for the destination image </para></listitem>
+<varlistentry><term>info</term></varlistentry>
+<listitem><para>user supplied image import information </para></listitem>
+<varlistentry><term>iter</term></varlistentry>
+<listitem><para>image iterator referencing the upper left pixel of the destination image </para></listitem>
+<varlistentry><term>a</term></varlistentry>
+<listitem><para>image accessor for the destination image </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="394"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga861c915684d8a845091fc6062dcf344b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importVectorImage</definition>
+        <argsstring>(const ImageImportInfo &amp;info, ImageIterator iter, Accessor a)</argsstring>
+        <name>importVectorImage</name>
+        <param>
+          <type>const ImageImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="398" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="397" bodyend="421"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gad4a8e5a893f386a859e7f26748db025d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool vigra::isImage</definition>
+        <argsstring>(char const *filename)</argsstring>
+        <name>isImage</name>
+        <param>
+          <type>char const *</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+<para>Test whether a file is an image format known to VIGRA. </para>        </briefdescription>
+        <detaileddescription>
+<para>This checks the first few bytes of the file and compares them with the &quot;magic strings&quot; of each recognized image format.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="imageinfo_8hxx_source" kindref="compound">vigra/imageinfo.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;is<sp/>image:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="group__VigraImpex_1gad4a8e5a893f386a859e7f26748db025d" kindref="member" tooltip="Test whether a file is an image format known to VIGRA.">vigra::isImage</ref>(</highlight><highlight class="stringliteral">&quot;foo.bmp&quot;</highlight><highlight class="normal">)<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="117"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gaabad5bde546d751442e4808e4131a914" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::read_band</definition>
+        <argsstring>(Decoder *dec, ImageIterator ys, Accessor a, SrcValueType)</argsstring>
+        <name>read_band</name>
+        <param>
+          <type>Decoder *</type>
+          <declname>dec</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ys</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+        </param>
+        <briefdescription>
+<para>used for reading bands after the source data type has been figured out. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValueType<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gaabad5bde546d751442e4808e4131a914" kindref="member" tooltip="used for reading bands after the source data type has been figured out.">read_band</ref>(<sp/>Decoder<sp/>*<sp/>dec,<sp/>ImageIterator<sp/>ys,<sp/>Accessor<sp/>a,<sp/>SrcValueType<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dec</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>decoder object through which the source data will be accessed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ys</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the upper left pixel of the destination image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image accessor for the destination image </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="349" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="348" bodyend="367"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga3dd74723fb65e5e46435219350399c5c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::read_bands</definition>
+        <argsstring>(Decoder *dec, ImageIterator ys, Accessor a, SrcValueType)</argsstring>
+        <name>read_bands</name>
+        <param>
+          <type>Decoder *</type>
+          <declname>dec</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ys</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+        </param>
+        <briefdescription>
+<para>used for reading bands after the source data type has been figured out. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValueType<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga3dd74723fb65e5e46435219350399c5c" kindref="member" tooltip="used for reading bands after the source data type has been figured out.">read_bands</ref>(<sp/>Decoder<sp/>*<sp/>dec,<sp/>ImageIterator<sp/>ys,<sp/>Accessor<sp/>a,<sp/>SrcValueType<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dec</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>decoder object through which the source data will be accessed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ys</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the upper left pixel of the destination image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image accessor for the destination image </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="102" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga2e8a87bf25435f97290fd45cd8a4dde7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBType</type>
+          </param>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::read_bands</definition>
+        <argsstring>(Decoder *dec, ImageIterator ys, RGBAccessor&lt; RGBType &gt; a, SrcValueType)</argsstring>
+        <name>read_bands</name>
+        <param>
+          <type>Decoder *</type>
+          <declname>dec</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ys</declname>
+        </param>
+        <param>
+          <type>RGBAccessor&lt; RGBType &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="183" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="181" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga0e85892728bef4cb821a0ca08cbeed1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class ComponentType</type>
+          </param>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::read_bands</definition>
+        <argsstring>(Decoder *dec, ImageIterator ys, VectorAccessor&lt; TinyVector&lt; ComponentType, 3 &gt; &gt; a, SrcValueType)</argsstring>
+        <name>read_bands</name>
+        <param>
+          <type>Decoder *</type>
+          <declname>dec</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ys</declname>
+        </param>
+        <param>
+          <type>VectorAccessor&lt; TinyVector&lt; ComponentType, 3 &gt; &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="231" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="229" bodyend="272"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga2a3dcc1e7cdfc6f639692b848eb92512" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class ComponentType</type>
+          </param>
+          <param>
+            <type>class SrcValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::read_bands</definition>
+        <argsstring>(Decoder *dec, ImageIterator ys, VectorAccessor&lt; TinyVector&lt; ComponentType, 4 &gt; &gt; a, SrcValueType)</argsstring>
+        <name>read_bands</name>
+        <param>
+          <type>Decoder *</type>
+          <declname>dec</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ys</declname>
+        </param>
+        <param>
+          <type>VectorAccessor&lt; TinyVector&lt; ComponentType, 4 &gt; &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>SrcValueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="280" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="278" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1gadd972a56822e1d9f28be35e66f12fef5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class DstValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::write_band</definition>
+        <argsstring>(Encoder *enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)</argsstring>
+        <name>write_band</name>
+        <param>
+          <type>Encoder *</type>
+          <declname>enc</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>DstValueType</type>
+        </param>
+        <briefdescription>
+<para>used for writing bands after the source data type has been figured out. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DstValueType<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1gadd972a56822e1d9f28be35e66f12fef5" kindref="member" tooltip="used for writing bands after the source data type has been figured out.">write_band</ref>(<sp/>Encoder<sp/>*<sp/>enc,<sp/>ImageIterator<sp/>ul,<sp/>ImageIterator<sp/>lr,<sp/>Accessor<sp/>a,<sp/>DstValueType<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>encoder object through which the destination data will be accessed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ul</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the upper left pixel of the source image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the lower right pixel of the source image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image accessor for the source image </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="785" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="784" bodyend="812"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga6eaa57c0aaf50722fd89b8a7a924442a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class DstValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::write_bands</definition>
+        <argsstring>(Encoder *enc, ImageIterator ul, ImageIterator lr, Accessor a, DstValueType)</argsstring>
+        <name>write_bands</name>
+        <param>
+          <type>Encoder *</type>
+          <declname>enc</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>DstValueType</type>
+        </param>
+        <briefdescription>
+<para>used for writing bands after the source data type has been figured out. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="impex_8hxx" kindref="compound">vigra/impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DstValueType<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__VigraImpex_1ga6eaa57c0aaf50722fd89b8a7a924442a" kindref="member" tooltip="used for writing bands after the source data type has been figured out.">write_bands</ref>(<sp/>Encoder<sp/>*<sp/>enc,<sp/>ImageIterator<sp/>ul,<sp/>ImageIterator<sp/>lr,<sp/>Accessor<sp/>a,<sp/>DstValueType<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>enc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>encoder object through which the destination data will be accessed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ul</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the upper left pixel of the source image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image iterator referencing the lower right pixel of the source image </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>image accessor for the source image </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="610" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="609" bodyend="731"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraImpex_1ga015247e1eaa268d736a7692bb7354453" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MArray</type>
+          </param>
+          <param>
+            <type>class DstValueType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::write_bands</definition>
+        <argsstring>(Encoder *enc, MArray const &amp;array, DstValueType)</argsstring>
+        <name>write_bands</name>
+        <param>
+          <type>Encoder *</type>
+          <declname>enc</declname>
+        </param>
+        <param>
+          <type>MArray const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>DstValueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" line="735" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/impex.hxx" bodystart="734" bodyend="761"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>supports GIF, TIFF, JPEG, BMP, EXR, HDR, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

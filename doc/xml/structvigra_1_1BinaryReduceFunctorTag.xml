@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1BinaryReduceFunctorTag" kind="struct" prot="public">
+    <compoundname>vigra::BinaryReduceFunctorTag</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">InitializerTag</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">BinaryAnalyserTag</basecompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="59" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="57" bodyend="59"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

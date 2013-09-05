@@ -1,0 +1,2546 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FourierTransform" kind="group">
+    <compoundname>FourierTransform</compoundname>
+    <title>Fast Fourier Transform</title>
+    <innerclass refid="classvigra_1_1FFTWConvolvePlan" prot="public">vigra::FFTWConvolvePlan</innerclass>
+    <innerclass refid="classvigra_1_1FFTWPlan" prot="public">vigra::FFTWPlan</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>applyFourierFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply a filter (defined in the frequency domain) to an image. </para>        </briefdescription>
+        <detaileddescription>
+<para>After transferring the image into the frequency domain, it is multiplied pixel-wise with the filter and transformed back. The result is put into the given destination image which must have the right size. The result will be normalized to compensate for the two FFTs.</para><para>If the destination image is scalar, only the real part of the result image is retained. In this case, you are responsible for choosing a filter image which ensures a zero imaginary part of the result (e.g. use a real, even symmetric filter image, or a purely imaginary, odd symmetric one).</para><para>The DC entry of the filter must be in the upper left, which is the position where FFTW expects it (see <ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member">moveDCToUpperLeft()</ref>).</para><para>See also <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> for corresponding functionality on the basis of the <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> interface.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FilterImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FilterAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member" tooltip="Apply a filter (defined in the frequency domain) to an image.">applyFourierFilter</ref>(SrcImageIterator<sp/>srcUpperLeft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>srcLowerRight,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>FilterImageIterator<sp/>filterUpperLeft,<sp/>FilterAccessor<sp/>fa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>destUpperLeft,<sp/>DestAccessor<sp/>da);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FilterImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FilterAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member" tooltip="Apply a filter (defined in the frequency domain) to an image.">applyFourierFilter</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;FilterImageIterator,<sp/>FilterAccessor&gt;<sp/>filter,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>Gaussian<sp/>filter<sp/>in<sp/>Fourier<sp/>space</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>gaussFilter(w,<sp/>h),<sp/>filter(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y=0;<sp/>y&lt;h;<sp/>++y)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x=0;<sp/>x&lt;w;<sp/>++x)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xx<sp/>=<sp/>float(x<sp/>-<sp/>w<sp/>/<sp/>2)<sp/>/<sp/>w;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>yy<sp/>=<sp/>float(y<sp/>-<sp/>h<sp/>/<sp/>2)<sp/>/<sp/>h;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gaussFilter(x,y)<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(-(xx*xx<sp/>+<sp/>yy*yy)<sp/>/<sp/>2.0<sp/>*<sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>applyFourierFilter()<sp/>expects<sp/>the<sp/>filter&apos;s<sp/>DC<sp/>in<sp/>the<sp/>upper<sp/>left</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image&amp;#39;s upper left...">moveDCToUpperLeft</ref>(srcImageRange(gaussFilter),<sp/>destImage(filter));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FFTWComplexImage</ref><sp/>result(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member" tooltip="Apply a filter (defined in the frequency domain) to an image.">vigra::applyFourierFilter</ref>(srcImageRange(image),<sp/>srcImage(filter),<sp/>result);</highlight></codeline>
+</programlisting></para><para>For inspection of the result, <ref refid="classvigra_1_1FFTWMagnitudeAccessor" kindref="compound">FFTWMagnitudeAccessor</ref> might be useful. If you want to apply the same filter repeatedly, it may be more efficient to use the FFTW functions directly with FFTW plans optimized for good performance. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2073"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga8644eff8abc5f05db2c2234a9fc75571" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class FilterImageIterator</type>
+          </param>
+          <param>
+            <type>class FilterAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilter</definition>
+        <argsstring>(SrcImageIterator srcUpperLeft, SrcImageIterator srcLowerRight, SrcAccessor sa, FilterImageIterator filterUpperLeft, FilterAccessor fa, DestImageIterator destUpperLeft, DestAccessor da)</argsstring>
+        <name>applyFourierFilter</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>FilterImageIterator</type>
+          <declname>filterUpperLeft</declname>
+        </param>
+        <param>
+          <type>FilterAccessor</type>
+          <declname>fa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2082" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2078" bodyend="2096"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga6478e42e2a90fc98c43d1e3f5b566a43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FilterImageIterator</type>
+          </param>
+          <param>
+            <type>class FilterAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilter</definition>
+        <argsstring>(FFTWComplexImage::const_traverser srcUpperLeft, FFTWComplexImage::const_traverser srcLowerRight, FFTWComplexImage::ConstAccessor sa, FilterImageIterator filterUpperLeft, FilterAccessor fa, DestImageIterator destUpperLeft, DestAccessor da)</argsstring>
+        <name>applyFourierFilter</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>FilterImageIterator</type>
+          <declname>filterUpperLeft</declname>
+        </param>
+        <param>
+          <type>FilterAccessor</type>
+          <declname>fa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2101" bodyend="2127"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga5200b00d4d4728989ba92bec37d507a1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class FilterImageIterator</type>
+          </param>
+          <param>
+            <type>class FilterAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilter</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; FilterImageIterator, FilterAccessor &gt; filter, pair&lt; DestImageIterator, DestAccessor &gt; dest)</argsstring>
+        <name>applyFourierFilter</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; FilterImageIterator, FilterAccessor &gt;</type>
+          <declname>filter</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2133" bodyend="2140"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterFamily</definition>
+        <argsstring>(...)</argsstring>
+        <name>applyFourierFilterFamily</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply an array of filters (defined in the frequency domain) to an image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This provides the same functionality as <ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member">applyFourierFilter()</ref>, but applying several filters at once allows to avoid repeated Fourier transforms of the source image.</para><para>Filters and result images must be stored in <ref refid="classvigra_1_1ImageArray" kindref="compound">vigra::ImageArray</ref> data structures. In contrast to <ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member">applyFourierFilter()</ref>, this function adjusts the size of the result images and the the length of the array.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FilterType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" kindref="member" tooltip="Apply an array of filters (defined in the frequency domain) to an image.">applyFourierFilterFamily</ref>(SrcImageIterator<sp/>srcUpperLeft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>srcLowerRight,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageArray&lt;FilterType&gt;<sp/>&amp;filters,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageArray&lt;FFTWComplexImage&gt;<sp/>&amp;results)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FilterType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" kindref="member" tooltip="Apply an array of filters (defined in the frequency domain) to an image.">applyFourierFilterFamily</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ImageArray&lt;FilterType&gt;<sp/>&amp;filters,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageArray&lt;FFTWComplexImage&gt;<sp/>&amp;results)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>assuming<sp/>the<sp/>presence<sp/>of<sp/>a<sp/>real-valued<sp/>image<sp/>named<sp/>&quot;image&quot;<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>be<sp/>filtered<sp/>in<sp/>this<sp/>example</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageArray" kindref="compound" tooltip="Fundamental class template for arrays of equal-sized images.">vigra::ImageArray&lt;vigra::FImage&gt;</ref><sp/>filters(16,<sp/>image.size());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;filters.size();<sp/>i++)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>some<sp/>meaningful<sp/>filters<sp/>here</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>createMyFilterOfScale(i,<sp/>destImage(filters[i]));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageArray" kindref="compound" tooltip="Fundamental class template for arrays of equal-sized images.">vigra::ImageArray&lt;vigra::FFTWComplexImage&gt;</ref><sp/>results();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" kindref="member" tooltip="Apply an array of filters (defined in the frequency domain) to an image.">vigra::applyFourierFilterFamily</ref>(srcImageRange(image),<sp/>filters,<sp/>results);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2289"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga3b6b62d9dfb6c4d3dc5ebebe08323be4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class FilterType</type>
+          </param>
+          <param>
+            <type>class DestImage</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterFamily</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, const ImageArray&lt; FilterType &gt; &amp;filters, ImageArray&lt; DestImage &gt; &amp;results)</argsstring>
+        <name>applyFourierFilterFamily</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>const ImageArray&lt; FilterType &gt; &amp;</type>
+          <declname>filters</declname>
+        </param>
+        <param>
+          <type>ImageArray&lt; DestImage &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2297" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2294" bodyend="2300"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga360b7297b6850a3da64f51ef387d4414" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class FilterType</type>
+          </param>
+          <param>
+            <type>class DestImage</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterFamily</definition>
+        <argsstring>(SrcImageIterator srcUpperLeft, SrcImageIterator srcLowerRight, SrcAccessor sa, const ImageArray&lt; FilterType &gt; &amp;filters, ImageArray&lt; DestImage &gt; &amp;results)</argsstring>
+        <name>applyFourierFilterFamily</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>const ImageArray&lt; FilterType &gt; &amp;</type>
+          <declname>filters</declname>
+        </param>
+        <param>
+          <type>ImageArray&lt; DestImage &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2308" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2304" bodyend="2319"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga9ce5930dccdaeb8afcd6b49e3a344621" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FilterType</type>
+          </param>
+          <param>
+            <type>class DestImage</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterFamily</definition>
+        <argsstring>(FFTWComplexImage::const_traverser srcUpperLeft, FFTWComplexImage::const_traverser srcLowerRight, FFTWComplexImage::ConstAccessor sa, const ImageArray&lt; FilterType &gt; &amp;filters, ImageArray&lt; DestImage &gt; &amp;results)</argsstring>
+        <name>applyFourierFilterFamily</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>const ImageArray&lt; FilterType &gt; &amp;</type>
+          <declname>filters</declname>
+        </param>
+        <param>
+          <type>ImageArray&lt; DestImage &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2323" bodyend="2347"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga42445b67a3726be1dadca9c83d06a69b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FilterType</type>
+          </param>
+          <param>
+            <type>class DestImage</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterFamilyImpl</definition>
+        <argsstring>(FFTWComplexImage::const_traverser srcUpperLeft, FFTWComplexImage::const_traverser srcLowerRight, FFTWComplexImage::ConstAccessor sa, const ImageArray&lt; FilterType &gt; &amp;filters, ImageArray&lt; DestImage &gt; &amp;results)</argsstring>
+        <name>applyFourierFilterFamilyImpl</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>const ImageArray&lt; FilterType &gt; &amp;</type>
+          <declname>filters</declname>
+        </param>
+        <param>
+          <type>ImageArray&lt; DestImage &gt; &amp;</type>
+          <declname>results</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2356" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2350" bodyend="2405"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga768c02f3f4d01a77d33b0e62630f2737" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FilterImageIterator</type>
+          </param>
+          <param>
+            <type>class FilterAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterImpl</definition>
+        <argsstring>(FFTWComplexImage::const_traverser srcUpperLeft, FFTWComplexImage::const_traverser srcLowerRight, FFTWComplexImage::ConstAccessor, FilterImageIterator filterUpperLeft, FilterAccessor fa, DestImageIterator destUpperLeft, DestAccessor da)</argsstring>
+        <name>applyFourierFilterImpl</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+        </param>
+        <param>
+          <type>FilterImageIterator</type>
+          <declname>filterUpperLeft</declname>
+        </param>
+        <param>
+          <type>FilterAccessor</type>
+          <declname>fa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2144" bodyend="2183"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga2a9285efd21b84895e3baa2293a6e088" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterImplNormalization</definition>
+        <argsstring>(FFTWComplexImage const &amp;srcImage, DestImageIterator destUpperLeft, DestAccessor da, VigraFalseType)</argsstring>
+        <name>applyFourierFilterImplNormalization</name>
+        <param>
+          <type>FFTWComplexImage const &amp;</type>
+          <declname>srcImage</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2186" bodyend="2202"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga61d449dfdc9554f4145d37491e80523a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterImplNormalization</definition>
+        <argsstring>(FFTWComplexImage const &amp;srcImage, FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor da, VigraFalseType)</argsstring>
+        <name>applyFourierFilterImplNormalization</name>
+        <param>
+          <type>FFTWComplexImage const &amp;</type>
+          <declname>srcImage</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::traverser</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::Accessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2209" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2205" bodyend="2212"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga49b075b21c9fa0fa53bfe07ba474a0a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyFourierFilterImplNormalization</definition>
+        <argsstring>(FFTWComplexImage const &amp;srcImage, DestImageIterator destUpperLeft, DestAccessor da, VigraTrueType)</argsstring>
+        <name>applyFourierFilterImplNormalization</name>
+        <param>
+          <type>FFTWComplexImage const &amp;</type>
+          <declname>srcImage</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2219" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2215" bodyend="2228"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga77b03bf86a481490cda11e91e734dc86" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>Shape</type>
+        <definition>FFTWConvolvePlan&lt; N, Real &gt;::Shape checkShapes</definition>
+        <argsstring>(Shape in, KernelIterator kernels, KernelIterator kernelsEnd, OutIterator outs)</argsstring>
+        <name>checkShapes</name>
+        <param>
+          <type>Shape</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernelsEnd</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1475" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1825" bodyend="1842"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gabbbacc90ecf29ba048c87de6eac0ed42" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>Shape</type>
+        <definition>FFTWConvolvePlan&lt; N, Real &gt;::Shape checkShapesComplex</definition>
+        <argsstring>(Shape in, KernelIterator kernels, KernelIterator kernelsEnd, OutIterator outs)</argsstring>
+        <name>checkShapesComplex</name>
+        <param>
+          <type>Shape</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernelsEnd</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1874" bodyend="1910"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gab1c382d3b29676f4fb624d32795c4f41" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>Shape</type>
+        <definition>FFTWConvolvePlan&lt; N, Real &gt;::Shape checkShapesFourier</definition>
+        <argsstring>(Shape in, KernelIterator kernels, KernelIterator kernelsEnd, OutIterator outs)</argsstring>
+        <name>checkShapesFourier</name>
+        <param>
+          <type>Shape</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernelsEnd</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1847" bodyend="1869"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gadaed0291a40e452762a2cc869d255699" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MI</type>
+          </param>
+          <param>
+            <type>class MO</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void executeImpl</definition>
+        <argsstring>(MI ins, MO outs) const </argsstring>
+        <name>executeImpl</name>
+        <param>
+          <type>MI</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type>MO</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1009" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1076" bodyend="1096"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga2e1b438895dcfa52a75b21013ebb816b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; T, N &gt;</type>
+        <definition>TinyVector&lt;T, N&gt; vigra::fftwBestPaddedShape</definition>
+        <argsstring>(TinyVector&lt; T, N &gt; shape)</argsstring>
+        <name>fftwBestPaddedShape</name>
+        <param>
+          <type>TinyVector&lt; T, N &gt;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="722" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="721" bodyend="726"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gae51033156d8ad93f8f6a454939ee0058" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; T, N &gt;</type>
+        <definition>TinyVector&lt;T, N&gt; vigra::fftwBestPaddedShapeR2C</definition>
+        <argsstring>(TinyVector&lt; T, N &gt; shape)</argsstring>
+        <name>fftwBestPaddedShapeR2C</name>
+        <param>
+          <type>TinyVector&lt; T, N &gt;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="731" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="730" bodyend="736"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gad6fec4f7eb50009b4166ccefeabcc39a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; T, N &gt;</type>
+        <definition>TinyVector&lt;T, N&gt; vigra::fftwCorrespondingShapeC2R</definition>
+        <argsstring>(TinyVector&lt; T, N &gt; shape, bool oddDimension0=false)</argsstring>
+        <name>fftwCorrespondingShapeC2R</name>
+        <param>
+          <type>TinyVector&lt; T, N &gt;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>oddDimension0</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="759" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="758" bodyend="764"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gafbea828444f49163293b1d81fcd05da8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; T, N &gt;</type>
+        <definition>TinyVector&lt;T, N&gt; vigra::fftwCorrespondingShapeR2C</definition>
+        <argsstring>(TinyVector&lt; T, N &gt; shape)</argsstring>
+        <name>fftwCorrespondingShapeR2C</name>
+        <param>
+          <type>TinyVector&lt; T, N &gt;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+<para>Find frequency domain shape for a R2C Fourier transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>When a real valued array is transformed to the frequency domain, about half of the Fourier coefficients are redundant. The transform can be optimized as a <ulink url="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C transform</ulink> that doesn&apos;t compute and store the redundant coefficients. This function computes the appropriate frequency domain shape for a given shape in the spatial domain. It simply replaces <computeroutput>shape[0]</computeroutput> with <computeroutput>shape[0] / 2 + 1</computeroutput>.</para><para><bold>#include</bold> &lt;<ref refid="multi__fft_8hxx_source" kindref="compound">vigra/multi_fft.hxx</ref>&gt; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="751" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="750" bodyend="754"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(...)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Compute forward and inverse Fourier transforms. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array referring to the spatial domain (i.e. the input in a forward transform, and the output in an inverse transform) may be scalar or complex. The array representing the frequency domain (i.e. output for forward transform, input for inverse transform) must always be complex.</para><para>The new implementations (those using <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> arguments) perform a normalized transform, whereas the old ones (using 2D iterators or argument objects) perform an un-normalized transform (i.e. the result of the inverse transform is scaled by the number of pixels).</para><para>In general, input and output arrays must have the same shape, with the exception of the special <ulink url="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C and C2R modes</ulink> defined by FFTW.</para><para>The R2C transform reduces the redundancy in the Fourier representation of a real-valued signal: Since the Fourier representation of a real signal is symmetric, about half of the Fourier coefficients can simply be dropped. By convention, this reduction is applied to the first (innermost) dimension, such that <computeroutput>fourier.shape(0) == spatial.shape(0)/2 + 1</computeroutput> holds. The correct frequency domain shape can be conveniently computed by means of the function <ref refid="group__FourierTransform_1gafbea828444f49163293b1d81fcd05da8" kindref="member">fftwCorrespondingShapeR2C()</ref>.</para><para>Note that your program must always link against <computeroutput>libfftw3</computeroutput>. If you want to compute Fourier transforms for <computeroutput>float</computeroutput> or <computeroutput>long double</computeroutput> arrays, you must <emphasis>additionally</emphasis> link against <computeroutput>libfftw3f</computeroutput> and <computeroutput>libfftw3l</computeroutput> respectively. (Old-style functions only support <computeroutput>double</computeroutput>).</para><para>The Fourier transform functions internally create <ulink url="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</ulink> which control the algorithm details. The plans are creates with the flag <computeroutput>FFTW_ESTIMATE</computeroutput>, i.e. optimal settings are guessed or read from saved &quot;wisdom&quot; files. If you need more control over planning, you can use the class <ref refid="classvigra_1_1FFTWPlan" kindref="compound">FFTWPlan</ref>.</para><para><bold> Declarations:</bold></para><para>use complex-valued <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> arguments (this works for arbitrary dimension N): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C2&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C2&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use real-valued <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> in the spatial domain, complex-valued <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> in the frequency domain (this works for arbitrary dimension N, and also supports the R2C and C2R transform, depending on the array shape in the frequency domain): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(MultiArrayView&lt;N,<sp/>Real,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C2&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>Real,<sp/>C2&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>pass iterators explicitly (2D only, double only): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(SrcImageIterator<sp/>srcUpperLeft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>srcLowerRight,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1a94032047b4445f0822d7508a3ffff034" kindref="member">FFTWComplexImage::traverser</ref><sp/>destUpperLeft,<sp/><ref refid="classvigra_1_1BasicImage_1a28a41780fa37a19501034e86747e45b7" kindref="member">FFTWComplexImage::Accessor</ref><sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(<ref refid="classvigra_1_1BasicImage_1a0e56cb0f6842d3f9f30361ca669a3b15" kindref="member">FFTWComplexImage::const_traverser</ref><sp/>sul,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1a0e56cb0f6842d3f9f30361ca669a3b15" kindref="member">FFTWComplexImage::const_traverser</ref><sp/>slr,<sp/><ref refid="classvigra_1_1BasicImage_1a65676f5294c2039d907f09346c4c2b4c" kindref="member">FFTWComplexImage::ConstAccessor</ref><sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1a94032047b4445f0822d7508a3ffff034" kindref="member">FFTWComplexImage::traverser</ref><sp/>dul,<sp/><ref refid="classvigra_1_1BasicImage_1a28a41780fa37a19501034e86747e45b7" kindref="member">FFTWComplexImage::Accessor</ref><sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> (2D only, double only): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;FFTWComplexImage::traverser,<sp/>FFTWComplexImage::Accessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(triple&lt;<ref refid="classvigra_1_1BasicImage_1a0e56cb0f6842d3f9f30361ca669a3b15" kindref="member">FFTWComplexImage::const_traverser</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1a0e56cb0f6842d3f9f30361ca669a3b15" kindref="member">FFTWComplexImage::const_traverser</ref>,<sp/><ref refid="classvigra_1_1BasicImage_1a65676f5294c2039d907f09346c4c2b4c" kindref="member">FFTWComplexImage::ConstAccessor</ref>&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;FFTWComplexImage::traverser,<sp/>FFTWComplexImage::Accessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (old-style 2D variants)<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="multi__fft_8hxx_source" kindref="compound">vigra/multi_fft.hxx</ref>&gt; (new-style nD variants)<linebreak/>
+ Namespace: vigra</para><para>old-style example (using FFTWComplexImage): <programlisting><codeline><highlight class="comment">//<sp/>compute<sp/>complex<sp/>Fourier<sp/>transform<sp/>of<sp/>a<sp/>real<sp/>image,<sp/>old-style<sp/>implementation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::DImage</ref><sp/>src(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FFTWComplexImage</ref><sp/>fourier(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(srcImageRange(src),<sp/>destImage(fourier));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>inverse<sp/>Fourier<sp/>transform</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>note<sp/>that<sp/>both<sp/>source<sp/>and<sp/>destination<sp/>image<sp/>must<sp/>be<sp/>of<sp/>type<sp/>vigra::FFTWComplexImage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FFTWComplexImage</ref><sp/>inverseFourier(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(srcImageRange(fourier),<sp/>destImage(inverseFourier));</highlight></codeline>
+</programlisting></para><para>new-style examples (using <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>): <programlisting><codeline><highlight class="comment">//<sp/>compute<sp/>Fourier<sp/>transform<sp/>of<sp/>a<sp/>real<sp/>array,<sp/>using<sp/>the<sp/>R2C<sp/>algorithm</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>src(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,<sp/>h));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>FFTWComplex&lt;double&gt;<sp/>&gt;<sp/>fourier(<ref refid="group__FourierTransform_1gafbea828444f49163293b1d81fcd05da8" kindref="member" tooltip="Find frequency domain shape for a R2C Fourier transform.">fftwCorrespondingShapeR2C</ref>(src.shape()));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(src,<sp/>fourier);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>inverse<sp/>Fourier<sp/>transform,<sp/>using<sp/>the<sp/>C2R<sp/>algorithm</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>dest(src.shape());</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(fourier,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="comment">//<sp/>compute<sp/>Fourier<sp/>transform<sp/>of<sp/>a<sp/>real<sp/>array<sp/>with<sp/>standard<sp/>algorithm</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>src(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,<sp/>h));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>FFTWComplex&lt;double&gt;<sp/>&gt;<sp/>fourier(src.shape());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member" tooltip="Compute forward and inverse Fourier transforms.">fourierTransform</ref>(src,<sp/>fourier);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>inverse<sp/>Fourier<sp/>transform,<sp/>using<sp/>the<sp/>C2R<sp/>algorithm</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>dest(src.shape());</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member" tooltip="Compute inverse Fourier transforms.">fourierTransformInverse</ref>(fourier,<sp/>dest);</highlight></codeline>
+</programlisting> Complex input arrays are handled in the same way. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1916"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gad99c2dd2593bca4ec445fd05a8654bd3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(FFTWComplexImage::const_traverser sul, FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src, FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::traverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::Accessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1922" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1919" bodyend="1924"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gae834a10df7e8ae5b5ec316fca198c5b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1923" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1921" bodyend="1925"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga1103415d663aae502463f5c41f03c7e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(SrcImageIterator srcUpperLeft, SrcImageIterator srcLowerRight, SrcAccessor sa, FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor da)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcUpperLeft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcLowerRight</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::traverser</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::Accessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1930" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1927" bodyend="1943"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga06c0c8e15b47d5d5421cf74f6b3c5286" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1939" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1937" bodyend="1953"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga62fe0d0b14f7f78e8047f380da42560c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransform</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; FFTWComplexImage::traverser, FFTWComplexImage::Accessor &gt; dest)</argsstring>
+        <name>fourierTransform</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; FFTWComplexImage::traverser, FFTWComplexImage::Accessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1949" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1947" bodyend="1951"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga1804762f7ffa8d88bfdeb2e0f8a7b0ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1931" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1929" bodyend="1933"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(...)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Compute inverse Fourier transforms. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member">fourierTransform()</ref> for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1957"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga22e4d9453222cccb0fce5cbd687c972c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, Real, C2 &gt; out)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1959" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1957" bodyend="1963"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga6a42d9c7d695d6d58fa4e3a3da29e5e3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(FFTWComplexImage::const_traverser sul, FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src, FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::traverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::Accessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1963" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1960" bodyend="1965"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga9227835559d9092abe63c9be14667ad7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(FFTWComplexImage::const_traverser sul, FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src, DestImageIterator dul, DestAccessor dest)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWComplexImage::ConstAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1971" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1968" bodyend="1978"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga3ed178a1d5d88a3d19093dd209d15bc1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformInverse</definition>
+        <argsstring>(triple&lt; FFTWComplexImage::const_traverser, FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest)</argsstring>
+        <name>fourierTransformInverse</name>
+        <param>
+          <type>triple&lt; FFTWComplexImage::const_traverser, FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1986" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1983" bodyend="1988"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga99f1f190a25ea2dbdc78c4e18c25699d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformReal</definition>
+        <argsstring>(...)</argsstring>
+        <name>fourierTransformReal</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Real Fourier transforms for even and odd boundary conditions (aka. cosine and sine transforms). </para>        </briefdescription>
+        <detaileddescription>
+<para>If the image is real and has even symmetry, its Fourier transform is also real and has even symmetry. The Fourier transform of a real image with odd symmetry is imaginary and has odd symmetry. In either case, only about a quarter of the pixels need to be stored because the rest can be calculated from the symmetry properties. This is especially useful, if the original image is implicitly assumed to have reflective or anti-reflective boundary conditions. Then the &quot;negative&quot; pixel locations are defined as</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__MathFunctions_1ga3cf86b8d2300cd08b69024eb89f90115" kindref="member">even</ref><sp/>(reflective<sp/>boundary<sp/>conditions):<sp/><sp/><sp/><sp/><sp/><sp/>f[-x]<sp/>=<sp/>f[x]<sp/><sp/><sp/><sp/><sp/>(x<sp/>=<sp/>1,...,N-1)</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" kindref="member">odd</ref><sp/>(anti-reflective<sp/>boundary<sp/>conditions):<sp/><sp/>f[-1]<sp/>=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>f[-x]<sp/>=<sp/>-f[x-2]<sp/><sp/>(x<sp/>=<sp/>2,...,N-1)</highlight></codeline>
+</programlisting></para><para>end similar at the other boundary (see the FFTW documentation for details). This has the advantage that more efficient Fourier transforms that use only real numbers can be implemented. These are also known as cosine and sine transforms respectively.</para><para>If you use the odd transform it is important to note that in the Fourier domain, the DC component is always zero and is therefore dropped from the data structure. This means that index 0 in an odd symmetric Fourier domain image refers to the <emphasis>first</emphasis> harmonic. This is especially important if an image is first cosine transformed (even symmetry), then in the Fourier domain multiplied with an odd symmetric filter (e.g. a first derivative) and finally transformed back to the spatial domain with a sine transform (odd symmetric). For this to work properly the image must be shifted left or up by one pixel (depending on whether the x- or y-axis is odd symmetric) before the inverse transform can be applied. (see example below).</para><para>The real Fourier transform functions are named <computeroutput>fourierTransformReal??</computeroutput> where the questions marks stand for either <computeroutput>E</computeroutput> or <computeroutput>O</computeroutput> indicating whether the x- and y-axis is to be transformed using even or odd symmetry. The same functions can be used for both the forward and inverse transforms, only the normalization changes. For signal processing, the following normalization factors are most appropriate:</para><para><programlisting><codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>forward<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__MatrixAlgebra_1ga898e3fc2bdea632e7307604325b88016" kindref="member">inverse</ref></highlight></codeline>
+<codeline><highlight class="normal">------------------------------------------------------------</highlight></codeline>
+<codeline><highlight class="normal">X<sp/><ref refid="group__MathFunctions_1ga3cf86b8d2300cd08b69024eb89f90115" kindref="member">even</ref>,<sp/>Y<sp/>even<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1.0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4.0<sp/>*<sp/>(w-1)<sp/>*<sp/>(h-1)</highlight></codeline>
+<codeline><highlight class="normal">X<sp/><ref refid="group__MathFunctions_1ga3cf86b8d2300cd08b69024eb89f90115" kindref="member">even</ref>,<sp/>Y<sp/><ref refid="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" kindref="member">odd</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-1.0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-4.0<sp/>*<sp/>(w-1)<sp/>*<sp/>(h+1)</highlight></codeline>
+<codeline><highlight class="normal">X<sp/><ref refid="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" kindref="member">odd</ref>,<sp/><sp/>Y<sp/>even<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-1.0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-4.0<sp/>*<sp/>(w+1)<sp/>*<sp/>(h-1)</highlight></codeline>
+<codeline><highlight class="normal">X<sp/><ref refid="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" kindref="member">odd</ref>,<sp/><sp/>Y<sp/>odd<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1.0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4.0<sp/>*<sp/>(w+1)<sp/>*<sp/>(h+1)</highlight></codeline>
+</programlisting></para><para>where <computeroutput>w</computeroutput> and <computeroutput>h</computeroutput> denote the image width and height.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcTraverser,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestTraverser,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>fourierTransformRealEE(SrcTraverser<sp/>sul,<sp/>SrcTraverser<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestTraverser<sp/>dul,<sp/>DestAccessor<sp/>dest,<sp/>fftw_real<sp/><ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member" tooltip="norm (= magnitude)">norm</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>fourierTransformRealEO,<sp/>fourierTransformRealOE,<sp/>fourierTransformRealOO<sp/>likewise</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcTraverser,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestTraverser,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>fourierTransformRealEE(triple&lt;SrcTraverser,<sp/>SrcTraverser,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestTraverser,<sp/>DestAccessor&gt;<sp/>dest,<sp/>fftw_real<sp/><ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member" tooltip="norm (= magnitude)">norm</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>fourierTransformRealEO,<sp/>fourierTransformRealOE,<sp/>fourierTransformRealOO<sp/>likewise</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/fftw3.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>spatial(width,height),<sp/>fourier(width,height);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>image<sp/>with<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>forward<sp/>cosine<sp/>transform<sp/>==<sp/>reflective<sp/>boundary<sp/>conditions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fourierTransformRealEE(srcImageRange(spatial),<sp/>destImage(fourier),<sp/>(fftw_real)1.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>multiply<sp/>with<sp/>a<sp/>first<sp/>derivative<sp/>of<sp/>Gaussian<sp/>in<sp/>x-direction</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>0;<sp/>y<sp/>&lt;<sp/>height;<sp/>++y)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>1;<sp/>x<sp/>&lt;<sp/>width;<sp/>++x)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dx<sp/>=<sp/>x<sp/>*<sp/>M_PI<sp/>/<sp/>(width<sp/>-<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dy<sp/>=<sp/>y<sp/>*<sp/>M_PI<sp/>/<sp/>(height<sp/>-<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fourier(x-1,<sp/>y)<sp/>=<sp/>fourier(x,<sp/>y)<sp/>*<sp/>dx<sp/>*<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(-(dx*dx<sp/>+<sp/>dy*dy)<sp/>*<sp/>scale*scale<sp/>/<sp/>2.0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>fourier(width-1,<sp/>y)<sp/>=<sp/>0.0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>inverse<sp/>transform<sp/>--<sp/>odd<sp/>symmetry<sp/>in<sp/>x-direction,<sp/>even<sp/>in<sp/>y,</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>due<sp/>to<sp/>symmetry<sp/>of<sp/>the<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fourierTransformRealOE(srcImageRange(fourier),<sp/>destImage(spatial),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(fftw_real)-4.0<sp/>*<sp/>(width+1)<sp/>*<sp/>(height-1));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2524"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga09fcb211086fc47a0648b90d39109e8a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEE</definition>
+        <argsstring>(triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt; src, pair&lt; DestTraverser, DestAccessor &gt; dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEE</name>
+        <param>
+          <type>triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestTraverser, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2531" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2529" bodyend="2534"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga4f9680966cc06d63c3b0f7b0dc4b0d05" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEE</definition>
+        <argsstring>(SrcTraverser sul, SrcTraverser slr, SrcAccessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEE</name>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2539" bodyend="2544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga4e42fe564a0b212f7d19901db18b717b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEE</definition>
+        <argsstring>(FFTWRealImage::const_traverser sul, FFTWRealImage::const_traverser slr, FFTWRealImage::Accessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEE</name>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::Accessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2548" bodyend="2563"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaf18c237607d8445124dd8acee17fa695" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEO</definition>
+        <argsstring>(triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt; src, pair&lt; DestTraverser, DestAccessor &gt; dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEO</name>
+        <param>
+          <type>triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestTraverser, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2613" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2611" bodyend="2616"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga5eed3e3a12a6cfb7de7892259f952d6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEO</definition>
+        <argsstring>(SrcTraverser sul, SrcTraverser slr, SrcAccessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEO</name>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2623" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2621" bodyend="2626"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga0999ab31c524016e9f52ba1f35d22fdb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealEO</definition>
+        <argsstring>(FFTWRealImage::const_traverser sul, FFTWRealImage::const_traverser slr, FFTWRealImage::Accessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealEO</name>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::Accessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2635" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2630" bodyend="2645"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaeeaa018f18de2c7112c8b4cd2b6e9a87" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealImpl</definition>
+        <argsstring>(FFTWRealImage::const_traverser sul, FFTWRealImage::const_traverser slr, DestTraverser dul, DestAccessor dest, fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)</argsstring>
+        <name>fourierTransformRealImpl</name>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <param>
+          <type>fftw_r2r_kind</type>
+          <declname>kindx</declname>
+        </param>
+        <param>
+          <type>fftw_r2r_kind</type>
+          <declname>kindy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2712" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2707" bodyend="2728"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga5548535489764f21efcb1efe307c1ba0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOE</definition>
+        <argsstring>(triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt; src, pair&lt; DestTraverser, DestAccessor &gt; dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOE</name>
+        <param>
+          <type>triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestTraverser, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2570" bodyend="2575"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaad1feba47c6c3cc7b00151f905235eb3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOE</definition>
+        <argsstring>(SrcTraverser sul, SrcTraverser slr, SrcAccessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOE</name>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2580" bodyend="2585"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaafead67309f136ea27d9bcb1b3d62925" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOE</definition>
+        <argsstring>(FFTWRealImage::const_traverser sul, FFTWRealImage::const_traverser slr, FFTWRealImage::Accessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOE</name>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::Accessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2589" bodyend="2604"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga363266a5ff2b17ef7f6952ad9aedaf3d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOO</definition>
+        <argsstring>(triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt; src, pair&lt; DestTraverser, DestAccessor &gt; dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOO</name>
+        <param>
+          <type>triple&lt; SrcTraverser, SrcTraverser, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestTraverser, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2654" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2652" bodyend="2657"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga32006234931c6c7d37e22f20bd06365d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOO</definition>
+        <argsstring>(SrcTraverser sul, SrcTraverser slr, SrcAccessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOO</name>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2664" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2662" bodyend="2667"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga7432eb3505aeefe5e5871d1bff04eb52" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealOO</definition>
+        <argsstring>(FFTWRealImage::const_traverser sul, FFTWRealImage::const_traverser slr, FFTWRealImage::Accessor src, DestTraverser dul, DestAccessor dest, fftw_real norm)</argsstring>
+        <name>fourierTransformRealOO</name>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::const_traverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>FFTWRealImage::Accessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2676" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2671" bodyend="2686"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga54ba6d1ea747a4a20e857a678c904f22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcTraverser</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestTraverser</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::fourierTransformRealWorkImageImpl</definition>
+        <argsstring>(SrcTraverser sul, SrcTraverser slr, SrcAccessor src, DestTraverser dul, DestAccessor dest, fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)</argsstring>
+        <name>fourierTransformRealWorkImageImpl</name>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcTraverser</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestTraverser</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>fftw_real</type>
+          <declname>norm</declname>
+        </param>
+        <param>
+          <type>fftw_r2r_kind</type>
+          <declname>kindx</declname>
+        </param>
+        <param>
+          <type>fftw_r2r_kind</type>
+          <declname>kindy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="2696" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="2693" bodyend="2702"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gae3557526faf1aeba5def483a23763baf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(Shape inOut, Shape kernel, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>init</name>
+        <param>
+          <type>Shape</type>
+          <declname>inOut</declname>
+        </param>
+        <param>
+          <type>Shape</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1503" bodyend="1526"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga6125c49c60871dee2d59dd84793cd201" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void initComplex</definition>
+        <argsstring>(Shape inOut, Shape kernel, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>initComplex</name>
+        <param>
+          <type>Shape</type>
+          <declname>inOut</declname>
+        </param>
+        <param>
+          <type>Shape</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1561" bodyend="1588"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga1f9b49ca6bd1ae625047675a300dabb5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void initFourierKernel</definition>
+        <argsstring>(Shape inOut, Shape kernel, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>initFourierKernel</name>
+        <param>
+          <type>Shape</type>
+          <declname>inOut</declname>
+        </param>
+        <param>
+          <type>Shape</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1375" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1530" bodyend="1557"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gad303523fe8a8860e9275504a476032b7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MI</type>
+          </param>
+          <param>
+            <type>class MO</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void initImpl</definition>
+        <argsstring>(MI ins, MO outs, int SIGN, unsigned int planner_flags)</argsstring>
+        <name>initImpl</name>
+        <param>
+          <type>MI</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type>MO</type>
+          <declname>outs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>SIGN</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1006" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1042" bodyend="1072"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gabfe711d970e09795bf599be8197ac660" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToCenter</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; a)</argsstring>
+        <name>moveDCToCenter</name>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="143" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToCenter</definition>
+        <argsstring>(...)</argsstring>
+        <name>moveDCToCenter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Rearrange the quadrants of a Fourier image so that the origin is in the image center. </para>        </briefdescription>
+        <detaileddescription>
+<para>FFTW produces fourier images where the DC component (origin of fourier space) is located in the upper left corner of the image. The quadrants are placed like this (using a 4x4 image for example):</para><para><programlisting><codeline><highlight class="normal">DC<sp/>4<sp/>3<sp/>3</highlight></codeline>
+<codeline><highlight class="normal"><sp/>4<sp/>4<sp/>3<sp/>3</highlight></codeline>
+<codeline><highlight class="normal"><sp/>1<sp/>1<sp/>2<sp/>2</highlight></codeline>
+<codeline><highlight class="normal"><sp/>1<sp/>1<sp/>2<sp/>2</highlight></codeline>
+</programlisting></para><para>After applying the function, the quadrants are at their usual places:</para><para><programlisting><codeline><highlight class="normal">2<sp/>2<sp/><sp/>1<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">2<sp/>2<sp/><sp/>1<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">3<sp/>3<sp/>DC<sp/>4</highlight></codeline>
+<codeline><highlight class="normal">3<sp/>3<sp/><sp/>4<sp/>4</highlight></codeline>
+</programlisting></para><para>This transformation can be reversed by <ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member">moveDCToUpperLeft()</ref>. Note that the 2D versions of this transformation must not be executed in place - input and output images must be different. In contrast, the nD version (with <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> argument) always works in-place.</para><para><bold> Declarations:</bold></para><para>use <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> (this works in-place, with arbitrary dimension N): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image center.">moveDCToCenter</ref>(MultiArrayView&lt;N,<sp/>T,<sp/>Stride&gt;<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>pass iterators explicitly (2D only, not in-place): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image center.">moveDCToCenter</ref>(SrcImageIterator<sp/>src_upperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> (2D only, not in-place): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image center.">moveDCToCenter</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for 2D variants) <linebreak/>
+ <bold>#include</bold> &lt;<ref refid="multi__fft_8hxx_source" kindref="compound">vigra/multi_fft.hxx</ref>&gt; (for nD variants) <linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FFTWComplexImage</ref><sp/>spatial(width,height),<sp/>fourier(width,height);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>image<sp/>with<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>plan<sp/>with<sp/>estimated<sp/>performance<sp/>optimization</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fftw_plan<sp/>forwardPlan<sp/>=<sp/>fftw_plan_dft_2d(height,<sp/>width,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(fftw_complex<sp/>*)spatial.begin(),<sp/>(fftw_complex<sp/>*)fourier.begin(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>FFTW_FORWARD,<sp/>FFTW_ESTIMATE<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>FFT</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fftw_execute(forwardPlan);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FFTWComplexImage</ref><sp/>rearrangedFourier(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image center.">moveDCToCenter</ref>(srcImageRange(fourier),<sp/>destImage(rearrangedFourier));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>plan</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fftw_destroy_plan(forwardPlan);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1592"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga51697c13a230a20c282db44e3592574b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToCenter</definition>
+        <argsstring>(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa, DestImageIterator dest_upperleft, DestAccessor da)</argsstring>
+        <name>moveDCToCenter</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1599" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1596" bodyend="1626"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga91c01a61f8fd355d778c1ac1881716ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToCenter</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest)</argsstring>
+        <name>moveDCToCenter</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1633" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1630" bodyend="1636"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga199c0efd2f4a0d2d5a54f451eaa26cb8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToHalfspaceCenter</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; a)</argsstring>
+        <name>moveDCToHalfspaceCenter</name>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="155" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gabf0a2d2150a3ef99a36c8175d44eba9d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToHalfspaceUpperLeft</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; a)</argsstring>
+        <name>moveDCToHalfspaceUpperLeft</name>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="161" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga868045208700b0d2c2c0764547421a24" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToUpperLeft</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; a)</argsstring>
+        <name>moveDCToUpperLeft</name>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="149" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToUpperLeft</definition>
+        <argsstring>(...)</argsstring>
+        <name>moveDCToUpperLeft</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Rearrange the quadrants of a Fourier image so that the origin is in the image&apos;s upper left. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is the inversion of <ref refid="group__FourierTransform_1gaecb29642aab8a911b4f53e289d31e5e5" kindref="member">moveDCToCenter()</ref>. See there for a detailed description and usage examples.</para><para><bold> Declarations:</bold></para><para>use <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> (this works in-place, with arbitrary dimension N): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">e&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image&amp;#39;s upper left...">moveDCToUpperLeft</ref>(MultiArrayView&lt;N,<sp/>T,<sp/>Stride&gt;<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>pass iterators explicitly (2D only, not in-place): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image&amp;#39;s upper left...">moveDCToUpperLeft</ref>(SrcImageIterator<sp/>src_upperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> (2D only, not in-place): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member" tooltip="Rearrange the quadrants of a Fourier image so that the origin is in the image&amp;#39;s upper left...">moveDCToUpperLeft</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1683"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga64863e587ef66ff7a550104cb4e5d7f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToUpperLeft</definition>
+        <argsstring>(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa, DestImageIterator dest_upperleft, DestAccessor da)</argsstring>
+        <name>moveDCToUpperLeft</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1687" bodyend="1717"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1ga7b6355511820d65b03a753df621df1eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::moveDCToUpperLeft</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest)</argsstring>
+        <name>moveDCToUpperLeft</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1724" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1721" bodyend="1727"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>VIGRA provides a powerful C++ API for the popular <ulink url="http://www.fftw.org/">FFTW library</ulink> for fast Fourier transforms. There are two versions of the API: an older one based on image iterators (and therefore restricted to 2D) and a new one based on <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> that works for arbitrary dimensions. In addition, the functions <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> and <ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member">applyFourierFilter()</ref> provide an easy-to-use interface for FFT-based convolution, a major application of Fourier transforms. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kind="class" prot="public">
+    <compoundname>vigra::linalg::LeastAngleRegressionOptions</compoundname>
+    <includes refid="regression_8hxx" local="no">vigra/regression.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911" prot="public" static="no">
+        <name>Mode</name>
+        <enumvalue id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911aba458b0d1f43b5b97b884027405950a4" prot="public">
+          <name>LARS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911a3e6d412e72d69974ec3a747ec6d48907" prot="public">
+          <name>LASSO</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911acda4299c21ab12be959ede2df9a544fb" prot="public">
+          <name>NNLASSO</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="354" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="354" bodyend="354"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a96f4c83fd87c559405df4811df07acaf" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool least_squares_solutions</definition>
+        <argsstring></argsstring>
+        <name>least_squares_solutions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="448" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="448" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a19e617d91e55c0cb407d03068cbf9198" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int max_solution_count</definition>
+        <argsstring></argsstring>
+        <name>max_solution_count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="446" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="446" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a2618e89b4c26dc851feae865df3a1a49" prot="public" static="no" mutable="no">
+        <type>Mode</type>
+        <definition>Mode mode</definition>
+        <argsstring></argsstring>
+        <name>mode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="447" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="447" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1aa3a23e5b068c32cbfd7fe043eb0b8d98" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int unconstrained_dimension_count</definition>
+        <argsstring></argsstring>
+        <name>unconstrained_dimension_count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="446" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="446" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1aede22ea3ca20637290b3b3f1589e467f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; lars</definition>
+        <argsstring>()</argsstring>
+        <name>lars</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use the plain LARS algorithm.</para><para>Default: inactive </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="406" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="405" bodyend="409"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1acaf3bd267d5d659368770b92bb37a6b7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; lasso</definition>
+        <argsstring>()</argsstring>
+        <name>lasso</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use the LASSO modification of the LARS algorithm.</para><para>This allows features to be removed from the active set under certain conditions.<linebreak/>
+ Default: active </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="417" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="416" bodyend="420"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a857b414e001f5d5f2f357ad1ba6b7297" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LeastAngleRegressionOptions</definition>
+        <argsstring>()</argsstring>
+        <name>LeastAngleRegressionOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize all options with default values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="358" bodyend="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1ace0ea38e4ecc228ec83004e96ddc4fae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; leastSquaresSolutions</definition>
+        <argsstring>(bool select=true)</argsstring>
+        <name>leastSquaresSolutions</name>
+        <param>
+          <type>bool</type>
+          <declname>select</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute least squares solutions.</para><para>Use least angle regression to determine active sets, but return least squares solutions for the features in each active set, instead of constrained solutions.<linebreak/>
+ Default: <computeroutput>true</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="441" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="440" bodyend="444"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a7d09e52d484f5aced17987ef9a9ea1bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; maxSolutionCount</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>maxSolutionCount</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Maximum number of solutions to be computed.</para><para>If <emphasis>n</emphasis> is 0 (the default), the number of solutions is determined by the length of the solution array. Otherwise, the minimum of <ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a7d09e52d484f5aced17987ef9a9ea1bd" kindref="member">maxSolutionCount()</ref> and that length is taken.<linebreak/>
+ Default: 0 (use length of solution array) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="372" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a7d732a5ef3bc9181382b0b0e491d3221" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; nnlasso</definition>
+        <argsstring>()</argsstring>
+        <name>nnlasso</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use the non-negative LASSO modification of the LARS algorithm.</para><para>This enforces all non-zero entries in the solution to be positive.<linebreak/>
+ Default: inactive </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="428" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="427" bodyend="431"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1ab8a57eca5fbf53a5daaa26f8bf261ead" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> &amp;</type>
+        <definition>LeastAngleRegressionOptions&amp; setMode</definition>
+        <argsstring>(std::string mode)</argsstring>
+        <name>setMode</name>
+        <param>
+          <type>std::string</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the mode of the algorithm.</para><para>Mode must be one of &quot;lars&quot;, &quot;lasso&quot;, &quot;nnlasso&quot;. The function just calls the member function of the corresponding name to set the mode.</para><para>Default: &quot;lasso&quot; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="386" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="385" bodyend="398"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Pass options to <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="351" bodyend="449"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911aba458b0d1f43b5b97b884027405950a4" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>LARS</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1aede22ea3ca20637290b3b3f1589e467f" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>lars</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911a3e6d412e72d69974ec3a747ec6d48907" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>LASSO</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1acaf3bd267d5d659368770b92bb37a6b7" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>lasso</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a96f4c83fd87c559405df4811df07acaf" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>least_squares_solutions</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a857b414e001f5d5f2f357ad1ba6b7297" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>LeastAngleRegressionOptions</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1ace0ea38e4ecc228ec83004e96ddc4fae" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>leastSquaresSolutions</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a19e617d91e55c0cb407d03068cbf9198" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>max_solution_count</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a7d09e52d484f5aced17987ef9a9ea1bd" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>maxSolutionCount</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a2618e89b4c26dc851feae865df3a1a49" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>mode</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>Mode</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a7d732a5ef3bc9181382b0b0e491d3221" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>nnlasso</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1a46c8a310cf4c094f8c80e1cb8dc1f911acda4299c21ab12be959ede2df9a544fb" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>NNLASSO</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1ab8a57eca5fbf53a5daaa26f8bf261ead" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>setMode</name></member>
+      <member refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions_1aa3a23e5b068c32cbfd7fe043eb0b8d98" prot="public" virt="non-virtual"><scope>vigra::linalg::LeastAngleRegressionOptions</scope><name>unconstrained_dimension_count</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

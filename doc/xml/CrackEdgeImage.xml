@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="CrackEdgeImage" kind="page">
+    <compoundname>CrackEdgeImage</compoundname>
+    <title>Crack Edge Image</title>
+    <detaileddescription>
+<para>Crack edges are marked <emphasis>between</emphasis> the pixels of an image. A Crack Edge Image is an image that represents these edges. In order to accommodate the cracks, the Crack Edge Image must be twice as large as the original image (precisely (2*w - 1) by (2*h - 1)). A Crack Edge Image can easily be derived from a binary image or from the signs of the response of a Laplacian filter. Consider the following sketch, where <computeroutput>+</computeroutput> encodes the foreground, <computeroutput>-</computeroutput> the background, and <computeroutput>*</computeroutput> the resulting crack edges.</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__MathFunctions_1ga99756ca23b738bdc82afba3b0e49df74" kindref="member">sign</ref><sp/>of<sp/>difference<sp/>image<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>insert<sp/>cracks<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>resulting<sp/>CrackEdgeImage</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>.<sp/>-<sp/>.<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>.<sp/>.<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>-<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>*<sp/>*<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>+<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>.<sp/>+<sp/>.<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>*<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>+<sp/>+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>*<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+<sp/>.<sp/>+<sp/>.<sp/>+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>.</highlight></codeline>
+</programlisting></para><para>Starting from the original binary image (left), we insert crack pixels to get to the double-sized image (center). Finally, we mark all crack pixels whose non-crack neighbors have different signs as crack edge points, while all other pixels (crack and non-crack) become region pixels.</para><para><bold>Requirements on a Crack Edge Image:</bold></para><para><itemizedlist>
+<listitem>
+<para>Crack Edge Images have odd width and height. </para></listitem>
+<listitem>
+<para>Crack pixels have at least one odd coordinate. </para></listitem>
+<listitem>
+<para>Only crack pixels may be marked as edge points. </para></listitem>
+<listitem>
+<para>Crack pixels with two odd coordinates must be marked as edge points whenever any of their neighboring crack pixels was marked. </para></listitem>
+</itemizedlist>
+</para><para>The last two requirements ensure that both edges and regions are 4-connected. Thus, 4-connectivity and 8-connectivity yield identical connected components in a Crack Edge Image (so called <emphasis>well-composedness</emphasis>). This ensures that Crack Edge Images have nice topological properties (cf. L. J. Latecki: &quot;Well-Composed Sets&quot;, Academic Press, 2000). </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

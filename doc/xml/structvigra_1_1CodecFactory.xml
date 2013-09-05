@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CodecFactory" kind="struct" prot="public">
+    <compoundname>vigra::CodecFactory</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1CodecFactory_1af804b187fb275ce5ed97d7bf7dcfd7e7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>CodecDesc</type>
+        <definition>virtual CodecDesc getCodecDesc</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getCodecDesc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="269"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1CodecFactory_1ad72ccf8fbbfe52882c02c23911e1fbce" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::auto_ptr&lt; Decoder &gt;</type>
+        <definition>virtual std::auto_ptr&lt;Decoder&gt; getDecoder</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getDecoder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="270"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1CodecFactory_1ac129bccb2d424e4a8e3ce26cbf478caf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::auto_ptr&lt; Encoder &gt;</type>
+        <definition>virtual std::auto_ptr&lt;Encoder&gt; getEncoder</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getEncoder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="271"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1CodecFactory_1af69463fcf414814f8dfa30943dc1493f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~CodecFactory</definition>
+        <argsstring>()</argsstring>
+        <name>~CodecFactory</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="272" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="272" bodyend="272"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="267" bodyend="273"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CodecFactory_1af804b187fb275ce5ed97d7bf7dcfd7e7" prot="public" virt="pure-virtual"><scope>vigra::CodecFactory</scope><name>getCodecDesc</name></member>
+      <member refid="structvigra_1_1CodecFactory_1ad72ccf8fbbfe52882c02c23911e1fbce" prot="public" virt="pure-virtual"><scope>vigra::CodecFactory</scope><name>getDecoder</name></member>
+      <member refid="structvigra_1_1CodecFactory_1ac129bccb2d424e4a8e3ce26cbf478caf" prot="public" virt="pure-virtual"><scope>vigra::CodecFactory</scope><name>getEncoder</name></member>
+      <member refid="structvigra_1_1CodecFactory_1af69463fcf414814f8dfa30943dc1493f" prot="public" virt="virtual"><scope>vigra::CodecFactory</scope><name>~CodecFactory</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

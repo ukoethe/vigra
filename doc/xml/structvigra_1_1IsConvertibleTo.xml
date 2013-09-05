@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IsConvertibleTo" kind="struct" prot="public">
+    <compoundname>vigra::IsConvertibleTo</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class From</type>
+      </param>
+      <param>
+        <type>class To</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1IsConvertibleTo_1abc5c98fcc1211af2b80116dd6e0a035d" prot="public" static="no">
+        <name>@11</name>
+        <enumvalue id="structvigra_1_1IsConvertibleTo_1abc5c98fcc1211af2b80116dd6e0a035da730cb5310614d92e239dd7c7c1e9a60d" prot="public">
+          <name>resultSize</name>
+          <initializer> sizeof(*testIsConvertible(check()))</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="383" bodyend="383"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsConvertibleTo_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char falseResult[1]</definition>
+        <argsstring>[1]</argsstring>
+        <name>falseResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="375" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="375" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsConvertibleTo_1abda572a18508e06ee0e9af4f446f1786" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char trueResult[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>trueResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="376" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="376" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsConvertibleTo_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" static="no">
+        <type>IfBool&lt; value, VigraTrueType, VigraFalseType &gt;::type</type>
+        <definition>typedef IfBool&lt;value, VigraTrueType, VigraFalseType&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="388" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="388" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1IsConvertibleTo_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> (resultSize == 2)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="385" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1IsConvertibleTo_1a3f128792d56245aa6c52b1701175860c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>From const &amp;</type>
+        <definition>static From const&amp; check</definition>
+        <argsstring>()</argsstring>
+        <name>check</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="378"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1IsConvertibleTo_1a9e98dc3117b456abae15f22f6fc79b6a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>falseResult *</type>
+        <definition>static falseResult* testIsConvertible</definition>
+        <argsstring>(...)</argsstring>
+        <name>testIsConvertible</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="380"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1IsConvertibleTo_1ae712d8b57e6aef827e44bbf382000a9a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>trueResult *</type>
+        <definition>static trueResult* testIsConvertible</definition>
+        <argsstring>(To const &amp;)</argsstring>
+        <name>testIsConvertible</name>
+        <param>
+          <type>To const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="381"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="373" bodyend="389"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1IsConvertibleTo_1a3f128792d56245aa6c52b1701175860c" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>check</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>falseResult</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1abc5c98fcc1211af2b80116dd6e0a035da730cb5310614d92e239dd7c7c1e9a60d" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>resultSize</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1a9e98dc3117b456abae15f22f6fc79b6a" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>testIsConvertible</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1ae712d8b57e6aef827e44bbf382000a9a" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>testIsConvertible</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1abda572a18508e06ee0e9af4f446f1786" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>trueResult</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>type</name></member>
+      <member refid="structvigra_1_1IsConvertibleTo_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::IsConvertibleTo</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

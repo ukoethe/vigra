@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__op_3_01nil_00_01TEST_00_01RRL_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_op&lt; nil, TEST, RRL &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">null_exec</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+      <param>
+        <type>class RRL</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1344" bodyend="1344"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1null__exec_1a46a5babd3cc7c5ed4de66de5eb649958" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op&lt; nil, TEST, RRL &gt;</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1null__exec_1aa7e3263658aa04d685155e53c6ab2fc9" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op&lt; nil, TEST, RRL &gt;</scope><name>exec</name></member>
+      <member refid="structvigra_1_1type__lists_1_1null__exec_1a6d63130396906ec5b7bd1da2a7b89b71" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op&lt; nil, TEST, RRL &gt;</scope><name>iter_leftover_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

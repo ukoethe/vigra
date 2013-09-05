@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SeedOptions" kind="class" prot="public">
+    <compoundname>vigra::SeedOptions</compoundname>
+    <includes refid="watersheds_8hxx" local="no">vigra/watersheds.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630" prot="public" static="no">
+        <name>DetectMinima</name>
+        <enumvalue id="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a393c6d525ea3cfbd3c35f96bf8dd228d" prot="public">
+          <name>LevelSets</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a94ec8604009f104698363659e0bc1351" prot="public">
+          <name>Minima</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630afe292bed156fef879d954279a3797ba5" prot="public">
+          <name>ExtendedMinima</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a81d8d434e721247b85cf0d4005e3f309" prot="public">
+          <name>Unspecified</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="332" bodyend="332"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SeedOptions_1a2d993b81a4e3c825ca098f4611ec7be2" prot="public" static="no" mutable="no">
+        <type>DetectMinima</type>
+        <definition>DetectMinima mini</definition>
+        <argsstring></argsstring>
+        <name>mini</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="335" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SeedOptions_1a30eac9d8cda6db090f869ccf184f2e33" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double thresh</definition>
+        <argsstring></argsstring>
+        <name>thresh</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="334" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a0b8aa54f18d8c71256d857b714aefd71" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; extendedMinima</definition>
+        <argsstring>()</argsstring>
+        <name>extendedMinima</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Generate seeds at minima and minimal plateaus.</para><para>Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="360" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a19dcb30792f17450293427c89f0f875f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; levelSets</definition>
+        <argsstring>()</argsstring>
+        <name>levelSets</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Generate seeds as level sets.</para><para>Note that you must also set a threshold to define which level set is to be used.<linebreak/>
+ Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="371" bodyend="375"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1ac66957cc316120670c535c79783ec20d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; levelSets</definition>
+        <argsstring>(double threshold)</argsstring>
+        <name>levelSets</name>
+        <param>
+          <type>double</type>
+          <declname>threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Generate seeds as level sets at given threshold.</para><para>Equivalent to <computeroutput><ref refid="classvigra_1_1SeedOptions_1a64842159e65cc12d5df9244cd05597dd" kindref="member">SeedOptions()</ref>.levelSet().threshold(threshold)</computeroutput><linebreak/>
+ Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="382" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a342f82e8742831e7951b6aa9084ba7ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; minima</definition>
+        <argsstring>()</argsstring>
+        <name>minima</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Generate seeds at minima.</para><para>Default: true </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="350" bodyend="354"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a64842159e65cc12d5df9244cd05597dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SeedOptions</definition>
+        <argsstring>()</argsstring>
+        <name>SeedOptions</name>
+        <briefdescription>
+<para>Construct default options object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Defaults are: detect minima without thresholding (i.e. all minima). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="341" bodyend="344"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a6d34ad801c71fffe3a4621876221f337" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; threshold</definition>
+        <argsstring>(double threshold)</argsstring>
+        <name>threshold</name>
+        <param>
+          <type>double</type>
+          <declname>threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set threshold.</para><para>The threshold will be used by both the minima and level set variants of seed generation.<linebreak/>
+ Default: no thresholding </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="396" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="395" bodyend="399"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a50c93abf604e13b1d5c7276a0d5e8d71" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool thresholdIsValid</definition>
+        <argsstring>() const </argsstring>
+        <name>thresholdIsValid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="404" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="403" bodyend="406"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedOptions_1a13df35a5f1e3ecf7f5b9931ef82ab041" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> &amp;</type>
+        <definition>SeedOptions&amp; unspecified</definition>
+        <argsstring>()</argsstring>
+        <name>unspecified</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="410" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="409" bodyend="413"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options object for <ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member">generateWatershedSeeds()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds_8hxx_source" kindref="compound">vigra/watersheds.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaa8e0f5fa2b9612e2caeed36ff0a6daad" kindref="member">IImage</ref><sp/>seeds(boundary_indicator.size());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>detect<sp/>all<sp/>minima<sp/>in<sp/>&apos;boundary_indicator&apos;<sp/>that<sp/>are<sp/>below<sp/>gray<sp/>level<sp/>22</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(srcImageRange(boundary_indicator),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(seeds),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1SeedOptions_1a64842159e65cc12d5df9244cd05597dd" kindref="member" tooltip="Construct default options object.">SeedOptions</ref>().<ref refid="classvigra_1_1SeedOptions_1a342f82e8742831e7951b6aa9084ba7ae" kindref="member">minima</ref>().<ref refid="classvigra_1_1SeedOptions_1a6d34ad801c71fffe3a4621876221f337" kindref="member">threshold</ref>(22.0));</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="329" bodyend="414"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>DetectMinima</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a0b8aa54f18d8c71256d857b714aefd71" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>extendedMinima</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630afe292bed156fef879d954279a3797ba5" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>ExtendedMinima</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a393c6d525ea3cfbd3c35f96bf8dd228d" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>LevelSets</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a19dcb30792f17450293427c89f0f875f" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>levelSets</name></member>
+      <member refid="classvigra_1_1SeedOptions_1ac66957cc316120670c535c79783ec20d" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>levelSets</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a2d993b81a4e3c825ca098f4611ec7be2" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>mini</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a342f82e8742831e7951b6aa9084ba7ae" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>minima</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a94ec8604009f104698363659e0bc1351" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>Minima</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a64842159e65cc12d5df9244cd05597dd" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>SeedOptions</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a30eac9d8cda6db090f869ccf184f2e33" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>thresh</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a6d34ad801c71fffe3a4621876221f337" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>threshold</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a50c93abf604e13b1d5c7276a0d5e8d71" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>thresholdIsValid</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a13df35a5f1e3ecf7f5b9931ef82ab041" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>unspecified</name></member>
+      <member refid="classvigra_1_1SeedOptions_1a2f690f394dda0c51d9877c302059d630a81d8d434e721247b85cf0d4005e3f309" prot="public" virt="non-virtual"><scope>vigra::SeedOptions</scope><name>Unspecified</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::ClusterNode</compoundname>
+    <basecompoundref refid="classvigra_1_1NodeBase" prot="public" virt="non-virtual">NodeBase</basecompoundref>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a364e695864a337dd48ec8f68c1262b7e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref></type>
+        <definition>typedef NodeBase BT</definition>
+        <argsstring></argsstring>
+        <name>BT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="554" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ac368b5afff5f57fd30d1240075746925" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ClusterNode</definition>
+        <argsstring>()</argsstring>
+        <name>ClusterNode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>constructors </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="557" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="557" bodyend="557"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a1bac4c16bf519dcc650a5c1971f1705e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ClusterNode</definition>
+        <argsstring>(int nCol, BT::T_Container_type &amp;topology, BT::P_Container_type &amp;split_param)</argsstring>
+        <name>ClusterNode</name>
+        <param>
+          <type>int</type>
+          <declname>nCol</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> &amp;</type>
+          <declname>split_param</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="562" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="558" bodyend="569"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ad985787dc00b31acfcc8f741188f32b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ClusterNode</definition>
+        <argsstring>(BT::T_Container_type const &amp;topology, BT::P_Container_type const &amp;split_param, int n)</argsstring>
+        <name>ClusterNode</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> const &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> const &amp;</type>
+          <declname>split_param</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="571" bodyend="578"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a579aaba4c53b93d9bb3d2ea0afc9b9db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ClusterNode</definition>
+        <argsstring>(BT &amp;node_)</argsstring>
+        <name>ClusterNode</name>
+        <param>
+          <type><ref refid="classvigra_1_1NodeBase" kindref="compound">BT</ref> &amp;</type>
+          <declname>node_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="580" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a019749328da42c4814af71d3e3b647ad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int index</definition>
+        <argsstring>()</argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="588" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="587" bodyend="590"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a7a7641f1e0e7f8a7eee55cf952868dfa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; mean</definition>
+        <argsstring>()</argsstring>
+        <name>mean</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="596" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="595" bodyend="598"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a9dc23673cad904e58000402f9eb29348" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void set_index</definition>
+        <argsstring>(int in)</argsstring>
+        <name>set_index</name>
+        <param>
+          <type>int</type>
+          <declname>in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="591" bodyend="594"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ae1d640c2b84452840ec582a2bf9349ac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; status</definition>
+        <argsstring>()</argsstring>
+        <name>status</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="604" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="603" bodyend="606"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1afc9728bdbbf4bbe353c73ef8f1a42cbc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; stdev</definition>
+        <argsstring>()</argsstring>
+        <name>stdev</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="600" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="599" bodyend="602"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="213">
+        <label>ClusterNode</label>
+        <childnode refid="214" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="214">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="215">
+        <label>ClusterNode</label>
+        <childnode refid="216" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="216">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="549" bodyend="607"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a364e695864a337dd48ec8f68c1262b7e" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>BT</name></member>
+      <member refid="classvigra_1_1NodeBase_1afbee722241ea157626d951705d92765a" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1aef1d376bdbb67276c2ca594efb80a8ec" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3fccf09f4a699b59bdaaef92cf57421d" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>classCount_</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ac368b5afff5f57fd30d1240075746925" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>ClusterNode</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a1bac4c16bf519dcc650a5c1971f1705e" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>ClusterNode</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ad985787dc00b31acfcc8f741188f32b6" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>ClusterNode</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a579aaba4c53b93d9bb3d2ea0afc9b9db" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>ClusterNode</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa1b5f48a16c72fa7bc0eebe5b6f567ff" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>column_data</name></member>
+      <member refid="classvigra_1_1NodeBase_1aff0b528dc48e3783d3d114ba59d03cf0" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>columns_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1a98316670a4ba476aa898e878e07150" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>columns_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1af681aefe39dee326f0c384c06876d2df" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>columns_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8abe81cffd3fdf2d3a263a8cf8535820" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>copy</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab1cb33e6d4bdf35450953a9e8e5936b5" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>data</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2fdc050911157bc63d2c34ffec04ebb1" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>featureCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7691d58cca0888fcc7eb864cae64af82" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>hasData_</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a019749328da42c4814af71d3e3b647ad" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>index</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3c27387e011446faece596a3512747e3" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>INT</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a7a7641f1e0e7f8a7eee55cf952868dfa" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>mean</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab0d2335945496a120d668b209f14140c" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab9e2534c9a671cc64c318142d423b1df" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a828aadf61afa6b1cf6224d98f23f3f72" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a10f09963f49d9080438d223173545eaa" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a63012063efba7f30e3862efa38cc1ec3" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ac53d1493afb00198446c7345cea663fe" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2772ac823499b142d7a6121088de74dd" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>P_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7af73990cbba31c405b745c28b602aa8" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2ec7aa5eacd1493d9ce3642e3a14d8ed" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a20634f6eb739ff8272c00f3bf7294199" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameter_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4efdd224735574a9c5526311b3f0ce9b" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>Parameter_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa695a5aa261abef117dfc8b87bca85a2" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameters_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1d5a8a3e2a5f05941bdb3bbde4faa508" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameters_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9b4ea98e352b479140a1b621c46a24dc" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameters_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a62c4da34c22c0b66c21ad3eaa09c6f73" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>parameters_size</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1a9dc23673cad904e58000402f9eb29348" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>set_index</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1ae1d640c2b84452840ec582a2bf9349ac" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>status</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode_1afc9728bdbbf4bbe353c73ef8f1a42cbc" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>stdev</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8ee8474c7bc7881ddbaa51b02cb350df" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>T_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a91e7e3aab813bf8964cc8567c9f8a7fc" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>topology_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6b3a692effa8129f2bc91079c8810fe2" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>topology_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6932a1eef19e5e598c7a2321cfd82efe" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>topology_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a67bbba8f267817ce7ad546f8807df676" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>topology_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a060308950bc46d8353295dbde5b60491" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>topology_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9dd576b4c7c93f5ddda63365a6138846" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>Topology_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4aeb85940eb4eb34739f29b01a576286" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4eef16cc017527b5189bd7ce0b2a6dce" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1acd65bf00c655f601231bc895812eacde" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>weights</name></member>
+      <member refid="classvigra_1_1NodeBase_1a840c72759db564e7eb4492dff89899de" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::ClusterNode</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

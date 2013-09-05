@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType" kind="struct" prot="public">
+    <compoundname>vigra::ConstValueIteratorPolicy::BaseType</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a1910d262855b71da353ed0d07a6c7823" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int pos</definition>
+        <argsstring></argsstring>
+        <name>pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1245" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a966cd62053fe5c18cb872da71f1c45de" prot="public" static="no" mutable="no">
+        <type>PIXELTYPE</type>
+        <definition>PIXELTYPE value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1244" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a8302d5f239ce6749e9495054871f315f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BaseType</definition>
+        <argsstring>(PIXELTYPE const &amp;v=PIXELTYPE(), int p=0)</argsstring>
+        <name>BaseType</name>
+        <param>
+          <type>PIXELTYPE const &amp;</type>
+          <declname>v</declname>
+          <defval>PIXELTYPE()</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>p</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1240" bodyend="1242"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1238" bodyend="1246"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a8302d5f239ce6749e9495054871f315f" prot="public" virt="non-virtual"><scope>vigra::ConstValueIteratorPolicy::BaseType</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a1910d262855b71da353ed0d07a6c7823" prot="public" virt="non-virtual"><scope>vigra::ConstValueIteratorPolicy::BaseType</scope><name>pos</name></member>
+      <member refid="structvigra_1_1ConstValueIteratorPolicy_1_1BaseType_1a966cd62053fe5c18cb872da71f1c45de" prot="public" virt="non-virtual"><scope>vigra::ConstValueIteratorPolicy::BaseType</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

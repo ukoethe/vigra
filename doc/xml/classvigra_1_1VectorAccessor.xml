@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1VectorAccessor" kind="class" prot="public">
+    <compoundname>vigra::VectorAccessor</compoundname>
+    <basecompoundref refid="classvigra_1_1SequenceAccessor" prot="public" virt="non-virtual">SequenceAccessor&lt; VECTOR &gt;</basecompoundref>
+    <includes refid="accessor_8hxx" local="no">vigra/accessor.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>VECTOR</declname>
+        <defname>VECTOR</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1VectorAccessor_1ad95c119fb9ff83e1f6faa8de36d549a8" prot="public" static="no">
+        <type>VECTOR::value_type</type>
+        <definition>typedef VECTOR::value_type component_type</definition>
+        <argsstring></argsstring>
+        <name>component_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector&apos;s value_type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="776" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="776" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1VectorAccessor_1a184070be108879ef237c7fc37a6f27a6" prot="public" static="no">
+        <type><ref refid="classvigra_1_1VectorElementAccessor" kindref="compound">VectorElementAccessor</ref>&lt; <ref refid="classvigra_1_1VectorAccessor" kindref="compound">VectorAccessor</ref>&lt; VECTOR &gt; &gt;</type>
+        <definition>typedef VectorElementAccessor&lt;VectorAccessor&lt;VECTOR&gt; &gt; ElementAccessor</definition>
+        <argsstring></argsstring>
+        <name>ElementAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector element accessor associated with this vector accessor (see <ref refid="classvigra_1_1VectorElementAccessor" kindref="compound">VectorElementAccessor</ref>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="781" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="781" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1VectorAccessor_1a75c782b99ca13bed01bfca842f8d383a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1VectorAccessor_1ad95c119fb9ff83e1f6faa8de36d549a8" kindref="member">component_type</ref> const &amp;</type>
+        <definition>component_type const&amp; getComponent</definition>
+        <argsstring>(ITERATOR const &amp;i, int idx) const </argsstring>
+        <name>getComponent</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read the component data at given vector index at given iterator position </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="788" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="787" bodyend="790"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorAccessor_1aacd0e3c27a08826066ddc442bfc1e385" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1VectorAccessor_1ad95c119fb9ff83e1f6faa8de36d549a8" kindref="member">component_type</ref> const &amp;</type>
+        <definition>component_type const&amp; getComponent</definition>
+        <argsstring>(ITERATOR const &amp;i, DIFFERENCE const &amp;diff, int idx) const </argsstring>
+        <name>getComponent</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read the component data at given vector index at an offset of given iterator position </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="808" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="807" bodyend="810"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorAccessor_1aee32b776e76e452e150421707a3e3154" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setComponent</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i, int idx) const </argsstring>
+        <name>setComponent</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the component data at given vector index at given iterator position. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="799" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="798" bodyend="801"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorAccessor_1a721f8e2b70b81d65776337a28bbaac50" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setComponent</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i, DIFFERENCE const &amp;diff, int idx) const </argsstring>
+        <name>setComponent</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the component data at given vector index at an offset of given iterator position. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="820" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="819" bodyend="822"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Accessor for items that are STL compatible vectors. </para>    </briefdescription>
+    <detaileddescription>
+<para>It encapsulates access to a vector&apos;s access functionality.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="accessor_8hxx_source" kindref="compound">vigra/accessor.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>The accessor has two modes of operation:</para><para><orderedlist>
+<listitem>
+<para>Access the vector&apos;s iterator via the <computeroutput><ref refid="classvigra_1_1SequenceAccessor_1ac627712df1aaa7de9309106f1ee6bff6" kindref="member">begin()</ref></computeroutput> and <computeroutput><ref refid="classvigra_1_1SequenceAccessor_1acae2ec02131d37ece846351e0fb8bdc9" kindref="member">end()</ref></computeroutput> functions:</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::list&lt;std::vector&lt;int&gt;<sp/>&gt;<sp/>ListOfVectors;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ListOfVectors<sp/>ll;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">typedef<sp/><ref refid="classvigra_1_1SequenceAccessor" kindref="compound" tooltip="Accessor for items that are STL compatible sequences.">vigra::SequenceAccessor&lt;ListOfVectors::value_type&gt;</ref><sp/>ListOfVectorsAccessor;</highlight></codeline>
+<codeline><highlight class="normal">ListOfVectorsAccessor<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(ListOfVectors::iterator<sp/>li<sp/>=<sp/>ll.begin();<sp/>li<sp/>!=<sp/>ll.end();<sp/>++li)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(ListOfVectorsAccessor::iterator<sp/>i<sp/>=<sp/>a.begin(li);<sp/>i<sp/>!=<sp/>a.end(li);<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*i<sp/>=<sp/>10;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para></listitem>
+<listitem>
+<para>Access the vector&apos;s components via an index (internally calls the vector&apos;s <computeroutput>operator[]</computeroutput> ): <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::list&lt;std::vector&lt;int&gt;<sp/>&gt;<sp/>ListOfVectors;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ListOfVectors<sp/>ll;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">typedef<sp/><ref refid="classvigra_1_1SequenceAccessor" kindref="compound" tooltip="Accessor for items that are STL compatible sequences.">vigra::SequenceAccessor&lt;ListOfVectors::value_type&gt;</ref><sp/>ListOfVectorsAccessor;</highlight></codeline>
+<codeline><highlight class="normal">ListOfVectorsAccessor<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(ListOfVectors::iterator<sp/>li<sp/>=<sp/>ll.begin();<sp/>li<sp/>!=<sp/>ll.end();<sp/>++li)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>!=<sp/>a.size(li);<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a.setComponent(10,<sp/>li,<sp/>i);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para></listitem>
+</orderedlist>
+</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">VECTOR<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">VECTOR::iterator<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1StandardAccessor_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>index;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">d<sp/>=<sp/>v[index];</highlight></codeline>
+<codeline><highlight class="normal">v[index]<sp/>=<sp/>d;</highlight></codeline>
+<codeline><highlight class="normal">i<sp/>=<sp/>v.begin();</highlight></codeline>
+<codeline><highlight class="normal">i<sp/>=<sp/>v.end();</highlight></codeline>
+<codeline><highlight class="normal">v.size();</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2714">
+        <label>StandardAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1StandardAccessor"/>
+      </node>
+      <node id="2712">
+        <label>VectorAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1VectorAccessor"/>
+        <childnode refid="2713" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2713">
+        <label>SequenceAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1SequenceAccessor"/>
+        <childnode refid="2714" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2717">
+        <label>StandardAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1StandardAccessor"/>
+      </node>
+      <node id="2715">
+        <label>VectorAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1VectorAccessor"/>
+        <childnode refid="2716" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2716">
+        <label>SequenceAccessor&lt; VECTOR &gt;</label>
+        <link refid="classvigra_1_1SequenceAccessor"/>
+        <childnode refid="2717" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="772" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="770" bodyend="823"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SequenceAccessor_1ac627712df1aaa7de9309106f1ee6bff6" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>begin</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a55613b9ba07429232ec18e1a9bf579d1" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>begin</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1ad95c119fb9ff83e1f6faa8de36d549a8" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>component_type</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a184070be108879ef237c7fc37a6f27a6" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>ElementAccessor</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1acae2ec02131d37ece846351e0fb8bdc9" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>end</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a999a8398b2558e0dd600fbdcf79e2413" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>end</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a75c782b99ca13bed01bfca842f8d383a" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1aacd0e3c27a08826066ddc442bfc1e385" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a7b1f60c2252c085369571363f5e0cb32" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a7185a8540aa9b9eff7646eaf17da2b33" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ab04eb46243731d05b605996d0d423692" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ac33fe3dcf9a78edeb4c32a423acfe2e2" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a7cb2c9deaa4edb5bf641f1a190c76685" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a3f5b81992ea9ecceb42c0cd607074355" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1a548cdb2243d69b4cce0fa66084d0bee9" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1aee32b776e76e452e150421707a3e3154" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1VectorAccessor_1a721f8e2b70b81d65776337a28bbaac50" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1aaa2cbf44aa60205ca08c7e95ab63c05b" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>size</name></member>
+      <member refid="classvigra_1_1SequenceAccessor_1a448bee3c0efb6f11a3927d3a26d6dbed" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>size</name></member>
+      <member refid="classvigra_1_1StandardAccessor_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" virt="non-virtual"><scope>vigra::VectorAccessor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

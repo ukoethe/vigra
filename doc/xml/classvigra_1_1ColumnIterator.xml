@@ -1,0 +1,461 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ColumnIterator" kind="class" prot="public">
+    <compoundname>vigra::ColumnIterator</compoundname>
+    <includes refid="imageiteratoradapter_8hxx" local="no">vigra/imageiteratoradapter.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class IMAGE_ITERATOR</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="user-defined">
+      <header>Navigation</header>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1aab30114632f83f97c77b2c48557d637c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="139" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1add2077cf7ea9d2737af9a0ff6339d337" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref></type>
+        <definition>ColumnIterator operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="145" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1ae2727b4282ebe29a537a193f9ecc01d6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="153" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a054e7753c62089927e28027fb918cb6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref></type>
+        <definition>ColumnIterator operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="160" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a3f9fe03c6b98da2e5c68cad8f52c19d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator+=</definition>
+        <argsstring>(int d)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>int</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="169" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="168" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a8b79f2844092f01bca1ba37ed64e54f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator-=</definition>
+        <argsstring>(int d)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>int</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="176" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="175" bodyend="179"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Methods</header>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a7d49690d9f70fcf7a974e546c77ae7aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref></type>
+        <definition>ColumnIterator operator+</definition>
+        <argsstring>(int d) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type>int</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct iterator at a distance. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="187" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="186" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a4058e172be32ca7f51864ed9e1c9d4c1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref></type>
+        <definition>ColumnIterator operator-</definition>
+        <argsstring>(int d) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type>int</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct iterator at a distance. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="194" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1ad018562059568eb9b150cdd4bc730105" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int operator-</definition>
+        <argsstring>(ColumnIterator const &amp;c) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> const &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate distance. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="202" bodyend="205"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1ad6fdcd21850a6c490a07a7b7d16f6dbd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(ColumnIterator const &amp;c) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> const &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equality. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="210" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="209" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a48488a1f4d0d544134f719452c45c8f7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(ColumnIterator const &amp;c) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> const &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Inequality. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="216" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1ad5cf108ca097d108b5448d3a26ce76ff" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;</definition>
+        <argsstring>(ColumnIterator const &amp;c) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> const &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Smaller than. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="224" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="223" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1aa149c2249879e7727f33688b76bf2c99" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator_1a932770fe09bb2c779ce7f8aee1840a8b" kindref="member">reference</ref></type>
+        <definition>reference operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access current pixel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="231" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="230" bodyend="233"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a4cd180f762139b383484e20c262edc40" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator_1aef763a7be744a5d85a058b07fecc6362" kindref="member">index_reference</ref></type>
+        <definition>index_reference operator[]</definition>
+        <argsstring>(int d) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access pixel at distance d. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="237" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator_1aa83f2b181e3651e970597d62b6602209" kindref="member">pointer</ref></type>
+        <definition>pointer operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Call member function of current pixel. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="244" bodyend="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1ade05bbe7b7af7c4bfd2f5c422efab001" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator_1a0507881f9a457e6b4661142f4a210db1" kindref="member">Adaptee</ref> &amp;</type>
+        <definition>Adaptee&amp; adaptee</definition>
+        <argsstring>() const </argsstring>
+        <name>adaptee</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a reference to the adapted iterator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="251" bodyend="251"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1a0507881f9a457e6b4661142f4a210db1" prot="public" static="no">
+        <type>IMAGE_ITERATOR</type>
+        <definition>typedef IMAGE_ITERATOR Adaptee</definition>
+        <argsstring></argsstring>
+        <name>Adaptee</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the type of the adapted iterator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1af8ef3661eab3018e5fb8e8d933a11069" prot="public" static="no">
+        <type>IMAGE_ITERATOR::difference_type::MoveY</type>
+        <definition>typedef IMAGE_ITERATOR::difference_type::MoveY difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s difference type (argument type of <computeroutput>iter[diff]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1aef763a7be744a5d85a058b07fecc6362" prot="public" static="no">
+        <type>IMAGE_ITERATOR::index_reference</type>
+        <definition>typedef IMAGE_ITERATOR::index_reference index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s index reference type (return type of <computeroutput>iter[n]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="94" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>typedef std::random_access_iterator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator tag (random access iterator) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="106" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1a7b49ddb100b8af7f43ee1ba6760067b3" prot="public" static="no">
+        <type>IMAGE_ITERATOR::value_type</type>
+        <definition>typedef IMAGE_ITERATOR::value_type PixelType</definition>
+        <argsstring></argsstring>
+        <name>PixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1aa83f2b181e3651e970597d62b6602209" prot="public" static="no">
+        <type>IMAGE_ITERATOR::pointer</type>
+        <definition>typedef IMAGE_ITERATOR::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s pointer type (return type of <computeroutput>iter.operator-&gt;()</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1a932770fe09bb2c779ce7f8aee1840a8b" prot="public" static="no">
+        <type>IMAGE_ITERATOR::reference</type>
+        <definition>typedef IMAGE_ITERATOR::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s reference type (return type of <computeroutput>*iter</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ColumnIterator_1a0bff7a8c6b963940c282b931ad19fbec" prot="public" static="no">
+        <type>IMAGE_ITERATOR::value_type</type>
+        <definition>typedef IMAGE_ITERATOR::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterator&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a41b5325829af1268003e21fce567abc6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ColumnIterator</definition>
+        <argsstring>(IMAGE_ITERATOR const &amp;i)</argsstring>
+        <name>ColumnIterator</name>
+        <param>
+          <type>IMAGE_ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from an the image iterator to be adapted. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="114" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1a63cd0d31b06b6d7b085fe508645ce6f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator=</definition>
+        <argsstring>(ColumnIterator const &amp;i)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="120" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ColumnIterator_1afb378b11dac589914b82fb67bc2a6337" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> &amp;</type>
+        <definition>ColumnIterator&amp; operator=</definition>
+        <argsstring>(IMAGE_ITERATOR const &amp;i)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>IMAGE_ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assign a new base iterator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="130" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="129" bodyend="134"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Iterator adapter to linearly access columns. </para>    </briefdescription>
+    <detaileddescription>
+<para>This iterator may be initialized from any standard <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref>, a MultibandImageIterator and so on. It gives you STL-compatible (random access iterator) access to one column of the image. If the underlying iterator is a const iterator, the column iterator will also be const (i.e. doesn&apos;t allow to change the values it points to). The iterator gets associated with the accessor of the base iterator.</para><para>Note that image iterators usually have a member <computeroutput>columnIterator()</computeroutput> which returns a column iterator optimized for that particular image class. <ref refid="classvigra_1_1ColumnIterator" kindref="compound">ColumnIterator</ref> is only necessary if this &apos;native&apos; column iterator is not usable in a particular situation or is not provided.</para><para><bold>#include</bold> &lt;<ref refid="imageiteratoradapter_8hxx_source" kindref="compound">vigra/imageiteratoradapter.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiteratoradapter.hxx" bodystart="77" bodyend="254"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ColumnIterator_1a0507881f9a457e6b4661142f4a210db1" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>Adaptee</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1ade05bbe7b7af7c4bfd2f5c422efab001" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>adaptee</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a41b5325829af1268003e21fce567abc6" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>ColumnIterator</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1af8ef3661eab3018e5fb8e8d933a11069" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1aef763a7be744a5d85a058b07fecc6362" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a48488a1f4d0d544134f719452c45c8f7" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a7d49690d9f70fcf7a974e546c77ae7aa" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1aab30114632f83f97c77b2c48557d637c" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1add2077cf7ea9d2737af9a0ff6339d337" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a3f9fe03c6b98da2e5c68cad8f52c19d4" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a4058e172be32ca7f51864ed9e1c9d4c1" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1ad018562059568eb9b150cdd4bc730105" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1ae2727b4282ebe29a537a193f9ecc01d6" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a054e7753c62089927e28027fb918cb6a" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a8b79f2844092f01bca1ba37ed64e54f6" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1ad5cf108ca097d108b5448d3a26ce76ff" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator&lt;</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a63cd0d31b06b6d7b085fe508645ce6f8" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1afb378b11dac589914b82fb67bc2a6337" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1ad6fdcd21850a6c490a07a7b7d16f6dbd" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a4cd180f762139b383484e20c262edc40" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a7b49ddb100b8af7f43ee1ba6760067b3" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1aa83f2b181e3651e970597d62b6602209" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a932770fe09bb2c779ce7f8aee1840a8b" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ColumnIterator_1a0bff7a8c6b963940c282b931ad19fbec" prot="public" virt="non-virtual"><scope>vigra::ColumnIterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

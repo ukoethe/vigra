@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="TimingMacros" kind="page">
+    <compoundname>TimingMacros</compoundname>
+    <title>Timing macros for runtime measurements</title>
+    <detaileddescription>
+<para><verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/timing.hxx\&gt;
+
+These macros allow to perform execution speed measurements. Results are reported
+in &lt;i&gt;milliseconds&lt;/i&gt;.
+However, note that timings below 1 msec are generally subject to round-off errors. 
+Under LINUX, you can \#define VIGRA_HIRES_TIMING to get better
+accuracy, but this requires linking against librt.
+</verbatim></para><para>Basic usage: <programlisting><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>time_it()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a27f4f01f6f62205bf7c82a79400a9307" kindref="member">USETICTOC</ref></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a043fba147e9f9707cc6f201bedc9012b" kindref="member">TIC</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/>code<sp/>to<sp/>be<sp/>timed</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a41274c91f890aa7ffd5c2a87aee8e7be" kindref="member">TOC</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/>untimed<sp/>code</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a043fba147e9f9707cc6f201bedc9012b" kindref="member">TIC</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/>other<sp/>code<sp/>to<sp/>be<sp/>timed</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a41274c91f890aa7ffd5c2a87aee8e7be" kindref="member">TOC</ref></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Instead of TOC, which outputs the time difference to std::cerr, you may use TOCN (the time difference in <emphasis>msec</emphasis> as a double) or TOCS (the time difference as a std::string).</para><para>Alternatively, you can perform nested timing like so: <programlisting><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>time_it()</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a2390de3aef42e77bef9f5c32e1106f3c" kindref="member">USE_NESTED_TICTOC</ref></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a3bab4bf5568f6aceb907dd51305f05ae" kindref="member">TICPUSH</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>code<sp/>to<sp/>be<sp/>timed</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a3bab4bf5568f6aceb907dd51305f05ae" kindref="member">TICPUSH</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>nested<sp/>code<sp/>to<sp/>be<sp/>timed</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a41274c91f890aa7ffd5c2a87aee8e7be" kindref="member">TOC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print<sp/>time<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>nested<sp/>code</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>more<sp/>code<sp/>to<sp/>be<sp/>timed</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="timing_8hxx_1a41274c91f890aa7ffd5c2a87aee8e7be" kindref="member">TOC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print<sp/>total<sp/>time</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

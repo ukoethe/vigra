@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classNeighborFeatures" kind="class" prot="public">
+    <compoundname>NeighborFeatures</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">FeatureBase</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class C</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classNeighborFeatures_1aa9674a606af4235acc50734986f61153" prot="public" static="no">
+        <type>MultiArrayShape&lt; N &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;N&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="56" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classNeighborFeatures_1af144e63bb8a61e7cda82744f01abe673" prot="public" static="no" mutable="no">
+        <type>ArrayVector&lt; Shp &gt;</type>
+        <definition>ArrayVector&lt;Shp &gt; feat_coos</definition>
+        <argsstring></argsstring>
+        <name>feat_coos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="59" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classNeighborFeatures_1a13d1370c3ce420158f920973d4f153c7" prot="public" static="no" mutable="no">
+        <type>MultiArrayView&lt; N, T, C &gt;</type>
+        <definition>MultiArrayView&lt;N, T, C&gt; raw_data</definition>
+        <argsstring></argsstring>
+        <name>raw_data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="57" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classNeighborFeatures_1a92d817470da404d19f5374d6850590d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NeighborFeatures</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; &amp;in, MultiArrayView&lt; 2, int &gt; const &amp;coos)</argsstring>
+        <name>NeighborFeatures</name>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt; &amp;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, int &gt; const &amp;</type>
+          <declname>coos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="70" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classNeighborFeatures_1a0cc1452510c86e885e47693b95c36c89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; operator()</definition>
+        <argsstring>(int i, int j)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>j</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="66" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classNeighborFeatures_1a4a3dd88a69e2364cd8fdc5146a43beb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>MultiArrayShape&lt; 2 &gt;::type</type>
+        <definition>MultiArrayShape&lt;2&gt;::type shape</definition>
+        <argsstring>()</argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="61" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="60" bodyend="64"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="54" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="53" bodyend="79"/>
+    <listofallmembers>
+      <member refid="classNeighborFeatures_1af144e63bb8a61e7cda82744f01abe673" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>feat_coos</name></member>
+      <member refid="classNeighborFeatures_1a92d817470da404d19f5374d6850590d2" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>NeighborFeatures</name></member>
+      <member refid="classNeighborFeatures_1a0cc1452510c86e885e47693b95c36c89" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>operator()</name></member>
+      <member refid="classNeighborFeatures_1a13d1370c3ce420158f920973d4f153c7" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>raw_data</name></member>
+      <member refid="classNeighborFeatures_1a4a3dd88a69e2364cd8fdc5146a43beb0" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>shape</name></member>
+      <member refid="classFeatureBase_1a60ba1f15bb1a37be91ca3cc8fbe4c0c4" prot="public" virt="non-virtual" ambiguityscope="FeatureBase::"><scope>NeighborFeatures</scope><name>shape</name></member>
+      <member refid="classNeighborFeatures_1aa9674a606af4235acc50734986f61153" prot="public" virt="non-virtual"><scope>NeighborFeatures</scope><name>Shp</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

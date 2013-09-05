@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1PyAllowThreads" kind="class" prot="public">
+    <compoundname>vigra::PyAllowThreads</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1PyAllowThreads_1a506b7eb7958acc4877f54081d58809a8" prot="private" static="no" mutable="no">
+        <type>PyThreadState *</type>
+        <definition>PyThreadState* save_</definition>
+        <argsstring></argsstring>
+        <name>save_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="396" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="396" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1PyAllowThreads_1a0d81cfcd113a3c72eef637e44cbc8057" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>PyAllowThreads &amp;</type>
+        <definition>PyAllowThreads&amp; operator=</definition>
+        <argsstring>(PyAllowThreads const &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>PyAllowThreads const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="400"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PyAllowThreads_1a7669bf749bea8472b7eeded5cba39a05" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>PyAllowThreads</definition>
+        <argsstring>(PyAllowThreads const &amp;)</argsstring>
+        <name>PyAllowThreads</name>
+        <param>
+          <type>PyAllowThreads const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="399"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1PyAllowThreads_1a64511572646a5a8df0e0920156bd5bdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PyAllowThreads</definition>
+        <argsstring>()</argsstring>
+        <name>PyAllowThreads</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="403" bodyend="405"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PyAllowThreads_1add38ac852f7ffb1ea576882cecaa1f42" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~PyAllowThreads</definition>
+        <argsstring>()</argsstring>
+        <name>~PyAllowThreads</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="407" bodyend="410"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="394" bodyend="411"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1PyAllowThreads_1a0d81cfcd113a3c72eef637e44cbc8057" prot="private" virt="non-virtual"><scope>vigra::PyAllowThreads</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1PyAllowThreads_1a7669bf749bea8472b7eeded5cba39a05" prot="private" virt="non-virtual"><scope>vigra::PyAllowThreads</scope><name>PyAllowThreads</name></member>
+      <member refid="classvigra_1_1PyAllowThreads_1a64511572646a5a8df0e0920156bd5bdd" prot="public" virt="non-virtual"><scope>vigra::PyAllowThreads</scope><name>PyAllowThreads</name></member>
+      <member refid="classvigra_1_1PyAllowThreads_1a506b7eb7958acc4877f54081d58809a8" prot="private" virt="non-virtual"><scope>vigra::PyAllowThreads</scope><name>save_</name></member>
+      <member refid="classvigra_1_1PyAllowThreads_1add38ac852f7ffb1ea576882cecaa1f42" prot="public" virt="non-virtual"><scope>vigra::PyAllowThreads</scope><name>~PyAllowThreads</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

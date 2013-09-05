@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ImageProcessing" kind="page">
+    <compoundname>ImageProcessing</compoundname>
+    <title>Image Processing</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="PointOperators" kindref="compound">Point Operators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>algorithms and functors for image arithmetic, inspection, transformations etc.</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiMathModule" kindref="compound">vigra::multi_math</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Arithmetic and algebraic expressions for multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Expression templates for automated functor creation</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__GeometricTransformations" kindref="compound">Resize and Other Geometric Image Transformations</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>resize and interpolation, image mirroring, rotation, arbitrary affine transformations</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1SplineImageView" kindref="compound">vigra::SplineImageView</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Wrap a discrete image as a continous function</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="Convolution" kindref="compound">Functions to Convolve Images and Signals</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>1D, 2D, and nD filters, including separable and recursive convolution</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__NonLinearDiffusion" kindref="compound">Non-linear Diffusion and Total Variation</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Edge-preserving smoothing </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__FourierTransform" kindref="compound">Fast Fourier Transform</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>forward and backward FFT, cosine transform, and related functionality</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__GaborFilter" kindref="compound">Gabor Filter</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Gabor filter generation and related functionality</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__TensorImaging" kindref="compound">Tensor Image Processing</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Tensor image processing</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Morphology" kindref="compound">Basic Morphological Operations</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>erosion, dilation, and median with disc structuring functions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__NoiseNormalization" kindref="compound">Noise Normalization</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>transform intensity-dependent noise into additive Gaussian noise</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__SlantedEdgeMTF" kindref="compound">Camera MTF Estimation</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>determine the magnitude transfer function (MTF) of a camera using the slanted edge method</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

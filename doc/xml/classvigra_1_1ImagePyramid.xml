@@ -1,0 +1,750 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ImagePyramid" kind="class" prot="public">
+    <compoundname>vigra::ImagePyramid</compoundname>
+    <includes refid="imagecontainer_8hxx" local="no">vigra/imagecontainer.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ImageType</declname>
+        <defname>ImageType</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Alloc</declname>
+        <defname>Alloc</defname>
+        <defval>typename ImageType::allocator_type::template rebind&lt;ImageType&gt;::other</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a935b2def8595c2a5c1ffc7270c378d4e" prot="protected" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; ImageType, Alloc &gt;</type>
+        <definition>typedef ArrayVector&lt;ImageType, Alloc&gt; ImageVector</definition>
+        <argsstring></argsstring>
+        <name>ImageVector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="472" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="472" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1ad8ab228799755cc66f3b8de921508690" prot="public" static="no">
+        <type>ImageVector::const_iterator</type>
+        <definition>typedef ImageVector::const_iterator const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="481" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a92409f7d21a9c8bd7cdc84e873e0f03a" prot="public" static="no">
+        <type>ImageVector::const_reference</type>
+        <definition>typedef ImageVector::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="485" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1ae95c98dfd41e66671cc48065e6b41dd4" prot="public" static="no">
+        <type>ImageVector::const_reverse_iterator</type>
+        <definition>typedef ImageVector::const_reverse_iterator const_reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="483" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="483" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a48236068431c0a239668e1b8c1fba4be" prot="public" static="no">
+        <type>ImageVector::difference_type</type>
+        <definition>typedef ImageVector::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="489" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="489" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1ac5ff9ddf2faa16ab6b9ae40e157b96d0" prot="public" static="no">
+        <type>ImageVector::iterator</type>
+        <definition>typedef ImageVector::iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="480" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a98888d2cbb7e7cedb9e52dcd308a5a6a" prot="public" static="no">
+        <type>ImageVector::pointer</type>
+        <definition>typedef ImageVector::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="487" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a56628b9fd214b563093a9bbff48c9d5b" prot="public" static="no">
+        <type>ImageVector::reference</type>
+        <definition>typedef ImageVector::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="484" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="484" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1a48ef57c91b97228cdad7a75053028d63" prot="public" static="no">
+        <type>ImageVector::reverse_iterator</type>
+        <definition>typedef ImageVector::reverse_iterator reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="482" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="482" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1aafd1e3ba4133ad908bdbc99c4b356e5f" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="490" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImagePyramid_1aa51d8837ec5025a0ab4e9f9ffadeb767" prot="public" static="no">
+        <type>ImageType</type>
+        <definition>typedef ImageType value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the type of the contained values/images </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="478" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="478" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImagePyramid_1a01f8318139b0e11e295a77e0227b4a50" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int highestLevel_</definition>
+        <argsstring></argsstring>
+        <name>highestLevel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="469" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="469" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImagePyramid_1a24698288ecf176a4329187d45a41ddcb" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int lowestLevel_</definition>
+        <argsstring></argsstring>
+        <name>lowestLevel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="469" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="469" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImagePyramid_1ae219ae3c2604c7c029953dd0bfc040eb" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ImageVector</ref></type>
+        <definition>ImageVector images_</definition>
+        <argsstring></argsstring>
+        <name>images_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="473" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="473" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference back</definition>
+        <argsstring>()</argsstring>
+        <name>back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the last image (<ref refid="classvigra_1_1ImagePyramid_1a9fba3fa267e164865c6c3206ea036e9d" kindref="member">highestLevel()</ref>). (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="751" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="750" bodyend="753"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference back</definition>
+        <argsstring>() const </argsstring>
+        <name>back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the last image (<ref refid="classvigra_1_1ImagePyramid_1a9fba3fa267e164865c6c3206ea036e9d" kindref="member">highestLevel()</ref>). (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="758" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="757" bodyend="760"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing to the first image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="600" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="599" bodyend="602"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_iterator</type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing to the first image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="608" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="607" bodyend="610"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Empty this array. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="694" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="693" bodyend="698"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a3f37b042a1e7cd4bd38fc564de81f0da" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool empty</definition>
+        <argsstring>()</argsstring>
+        <name>empty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if and only if there are no contained images. (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="676" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="675" bodyend="678"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing behind the last image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="616" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="615" bodyend="618"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_iterator</type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing behind the last image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="624" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="623" bodyend="626"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a6a48363b4355f6f5b441637774f79a59" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference front</definition>
+        <argsstring>()</argsstring>
+        <name>front</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the first image (<ref refid="classvigra_1_1ImagePyramid_1a441b9a7555cd4e8625f8f59f74c465f2" kindref="member">lowestLevel()</ref>). (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="737" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="736" bodyend="739"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a1b5b57596df7e42e35dcd646906cb438" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference front</definition>
+        <argsstring>() const </argsstring>
+        <name>front</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the first image (<ref refid="classvigra_1_1ImagePyramid_1a441b9a7555cd4e8625f8f59f74c465f2" kindref="member">lowestLevel()</ref>). (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="744" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="743" bodyend="746"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a9fba3fa267e164865c6c3206ea036e9d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int highestLevel</definition>
+        <argsstring>() const </argsstring>
+        <name>highestLevel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the index of the highest allocated level of the pyramid. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="575" bodyend="578"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1aa368674ddb50fe84cf9b1d1989627af2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImagePyramid</definition>
+        <argsstring>(int lowestLevel, int highestLevel, const Diff2D &amp;imageSize, int sizeAppliesToLevel=0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImagePyramid</name>
+        <param>
+          <type>int</type>
+          <declname>lowestLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>highestLevel</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>imageSize</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sizeAppliesToLevel</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init a pyramid between the given levels (inclusive).</para><para>Allocate the given <emphasis>imageSize</emphasis> at the pyramid level given in <emphasis>sizeAppliesToLevel</emphasis> (default: level 0 / bottom) and size the other levels using recursive reduction/expansion by factors of 2. Use the specified allocator for image creation. The image type must be default constructible and resizable. sizeAppliesToLevel must be the in range lowestLevel..highestLevel (inclusive). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="507" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="502" bodyend="509"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1aca049d6ddef942f3fee66c55bfacaee8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImagePyramid</definition>
+        <argsstring>(int lowestLevel, int highestLevel, const ImageType &amp;image, int copyImageToLevel=0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImagePyramid</name>
+        <param>
+          <type>int</type>
+          <declname>lowestLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>highestLevel</declname>
+        </param>
+        <param>
+          <type>const ImageType &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>copyImageToLevel</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init a pyramid between the given levels (inclusive).</para><para>Copy the given <emphasis>image</emphasis> into the pyramid level given in <emphasis>copyImageToLevel</emphasis> (default: level 0 / bottom) and size the other levels using recursive reduction/expansion by factors of 2 (their image data is not initialized). Use the specified allocator for image creation. The image type must be default constructible and resizable. sizeAppliesToLevel must be the in range lowestLevel..highestLevel (inclusive). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="523" bodyend="531"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a49fa609648ae5f18667852f8f310cf40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ImagePyramid</definition>
+        <argsstring>(int lowestLevel, int highestLevel, SrcIterator ul, SrcIterator lr, SrcAccessor src, int copyImageToLevel=0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImagePyramid</name>
+        <param>
+          <type>int</type>
+          <declname>lowestLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>highestLevel</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>copyImageToLevel</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init a pyramid between the given levels (inclusive).</para><para>Copy the image given by the range <emphasis>ul</emphasis> to <emphasis>lr</emphasis> into the pyramid level given in <emphasis>copyImageToLevel</emphasis> (default: level 0 / bottom) and size the other levels using recursive reduction/expansion by factors of 2 (their image data is not initialized). Use the specified allocator for image creation. The image type must be default constructible and resizable. sizeAppliesToLevel must be the in range lowestLevel..highestLevel (inclusive). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="546" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a517cef125b967a724696462dc9b5dcaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImagePyramid</definition>
+        <argsstring>(Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImagePyramid</name>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init an empty pyramid. Use the specified allocator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="562" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="559" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a441b9a7555cd4e8625f8f59f74c465f2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int lowestLevel</definition>
+        <argsstring>() const </argsstring>
+        <name>lowestLevel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the index of the lowest allocated level of the pyramid. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="569" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="568" bodyend="571"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a310368cfe51bd797e37157429657d33a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(const ImagePyramid&lt; ImageType, Alloc &gt; &amp;other) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1ImagePyramid" kindref="compound">ImagePyramid</ref>&lt; ImageType, Alloc &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if and only if both ImageArrays have exactly the same contents and all images did compare equal with the corresponding image in the other <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>. (STL-Forward Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="686" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="685" bodyend="689"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a97ebf4646d84d180bf682f7d5f042ca0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference operator[]</definition>
+        <argsstring>(size_type index)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>size_type</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Operator for a vector-like access to the contained images (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="584" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="583" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a0f85f0c43f6fa530133c3c7f49101d57" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(size_type index) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>size_type</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Operator for a vector-like access to the contained images (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="591" bodyend="594"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reverse_iterator</type>
+        <definition>reverse_iterator rbegin</definition>
+        <argsstring>()</argsstring>
+        <name>rbegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing to the first image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="633" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="632" bodyend="635"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a04886aa70c34d66738e78bf70c675e66" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reverse_iterator</type>
+        <definition>const_reverse_iterator rbegin</definition>
+        <argsstring>() const </argsstring>
+        <name>rbegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing to the first image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="642" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="641" bodyend="644"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a68c599ddcbfddc65170de524ac165e44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reverse_iterator</type>
+        <definition>reverse_iterator rend</definition>
+        <argsstring>()</argsstring>
+        <name>rend</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing behind the last image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="650" bodyend="653"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reverse_iterator</type>
+        <definition>const_reverse_iterator rend</definition>
+        <argsstring>() const </argsstring>
+        <name>rend</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing behind the last image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="660" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="659" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a2bcdea31c51bd7fe5d691014dcaa6ce6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resize</definition>
+        <argsstring>(int lowestLevel, int highestLevel, const Diff2D &amp;imageSize, int sizeAppliesToLevel=0)</argsstring>
+        <name>resize</name>
+        <param>
+          <type>int</type>
+          <declname>lowestLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>highestLevel</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>imageSize</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sizeAppliesToLevel</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, throwing the last images away if you make the array smaller or appending new images of the right size at the end of the array if you make it larger. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="707" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="705" bodyend="732"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a503ab01f6c0142145d3434f6924714e7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query size of this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, that is: the number of images. (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="668" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="667" bodyend="670"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1a4eddab7c52bc4e4703d5bcb9c9303805" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void swap</definition>
+        <argsstring>(const ImagePyramid&lt; ImageType, Alloc &gt; &amp;other)</argsstring>
+        <name>swap</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1ImagePyramid" kindref="compound">ImagePyramid</ref>&lt; ImageType, Alloc &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>swap contents of this array with the contents of other (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="766" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="765" bodyend="770"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImagePyramid_1ae97bd4e23b5866267d6cbb00673ed39a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~ImagePyramid</definition>
+        <argsstring>()</argsstring>
+        <name>~ImagePyramid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="564" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="564" bodyend="564"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Class template for logarithmically tapering image pyramids. </para>    </briefdescription>
+    <detaileddescription>
+<para>An <ref refid="classvigra_1_1ImagePyramid" kindref="compound">ImagePyramid</ref> manages an array of images of the type given as template parameter, where each level has half the width and height of its predecessor. It actually represents a sequence of pyramid levels whose start and end index are configurable. For Burt-style pyramids, see also <ref refid="group__ResamplingConvolutionFilters_1gafde4a3aeaffdb86f415419444acf49e7" kindref="member">pyramidReduceBurtFilter</ref> and <ref refid="group__ResamplingConvolutionFilters_1ga3abb6e1a494b5d3ce952dbacf71c3092" kindref="member">pyramidExpandBurtFilter</ref>.</para><para>A customized allocator can be passed as a template argument and via the constructor. By default, the allocator of the <computeroutput>ImageType</computeroutput> is reused.</para><para><bold>#include</bold> &lt;<ref refid="imagecontainer_8hxx_source" kindref="compound">vigra/imagecontainer.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="851">
+        <label>ArrayVectorView&lt; ImageType &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="850">
+        <label>ArrayVector&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="851" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="849">
+        <label>ImagePyramid&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ImagePyramid"/>
+        <childnode refid="850" relation="usage">
+          <edgelabel>images_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="467" bodyend="771"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImagePyramid_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>clear</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ad8ab228799755cc66f3b8de921508690" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a92409f7d21a9c8bd7cdc84e873e0f03a" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ae95c98dfd41e66671cc48065e6b41dd4" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>const_reverse_iterator</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a48236068431c0a239668e1b8c1fba4be" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a3f37b042a1e7cd4bd38fc564de81f0da" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>empty</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a6a48363b4355f6f5b441637774f79a59" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>front</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a1b5b57596df7e42e35dcd646906cb438" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>front</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a9fba3fa267e164865c6c3206ea036e9d" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>highestLevel</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a01f8318139b0e11e295a77e0227b4a50" prot="private" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>highestLevel_</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1aa368674ddb50fe84cf9b1d1989627af2" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>ImagePyramid</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1aca049d6ddef942f3fee66c55bfacaee8" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>ImagePyramid</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a49fa609648ae5f18667852f8f310cf40" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>ImagePyramid</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a517cef125b967a724696462dc9b5dcaa" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>ImagePyramid</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ae219ae3c2604c7c029953dd0bfc040eb" prot="protected" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>images_</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a935b2def8595c2a5c1ffc7270c378d4e" prot="protected" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>ImageVector</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ac5ff9ddf2faa16ab6b9ae40e157b96d0" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a441b9a7555cd4e8625f8f59f74c465f2" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>lowestLevel</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a24698288ecf176a4329187d45a41ddcb" prot="private" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>lowestLevel_</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a310368cfe51bd797e37157429657d33a" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a97ebf4646d84d180bf682f7d5f042ca0" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a0f85f0c43f6fa530133c3c7f49101d57" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a98888d2cbb7e7cedb9e52dcd308a5a6a" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a04886aa70c34d66738e78bf70c675e66" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a56628b9fd214b563093a9bbff48c9d5b" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a68c599ddcbfddc65170de524ac165e44" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a2bcdea31c51bd7fe5d691014dcaa6ce6" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a48ef57c91b97228cdad7a75053028d63" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>reverse_iterator</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>size</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1aafd1e3ba4133ad908bdbc99c4b356e5f" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1a4eddab7c52bc4e4703d5bcb9c9303805" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>swap</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1aa51d8837ec5025a0ab4e9f9ffadeb767" prot="public" virt="non-virtual"><scope>vigra::ImagePyramid</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1ImagePyramid_1ae97bd4e23b5866267d6cbb00673ed39a" prot="public" virt="virtual"><scope>vigra::ImagePyramid</scope><name>~ImagePyramid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

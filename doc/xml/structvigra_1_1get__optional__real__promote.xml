@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1get__optional__real__promote" kind="struct" prot="public">
+    <compoundname>vigra::get_optional_real_promote</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>bool</type>
+        <declname>P</declname>
+        <defname>P</defname>
+        <defval>has_real_promote_type&lt;T&gt;::value</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1get__optional__real__promote_1a565429e62c1d4fd084335146ba778e17" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="515" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="515" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="513" bodyend="516"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1get__optional__real__promote_1a565429e62c1d4fd084335146ba778e17" prot="public" virt="non-virtual"><scope>vigra::get_optional_real_promote</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

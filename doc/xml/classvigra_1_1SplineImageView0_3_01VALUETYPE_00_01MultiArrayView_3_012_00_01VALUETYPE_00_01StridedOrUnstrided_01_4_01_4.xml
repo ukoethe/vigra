@@ -1,0 +1,347 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4" kind="class" prot="public">
+    <compoundname>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::SplineImageView0Base&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class VALUETYPE</type>
+      </param>
+      <param>
+        <type>class StridedOrUnstrided</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa4336e7fd692b20bda7b7227fa9c9f55" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Base::difference_type</ref></type>
+        <definition>typedef Base::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aaf6cb362cb29a413cf19b865f40210c1" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; VALUETYPE &gt;</type>
+        <definition>typedef BasicImage&lt;VALUETYPE&gt; InternalImage</definition>
+        <argsstring></argsstring>
+        <name>InternalImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ad71971384bb1a502065487173f283fc5" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Base::size_type</ref></type>
+        <definition>typedef Base::size_type size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ac8884953a21c99c833a065cf12892914" prot="public" static="no">
+        <type>Base::SquaredNormType</type>
+        <definition>typedef Base::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa971a2a3247c4ab1b630623281659c5c" prot="public" static="no">
+        <name>StaticOrder</name>
+        <enumvalue id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa971a2a3247c4ab1b630623281659c5ca26130503b8ca5a4cf2bacfaf8666e522" prot="public">
+          <name>order</name>
+          <initializer> Base::order</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1106" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1106" bodyend="1106"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a758d02a5183e542558cd2f7ad65c683c" prot="public" static="no">
+        <type>Base::value_type</type>
+        <definition>typedef Base::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a5f5a6968aee54002cac529472d75245c" prot="private" static="no">
+        <type>SplineImageView0Base&lt; VALUETYPE, <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</type>
+        <definition>typedef SplineImageView0Base&lt;VALUETYPE, MultiArrayView&lt;2, VALUETYPE, StridedOrUnstrided&gt; &gt; Base</definition>
+        <argsstring></argsstring>
+        <name>Base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1100" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a9dc62123f7460adc1e593ca6e95ae642" prot="protected" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, VALUETYPE, StridedOrUnstrided &gt;</type>
+        <definition>typedef MultiArrayView&lt;2, VALUETYPE, StridedOrUnstrided&gt; InternalIndexer</definition>
+        <argsstring></argsstring>
+        <name>InternalIndexer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1110" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a958df78e9ad2810f97a79ef62a0bb3e2" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">InternalImage</ref></type>
+        <definition>InternalImage image_</definition>
+        <argsstring></argsstring>
+        <name>image_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1157" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1abfb25a7fab3bb386acb730bdc56130aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">InternalImage</ref> const &amp;</type>
+        <definition>InternalImage const&amp; image</definition>
+        <argsstring>() const </argsstring>
+        <name>image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1153" bodyend="1154"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a9eaf50a3b34548d8ffb0146d999b683b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SplineImageView0</definition>
+        <argsstring>(InternalIndexer const &amp;i)</argsstring>
+        <name>SplineImageView0</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">InternalIndexer</ref> const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1119" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1117" bodyend="1119"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a4fb4a4df613236ac68cee79469208f55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class SU</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>SplineImageView0</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, SU &gt; const &amp;i)</argsstring>
+        <name>SplineImageView0</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, SU &gt; const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1122" bodyend="1131"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a117c719e468cb4bba8dd92246da56481" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>SplineImageView0</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa)</argsstring>
+        <name>SplineImageView0</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1134" bodyend="1141"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ad9ec1d5c90a54014d12891d7015dbfe4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>SplineImageView0</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s)</argsstring>
+        <name>SplineImageView0</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1144" bodyend="1151"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2329">
+        <label>BasicImage&lt; VALUETYPE &gt;</label>
+        <link refid="classvigra_1_1BasicImage"/>
+      </node>
+      <node id="2328">
+        <label>SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</label>
+        <childnode refid="2329" relation="usage">
+          <edgelabel>image_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" line="1099" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splineimageview.hxx" bodystart="1097" bodyend="1158"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a5f5a6968aee54002cac529472d75245c" prot="private" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>Base</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a475ad1859407bb44ed29724a2bf6bab5" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>coefficientArray</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa4336e7fd692b20bda7b7227fa9c9f55" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a1a24bb67bfa3060e3652f81d827c65b4" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1afb39e1bcc48730558203d3493be3c09c" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a9f469042a7e888f972d9e01afa0a9328" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dx3</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1abb034ddfe9a84f4689716534927575ea" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dx3</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a29a07bba7ccc57c18cff3284c0ea5bb9" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a7a03450debdf087a4045ee1a029f2bf9" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ad04a714236ad7d8868fbab7e995280c1" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxxy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a270466b9db80456a279bc0352fcc5f3c" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxxy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a67238d048187291636f3d824154880f2" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1aa75e0b0015abe7087ffb6e90e21cdd08" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ac4d85e43689588b621da79a78d3460a3" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxyy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ae45360b9a5d4853a819271e204270827" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dxyy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a7a929166f9295b3f584ae1709ee8513f" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a69fa6fc456086f4b1ec46667b41cb6ff" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a56d19af4e4a7bb199ddfaa9da9561abb" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dy3</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1af0a5b29d6531e68f9ada8f40fe866db3" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dy3</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a5ea01e7c70b2c2d2fd075c6aefa9a89e" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dyy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a31d4a0e40e03aab2330e0382402a1a3d" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>dyy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ab2add53f2ce88fce7387ca064ffe4ce8" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a50a4446ada5434369eb49717dddcf37f" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ad1fa14f476d814a05fdcb1e872449056" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2x</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ad50f82d3dae6619660d2474145f7033d" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2x</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a1473e16b16dc535ac011a00c2fe051af" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2xx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ad6ef589ae7285b1fa52ed43c8f92ee62" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2xx</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a00e21c7fbe3e3e6ab8709d74ba9d0005" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2xy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1abc8438d8deef45943be46c906f2de92e" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2xy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ac2615aeb794f41fbf64e6bb5919665c5" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2y</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1adf47f692c45756654986ac1929ca7644" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2y</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a5d3435e01b983ffc072a7adf0b3018dc" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2yy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a6b04d45e9ec864d762801fc8068b2853" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>g2yy</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a5ee454b8ff83fce824cd7c4e8ca289f7" prot="protected" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>h_</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1aa420a28166e708e3f8b9ecc8e527fc09" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>height</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1abfb25a7fab3bb386acb730bdc56130aa" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>image</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a958df78e9ad2810f97a79ef62a0bb3e2" prot="protected" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>image_</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aaf6cb362cb29a413cf19b865f40210c1" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>InternalImage</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a9dc62123f7460adc1e593ca6e95ae642" prot="protected" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>InternalIndexer</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a2629d90997e1ea1b419a2c6411bdb239" prot="protected" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>internalIndexer_</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a245fb0bbe8b809456d2551b45b04ee76" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>isInside</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ad20ba87a3e9056f745b8e3c4f9d61f6a" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>isInsideX</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a2639cf62d1a2bd13b10b2704d8095802" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>isInsideY</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a4f44d7f7635f22e8a6e6657e23ce9e13" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>isValid</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1aa46111465c8e80e4c6383ab90ca6857d" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a645c088fa9c763854bced7639e7be411" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1aafffe75ac7663dd8af26a2589a50ba3e" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a8c2539a1f2bdef93e8e0f0d3f60054ad" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa971a2a3247c4ab1b630623281659c5ca26130503b8ca5a4cf2bacfaf8666e522" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>order</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a1153c711a4032f1a7d2165b2284aa4df" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>sameFacet</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1ae18d4988ca09b617f42943d27c343fd1" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>shape</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>size</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ad71971384bb1a502065487173f283fc5" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a9eaf50a3b34548d8ffb0146d999b683b" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a4fb4a4df613236ac68cee79469208f55" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a117c719e468cb4bba8dd92246da56481" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ad9ec1d5c90a54014d12891d7015dbfe4" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a1a958c9c75c8f17fadfc1b8a5d4dca47" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0Base</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a96758b6ce3eadb96ad81907ec6f1848d" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SplineImageView0Base</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1ac8884953a21c99c833a065cf12892914" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1aa971a2a3247c4ab1b630623281659c5c" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>StaticOrder</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a92bda2a8ab1dbd66f59f44e80d538a71" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>unchecked</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a57092fe1ed4578a1e6c9517daf1dec92" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>unchecked</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a72530e40576f8f48bb2167acfd46bea0" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>unchecked</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1acff05d05b2526f0e8963c50e1bd8c906" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>unchecked</name></member>
+      <member refid="classvigra_1_1SplineImageView0_3_01VALUETYPE_00_01MultiArrayView_3_012_00_01VALUETYPE_00_01StridedOrUnstrided_01_4_01_4_1a758d02a5183e542558cd2f7ad65c683c" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1afc3d42747099828b4bdc82d20435ae07" prot="protected" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>w_</name></member>
+      <member refid="classvigra_1_1SplineImageView0Base_1a7b736ec9a05be5c498760d35a0406ed3" prot="public" virt="non-virtual"><scope>vigra::SplineImageView0&lt; VALUETYPE, MultiArrayView&lt; 2, VALUETYPE, StridedOrUnstrided &gt; &gt;</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

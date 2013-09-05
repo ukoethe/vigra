@@ -1,0 +1,888 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MatrixAlgebra" kind="group">
+    <compoundname>MatrixAlgebra</compoundname>
+    <title>Advanced Matrix Algebra</title>
+    <innernamespace refid="namespacevigra_1_1linalg_1_1detail">vigra::linalg::detail</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MatrixAlgebra_1gadeaf1b2866e989c2612712b86236196e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::choleskyDecomposition</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; &amp;L)</argsstring>
+        <name>choleskyDecomposition</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>L</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Cholesky decomposition.
+
+\a A must be a symmetric positive definite matrix, and \a L will be a lower
+triangular matrix, such that (up to round-off errors):
+
+@code 
+A == L * transpose(L);
+\endcode
+
+This implementation cannot be applied in-place, i.e. &lt;tt&gt;&amp;L == &amp;A&lt;/tt&gt; is an error.
+If \a A is not symmetric, a &lt;tt&gt;ContractViolation&lt;/tt&gt; exception is thrown. If it
+is not positive definite, the function returns &lt;tt&gt;false&lt;/tt&gt;.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="910" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="908" bodyend="942"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga134cdba4837625a7d004a67cd5907058" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::choleskySolve</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;L, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;x)</argsstring>
+        <name>choleskySolve</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>L</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Solve a linear system when the Cholesky decomposition of the left hand side is given.
+
+The square matrix \a L must be a lower-triangular matrix resulting from Cholesky
+decomposition of some positive definite coefficient matrix.
+
+The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+with the same matrix \a L can thus be solved in one go). The result is returned
+in \a x, whose columns contain the solutions for the corresponding
+columns of \a b. This implementation can be applied in-place, i.e. &lt;tt&gt;&amp;b == &amp;x&lt;/tt&gt; is allowed.
+The following size requirements apply:
+
+@code 
+rowCount(L) == columnCount(L);
+rowCount(L) == rowCount(b);
+columnCount(L) == rowCount(x);
+columnCount(b) == columnCount(x);
+\endcode
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="1117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="1116" bodyend="1122"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga15edf238753abafb705497c01e38112c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::linalg::determinant</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a, std::string method=&quot;LU&quot;)</argsstring>
+        <name>determinant</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>method</declname>
+          <defval>&quot;LU&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Compute the determinant of a square matrix.
+
+\a method must be one of the following:
+&lt;DL&gt;
+&lt;DT&gt;&quot;Cholesky&quot;&lt;DD&gt; Compute the solution by means of Cholesky decomposition. This
+                   method is faster than &quot;LU&quot;, but requires the matrix \a a 
+                   to be symmetric positive definite. If this is 
+                   not the case, a &lt;tt&gt;ContractViolation&lt;/tt&gt; exception is thrown.
+
+&lt;DT&gt;&quot;LU&quot;&lt;DD&gt; (default) Compute the solution by means of LU decomposition.
+&lt;/DL&gt;
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="817" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="816" bodyend="848"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga898e3fc2bdea632e7307604325b88016" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::inverse</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;v, MultiArrayView&lt; 2, T, C2 &gt; &amp;res)</argsstring>
+        <name>inverse</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create the inverse or pseudo-inverse of matrix \a v.
+
+If the matrix \a v is square, \a res must have the same shape and will contain the
+inverse of \a v. If \a v is rectangular, \a res must have the transposed shape 
+of \a v. The inverse is then computed in the least-squares 
+sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
+The function returns &lt;tt&gt;true&lt;/tt&gt; upon success, and &lt;tt&gt;false&lt;/tt&gt; if \a v 
+is not invertible (has not full rank). The inverse is computed by means of QR 
+decomposition. This function can be applied in-place.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="720" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="719" bodyend="748"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga6d66eaad55a74cf250022e97ae5dd607" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix&lt; T &gt;</type>
+        <definition>TemporaryMatrix&lt;T&gt; vigra::linalg::inverse</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C &gt; &amp;v)</argsstring>
+        <name>inverse</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C &gt; &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create the inverse or pseudo-inverse of matrix \a v.
+
+The result is returned as a temporary matrix. If the matrix \a v is square, 
+the result will have the same shape and contains the inverse of \a v. 
+If \a v is rectangular, the result will have the transposed shape of \a v. 
+The inverse is then computed in the least-squares 
+sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
+The inverse is computed by means of QR decomposition. If \a v
+is not invertible, &lt;tt&gt;vigra::PreconditionViolation&lt;/tt&gt; exception is thrown.
+Usage:
+
+@code 
+vigra::Matrix&lt;double&gt; v(n, n);
+v = ...;
+
+vigra::Matrix&lt;double&gt; m = inverse(v);
+\endcode
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="774" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="773" bodyend="779"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga271a5214d9ff8cca2a8199159a79c03c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix&lt; T &gt;</type>
+        <definition>TemporaryMatrix&lt;T&gt; vigra::linalg::inverse</definition>
+        <argsstring>(const TemporaryMatrix&lt; T &gt; &amp;v)</argsstring>
+        <name>inverse</name>
+        <param>
+          <type>const TemporaryMatrix&lt; T &gt; &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="783" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="782" bodyend="797"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1gac51ce45fdb17942988cdc77e50611983" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::linearSolve</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;A, const MultiArrayView&lt; 2, T, C2 &gt; &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;res, std::string method=&quot;QR&quot;)</argsstring>
+        <name>linearSolve</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>method</declname>
+          <defval>&quot;QR&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Solve a linear system.
+
+\a A is the coefficient matrix, and the column vectors
+in \a b are the right-hand sides of the equation (so, several equations
+with the same coefficients can be solved in one go). The result is returned 
+in \a res, whose columns contain the solutions for the corresponding
+columns of \a b. The number of columns of \a A must equal the number of rows of
+both \a b and \a res, and the number of columns of \a b and \a res must match. 
+
+\a method must be one of the following:
+&lt;DL&gt;
+&lt;DT&gt;&quot;Cholesky&quot;&lt;DD&gt; Compute the solution by means of Cholesky decomposition. The 
+                   coefficient matrix \a A must by symmetric positive definite. If
+                   this is not the case, the function returns &lt;tt&gt;false&lt;/tt&gt;.
+
+&lt;DT&gt;&quot;QR&quot;&lt;DD&gt; (default) Compute the solution by means of QR decomposition.  The 
+                   coefficient matrix \a A can be square or rectangular. In the latter case,
+                   it must have more rows than columns, and the solution will be computed in the 
+                   least squares sense. If \a A doesn&apos;t have full rank, the function 
+                   returns &lt;tt&gt;false&lt;/tt&gt;.
+
+&lt;DT&gt;&quot;SVD&quot;&lt;DD&gt; Compute the solution by means of singular value decomposition.  The 
+                   coefficient matrix \a A can be square or rectangular. In the latter case,
+                   it must have more rows than columns, and the solution will be computed in the 
+                   least squares sense. If \a A doesn&apos;t have full rank, the function 
+                   returns &lt;tt&gt;false&lt;/tt&gt;.
+
+&lt;DT&gt;&quot;NE&quot;&lt;DD&gt; Compute the solution by means of the normal equations, i.e. by applying Cholesky
+                   decomposition to the equivalent problem &lt;tt&gt;A&apos;*A*x = A&apos;*b&lt;/tt&gt;. This only makes sense
+                   when the equation is to be solved in the least squares sense, i.e. when \a A is a 
+                   rectangular matrix with more rows than columns. If \a A doesn&apos;t have full column rank, 
+                   the function returns &lt;tt&gt;false&lt;/tt&gt;.
+&lt;/DL&gt;
+
+This function can be applied in-place, i.e. &lt;tt&gt;&amp;b == &amp;res&lt;/tt&gt; or &lt;tt&gt;&amp;A == &amp;res&lt;/tt&gt; are allowed
+(provided they have the required shapes).
+
+The following size requirements apply:
+
+@code 
+rowCount(r) == rowCount(b);
+columnCount(r) == rowCount(x);
+columnCount(b) == columnCount(x);
+\endcode
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="1176" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="1174" bodyend="1233"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga0a8f25a903663b7428cf0ba01b44b7e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::linearSolveLowerTriangular</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;l, const MultiArrayView&lt; 2, T, C2 &gt; &amp;b, MultiArrayView&lt; 2, T, C3 &gt; x)</argsstring>
+        <name>linearSolveLowerTriangular</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Solve a linear system with lower-triangular coefficient matrix.
+
+The square matrix \a l must be a lower-triangular coefficient matrix. If \a l 
+doesn&apos;t have full rank the function fails and returns &lt;tt&gt;false&lt;/tt&gt;, 
+otherwise it returns &lt;tt&gt;true&lt;/tt&gt;. The upper triangular part of matrix \a l will not be touched, 
+so it doesn&apos;t need to contain zeros.
+
+The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+with the same coefficients can thus be solved in one go). The result is returned
+in \a x, whose columns contain the solutions for the corresponding
+columns of \a b. This implementation can be applied in-place, i.e. &lt;tt&gt;&amp;b == &amp;x&lt;/tt&gt; is allowed.
+The following size requirements apply:
+
+@code 
+rowCount(l) == columnCount(l);
+rowCount(l) == rowCount(b);
+columnCount(l) == rowCount(x);
+columnCount(b) == columnCount(x);
+\endcode
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="1068" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="1066" bodyend="1089"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga7661f6e132de307660799727834ac25b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::linearSolveUpperTriangular</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;r, const MultiArrayView&lt; 2, T, C2 &gt; &amp;b, MultiArrayView&lt; 2, T, C3 &gt; x)</argsstring>
+        <name>linearSolveUpperTriangular</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Solve a linear system with upper-triangular coefficient matrix.
+
+The square matrix \a r must be an upper-triangular coefficient matrix as can,
+for example, be obtained by means of QR decomposition. If \a r doesn&apos;t have full rank
+the function fails and returns &lt;tt&gt;false&lt;/tt&gt;, otherwise it returns &lt;tt&gt;true&lt;/tt&gt;. The 
+lower triangular part of matrix \a r will not be touched, so it doesn&apos;t need to contain zeros.
+
+The column vectors of matrix \a b are the right-hand sides of the equation (several equations
+with the same coefficients can thus be solved in one go). The result is returned
+int \a x, whose columns contain the solutions for the corresponding
+columns of \a b. This implementation can be applied in-place, i.e. &lt;tt&gt;&amp;b == &amp;x&lt;/tt&gt; is allowed.
+The following size requirements apply:
+
+@code 
+rowCount(r) == columnCount(r);
+rowCount(r) == rowCount(b);
+columnCount(r) == rowCount(x);
+columnCount(b) == columnCount(x);
+\endcode
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="1017" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="1015" bodyend="1039"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1gaf664311a5660212a4c9ac7bdb0f1de98" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::linalg::logDeterminant</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a)</argsstring>
+        <name>logDeterminant</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Compute the logarithm of the determinant of a symmetric positive definite matrix.
+
+This is useful to avoid multiplication of very large numbers in big matrices.
+It is implemented by means of Cholesky decomposition.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="861" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="860" bodyend="888"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga9201f15592d676c01ce4f2cc0a784b2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::nonsymmetricEigensystem</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a, MultiArrayView&lt; 2, std::complex&lt; T &gt;, C2 &gt; &amp;ew, MultiArrayView&lt; 2, T, C3 &gt; &amp;ev)</argsstring>
+        <name>nonsymmetricEigensystem</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, std::complex&lt; T &gt;, C2 &gt; &amp;</type>
+          <declname>ew</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>ev</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Compute the eigensystem of a square, but
+not necessarily symmetric matrix.
+
+\a a is a real square matrix, \a ew is a single-column matrix
+holding the possibly complex eigenvalues, and \a ev is a matrix of
+the same size as \a a whose columns are the corresponding eigenvectors.
+Eigenvalues will be sorted from largest to smallest magnitude.
+The algorithm returns &lt;tt&gt;false&lt;/tt&gt; when it doesn&apos;t
+converge. It can be applied in-place, i.e. &lt;tt&gt;&amp;a == &amp;ev&lt;/tt&gt; is allowed.
+The code of this function was adapted from JAMA.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="eigensystem_8hxx_source" kindref="compound">vigra/eigensystem.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1109" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1107" bodyend="1128"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1gab5d356993a9ed3f962643029709b40c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class POLYNOMIAL</type>
+          </param>
+          <param>
+            <type>class VECTOR</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::polynomialRealRootsEigenvalueMethod</definition>
+        <argsstring>(POLYNOMIAL const &amp;p, VECTOR &amp;roots, bool)</argsstring>
+        <name>polynomialRealRootsEigenvalueMethod</name>
+        <param>
+          <type>POLYNOMIAL const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>VECTOR &amp;</type>
+          <declname>roots</declname>
+        </param>
+        <param>
+          <type>bool</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the real roots of a real polynomial using the eigenvalue method.</para><para><emphasis>poly</emphasis> is a real polynomial (compatible to <ref refid="classvigra_1_1PolynomialView" kindref="compound">vigra::PolynomialView</ref>), and <emphasis>roots</emphasis> a real valued vector (compatible to <computeroutput>std::vector</computeroutput> with a <computeroutput>value_type</computeroutput> compatible to the type <computeroutput>POLYNOMIAL::Real</computeroutput>) to which the roots are appended. The function calls <ref refid="group__MatrixAlgebra_1ga8beeff7149550f26996388e3450ab402" kindref="member">polynomialRootsEigenvalueMethod()</ref> and throws away all complex roots. It returns <computeroutput>false</computeroutput> if it fails to converge. The parameter <computeroutput>polishRoots</computeroutput> is ignored (it is only here for syntax compatibility with <ref refid="group__Polynomials_1gafdc4f470cee357d53e7db7d40450fde5" kindref="member">polynomialRealRoots()</ref>).</para><para><bold>#include</bold> &lt;<ref refid="eigensystem_8hxx_source" kindref="compound">vigra/eigensystem.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref></para><para><simplesect kind="see"><para><ref refid="group__Polynomials_1gafdc4f470cee357d53e7db7d40450fde5" kindref="member">polynomialRealRoots()</ref>, <ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1201" bodyend="1211"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga2f3204beb00dd09a34310be728f69add" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class POLYNOMIAL</type>
+          </param>
+          <param>
+            <type>class VECTOR</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::polynomialRealRootsEigenvalueMethod</definition>
+        <argsstring>(POLYNOMIAL const &amp;p, VECTOR &amp;roots)</argsstring>
+        <name>polynomialRealRootsEigenvalueMethod</name>
+        <param>
+          <type>POLYNOMIAL const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>VECTOR &amp;</type>
+          <declname>roots</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1215" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1214" bodyend="1217"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga8beeff7149550f26996388e3450ab402" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class POLYNOMIAL</type>
+          </param>
+          <param>
+            <type>class VECTOR</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::polynomialRootsEigenvalueMethod</definition>
+        <argsstring>(POLYNOMIAL const &amp;poly, VECTOR &amp;roots, bool polishRoots)</argsstring>
+        <name>polynomialRootsEigenvalueMethod</name>
+        <param>
+          <type>POLYNOMIAL const &amp;</type>
+          <declname>poly</declname>
+        </param>
+        <param>
+          <type>VECTOR &amp;</type>
+          <declname>roots</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>polishRoots</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the roots of a polynomial using the eigenvalue method.</para><para><emphasis>poly</emphasis> is a real polynomial (compatible to <ref refid="classvigra_1_1PolynomialView" kindref="compound">vigra::PolynomialView</ref>), and <emphasis>roots</emphasis> a complex valued vector (compatible to <computeroutput>std::vector</computeroutput> with a <computeroutput>value_type</computeroutput> compatible to the type <computeroutput>POLYNOMIAL::Complex</computeroutput>) to which the roots are appended. The function calls <ref refid="group__MatrixAlgebra_1ga9201f15592d676c01ce4f2cc0a784b2e" kindref="member">nonsymmetricEigensystem()</ref> with the standard companion matrix yielding the roots as eigenvalues. It returns <computeroutput>false</computeroutput> if it fails to converge.</para><para><bold>#include</bold> &lt;<ref refid="eigensystem_8hxx_source" kindref="compound">vigra/eigensystem.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref></para><para><simplesect kind="see"><para><ref refid="group__Polynomials_1gaf46ab7ff907f8abcaccdb43990c4df6b" kindref="member">polynomialRoots()</ref>, <ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1146" bodyend="1175"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga372e297c942f4ec299a3cf0d3f1a5c33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class POLYNOMIAL</type>
+          </param>
+          <param>
+            <type>class VECTOR</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::polynomialRootsEigenvalueMethod</definition>
+        <argsstring>(POLYNOMIAL const &amp;poly, VECTOR &amp;roots)</argsstring>
+        <name>polynomialRootsEigenvalueMethod</name>
+        <param>
+          <type>POLYNOMIAL const &amp;</type>
+          <declname>poly</declname>
+        </param>
+        <param>
+          <type>VECTOR &amp;</type>
+          <declname>roots</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1178" bodyend="1181"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga3dd7bb55aeb57c7646b0eaf8142c7b12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::qrDecomposition</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a, MultiArrayView&lt; 2, T, C2 &gt; &amp;q, MultiArrayView&lt; 2, T, C3 &gt; &amp;r, double epsilon=0.0)</argsstring>
+        <name>qrDecomposition</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>q</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>QR decomposition.
+
+\a a contains the original matrix, results are returned in \a q and \a r, where
+\a q is a orthogonal matrix, and \a r is an upper triangular matrix, such that 
+(up to round-off errors):
+
+@code 
+a == q * r;
+\endcode
+
+If \a a doesn&apos;t have full rank, the function returns &lt;tt&gt;false&lt;/tt&gt;. 
+The decomposition is computed by householder transformations. It can be applied in-place,
+i.e. &lt;tt&gt;&amp;a == &amp;q&lt;/tt&gt; or &lt;tt&gt;&amp;a == &amp;r&lt;/tt&gt; are allowed.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="linear__solve_8hxx_source" kindref="compound">vigra/linear_solve.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="966" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="963" bodyend="978"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga58368198ae99f73f3f7b5a7dbf21844f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::reverseElimination</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;r, const MultiArrayView&lt; 2, T, C2 &gt; &amp;b, MultiArrayView&lt; 2, T, C3 &gt; x)</argsstring>
+        <name>reverseElimination</name>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Deprecated, use <ref refid="group__MatrixAlgebra_1ga7661f6e132de307660799727834ac25b" kindref="member">linearSolveUpperTriangular()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="986" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="984" bodyend="988"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1gaf20e05edcc344f32d96fdaf5a6b3b972" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class C4</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::singularValueDecomposition</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; &amp;U, MultiArrayView&lt; 2, T, C3 &gt; &amp;S, MultiArrayView&lt; 2, T, C4 &gt; &amp;V)</argsstring>
+        <name>singularValueDecomposition</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>U</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>S</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C4 &gt; &amp;</type>
+          <declname>V</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Singular Value Decomposition.
+</verbatim></para><para>For an m-by-n matrix <emphasis>A</emphasis> with m &gt;= n, the singular value decomposition is an m-by-n orthogonal matrix <emphasis>U</emphasis>, an n-by-n diagonal matrix S, and an n-by-n orthogonal matrix <emphasis>V</emphasis> so that A = U*S*V&apos;.</para><para>To save memory, this functions stores the matrix <emphasis>S</emphasis> in a column vector of appropriate length (a diagonal matrix can be obtained by <computeroutput>diagonalMatrix(S)</computeroutput>). The singular values, sigma[k] = S(k, 0), are ordered so that sigma[0] &gt;= sigma[1] &gt;= ... &gt;= sigma[n-1].</para><para>The singular value decomposition always exists, so this function will never fail (except if the shapes of the argument matrices don&apos;t match). The effective numerical rank of A is returned.</para><para>(Adapted from JAMA, a Java <ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref> Library, developed jointly by the Mathworks and NIST; see <ulink url="http://math.nist.gov/javanumerics/jama">http://math.nist.gov/javanumerics/jama</ulink>).</para><para><bold>#include</bold> &lt;<ref refid="singular__value__decomposition_8hxx_source" kindref="compound">vigra/singular_value_decomposition.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/singular_value_decomposition.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/singular_value_decomposition.hxx" bodystart="75" bodyend="558"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MatrixAlgebra_1ga2fb4d56ba8360951f0ffa62e105e1a69" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::symmetricEigensystem</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a, MultiArrayView&lt; 2, T, C2 &gt; &amp;ew, MultiArrayView&lt; 2, T, C3 &gt; &amp;ev)</argsstring>
+        <name>symmetricEigensystem</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>ew</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>ev</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Compute the eigensystem of a symmetric matrix.
+
+\a a is a real symmetric matrix, \a ew is a single-column matrix
+holding the eigenvalues, and \a ev is a matrix of the same size as
+\a a whose columns are the corresponding eigenvectors. Eigenvalues
+will be sorted from largest to smallest magnitude.
+The algorithm returns &lt;tt&gt;false&lt;/tt&gt; when it doesn&apos;t
+converge. It can be applied in-place, i.e. &lt;tt&gt;&amp;a == &amp;ev&lt;/tt&gt; is allowed.
+The code of this function was adapted from JAMA.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="eigensystem_8hxx_source" kindref="compound">vigra/eigensystem.hxx</ref>&gt; or<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="linear__algebra_8hxx_source" kindref="compound">vigra/linear_algebra.hxx</ref>&gt;<linebreak/>
+ Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1010" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1008" bodyend="1026"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Solution of linear systems, eigen systems, linear least squares etc. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,2366 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiArrayConvolutionFilters" kind="group">
+    <compoundname>MultiArrayConvolutionFilters</compoundname>
+    <title>Convolution filters for multi-dimensional arrays.</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFT</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveFFT</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolve an array with a kernel by means of the Fourier transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>Thanks to the convolution theorem of Fourier theory, a convolution in the spatial domain is equivalent to a multiplication in the frequency domain. Thus, for certain kernels (especially large, non-separable ones), it is advantageous to perform the convolution by first transforming both array and kernel to the frequency domain, multiplying the frequency representations, and transforming the result back into the spatial domain. Some kernels have a much simpler definition in the frequency domain, so that they are readily computed there directly, avoiding Fourier transformation of those kernels.</para><para>The following functions implement various variants of FFT-based convolution: <verbatim>&lt;DL&gt;
+&lt;DT&gt;&lt;b&gt;convolveFFT&lt;/b&gt;&lt;DD&gt; Convolve a real-valued input array with a kernel such that the 
+                    result is also real-valued. That is, the kernel is either provided
+                    as a real-valued array in the spatial domain, or as a 
+                    complex-valued array in the Fourier domain, using the half-space format 
+                    of the R2C Fourier transform (see below).
+&lt;DT&gt;&lt;b&gt;convolveFFTMany&lt;/b&gt;&lt;DD&gt; Like &lt;tt&gt;convolveFFT&lt;/tt&gt;, but you may provide many kernels at once 
+                    (using an iterator pair specifying the kernel sequence). 
+                    This has the advantage that the forward transform of the input array needs 
+                    to be executed only once.
+&lt;DT&gt;&lt;b&gt;convolveFFTComplex&lt;/b&gt;&lt;DD&gt; Convolve a complex-valued input array with a complex-valued kernel, 
+                    resulting in a complex-valued output array. An additional flag is used to 
+                    specify whether the kernel is defined in the spatial or frequency domain.
+&lt;DT&gt;&lt;b&gt;convolveFFTComplexMany&lt;/b&gt;&lt;DD&gt; Like &lt;tt&gt;convolveFFTComplex&lt;/tt&gt;, but you may provide many kernels at once 
+                    (using an iterator pair specifying the kernel sequence). 
+                    This has the advantage that the forward transform of the input array needs 
+                    to be executed only once.
+&lt;/DL&gt;
+</verbatim></para><para>The output arrays must have the same shape as the input arrays. In the &quot;Many&quot; variants of the convolution functions, the kernels must all have the same shape.</para><para>The origin of the kernel is always assumed to be in the center of the kernel array (precisely, at the point <computeroutput>floor(kernel.shape() / 2.0)</computeroutput>, except when the half-space format is used, see below). The function <ref refid="group__FourierTransform_1gaee27c376079af99e8e2148e7d23ffbbb" kindref="member">moveDCToUpperLeft()</ref> will be called internally to align the kernel with the transformed input as appropriate.</para><para>If a real input is combined with a real kernel, the kernel is automatically assumed to be defined in the spatial domain. If a real input is combined with a complex kernel, the kernel is assumed to be defined in the Fourier domain in half-space format. If the input array is complex, a flag <computeroutput>fourierDomainKernel</computeroutput> determines where the kernel is defined.</para><para>When the kernel is defined in the spatial domain, the convolution functions will automatically pad (enlarge) the input array by at least the kernel radius in each direction. The newly added space is filled according to reflective boundary conditions in order to minimize border artifacts during convolution. It is thus ensured that convolution in the Fourier domain yields the same results as convolution in the spatial domain (e.g. when <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> is called with the same kernel). A little further padding may be added to make sure that the padded array shape uses integers which have only small prime factors, because FFTW is then able to use the fastest possible algorithms. Any padding is automatically removed from the result arrays before the function returns.</para><para>When the kernel is defined in the frequency domain, it must be complex-valued, and its shape determines the shape of the Fourier representation (i.e. the input is padded according to the shape of the kernel). If we are going to perform a complex-valued convolution, the kernel must be defined for the entire frequency domain, and its shape directly determines the size of the FFT.</para><para>In contrast, a frequency domain kernel for a real-valued convolution must have symmetry properties that allow to drop half of the kernel coefficients, as in the <ulink url="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C transform</ulink>. That is, the kernel must have the <emphasis>half-space format</emphasis>, that is the shape returned by <computeroutput>fftwCorrespondingShapeR2C(fourier_shape)</computeroutput>, where <computeroutput>fourier_shape</computeroutput> is the desired logical shape of the frequency representation (and thus the size of the padded input). The origin of the kernel must be at the point <computeroutput>(0, floor(fourier_shape[0] / 2.0), ..., floor(fourier_shape[N-1] / 2.0))</computeroutput> (i.e. as in a regular kernel except for the first dimension).</para><para>The <computeroutput>Real</computeroutput> type in the declarations can be <computeroutput>double</computeroutput>, <computeroutput>float</computeroutput>, and <computeroutput>long double</computeroutput>. Your program must always link against <computeroutput>libfftw3</computeroutput>. If you use <computeroutput>float</computeroutput> or <computeroutput>long double</computeroutput> arrays, you must <emphasis>additionally</emphasis> link against <computeroutput>libfftw3f</computeroutput> and <computeroutput>libfftw3l</computeroutput> respectively.</para><para>The Fourier transform functions internally create <ulink url="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</ulink> which control the algorithm details. The plans are creates with the flag <computeroutput>FFTW_ESTIMATE</computeroutput>, i.e. optimal settings are guessed or read from saved &quot;wisdom&quot; files. If you need more control over planning, you can use the class <ref refid="classvigra_1_1FFTWConvolvePlan" kindref="compound">FFTWConvolvePlan</ref>.</para><para>See also <ref refid="group__FourierTransform_1gad51931cfe91ece316e28ff9d7ff28377" kindref="member">applyFourierFilter()</ref> for corresponding functionality on the basis of the old image iterator interface.</para><para><bold> Declarations:</bold></para><para>Real-valued convolution with kernel in the spatial domain: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member" tooltip="Convolve an array with a kernel by means of the Fourier transform.">convolveFFT</ref>(MultiArrayView&lt;N,<sp/>Real,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>Real,<sp/>C2&gt;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>Real,<sp/>C3&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Real-valued convolution with kernel in the Fourier domain (half-space format): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member" tooltip="Convolve an array with a kernel by means of the Fourier transform.">convolveFFT</ref>(MultiArrayView&lt;N,<sp/>Real,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C2&gt;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>Real,<sp/>C3&gt;<sp/>out);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Series of real-valued convolutions with kernels in the spatial or Fourier domain (the kernel and out sequences must have the same length): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Real,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">OutIterator&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gae2598869b328eae9ff709387e0b758a0" kindref="member" tooltip="Convolve a real-valued array with a sequence of kernels by means of the Fourier transform.">convolveFFTMany</ref>(MultiArrayView&lt;N,<sp/>Real,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>kernels,<sp/>KernelIterator<sp/>kernelsEnd,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OutIterator<sp/>outs);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Complex-valued convolution (parameter <computeroutput>fourierDomainKernel</computeroutput> determines if the kernel is defined in the spatial or Fourier domain): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga014b4e7d6d5154d5ad83170c6cb547f6" kindref="member" tooltip="Convolve a complex-valued array by means of the Fourier transform.">convolveFFTComplex</ref>(MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C1&gt;<sp/>in,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C2&gt;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C3&gt;<sp/>out,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>fourierDomainKernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Series of complex-valued convolutions (parameter <computeroutput>fourierDomainKernel</computeroutput> determines if the kernels are defined in the spatial or Fourier domain, the kernel and out sequences must have the same length): <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Real,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">OutIterator&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gaf555ec81ad059261e2bb8b5d03a0aa83" kindref="member" tooltip="Convolve a complex-valued array with a sequence of kernels by means of the Fourier transform...">convolveFFTComplexMany</ref>(MultiArrayView&lt;N,<sp/>FFTWComplex&lt;Real&gt;,<sp/>C1&gt;<sp/>in,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>kernels,<sp/>KernelIterator<sp/>kernelsEnd,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OutIterator<sp/>outs,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>fourierDomainKernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__fft_8hxx_source" kindref="compound">vigra/multi_fft.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>convolve<sp/>real<sp/>array<sp/>with<sp/>a<sp/>Gaussian<sp/>(sigma=1)<sp/>defined<sp/>in<sp/>the<sp/>spatial<sp/>domain</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>(implicitly<sp/>uses<sp/>padding<sp/>by<sp/>at<sp/>least<sp/>4<sp/>pixels)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>src(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,<sp/>h)),<sp/>dest(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,h));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>spatial_kernel(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(9,<sp/>9));</highlight></codeline>
+<codeline><highlight class="normal">Gaussian&lt;double&gt;<sp/>gauss(1.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y=0;<sp/>y&lt;9;<sp/>++y)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x=0;<sp/>x&lt;9;<sp/>++x)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>spatial_kernel(x,<sp/>y)<sp/>=<sp/>gauss(x-4.0)*gauss(y-4.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member" tooltip="Convolve an array with a kernel by means of the Fourier transform.">convolveFFT</ref>(src,<sp/>spatial_kernel,<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>convolve<sp/>real<sp/>array<sp/>with<sp/>a<sp/>Gaussian<sp/>(sigma=1)<sp/>defined<sp/>in<sp/>the<sp/>Fourier<sp/>domain</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>(uses<sp/>no<sp/>padding,<sp/>because<sp/>the<sp/>kernel<sp/>size<sp/>corresponds<sp/>to<sp/>the<sp/>input<sp/>size)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>FFTWComplex&lt;double&gt;<sp/>&gt;<sp/>fourier_kernel(<ref refid="group__FourierTransform_1gafbea828444f49163293b1d81fcd05da8" kindref="member" tooltip="Find frequency domain shape for a R2C Fourier transform.">fftwCorrespondingShapeR2C</ref>(src.shape()));</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y0<sp/>=<sp/>h<sp/>/<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y=0;<sp/>y&lt;fourier_kernel.shape(1);<sp/>++y)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x=0;<sp/>x&lt;fourier_kernel.shape(0);<sp/>++x)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fourier_kernel(x,<sp/>y)<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">exp</ref>(-0.5*<ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(x<sp/>/<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">(w)))<sp/>*<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">exp</ref>(-0.5*<ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>((y-y0)/</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">(h)));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member" tooltip="Convolve an array with a kernel by means of the Fourier transform.">convolveFFT</ref>(src,<sp/>fourier_kernel,<sp/>dest);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga2003b0635e0d47529d616e568904c1ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFT</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, Real, C2 &gt; kernel, MultiArrayView&lt; N, Real, C3 &gt; out)</argsstring>
+        <name>convolveFFT</name>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C2 &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C3 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="2158" bodyend="2163"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gac24f561eeaf36509170b6c186c8ddd13" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFT</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; kernel, MultiArrayView&lt; N, Real, C3 &gt; out)</argsstring>
+        <name>convolveFFT</name>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C3 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="2167" bodyend="2172"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga014b4e7d6d5154d5ad83170c6cb547f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTComplex</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveFFTComplex</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolve a complex-valued array by means of the Fourier transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga607fdec63dad24548301a0dd55530189" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTComplex</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; kernel, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C3 &gt; out, bool fourierDomainKernel)</argsstring>
+        <name>convolveFFTComplex</name>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C3 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>fourierDomainKernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2186" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="2182" bodyend="2188"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaf555ec81ad059261e2bb8b5d03a0aa83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTComplexMany</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveFFTComplexMany</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolve a complex-valued array with a sequence of kernels by means of the Fourier transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2212"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga1e94bd6e447c02953fdc0a3d499c295b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTComplexMany</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, KernelIterator kernels, KernelIterator kernelsEnd, OutIterator outs, bool fourierDomainKernel)</argsstring>
+        <name>convolveFFTComplexMany</name>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernelsEnd</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>outs</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>fourierDomainKernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="2217" bodyend="2225"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gae2598869b328eae9ff709387e0b758a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTMany</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveFFTMany</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolve a real-valued array with a sequence of kernels by means of the Fourier transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2194"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gad4829bbbf5453fc8c1736254968c938e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class Real</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveFFTMany</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, KernelIterator kernels, KernelIterator kernelsEnd, OutIterator outs)</argsstring>
+        <name>convolveFFTMany</name>
+        <param>
+          <type>MultiArrayView&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernelsEnd</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="2202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="2199" bodyend="2206"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveMultiArrayOneDimension</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveMultiArrayOneDimension</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolution along a single dimension of a multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes a convolution along one dimension (specified by the parameter <computeroutput>dim</computeroutput> of the given multi-dimensional array with the given <computeroutput>kernel</computeroutput>. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to already have the correct size.</para><para>If <computeroutput>start</computeroutput> and <computeroutput>stop</computeroutput> have non-default values, they must represent a valid subarray of the input array. The convolution is then restricted to that subarray, and it is assumed that the output array only refers to the subarray (i.e. <computeroutput>diter</computeroutput> points to the element corresponding to <computeroutput>start</computeroutput>).</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member" tooltip="Convolution along a single dimension of a multi-dimensional arrays.">convolveMultiArrayOneDimension</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim,<sp/><ref refid="classvigra_1_1Kernel1D" kindref="compound" tooltip="Generic 1 dimensional convolution kernel.">vigra::Kernel1D&lt;T&gt;</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member" tooltip="Convolution along a single dimension of a multi-dimensional arrays.">convolveMultiArrayOneDimension</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dim,<sp/><ref refid="classvigra_1_1Kernel1D" kindref="compound" tooltip="Generic 1 dimensional convolution kernel.">vigra::Kernel1D&lt;T&gt;</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">Kernel1D&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>gauss;</highlight></codeline>
+<codeline><highlight class="normal">gauss.initGaussian(sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>Gaussian<sp/>smoothing<sp/>along<sp/>dimensions<sp/>1<sp/>(height)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member" tooltip="Convolution along a single dimension of a multi-dimensional arrays.">convolveMultiArrayOneDimension</ref>(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>1,<sp/>gauss);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="935"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gafb195fef729e8e24df3e1c41dc8ac828" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveMultiArrayOneDimension</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, unsigned int dim, vigra::Kernel1D&lt; T &gt; const &amp;kernel, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>convolveMultiArrayOneDimension</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref>&lt; T &gt; const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="945" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="940" bodyend="982"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gad4c634b6c97008734b8e0b3364a24144" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveMultiArrayOneDimension</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, unsigned int dim, vigra::Kernel1D&lt; T &gt; const &amp;kernel, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>convolveMultiArrayOneDimension</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref>&lt; T &gt; const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="992" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="987" bodyend="995"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianGradientMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> gradient of a multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> gradient of the given N-dimensional array with a sequence of first-derivative-of-Gaussian filters at the given standard deviation <computeroutput>sigma</computeroutput> (differentiation is applied to each dimension in turn, starting with the innermost dimension). Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to have a vector valued pixel type with as many elements as the number of dimensions. This function is implemented by calls to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> with the appropriate kernels.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is otherwise optional unless the parameter <computeroutput>sigma</computeroutput> is left out.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member" tooltip="Calculate Gaussian gradient of a multi-dimensional arrays.">gaussianGradientMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member" tooltip="Calculate Gaussian gradient of a multi-dimensional arrays.">gaussianGradientMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>3&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Gaussian<sp/>gradient<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gaussianGradientMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma);</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>3&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>resolution_sigmas;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Gaussian<sp/>gradient<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gaussianGradientMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size).resolutionStdDev(resolution_sigmas));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1218"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga66385d7496f7de993876b55c80a19d6d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt, const char *const function_name=&quot;gaussianGradientMultiArray&quot;)</argsstring>
+        <name>gaussianGradientMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <param>
+          <type>const char *const</type>
+          <declname>function_name</declname>
+          <defval>&quot;gaussianGradientMultiArray&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1227" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1223" bodyend="1263"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga288a067275c2b096f8bd0f09e41542c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>gaussianGradientMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1271" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1268" bodyend="1274"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga6ef08e09d70ac261ab5c5ece73ba4765" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>gaussianGradientMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1282" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1279" bodyend="1285"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaffba662d0f928c58dd7077a9ea6e8dc1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>gaussianGradientMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1294" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1290" bodyend="1297"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga11d81ef630205d44b8517c464217207d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianSmoothMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Isotropic <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing of a multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes an isotropic convolution of the given N-dimensional array with a <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter at the given standard deviation <computeroutput>sigma</computeroutput>. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to already have the correct size. This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. It is implemented by a call to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> with the appropriate kernel.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is otherwise optional unless the parameter <computeroutput>sigma</computeroutput> is left out.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga11d81ef630205d44b8517c464217207d" kindref="member" tooltip="Isotropic Gaussian smoothing of a multi-dimensional arrays.">gaussianSmoothMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga11d81ef630205d44b8517c464217207d" kindref="member" tooltip="Isotropic Gaussian smoothing of a multi-dimensional arrays.">gaussianSmoothMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>isotropic<sp/>Gaussian<sp/>smoothing<sp/>at<sp/>scale<sp/>&apos;sigma&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gaussianSmoothMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma);</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>resolution_sigmas;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>anisotropic<sp/>Gaussian<sp/>smoothing<sp/>at<sp/>scale<sp/>&apos;sigma&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gaussianSmoothMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size).resolutionStdDev(resolution_sigmas));</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1074"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gae230a010ca869fc524b61efafc46a02f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothMultiArray</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt, const char *const function_name=&quot;gaussianSmoothMultiArray&quot;)</argsstring>
+        <name>gaussianSmoothMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <param>
+          <type>const char *const</type>
+          <declname>function_name</declname>
+          <defval>&quot;gaussianSmoothMultiArray&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1083" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1079" bodyend="1095"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga270e47ed849a10c3ef9513fad3a6b36d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothMultiArray</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>gaussianSmoothMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1100" bodyend="1106"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga093b821838d982d54e376f7c82e4b11b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt)</argsstring>
+        <name>gaussianSmoothMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1114" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1111" bodyend="1117"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaf5fe7551a3ab55acbee9494514e8a263" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>gaussianSmoothMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1122" bodyend="1128"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gae419814e55fb3191a87e7b75f505d4da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianOfGaussianMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>hessianOfGaussianMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate Hessian matrix of a N-dimensional arrays using <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> derivative filters. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes the Hessian matrix the given scalar N-dimensional array with a sequence of second-derivative-of-Gaussian filters at the given standard deviation <computeroutput>sigma</computeroutput>. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array must have a vector valued element type with N*(N+1)/2 elements (it represents the upper triangular part of the symmetric Hessian matrix). This function is implemented by calls to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> with the appropriate kernels.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is otherwise optional unless the parameter <computeroutput>sigma</computeroutput> is left out.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gae419814e55fb3191a87e7b75f505d4da" kindref="member" tooltip="Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters.">hessianOfGaussianMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gae419814e55fb3191a87e7b75f505d4da" kindref="member" tooltip="Calculate Hessian matrix of a N-dimensional arrays using Gaussian derivative filters.">hessianOfGaussianMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>6&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Hessian<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hessianOfGaussianMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma);</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>6&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>resolution_sigmas;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Hessian<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">hessianOfGaussianMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>sigma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size).resolutionStdDev(resolution_sigmas));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, <ref refid="group__MultiPointoperators_1gad869b7b263b104e005a1ddc66b5c1f80" kindref="member">vectorToTensorMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1694"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaa9e1dc941e4346eca90e5f83cd630fc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianOfGaussianMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>hessianOfGaussianMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1702" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1699" bodyend="1753"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga5133f7fee8fdf796281ab27430794bd0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianOfGaussianMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>hessianOfGaussianMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1761" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1758" bodyend="1764"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga97811aa28db1622f6f7d54b37b56dd1b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianOfGaussianMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>hessianOfGaussianMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1772" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1769" bodyend="1775"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gac2035729da550e72e96203954339e540" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianOfGaussianMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>hessianOfGaussianMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1784" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1780" bodyend="1787"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gac165234c3bca25d3162cac15ceb2b970" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussianMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>laplacianOfGaussianMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate Laplacian of a N-dimensional arrays using <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> derivative filters. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes the Laplacian the given N-dimensional array with a sequence of second-derivative-of-Gaussian filters at the given standard deviation <computeroutput>sigma</computeroutput>. Both source and destination arrays are represented by iterators, shape objects and accessors. Both source and destination arrays must have scalar value_type. This function is implemented by calls to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> with the appropriate kernels, followed by summation.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is otherwise optional unless the parameter <computeroutput>sigma</computeroutput> is left out.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gac165234c3bca25d3162cac15ceb2b970" kindref="member" tooltip="Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.">laplacianOfGaussianMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1gac165234c3bca25d3162cac15ceb2b970" kindref="member" tooltip="Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.">laplacianOfGaussianMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>laplacian(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Laplacian<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">laplacianOfGaussianMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(laplacian),<sp/>sigma);</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>laplacian(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>resolution_sigmas;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>Laplacian<sp/>at<sp/>scale<sp/>sigma</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">laplacianOfGaussianMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(laplacian),<sp/>sigma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size).resolutionStdDev(resolution_sigmas));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1519"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga46d79119c4ea4583089fe7f52561de3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussianMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>laplacianOfGaussianMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1527" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1524" bodyend="1574"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga508f3456030d80b61a64eac827435e63" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussianMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>laplacianOfGaussianMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1579" bodyend="1585"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga9f6d45a5417672deccdbd64aa4edd011" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussianMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>laplacianOfGaussianMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1593" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1590" bodyend="1596"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gafa533f50c9c9cbac4e6d02457cb559b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussianMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>laplacianOfGaussianMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1605" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1601" bodyend="1608"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>separableConvolveMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Separated convolution on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes a separated convolution on all dimensions of the given multi-dimensional array. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to already have the correct size.</para><para>There are two variants of this functions: one takes a single kernel of type <ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref> which is then applied to all dimensions, whereas the other requires an iterator referencing a sequence of <ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref> objects, one for every dimension of the data. Then the first kernel in this sequence is applied to the innermost dimension (e.g. the x-dimension of an image), while the last is applied to the outermost dimension (e.g. the z-dimension in a 3D image).</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A full-sized internal array is only allocated if working on the destination array directly would cause round-off errors (i.e. if <computeroutput>typeid(typename NumericTraits&lt;typename DestAccessor::value_type&gt;::RealPromote) != typeid(typename DestAccessor::value_type)</computeroutput>.</para><para>If <computeroutput>start</computeroutput> and <computeroutput>stop</computeroutput> have non-default values, they must represent a valid subarray of the input array. The convolution is then restricted to that subarray, and it is assumed that the output array only refers to the subarray (i.e. <computeroutput>diter</computeroutput> points to the element corresponding to <computeroutput>start</computeroutput>).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>apply<sp/>the<sp/>same<sp/>kernel<sp/>to<sp/>all<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member" tooltip="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>apply<sp/>each<sp/>kernel<sp/>from<sp/>the<sp/>sequence<sp/>&apos;kernels&apos;<sp/>in<sp/>turn</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member" tooltip="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>kernels,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>apply<sp/>the<sp/>same<sp/>kernel<sp/>to<sp/>all<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member" tooltip="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>apply<sp/>each<sp/>kernel<sp/>from<sp/>the<sp/>sequence<sp/>&apos;kernels&apos;<sp/>in<sp/>turn</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member" tooltip="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>kernels,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>start<sp/>=<sp/>SrcShape(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>stop<sp/>=<sp/>SrcShape());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">Kernel1D&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>gauss;</highlight></codeline>
+<codeline><highlight class="normal">gauss.initGaussian(sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>3<sp/>Gauss<sp/>kernels,<sp/>one<sp/>for<sp/>each<sp/>dimension</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ArrayVector&lt;Kernel1D&lt;float&gt;<sp/>&gt;<sp/>kernels(3,<sp/>gauss);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>Gaussian<sp/>smoothing<sp/>on<sp/>all<sp/>dimensions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member" tooltip="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</ref>(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kernels.begin());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref>, <ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member">convolveLine()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="785"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga0d5ec3880dc6c7f8a14d15fb57c538ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveMultiArray</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, KernelIterator kernels, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>separableConvolveMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="795" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="790" bodyend="820"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga2982d927eecfea318841b6e0d646ff0e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, KernelIterator kit, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>separableConvolveMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>kit</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="831" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="825" bodyend="834"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gab759be1d17eea18666202b5d160f202e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveMultiArray</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, Kernel1D&lt; T &gt; const &amp;kernel, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>separableConvolveMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="844" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="839" bodyend="848"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga048de5b975a5a188f0dfd8601f259208" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, Kernel1D&lt; T &gt; const &amp;kernel, SrcShape const &amp;start=SrcShape(), SrcShape const &amp;stop=SrcShape())</argsstring>
+        <name>separableConvolveMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>start</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>stop</declname>
+          <defval>SrcShape()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="858" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="853" bodyend="863"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensorMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>structureTensorMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate th structure tensor of a multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes the gradient (outer product) tensor for each element of the given N-dimensional array with first-derivative-of-Gaussian filters at the given <computeroutput>innerScale</computeroutput>, followed by <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing at <computeroutput>outerScale</computeroutput>. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array must have a vector valued pixel type with N*(N+1)/2 elements (it represents the upper triangular part of the symmetric structure tensor matrix). If the source array is also vector valued, the resulting structure tensor is the sum of the individual tensors for each channel. This function is implemented by calls to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> with the appropriate kernels.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is otherwise optional unless the parameters <computeroutput>innerScale</computeroutput> and <computeroutput>outerScale</computeroutput> are both left out.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" kindref="member" tooltip="Calculate th structure tensor of a multi-dimensional arrays.">structureTensorMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>innerScale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outerScale,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" kindref="member" tooltip="Calculate th structure tensor of a multi-dimensional arrays.">structureTensorMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>innerScale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outerScale,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>RGBValue&lt;float&gt;<sp/>&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>6&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>structure<sp/>tensor<sp/>at<sp/>scales<sp/>innerScale<sp/>and<sp/>outerScale</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">structureTensorMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>innerScale,<sp/>outerScale);</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>RGBValue&lt;float&gt;<sp/>&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>6&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>resolution_sigmas;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>structure<sp/>tensor<sp/>at<sp/>scales<sp/>innerScale<sp/>and<sp/>outerScale</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">structureTensorMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>innerScale,<sp/>outerScale,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size).resolutionStdDev(resolution_sigmas));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref>, <ref refid="group__MultiPointoperators_1gad869b7b263b104e005a1ddc66b5c1f80" kindref="member">vectorToTensorMultiArray()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1904"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gaf5e1ba3e0ed001b0eb39aaa6a6bd234e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensorMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>structureTensorMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1912" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1909" bodyend="1964"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gab480c85a843f5bff9276dfc51a74f7dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensorMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, double innerScale, double outerScale, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>structureTensorMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>innerScale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outerScale</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1973" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1969" bodyend="1977"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga8dee887a386f28dff6a21ae6883adbb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensorMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;opt)</argsstring>
+        <name>structureTensorMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>ConvolutionOptions&lt; SrcShape::static_size &gt; const &amp;</type>
+          <declname>opt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1985" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1982" bodyend="1988"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga3cb9bd0644b6041de81ab31784d43f42" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensorMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double innerScale, double outerScale, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>structureTensorMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>innerScale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outerScale</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1998" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1994" bodyend="2002"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga99cfc937dc06355aaf71b551a7c31faa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::symmetricGradientMultiArray</definition>
+        <argsstring>(...)</argsstring>
+        <name>symmetricGradientMultiArray</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate gradient of a multi-dimensional arrays using symmetric difference filters. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function computes the gradient of the given N-dimensional array with a sequence of symmetric difference filters a (differentiation is applied to each dimension in turn, starting with the innermost dimension). Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to have a vector valued pixel type with as many elements as the number of dimensions. This function is implemented by calls to <ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member">convolveMultiArrayOneDimension()</ref> with the symmetric difference kernel.</para><para>Anisotropic data should be passed with appropriate <ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>, the parameter <computeroutput>opt</computeroutput> is optional otherwise.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga99cfc937dc06355aaf71b551a7c31faa" kindref="member" tooltip="Calculate gradient of a multi-dimensional arrays using symmetric difference filters.">symmetricGradientMultiArray</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayConvolutionFilters_1ga99cfc937dc06355aaf71b551a7c31faa" kindref="member" tooltip="Calculate gradient of a multi-dimensional arrays using symmetric difference filters.">symmetricGradientMultiArray</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>ConvolutionOptions&lt;N&gt;<sp/>&amp;<sp/>opt);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>3&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>gradient</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">symmetricGradientMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest));</highlight></codeline>
+</programlisting></para><para><bold> Usage with anisotropic data:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>TinyVector&lt;float,<sp/>3&gt;<sp/>&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>gradient</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">symmetricGradientMultiArray(srcMultiArrayRange(source),<sp/>destMultiArray(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;().stepSize(step_size));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member">convolveMultiArrayOneDimension()</ref>, in addition:</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dimension<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">VectorElementAccessor&lt;DestAccessor&gt;<sp/>elementAccessor(0,<sp/>dest);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__MultiArrayConvolutionFilters_1gac82f89797cb83810e5a9ebddac36259b" kindref="member">convolveMultiArrayOneDimension()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1384"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1gad7e8eac3e5ac8b5da35c2e46aa384cd1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::symmetricGradientMultiArray</definition>
+        <argsstring>(SrcIterator si, SrcShape const &amp;shape, SrcAccessor src, DestIterator di, DestAccessor dest, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>symmetricGradientMultiArray</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1389" bodyend="1423"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayConvolutionFilters_1ga886ca452f675b424ad6a7d7a957ba53c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::symmetricGradientMultiArray</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;opt=ConvolutionOptions&lt; SrcShape::static_size &gt;())</argsstring>
+        <name>symmetricGradientMultiArray</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>const ConvolutionOptions&lt; SrcShape::static_size &gt; &amp;</type>
+          <declname>opt</declname>
+          <defval>ConvolutionOptions&lt; SrcShape::static_size &gt;()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="1431" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="1428" bodyend="1434"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>These functions realize a separable convolution on an arbitrary dimensional array that is specified by iterators (compatible to <ref refid="MultiIteratorPage" kindref="compound">Multi-dimensional Array Iterators</ref>) and shape objects. It can therefore be applied to a wide range of data structures (<ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>, <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> etc.). </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

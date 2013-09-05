@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RGB2RGBPrimeFunctor" kind="class" prot="public">
+    <compoundname>vigra::RGB2RGBPrimeFunctor</compoundname>
+    <includes refid="colorconversions_8hxx" local="no">vigra/colorconversions.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class From</type>
+      </param>
+      <param>
+        <type>class To</type>
+        <defval>From</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RGB2RGBPrimeFunctor_1a814051f34f09bb920da058f4d9424af3" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; From, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;From, 3&gt; argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="283" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RGB2RGBPrimeFunctor_1a48362da7a45a737895aa2d764e7768d9" prot="public" static="no">
+        <type>NumericTraits&lt; To &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;To&gt;::RealPromote component_type</definition>
+        <argsstring></argsstring>
+        <name>component_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the result component&apos;s promote type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="295" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RGB2RGBPrimeFunctor_1aa2b14bc5d08629b194bdcc21a6d07d14" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; To, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;To, 3&gt; result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="287" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RGB2RGBPrimeFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; To, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;To, 3&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000002"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use argument_type and result_type </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="291" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RGB2RGBPrimeFunctor_1abed613953f1550fcd4e3c0fb76d6440b" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1RGB2RGBPrimeFunctor_1a48362da7a45a737895aa2d764e7768d9" kindref="member">component_type</ref></type>
+        <definition>component_type max_</definition>
+        <argsstring></argsstring>
+        <name>max_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="328" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RGB2RGBPrimeFunctor_1aa3a34299b1a2068fa8b9d7b7a0aa236d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1RGB2RGBPrimeFunctor_1aa2b14bc5d08629b194bdcc21a6d07d14" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(V const &amp;rgb) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>apply the transformation </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="315" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="314" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGB2RGBPrimeFunctor_1acb8a778810744e458d5353813e3d64be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RGB2RGBPrimeFunctor</definition>
+        <argsstring>()</argsstring>
+        <name>RGB2RGBPrimeFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default constructor. The maximum value for each RGB component defaults to 255 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="302" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="300" bodyend="302"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RGB2RGBPrimeFunctor_1a5ed112e15d04f1ee1f025d62874fee03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RGB2RGBPrimeFunctor</definition>
+        <argsstring>(component_type max)</argsstring>
+        <name>RGB2RGBPrimeFunctor</name>
+        <param>
+          <type><ref refid="classvigra_1_1RGB2RGBPrimeFunctor_1a48362da7a45a737895aa2d764e7768d9" kindref="member">component_type</ref></type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>constructor <itemizedlist>
+<listitem><para>max - the maximum value for each RGB component </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="309" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="307" bodyend="309"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1RGB2RGBPrimeFunctor_1a75bb4cb77b8b6db0aaa33f3bea8773c0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string targetColorSpace</definition>
+        <argsstring>()</argsstring>
+        <name>targetColorSpace</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="322" bodyend="325"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Convert linear (raw) RGB into non-linear (gamma corrected) R&apos;G&apos;B&apos;. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>The functor realizes the transformation</para><para><formula id="4">\[ R&apos; = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad G&apos; = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad B&apos; = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45} \]</formula></para><para>By default, <formula id="5">$ R_{max} = G_{max} = B_{max} = 255 $</formula>. This default can be overridden in the constructor. If both source and target colors components are stored as <computeroutput>unsigned char</computeroutput>, a look-up-table will be used to speed up the transformation.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryFunctor</computeroutput> is true (<computeroutput>VigraTrueType</computeroutput>) </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="277" bodyend="329"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1a814051f34f09bb920da058f4d9424af3" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1a48362da7a45a737895aa2d764e7768d9" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>component_type</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1abed613953f1550fcd4e3c0fb76d6440b" prot="private" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>max_</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1aa3a34299b1a2068fa8b9d7b7a0aa236d" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1aa2b14bc5d08629b194bdcc21a6d07d14" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1acb8a778810744e458d5353813e3d64be" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>RGB2RGBPrimeFunctor</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1a5ed112e15d04f1ee1f025d62874fee03" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>RGB2RGBPrimeFunctor</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1a75bb4cb77b8b6db0aaa33f3bea8773c0" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>targetColorSpace</name></member>
+      <member refid="classvigra_1_1RGB2RGBPrimeFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" prot="public" virt="non-virtual"><scope>vigra::RGB2RGBPrimeFunctor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BilinearInterpolatingAccessor" kind="class" prot="public">
+    <compoundname>vigra::BilinearInterpolatingAccessor</compoundname>
+    <includes refid="interpolating__accessor_8hxx" local="no">vigra/interpolating_accessor.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class ACCESSOR</type>
+      </param>
+      <param>
+        <type>class VALUETYPE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1BilinearInterpolatingAccessor_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the iterators&apos; pixel type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BilinearInterpolatingAccessor_1ac470ad663edfe9255860ef98df206fc2" prot="private" static="no" mutable="no">
+        <type>ACCESSOR</type>
+        <definition>ACCESSOR a_</definition>
+        <argsstring></argsstring>
+        <name>a_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BilinearInterpolatingAccessor_1a8daa8e256d3816992ad0b5b3d8e3b9e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BilinearInterpolatingAccessor</definition>
+        <argsstring>(ACCESSOR a)</argsstring>
+        <name>BilinearInterpolatingAccessor</name>
+        <param>
+          <type>ACCESSOR</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init from given accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="92" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="90" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BilinearInterpolatingAccessor_1a664a4a2e93efa6af16cd9632f7623706" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1BilinearInterpolatingAccessor_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref></type>
+        <definition>value_type operator()</definition>
+        <argsstring>(ITERATOR const &amp;i, float x, float y) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Interpolate the data item at a non-integer position. Ensure that no outside pixels are accessed if (x, y) is near the image border (as long as 0 &lt;= x &lt;= width-1, 0 &lt;= y &lt;= height-1). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="100" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BilinearInterpolatingAccessor_1a08acfe997d7efdac0743810760ba7acd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1BilinearInterpolatingAccessor_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref></type>
+        <definition>value_type unchecked</definition>
+        <argsstring>(ITERATOR const &amp;i, float x, float y) const </argsstring>
+        <name>unchecked</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Interpolate the data item at a non-integer position. This function works as long as 0 &lt;= x &lt; width-1, 0 &lt;= y &lt; height-1. It is slightly faster than <computeroutput>operator()</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="149" bodyend="160"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Bilinear interpolation at non-integer positions. </para>    </briefdescription>
+    <detaileddescription>
+<para>This accessor allows an image be accessed at arbitrary non-integer coordinates and performs an bi-linear interpolation to obtain a pixel value. It uses the given ACCESSOR (which is usually the accessor originally associated with the iterator) to access data.</para><para><bold>#include</bold> &lt;<ref refid="accessor_8hxx_source" kindref="compound">vigra/accessor.hxx</ref>&gt; Namespace: vigra</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ITERATOR<sp/>iter;</highlight></codeline>
+<codeline><highlight class="normal">ACCESSOR<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">VALUETYPE<sp/>destvalue;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x,<sp/>y;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">destvalue<sp/>=<sp/>s<sp/>*<sp/>a(iter,<sp/>x,<sp/>y)<sp/>+<sp/>s<sp/>*<sp/>a(iter,<sp/>x,<sp/>y);</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/interpolating_accessor.hxx" bodystart="81" bodyend="164"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BilinearInterpolatingAccessor_1ac470ad663edfe9255860ef98df206fc2" prot="private" virt="non-virtual"><scope>vigra::BilinearInterpolatingAccessor</scope><name>a_</name></member>
+      <member refid="classvigra_1_1BilinearInterpolatingAccessor_1a8daa8e256d3816992ad0b5b3d8e3b9e2" prot="public" virt="non-virtual"><scope>vigra::BilinearInterpolatingAccessor</scope><name>BilinearInterpolatingAccessor</name></member>
+      <member refid="classvigra_1_1BilinearInterpolatingAccessor_1a664a4a2e93efa6af16cd9632f7623706" prot="public" virt="non-virtual"><scope>vigra::BilinearInterpolatingAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BilinearInterpolatingAccessor_1a08acfe997d7efdac0743810760ba7acd" prot="public" virt="non-virtual"><scope>vigra::BilinearInterpolatingAccessor</scope><name>unchecked</name></member>
+      <member refid="classvigra_1_1BilinearInterpolatingAccessor_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" virt="non-virtual"><scope>vigra::BilinearInterpolatingAccessor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

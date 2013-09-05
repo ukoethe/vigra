@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="MathFunctionality" kind="page">
+    <compoundname>MathFunctionality</compoundname>
+    <title>Mathematical tools</title>
+    <detaileddescription>
+<para><bold>Number types, mathematical constants, special functions, linear algebra</bold> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="AlgebraicConcepts" kindref="compound">Algebraic Concepts</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Requirements for types that implement arithmetic operations</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="NumericPromotionTraits" kindref="compound">Numeric and Promotion Traits</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Meta-information about arithmetic types</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MathConstants" kindref="compound">Mathematical Constants</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>M_PI, M_SQRT2</emphasis> </para></listitem>
+<listitem>
+<para><bold>Grid Neighborhood Specification</bold> <itemizedlist>
+<listitem>
+<para><ref refid="group__PixelNeighborhood" kindref="compound">2-dimensional</ref> (4- and 8-neighborhood) </para></listitem>
+<listitem>
+<para><ref refid="group__VoxelNeighborhood" kindref="compound">3-dimensional</ref> (6- and 26-neighborhood) </para></listitem>
+</itemizedlist>
+</para></listitem>
+<listitem>
+<para><bold>Number Types</bold> <itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1Rational" kindref="compound">vigra::Rational</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1FixedPoint16" kindref="compound">vigra::FixedPoint16</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Quaternion" kindref="compound">vigra::Quaternion</ref> </para></listitem>
+</itemizedlist>
+</para></listitem>
+<listitem>
+<para><ref refid="group__RandomNumberGeneration" kindref="compound">Random Number Generation</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Mersenne twister class and random number functors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Polynomials" kindref="compound">Polynomials and root determination</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Polynomials and root determination</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MathFunctions" kindref="compound">Mathematical Functions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>and functors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix class</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>the matrix class</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__LinearAlgebraModule" kindref="compound">Linear Algebra</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>matrix algebra, solution of linear systems, eigenvalue calculation etc.</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Unsupervised__Decomposition" kindref="compound">Unsupervised Decomposition</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Unsupervised matrix decomposition methods (pLSA)</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Optimization" kindref="compound">Optimization and Regression</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>ordinary and non-negative least squares, ridge regression, least angle regression (LARS and LASSO)</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="bordertreatment_8hxx" kind="file">
+    <compoundname>bordertreatment.hxx</compoundname>
+    <includedby refid="recursiveconvolution_8hxx" local="yes">vigra/recursiveconvolution.hxx</includedby>
+    <includedby refid="stdconvolution_8hxx" local="yes">vigra/stdconvolution.hxx</includedby>
+    <includedby refid="separableconvolution_8hxx" local="yes">vigra/separableconvolution.hxx</includedby>
+    <invincdepgraph>
+      <node id="775">
+        <label>vigra/splineimageview.hxx</label>
+        <link refid="splineimageview_8hxx_source"/>
+        <childnode refid="776" relation="include">
+        </childnode>
+        <childnode refid="777" relation="include">
+        </childnode>
+      </node>
+      <node id="776">
+        <label>vigra/affine_registration.hxx</label>
+        <link refid="affine__registration_8hxx_source"/>
+      </node>
+      <node id="784">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="795">
+        <label>vigra/orientedtensorfilters.hxx</label>
+        <link refid="orientedtensorfilters_8hxx_source"/>
+      </node>
+      <node id="786">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="787" relation="include">
+        </childnode>
+        <childnode refid="793" relation="include">
+        </childnode>
+      </node>
+      <node id="777">
+        <label>vigra/affinegeometry.hxx</label>
+        <link refid="affinegeometry_8hxx_source"/>
+      </node>
+      <node id="798">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="793">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="796">
+        <label>vigra/separableconvolution.hxx</label>
+        <link refid="separableconvolution_8hxx_source"/>
+        <childnode refid="794" relation="include">
+        </childnode>
+        <childnode refid="778" relation="include">
+        </childnode>
+        <childnode refid="786" relation="include">
+        </childnode>
+        <childnode refid="781" relation="include">
+        </childnode>
+        <childnode refid="797" relation="include">
+        </childnode>
+        <childnode refid="798" relation="include">
+        </childnode>
+        <childnode refid="782" relation="include">
+        </childnode>
+        <childnode refid="785" relation="include">
+        </childnode>
+      </node>
+      <node id="787">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="788" relation="include">
+        </childnode>
+        <childnode refid="781" relation="include">
+        </childnode>
+        <childnode refid="789" relation="include">
+        </childnode>
+        <childnode refid="790" relation="include">
+        </childnode>
+      </node>
+      <node id="774">
+        <label>vigra/recursiveconvolution.hxx</label>
+        <link refid="recursiveconvolution_8hxx_source"/>
+        <childnode refid="775" relation="include">
+        </childnode>
+        <childnode refid="778" relation="include">
+        </childnode>
+        <childnode refid="786" relation="include">
+        </childnode>
+        <childnode refid="781" relation="include">
+        </childnode>
+      </node>
+      <node id="791">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="779">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="781">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="782" relation="include">
+        </childnode>
+      </node>
+      <node id="778">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="779" relation="include">
+        </childnode>
+        <childnode refid="780" relation="include">
+        </childnode>
+        <childnode refid="781" relation="include">
+        </childnode>
+        <childnode refid="783" relation="include">
+        </childnode>
+        <childnode refid="784" relation="include">
+        </childnode>
+        <childnode refid="785" relation="include">
+        </childnode>
+      </node>
+      <node id="788">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="778" relation="include">
+        </childnode>
+      </node>
+      <node id="782">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="797">
+        <label>vigra/multi_convolution.hxx</label>
+        <link refid="multi__convolution_8hxx_source"/>
+      </node>
+      <node id="785">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="773">
+        <label>vigra/bordertreatment.hxx</label>
+        <link refid="bordertreatment.hxx"/>
+        <childnode refid="774" relation="include">
+        </childnode>
+        <childnode refid="794" relation="include">
+        </childnode>
+        <childnode refid="796" relation="include">
+        </childnode>
+      </node>
+      <node id="789">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="790" relation="include">
+        </childnode>
+        <childnode refid="792" relation="include">
+        </childnode>
+      </node>
+      <node id="790">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="791" relation="include">
+        </childnode>
+      </node>
+      <node id="783">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="794">
+        <label>vigra/stdconvolution.hxx</label>
+        <link refid="stdconvolution_8hxx_source"/>
+        <childnode refid="778" relation="include">
+        </childnode>
+        <childnode refid="795" relation="include">
+        </childnode>
+      </node>
+      <node id="792">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="791" relation="include">
+        </childnode>
+      </node>
+      <node id="780">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2002<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_BORDERTREATMENT_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_BORDERTREATMENT_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">/*!<sp/>\page<sp/>BorderTreatmentMode<sp/>BorderTreatmentMode</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/>Choose<sp/>between<sp/>different<sp/>border<sp/>treatment<sp/>modes.<sp/>In<sp/>the<sp/>convolution<sp/></highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/><sp/>algorithms,<sp/>these<sp/>modes<sp/>apply<sp/>to<sp/></highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/><sp/>all<sp/>image<sp/>pixels<sp/>where<sp/>the<sp/>kernel<sp/>does<sp/>not<sp/>completely<sp/>fit<sp/>inside<sp/></highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/><sp/>the<sp/>image.</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/bordertreatment.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/>enum<sp/>BorderTreatmentMode<sp/></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>do<sp/>not<sp/>operate<sp/>on<sp/>a<sp/>pixel<sp/>where<sp/>the<sp/>kernel<sp/>does<sp/></highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>not<sp/>fit<sp/>in<sp/>the<sp/>image</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_AVOID,<sp/></highlight></codeline>
+<codeline lineno="59"><highlight class="comment"></highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>clip<sp/>kernel<sp/>at<sp/>image<sp/>border<sp/>(this<sp/>is<sp/>only<sp/>useful<sp/>if<sp/>the</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/><sp/>kernel<sp/>is<sp/>&gt;=<sp/>0<sp/>everywhere)</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_CLIP,<sp/></highlight></codeline>
+<codeline lineno="63"><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>repeat<sp/>the<sp/>nearest<sp/>valid<sp/>pixel</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_REPEAT,</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"></highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>reflect<sp/>image<sp/>at<sp/>last<sp/>row/column<sp/></highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_REFLECT,<sp/></highlight></codeline>
+<codeline lineno="69"><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>wrap<sp/>image<sp/>around<sp/>(periodic<sp/>boundary<sp/>conditions)</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_WRAP</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>assume<sp/>that<sp/>all<sp/>outside<sp/>points<sp/>have<sp/>value<sp/>zero</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BORDER_TREATMENT_ZEROPAD</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">*/</highlight><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>BorderTreatmentMode<sp/></highlight></codeline>
+<codeline lineno="79"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_AVOID,<sp/></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_CLIP,<sp/></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_REPEAT,</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_REFLECT,<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_WRAP,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_ZEROPAD</highlight></codeline>
+<codeline lineno="86"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_BORDERTREATMENT_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bordertreatment.hxx"/>
+  </compounddef>
+</doxygen>

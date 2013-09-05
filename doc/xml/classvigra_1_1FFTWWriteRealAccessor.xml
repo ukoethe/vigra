@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FFTWWriteRealAccessor" kind="class" prot="public">
+    <compoundname>vigra::FFTWWriteRealAccessor</compoundname>
+    <basecompoundref refid="classvigra_1_1FFTWRealAccessor" prot="public" virt="non-virtual">vigra::FFTWRealAccessor&lt; Real &gt;</basecompoundref>
+    <includes refid="fftw3_8hxx" local="no">vigra/fftw3.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Real</type>
+        <defval>double</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FFTWWriteRealAccessor_1a64a1ba313ad4c1fd58bf5887c366df5a" prot="public" static="no">
+        <type>Real</type>
+        <definition>typedef Real value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+<para>The accessor&apos;s value type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1324" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1324" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FFTWWriteRealAccessor_1a2ffeff2b1938288efae8e419f496114d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(value_type const &amp;v, ITERATOR const &amp;i) const </argsstring>
+        <name>set</name>
+        <reimplements refid="classvigra_1_1FFTWRealAccessor_1a2ffeff2b1938288efae8e419f496114d">set</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWRealAccessor_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write real number at iterator position. Set imaginary part to 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1330" bodyend="1333"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWWriteRealAccessor_1a06fbe4ec96f674cd4546369d3c78ffc4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(value_type const &amp;v, ITERATOR const &amp;i, DIFFERENCE d) const </argsstring>
+        <name>set</name>
+        <reimplements refid="classvigra_1_1FFTWRealAccessor_1a06fbe4ec96f674cd4546369d3c78ffc4">set</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWRealAccessor_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write real number at offset from iterator position. Set imaginary part to 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1339" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1339" bodyend="1342"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><verbatim>Write a real number into a complex one. The imaginary part is set
+to 0.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for FFTW 3) or<linebreak/>
+ <bold>#include</bold> &lt;vigra/fftw.hxx&gt; (for deprecated FFTW 2)<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="534">
+        <label>FFTWWriteRealAccessor&lt; Real &gt;</label>
+        <link refid="classvigra_1_1FFTWWriteRealAccessor"/>
+        <childnode refid="535" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="535">
+        <label>FFTWRealAccessor&lt; Real &gt;</label>
+        <link refid="classvigra_1_1FFTWRealAccessor"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="536">
+        <label>FFTWWriteRealAccessor&lt; Real &gt;</label>
+        <link refid="classvigra_1_1FFTWWriteRealAccessor"/>
+        <childnode refid="537" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="537">
+        <label>FFTWRealAccessor&lt; Real &gt;</label>
+        <link refid="classvigra_1_1FFTWRealAccessor"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1319" bodyend="1343"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FFTWRealAccessor_1ae9de5fbb33af2eb53b4253158f26f501" prot="public" virt="non-virtual"><scope>vigra::FFTWWriteRealAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FFTWRealAccessor_1a453f17e1108be1297008f2164ce6f707" prot="public" virt="non-virtual"><scope>vigra::FFTWWriteRealAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FFTWWriteRealAccessor_1a2ffeff2b1938288efae8e419f496114d" prot="public" virt="non-virtual"><scope>vigra::FFTWWriteRealAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1FFTWWriteRealAccessor_1a06fbe4ec96f674cd4546369d3c78ffc4" prot="public" virt="non-virtual"><scope>vigra::FFTWWriteRealAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1FFTWRealAccessor_1a077bdc1d5d26b99c933e9ca916051cd2" prot="public" virt="non-virtual" ambiguityscope="vigra::FFTWRealAccessor::"><scope>vigra::FFTWWriteRealAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1FFTWRealAccessor_1a1ad0aa6de8b1d8c6747c50d8d5b93673" prot="public" virt="non-virtual" ambiguityscope="vigra::FFTWRealAccessor::"><scope>vigra::FFTWWriteRealAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1FFTWWriteRealAccessor_1a64a1ba313ad4c1fd58bf5887c366df5a" prot="public" virt="non-virtual"><scope>vigra::FFTWWriteRealAccessor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,953 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__InitAlgo" kind="group">
+    <compoundname>InitAlgo</compoundname>
+    <title>Algorithms to Initialize Images</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>initImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Write a value to every pixel in an image or rectangular ROI. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to init the image. It uses an accessor to access the pixel data.</para><para>The initial value can either be a constant of appropriate type (compatible with the destination&apos;s value_type), or a functor with compatible result_type. These two cases are automatically distinguished when <computeroutput>FunctorTraits&lt;FUNCTOR&gt;::isInitializer</computeroutput> yields <computeroutput>VigraTrueType</computeroutput>. Since the functor is passed by <computeroutput>const</computeroutput> reference, its <computeroutput>operator()</computeroutput> must be const, and its internal state may need to be <computeroutput>mutable</computeroutput>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">initImage</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a,<sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">initImage</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a,<sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">initImage</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">initImage</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/initimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para>Initialize with a constant:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>the<sp/>image<sp/>with<sp/>the<sp/>value<sp/>128</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">vigra::initImage</ref>(destImageRange(img),<sp/>128);</highlight></codeline>
+</programlisting></para><para>Initialize with a functor:</para><para><programlisting><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Counter<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>Counter()<sp/>:<sp/>count(0)<sp/>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>operator()()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>count++;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>count;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>write<sp/>the<sp/>current<sp/>count<sp/>in<sp/>every<sp/>pixel</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">vigra::initImage</ref>(destImageRange(img),<sp/>Counter());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ImageIterator::row_iterator</ref><sp/>ix<sp/>=<sp/>upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal">VALUETYPE<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">accessor.set(v,<sp/>ix);<sp/></highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="231"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gad85bfefdeaa9c46f4ae2d2f503afd589" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, VALUETYPE const &amp;v)</argsstring>
+        <name>initImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="235" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga8e8b03ff2dd97aaf7490120a0e1ebaf7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImage</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, VALUETYPE const &amp;v)</argsstring>
+        <name>initImage</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="250" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageBorder</definition>
+        <argsstring>(...)</argsstring>
+        <name>initImageBorder</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Write value to the specified border pixels in the image. </para>        </briefdescription>
+        <detaileddescription>
+<para>A pixel is initialized if its distance to the border is at most &apos;borderwidth&apos;. It uses an accessor to access the pixel data.</para><para>The initial value can either be a constant of appropriate type (compatible with the destination&apos;s value_type), or a functor with compatible result_type. These two cases are automatically distinguished when <computeroutput>FunctorTraits&lt;FUNCTOR&gt;::isInitializer</computeroutput> yields <computeroutput>VigraTrueType</computeroutput>. Since the functor is passed by <computeroutput>const</computeroutput> reference, its <computeroutput>operator()</computeroutput> must be const, and its internal state may need to be <computeroutput>mutable</computeroutput>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" kindref="member" tooltip="Write value to the specified border pixels in the image.">initImageBorder</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/>Accessor<sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>border_width,<sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" kindref="member" tooltip="Write value to the specified border pixels in the image.">initImageBorder</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/>Accessor<sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>border_width,<sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" kindref="member" tooltip="Write value to the specified border pixels in the image.">initImageBorder</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>border_width,<sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" kindref="member" tooltip="Write value to the specified border pixels in the image.">initImageBorder</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>border_width,<sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/initimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>zero<sp/>a<sp/>border<sp/>of<sp/>5<sp/>pixel</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1gac8aaba3c94bd12dca0ffc3b785441665" kindref="member" tooltip="Write value to the specified border pixels in the image.">vigra::initImageBorder</ref>(destImageRange(img),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>5,<sp/>vigra::NumericTraits&lt;vigra::BImage::PixelType&gt;::zero());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member">initImage()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="529"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga4ae0bdbb4254ec49f96439869943227d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageBorder</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, int border_width, VALUETYPE const &amp;v)</argsstring>
+        <name>initImageBorder</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>border_width</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="534" bodyend="547"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga3d4a8fd80dbbfa0c56477c3da06cc6e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageBorder</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, int border_width, VALUETYPE const &amp;v)</argsstring>
+        <name>initImageBorder</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>border_width</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="552" bodyend="556"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageIf</definition>
+        <argsstring>(...)</argsstring>
+        <name>initImageIf</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Write value to pixel in the image if mask is true. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to init a region-of-interest of the image. It uses an accessor to access the pixel data.</para><para>The initial value can either be a constant of appropriate type (compatible with the destination&apos;s value_type), or a functor with compatible result_type. These two cases are automatically distinguished when <computeroutput>FunctorTraits&lt;FUNCTOR&gt;::isInitializer</computeroutput> yields <computeroutput>VigraTrueType</computeroutput>. Since the functor is passed by <computeroutput>const</computeroutput> reference, its <computeroutput>operator()</computeroutput> must be const, and its internal state may need to be <computeroutput>mutable</computeroutput>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" kindref="member" tooltip="Write value to pixel in the image if mask is true.">initImageIf</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/>Accessor<sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" kindref="member" tooltip="Write value to pixel in the image if mask is true.">initImageIf</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/>Accessor<sp/>a,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">VALUETYPE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" kindref="member" tooltip="Write value to pixel in the image if mask is true.">initImageIf</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>VALUETYPE<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" kindref="member" tooltip="Write value to pixel in the image if mask is true.">initImageIf</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>FUNCTOR<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/initimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>mask(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>zero<sp/>the<sp/>ROI</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1ga60e83126eb93647e7615d7e50830ae33" kindref="member" tooltip="Write value to pixel in the image if mask is true.">vigra::initImageIf</ref>(destImageRange(img),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(mask),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra::NumericTraits&lt;vigra::BImage::PixelType&gt;::zero());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ImageIterator::row_iterator</ref><sp/>ix<sp/>=<sp/>upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mask_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal">VALUETYPE<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask_accessor(mx))<sp/>accessor.set(v,<sp/>ix);<sp/></highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="433"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga91578cc8cc2dbe53d0cc76022e083760" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageIf</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, MaskImageIterator mask_upperleft, MaskAccessor ma, VALUETYPE const &amp;v)</argsstring>
+        <name>initImageIf</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mask_upperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>ma</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="442" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="439" bodyend="452"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga9e9d05fdd9492f07ec957f1a57230246" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageIf</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, pair&lt; MaskImageIterator, MaskAccessor &gt; mask, VALUETYPE const &amp;v)</argsstring>
+        <name>initImageIf</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="459" bodyend="464"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageWithFunctor</definition>
+        <argsstring>(...)</argsstring>
+        <name>initImageWithFunctor</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Write the result of a functor call to every pixel in an image or rectangular ROI. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to init the image by calling the given functor for each pixel. It uses an accessor to access the pixel data. The functor is passed by reference, so that its internal state can be updated in each call.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" kindref="member" tooltip="Write the result of a functor call to every pixel in an image or rectangular ROI.">initImageWithFunctor</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a,<sp/><sp/>FUNCTOR<sp/>&amp;<sp/>f);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>FUNCTOR&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" kindref="member" tooltip="Write the result of a functor call to every pixel in an image or rectangular ROI.">initImageWithFunctor</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,<sp/>FUNCTOR<sp/>&amp;<sp/>f);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/initimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Counter<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>Counter()<sp/>:<sp/>count(0)<sp/>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>operator()()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>count++;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>count;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>write<sp/>the<sp/>current<sp/>count<sp/>in<sp/>every<sp/>pixel</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Counter<sp/>counter;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" kindref="member" tooltip="Write the result of a functor call to every pixel in an image or rectangular ROI.">vigra::initImageWithFunctor</ref>(destImageRange(img),<sp/>counter);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ImageIterator::row_iterator</ref><sp/>ix<sp/>=<sp/>upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">accessor.set(f(),<sp/>ix);<sp/></highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="322"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gabb858c7369ecd63544a5bfee8737e625" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageWithFunctor</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, FUNCTOR &amp;f)</argsstring>
+        <name>initImageWithFunctor</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>FUNCTOR &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="326" bodyend="335"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gae409f4cc72aeb9854eff77fe7049d273" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initImageWithFunctor</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, FUNCTOR &amp;f)</argsstring>
+        <name>initImageWithFunctor</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>FUNCTOR &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="340" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga2b0e3d1617ddb1696fd40766e6dc07db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLine</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, VALUETYPE const &amp;v)</argsstring>
+        <name>initLine</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="78" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga9635998a260aa71eb927d9138db6ab71" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineFunctor</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, FUNCTOR &amp;f)</argsstring>
+        <name>initLineFunctor</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>FUNCTOR &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="86" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga657ec573c38ebad1985ea47c402233a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineFunctorIf</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, MaskIterator m, MaskAccessor mask, FUNCTOR &amp;f)</argsstring>
+        <name>initLineFunctorIf</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>FUNCTOR &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="134" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga23646e023ff790ba730aa861c12654a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineIf</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, MaskIterator m, MaskAccessor mask, VALUETYPE const &amp;v)</argsstring>
+        <name>initLineIf</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="123" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gab4a9ef57ebee17e20cf5f5483a02f33f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineIfImpl</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, MaskIterator m, MaskAccessor mask, VALUETYPE const &amp;v, VigraFalseType)</argsstring>
+        <name>initLineIfImpl</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="97" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga2737fb1f386d060a81cf1341285c2020" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineIfImpl</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, MaskIterator m, MaskAccessor mask, FUNCTOR const &amp;f, VigraTrueType)</argsstring>
+        <name>initLineIfImpl</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>FUNCTOR const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="110" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1gabaab5714dfe583794c2aeef99394fd23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineImpl</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, VALUETYPE const &amp;v, VigraFalseType)</argsstring>
+        <name>initLineImpl</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="60" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InitAlgo_1ga06f4f56e8635d33ff25e5feee19c22a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::initLineImpl</definition>
+        <argsstring>(DestIterator d, DestIterator dend, DestAccessor dest, FUNCTOR const &amp;f, VigraTrueType)</argsstring>
+        <name>initLineImpl</name>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>FUNCTOR const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" line="71" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/initimage.hxx" bodystart="69" bodyend="74"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Init images or image borders </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

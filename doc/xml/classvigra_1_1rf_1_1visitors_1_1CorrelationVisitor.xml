@@ -1,0 +1,537 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1visitors_1_1CorrelationVisitor" kind="class" prot="public">
+    <compoundname>vigra::rf::visitors::CorrelationVisitor</compoundname>
+    <basecompoundref refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase" prot="public" virt="non-virtual">VisitorBase</basecompoundref>
+    <includes refid="rf__visitors_8hxx" local="no">vigra/random_forest/rf_visitors.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="group__MachineLearning_1gaaf0efe2c5ee3890670341f3f51d4bc3b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BestGiniOfColumn" kindref="compound">BestGiniOfColumn</ref>&lt; <ref refid="classvigra_1_1GiniCriterion" kindref="compound">GiniCriterion</ref> &gt;</type>
+        <definition>typedef BestGiniOfColumn&lt;GiniCriterion&gt; ColumnDecisionFunctor</definition>
+        <argsstring></argsstring>
+        <name>ColumnDecisionFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1519" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1519" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1ga3aece4fc6c9be25d39283ec8f3f292d2" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1BestGiniOfColumn" kindref="compound">BestGiniOfColumn</ref>&lt; <ref refid="classvigra_1_1GiniCriterion" kindref="compound">GiniCriterion</ref> &gt;</type>
+        <definition>BestGiniOfColumn&lt;GiniCriterion&gt; bgfunc</definition>
+        <argsstring></argsstring>
+        <name>bgfunc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1520" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaaf3d73ba301ef56511238609b3279842" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; corr_l</definition>
+        <argsstring></argsstring>
+        <name>corr_l</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga55034538c707f3d5068526077072817d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; corr_noise</definition>
+        <argsstring></argsstring>
+        <name>corr_noise</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>how well can a noise column describe a partition created on variable ii. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga4a4f8fe9c52db2d3efdad7dfa1e1f4d3" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; distance</definition>
+        <argsstring></argsstring>
+        <name>distance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Distance Matrix 1-similarity </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1513" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga5a9c356faf57cd8426e919c4cccc01a0" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; gini_missc</definition>
+        <argsstring></argsstring>
+        <name>gini_missc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>gini_missc(ii, jj) describes how well variable jj can describe a partition created on variable ii(when variable ii was chosen) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1490" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gae7ce9f0ea37f373c59af9bf925e2f706" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; noise</definition>
+        <argsstring></argsstring>
+        <name>noise</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>additional noise features. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1494" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1494" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga2b605f60437bdaa8de2036ba8e35908a" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; noise_l</definition>
+        <argsstring></argsstring>
+        <name>noise_l</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1495" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga715510c20adb132029520a8f37295712" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; int &gt;</type>
+        <definition>ArrayVector&lt;int&gt; numChoices</definition>
+        <argsstring></argsstring>
+        <name>numChoices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>How often was variable ii chosen </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1518" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga60981e3077e2a643025056f5c10abc63" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; similarity</definition>
+        <argsstring></argsstring>
+        <name>similarity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Similarity Matrix</para><para>(numberOfFeatures + 1) by (number Of Features + 1) Matrix gini_missc<itemizedlist>
+<listitem><para>row normalized by the number of times the column was chosen</para></listitem><listitem><para>mean of corr_noise subtracted</para></listitem><listitem><para>and symmetrised. </para></listitem></itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1510" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1510" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaef7b078527e6eb6f885454b598366299" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; int &gt;</type>
+        <definition>ArrayVector&lt;int&gt; tmp_cc</definition>
+        <argsstring></argsstring>
+        <name>tmp_cc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1514" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaea713b449fd9b28a824e9ada4105480b" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, int &gt;</type>
+        <definition>MultiArray&lt;2, int&gt; tmp_labels</definition>
+        <argsstring></argsstring>
+        <name>tmp_labels</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1491" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1491" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="group__MachineLearning_1gad2c1ffc41c8d608120a11f8557ae0e1d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void save</definition>
+        <argsstring>(std::string file, std::string prefix)</argsstring>
+        <name>save</name>
+        <param>
+          <type>std::string</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>prefix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1522" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1521" bodyend="1537"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Tree</type>
+          </param>
+          <param>
+            <type>class Split</type>
+          </param>
+          <param>
+            <type>class Region</type>
+          </param>
+          <param>
+            <type>class Feature_t</type>
+          </param>
+          <param>
+            <type>class Label_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_after_split</definition>
+        <argsstring>(Tree &amp;tree, Split &amp;split, Region &amp;parent, Region &amp;leftChild, Region &amp;rightChild, Feature_t &amp;features, Label_t &amp;labels)</argsstring>
+        <name>visit_after_split</name>
+        <reimplements refid="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77">visit_after_split</reimplements>
+        <param>
+          <type>Tree &amp;</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>Split &amp;</type>
+          <declname>split</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>leftChild</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>rightChild</declname>
+        </param>
+        <param>
+          <type>Feature_t &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>Label_t &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>do something after the the Split has decided how to process the Region (Stack entry)</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tree</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the tree that is currently being learned </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>split</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the split object </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>current stack entry which was used to decide the split </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>leftChild</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>left stack entry that will be pushed </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rightChild</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>right stack entry that will be pushed. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>features matrix </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labels</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>label matrix </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para>RF_Traits::StackEntry_t </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1611" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1604" bodyend="1713"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga7fd53731c61fa0f3d765275b68a78d00" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_at_beginning</definition>
+        <argsstring>(RF const &amp;rf, PR &amp;pr)</argsstring>
+        <name>visit_at_beginning</name>
+        <param>
+          <type>RF const &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1539" bodyend="1560"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gab8c2515ae9343881cc5999fc61821fdc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_at_end</definition>
+        <argsstring>(RF const &amp;rf, PR const &amp;pr)</argsstring>
+        <name>visit_at_end</name>
+        <reimplements refid="group__MachineLearning_1gab8c2515ae9343881cc5999fc61821fdc">visit_at_end</reimplements>
+        <param>
+          <type>RF const &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR const &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>do something after all trees have been learned</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the random forest object that called this visitor </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to the preprocessor that processed the input </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1562" bodyend="1601"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Computes Correlation/Similarity Matrix of features while learning random forest. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="344">
+        <label>CorrelationVisitor</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1CorrelationVisitor"/>
+        <childnode refid="345" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="345">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="360">
+        <label>MultiArrayView&lt; N, int &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="350" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="348">
+        <label>MultiArray&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="349" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="358">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="346">
+        <label>CorrelationVisitor</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1CorrelationVisitor"/>
+        <childnode refid="347" relation="public-inheritance">
+        </childnode>
+        <childnode refid="348" relation="usage">
+          <edgelabel>corr_noise</edgelabel>
+          <edgelabel>gini_missc</edgelabel>
+          <edgelabel>similarity</edgelabel>
+          <edgelabel>noise</edgelabel>
+          <edgelabel>corr_l</edgelabel>
+          <edgelabel>noise_l</edgelabel>
+          <edgelabel>distance</edgelabel>
+        </childnode>
+        <childnode refid="351" relation="usage">
+          <edgelabel>tmp_cc</edgelabel>
+          <edgelabel>numChoices</edgelabel>
+        </childnode>
+        <childnode refid="353" relation="usage">
+          <edgelabel>bgfunc</edgelabel>
+        </childnode>
+        <childnode refid="359" relation="usage">
+          <edgelabel>tmp_labels</edgelabel>
+        </childnode>
+      </node>
+      <node id="353">
+        <label>BestGiniOfColumn&lt; GiniCriterion &gt;</label>
+        <link refid="classvigra_1_1BestGiniOfColumn"/>
+        <childnode refid="354" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+        <childnode refid="355" relation="usage">
+          <edgelabel>bestCurrentCounts</edgelabel>
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+      </node>
+      <node id="349">
+        <label>MultiArrayView&lt; N, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="350" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="354">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="355" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="357" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="351">
+        <label>ArrayVector&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="352" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="347">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+      <node id="359">
+        <label>MultiArray&lt; 2, int &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="360" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="355">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="356" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="352">
+        <label>ArrayVectorView&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="356">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="350">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="357">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="358" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1484" bodyend="1714"/>
+    <listofallmembers>
+      <member refid="group__MachineLearning_1ga8011fcbeb5efeda20bd2dbffbbb70165" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>activate</name></member>
+      <member refid="group__MachineLearning_1ga121aee969503dcc0f2d4ff4879d9c4d9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>active_</name></member>
+      <member refid="group__MachineLearning_1ga3aece4fc6c9be25d39283ec8f3f292d2" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>bgfunc</name></member>
+      <member refid="group__MachineLearning_1gaaf0efe2c5ee3890670341f3f51d4bc3b" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>ColumnDecisionFunctor</name></member>
+      <member refid="group__MachineLearning_1gaaf3d73ba301ef56511238609b3279842" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>corr_l</name></member>
+      <member refid="group__MachineLearning_1ga55034538c707f3d5068526077072817d" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>corr_noise</name></member>
+      <member refid="group__MachineLearning_1ga8308b4bb6079733f4b77ced9d46da7a9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>deactivate</name></member>
+      <member refid="group__MachineLearning_1ga4a4f8fe9c52db2d3efdad7dfa1e1f4d3" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>distance</name></member>
+      <member refid="group__MachineLearning_1ga5a9c356faf57cd8426e919c4cccc01a0" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>gini_missc</name></member>
+      <member refid="group__MachineLearning_1gaff96f61c8d66b4def05fcb5ab514d688" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>has_value</name></member>
+      <member refid="group__MachineLearning_1gadc5260e7eba946182b172d0385d19c7e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>is_active</name></member>
+      <member refid="group__MachineLearning_1gae7ce9f0ea37f373c59af9bf925e2f706" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>noise</name></member>
+      <member refid="group__MachineLearning_1ga2b605f60437bdaa8de2036ba8e35908a" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>noise_l</name></member>
+      <member refid="group__MachineLearning_1ga715510c20adb132029520a8f37295712" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>numChoices</name></member>
+      <member refid="group__MachineLearning_1gad23fdebbe022fdb6fee05ddede523bdc" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>return_val</name></member>
+      <member refid="group__MachineLearning_1gad2c1ffc41c8d608120a11f8557ae0e1d" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>save</name></member>
+      <member refid="group__MachineLearning_1ga60981e3077e2a643025056f5c10abc63" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>similarity</name></member>
+      <member refid="group__MachineLearning_1gaef7b078527e6eb6f885454b598366299" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>tmp_cc</name></member>
+      <member refid="group__MachineLearning_1gaea713b449fd9b28a824e9ada4105480b" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>tmp_labels</name></member>
+      <member refid="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_after_split</name></member>
+      <member refid="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_after_tree</name></member>
+      <member refid="group__MachineLearning_1ga7fd53731c61fa0f3d765275b68a78d00" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_at_beginning</name></member>
+      <member refid="group__MachineLearning_1ga0bb047133b5a592d0ade412044bd1495" prot="public" virt="non-virtual" ambiguityscope="vigra::rf::visitors::VisitorBase::"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_at_beginning</name></member>
+      <member refid="group__MachineLearning_1gab8c2515ae9343881cc5999fc61821fdc" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_at_end</name></member>
+      <member refid="group__MachineLearning_1ga29d5e6cebbbae7f0a170f82ed7a98fc3" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_external_node</name></member>
+      <member refid="group__MachineLearning_1ga0be1525336a154f011efa8f86e56db7c" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>visit_internal_node</name></member>
+      <member refid="group__MachineLearning_1ga94a7dec8e9fdb7896ac8012817e60cc7" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::CorrelationVisitor</scope><name>VisitorBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

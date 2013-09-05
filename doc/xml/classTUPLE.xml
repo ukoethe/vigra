@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classTUPLE" kind="class" prot="public">
+    <compoundname>TUPLE</compoundname>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1feature__context__base" prot="public" virt="non-virtual">feature_context_base&lt; T, feature_types&lt; L &gt;::accu_list, TUPLE &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1feature__context__base" prot="public" virt="non-virtual">feature_context_base&lt; T, L, TUPLE &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="1155"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

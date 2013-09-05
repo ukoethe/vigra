@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FixedSizeInt" kind="group">
+    <compoundname>FixedSizeInt</compoundname>
+    <title>Fixed Size Integer Types</title>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga37ecc0a8cab40177174b3a7cf6e07aa3" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 16, detail::SignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;16, detail::SignedIntTypes&gt;::type Int16</definition>
+        <argsstring></argsstring>
+        <name>Int16</name>
+        <briefdescription>
+<para>16-bit signed int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 32, detail::SignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;32, detail::SignedIntTypes&gt;::type Int32</definition>
+        <argsstring></argsstring>
+        <name>Int32</name>
+        <briefdescription>
+<para>32-bit signed int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga4e7cdf6669ca1e8c3bdabf919a85c6d7" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 64, detail::SignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;64, detail::SignedIntTypes&gt;::type Int64</definition>
+        <argsstring></argsstring>
+        <name>Int64</name>
+        <briefdescription>
+<para>64-bit signed int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga7d6b28ce33a32e76311d703bff080069" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 8, detail::SignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;8, detail::SignedIntTypes&gt;::type Int8</definition>
+        <argsstring></argsstring>
+        <name>Int8</name>
+        <briefdescription>
+<para>8-bit signed int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga095888e847fba6b9eb4c810ccd2135e3" prot="public" static="no">
+        <type>detail::SelectBiggestIntegerType&lt; detail::SignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectBiggestIntegerType&lt;detail::SignedIntTypes&gt;::type IntBiggest</definition>
+        <argsstring></argsstring>
+        <name>IntBiggest</name>
+        <briefdescription>
+<para>the biggest signed integer type of the system </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="188" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga7480021744e4059993dccb113a029d51" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 16, detail::UnsignedIntTypes &gt;::type</type>
+        <definition>UInt16</definition>
+        <argsstring></argsstring>
+        <name>UInt16</name>
+        <briefdescription>
+<para>16-bit unsigned int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 32, detail::UnsignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;32, detail::UnsignedIntTypes&gt;::type UInt32</definition>
+        <argsstring></argsstring>
+        <name>UInt32</name>
+        <briefdescription>
+<para>32-bit unsigned int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="183" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="183" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1gaaa897f21c91623c6bf10666606a92408" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 64, detail::UnsignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;64, detail::UnsignedIntTypes&gt;::type UInt64</definition>
+        <argsstring></argsstring>
+        <name>UInt64</name>
+        <briefdescription>
+<para>64-bit unsigned int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="185" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="185" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga7332da5f8bfdbeecdfd09d4ed602288d" prot="public" static="no">
+        <type>detail::SelectIntegerType&lt; 8, detail::UnsignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectIntegerType&lt;8, detail::UnsignedIntTypes&gt;::type UInt8</definition>
+        <argsstring></argsstring>
+        <name>UInt8</name>
+        <briefdescription>
+<para>8-bit unsigned int </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="179" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__FixedSizeInt_1ga777bb6d03e37c030dd58d64e781cdff6" prot="public" static="no">
+        <type>detail::SelectBiggestIntegerType&lt; detail::UnsignedIntTypes &gt;::type</type>
+        <definition>typedef detail::SelectBiggestIntegerType&lt;detail::UnsignedIntTypes&gt;::type UIntBiggest</definition>
+        <argsstring></argsstring>
+        <name>UIntBiggest</name>
+        <briefdescription>
+<para>the biggest unsigned integer type of the system </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="190" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Since the C++ standard does only specify minimal sizes for the built-in integer types, one cannot rely on them to have a specific size. But pixel types with a specific size are often required in image processing, especially when reading or writing binary files. The VIGRA typedefs are guaranteed to have exactly the correct size. If the system does not provide a suitable type, the typedef will evaluate to <computeroutput>Int_type_not_supported_on_this_platform</computeroutput>. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

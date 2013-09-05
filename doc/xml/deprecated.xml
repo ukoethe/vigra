@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="deprecated" kind="page">
+    <compoundname>deprecated</compoundname>
+    <title>Deprecated List</title>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term><anchor id="deprecated_1_deprecated000001"/>Member <ref refid="classvigra_1_1BasicImage_1ae1d756c0c894cffd255688f7ac00d5bd" kindref="member">BasicImage&lt; PIXELTYPE, Alloc &gt;::operator=</ref>  (value_type pixel)</term></varlistentry>
+<listitem><para>set Image with const value  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000041"/>Member <ref refid="classvigra_1_1BrightnessContrastFunctor_1af1ae1457b0364ede460a98f91a694265" kindref="member">BrightnessContrastFunctor&lt; PixelType &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000039"/>Member <ref refid="classvigra_1_1DiffusivityFunctor_1a04f69f8f2936ff309627511179c1709b" kindref="member">DiffusivityFunctor&lt; Value &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use first_argument_type, second_argument_type, result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000032"/>Class <ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref>  </term></varlistentry>
+<listitem><para>use <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref> instead  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000034"/>Member <ref refid="classvigra_1_1FindAverage_1a02ffbee005b7e35ced4792fbe4b14f10" kindref="member">FindAverage&lt; VALUETYPE &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000035"/>Member <ref refid="classvigra_1_1FindAverageAndVariance_1a02ffbee005b7e35ced4792fbe4b14f10" kindref="member">FindAverageAndVariance&lt; VALUETYPE &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000037"/>Member <ref refid="classvigra_1_1FindBoundingRectangle_1ad9f0e1f6ec90dd3417c628b3f30e77c0" kindref="member">FindBoundingRectangle::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000033"/>Member <ref refid="classvigra_1_1FindMinMax_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">FindMinMax&lt; VALUETYPE &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000036"/>Member <ref refid="classvigra_1_1FindROISize_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">FindROISize&lt; VALUETYPE &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000042"/>Member <ref refid="classvigra_1_1GammaFunctor_1af1ae1457b0364ede460a98f91a694265" kindref="member">GammaFunctor&lt; PixelType &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000017"/>Member <ref refid="classvigra_1_1Lab2RGBFunctor_1a8bb34fdded54e7a37e84a62d920696fe" kindref="member">Lab2RGBFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000021"/>Member <ref refid="classvigra_1_1Lab2RGBPrimeFunctor_1a8bb34fdded54e7a37e84a62d920696fe" kindref="member">Lab2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000013"/>Member <ref refid="classvigra_1_1Lab2XYZFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">Lab2XYZFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000038"/>Member <ref refid="classvigra_1_1LastValueFunctor_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">LastValueFunctor&lt; VALUETYPE &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000016"/>Member <ref refid="classvigra_1_1Luv2RGBFunctor_1a8bb34fdded54e7a37e84a62d920696fe" kindref="member">Luv2RGBFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000020"/>Member <ref refid="classvigra_1_1Luv2RGBPrimeFunctor_1a8bb34fdded54e7a37e84a62d920696fe" kindref="member">Luv2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000011"/>Member <ref refid="classvigra_1_1Luv2XYZFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">Luv2XYZFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000030"/>Member <ref refid="classvigra_1_1MagnitudeFunctor_1a7e925095614a18db84f21a0de507edb5" kindref="member">MagnitudeFunctor&lt; ValueType &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use first_argument_type, second_argument_type, result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000015"/>Member <ref refid="classvigra_1_1RGB2LabFunctor_1a1b95f52c1d4d4d17a03f9df3b8a3aefa" kindref="member">RGB2LabFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000014"/>Member <ref refid="classvigra_1_1RGB2LuvFunctor_1a32a888ffaef1433b7a5b3558f5bed01a" kindref="member">RGB2LuvFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000002"/>Member <ref refid="classvigra_1_1RGB2RGBPrimeFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" kindref="member">RGB2RGBPrimeFunctor&lt; From, To &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000003"/>Member <ref refid="classvigra_1_1RGB2sRGBFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" kindref="member">RGB2sRGBFunctor&lt; From, To &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000006"/>Member <ref refid="classvigra_1_1RGB2XYZFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGB2XYZFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000031"/>Member <ref refid="classvigra_1_1RGBGradientMagnitudeFunctor_1a7e925095614a18db84f21a0de507edb5" kindref="member">RGBGradientMagnitudeFunctor&lt; ValueType &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use first_argument_type, second_argument_type, result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000019"/>Member <ref refid="classvigra_1_1RGBPrime2LabFunctor_1a1b95f52c1d4d4d17a03f9df3b8a3aefa" kindref="member">RGBPrime2LabFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000018"/>Member <ref refid="classvigra_1_1RGBPrime2LuvFunctor_1a32a888ffaef1433b7a5b3558f5bed01a" kindref="member">RGBPrime2LuvFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000004"/>Member <ref refid="classvigra_1_1RGBPrime2RGBFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" kindref="member">RGBPrime2RGBFunctor&lt; From, To &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000007"/>Member <ref refid="classvigra_1_1RGBPrime2XYZFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGBPrime2XYZFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000028"/>Member <ref refid="classvigra_1_1RGBPrime2YPrimeCbCrFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGBPrime2YPrimeCbCrFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000024"/>Member <ref refid="classvigra_1_1RGBPrime2YPrimeIQFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGBPrime2YPrimeIQFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000022"/>Member <ref refid="classvigra_1_1RGBPrime2YPrimePbPrFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGBPrime2YPrimePbPrFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000026"/>Member <ref refid="classvigra_1_1RGBPrime2YPrimeUVFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">RGBPrime2YPrimeUVFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000040"/>Member <ref refid="classvigra_1_1SeedRgDirectValueFunctor_1a04f69f8f2936ff309627511179c1709b" kindref="member">SeedRgDirectValueFunctor&lt; Value &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000005"/>Member <ref refid="classvigra_1_1sRGB2RGBFunctor_1a4a27c57ed96ac356dec238dd7ddb15a7" kindref="member">sRGB2RGBFunctor&lt; From, To &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000012"/>Member <ref refid="classvigra_1_1XYZ2LabFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">XYZ2LabFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000010"/>Member <ref refid="classvigra_1_1XYZ2LuvFunctor_1a92ed0b206a7eff7322d63567c1aa94b8" kindref="member">XYZ2LuvFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000008"/>Member <ref refid="classvigra_1_1XYZ2RGBFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">XYZ2RGBFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000009"/>Member <ref refid="classvigra_1_1XYZ2RGBPrimeFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">XYZ2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000029"/>Member <ref refid="classvigra_1_1YPrimeCbCr2RGBPrimeFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">YPrimeCbCr2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000025"/>Member <ref refid="classvigra_1_1YPrimeIQ2RGBPrimeFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">YPrimeIQ2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000023"/>Member <ref refid="classvigra_1_1YPrimePbPr2RGBPrimeFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">YPrimePbPr2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type  </para></listitem>
+<varlistentry><term><anchor id="deprecated_1_deprecated000027"/>Member <ref refid="classvigra_1_1YPrimeUV2RGBPrimeFunctor_1a818a92fdb6cfee7cd1a828c5b5d625ee" kindref="member">YPrimeUV2RGBPrimeFunctor&lt; T &gt;::value_type</ref>  </term></varlistentry>
+<listitem><para>use argument_type and result_type </para></listitem>
+</variablelist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

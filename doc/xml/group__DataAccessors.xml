@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__DataAccessors" kind="group">
+    <compoundname>DataAccessors</compoundname>
+    <title>Data Accessors</title>
+    <innerclass refid="classvigra_1_1BilinearInterpolatingAccessor" prot="public">vigra::BilinearInterpolatingAccessor</innerclass>
+    <innerclass refid="classcl__charNAccessor__COMP" prot="public">cl_charNAccessor_COMP</innerclass>
+    <innerclass refid="classvigra_1_1FFTWRealAccessor" prot="public">vigra::FFTWRealAccessor</innerclass>
+    <innerclass refid="classvigra_1_1MultiImageAccessor2" prot="public">vigra::MultiImageAccessor2</innerclass>
+    <innerclass refid="classvigra_1_1RGBAccessor" prot="public">vigra::RGBAccessor</innerclass>
+    <innerclass refid="classvigra_1_1SequenceAccessor" prot="public">vigra::SequenceAccessor</innerclass>
+    <innerclass refid="classvigra_1_1StandardAccessor" prot="public">vigra::StandardAccessor</innerclass>
+    <innerclass refid="classvigra_1_1StandardConstAccessor" prot="public">vigra::StandardConstAccessor</innerclass>
+    <innerclass refid="classvigra_1_1StandardConstValueAccessor" prot="public">vigra::StandardConstValueAccessor</innerclass>
+    <innerclass refid="classvigra_1_1StandardValueAccessor" prot="public">vigra::StandardValueAccessor</innerclass>
+    <innerclass refid="classvigra_1_1VectorAccessor" prot="public">vigra::VectorAccessor</innerclass>
+    <innerclass refid="classvigra_1_1VectorComponentAccessor" prot="public">vigra::VectorComponentAccessor</innerclass>
+    <innerclass refid="classvigra_1_1VectorComponentValueAccessor" prot="public">vigra::VectorComponentValueAccessor</innerclass>
+    <innerclass refid="classvigra_1_1VectorElementAccessor" prot="public">vigra::VectorElementAccessor</innerclass>
+    <innergroup refid="group__FFTWComplexAccessors">Accessors for FFTWComplex</innergroup>
+    <innergroup refid="group__OpenCL-Accessors">Accessors for OpenCL types</innergroup>
+    <innergroup refid="group__RGBValueAccessors">Accessors for RGBValue</innergroup>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><verbatim>Basic templates to encapsulate access to the data of an iterator.
+
+Data accessors are used to allow for flexible access to the data
+an iterator points to. When we access the data directly, we
+are bound to what &lt;TT&gt;operator*()&lt;/TT&gt; returns, if this method exists at
+all. Encapsulating access in an accessor enables a better
+decoupling of data structures and algorithms.
+&lt;a href=&quot;documents/DataAccessors.ps&quot;&gt;This paper&lt;/a&gt; contains
+a detailed description of the concept. Here is a brief list of the basic
+accessor requirements:
+</verbatim> </para><para><table rows="7" cols="3"><row>
+<entry thead="yes"><para>Operation </para></entry><entry thead="yes"><para>Result </para></entry><entry thead="yes"><para>Semantics   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>accessor(iter)</computeroutput></para></entry><entry thead="no"><para>convertible to <linebreak/>
+<computeroutput>Accessor::value_type const &amp;</computeroutput> </para></entry><entry thead="no"><para>read data at the current position of the iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>accessor(iter, index)</computeroutput></para></entry><entry thead="no"><para>convertible to <linebreak/>
+<computeroutput>Accessor::value_type const &amp;</computeroutput> </para></entry><entry thead="no"><para>read data at offset <computeroutput>index</computeroutput> relative to iterator&apos;s current position (random-access iterator only)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>accessor.set(value, iter)</computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput> </para></entry><entry thead="no"><para>write data <computeroutput>value</computeroutput> at the current position of the iterator (mutable iterator only)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>accessor.set(value, iter, index)</computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput> </para></entry><entry thead="no"><para>write data <computeroutput>value</computeroutput> at offset <computeroutput>index</computeroutput> relative to iterator&apos;s current position (mutable random-access iterator only)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>Accessor::value_type</computeroutput> </para></entry><entry thead="no"><para>type of the data field the accessor refers to  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>iter</computeroutput> is an iterator<linebreak/>
+ <computeroutput>index</computeroutput> has the iterator&apos;s index type (<computeroutput>Iterator::difference_type</computeroutput>)<linebreak/>
+ <computeroutput>value</computeroutput> is convertible to <computeroutput>Accessor::value_type const &amp;</computeroutput>   </para></entry></row>
+</table>
+</para><para><verbatim>The template &lt;tt&gt;AccessorTraits&lt;T&gt;&lt;/tt&gt; can be used to find the default accessor
+associated with the type &lt;tt&gt;T&lt;/tt&gt;, e.g.
+
+@code 
+typedef typename AccessorTraits&lt;typename Image::value_type&gt;::default_accessor       Accessor;
+typedef typename AccessorTraits&lt;typename Image::value_type&gt;::default_const_accessor ConstAccessor;
+\endcode</verbatim></para>    </detaileddescription>
+  </compounddef>
+</doxygen>

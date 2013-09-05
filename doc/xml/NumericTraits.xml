@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="NumericTraits" kind="page">
+    <compoundname>NumericTraits</compoundname>
+    <title>template&lt;&gt; struct NumericTraits&lt;ArithmeticType&gt;</title>
+    <detaileddescription>
+<para>Unary traits for promotion, conversion, creation of arithmetic objects.</para><para><bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>This traits class is used derive important properties of an arithmetic type. Consider the following algorithm:</para><para><programlisting><codeline><highlight class="comment">//<sp/>calculate<sp/>the<sp/>sum<sp/>of<sp/>a<sp/>sequence<sp/>of<sp/>bytes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sumBytes(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>begin,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>end)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>result<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>begin<sp/>!=<sp/>end;<sp/>++begin)<sp/><sp/>result<sp/>+=<sp/>*begin;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The return type of this function can not be &apos;unsigned char&apos; because the summation would very likely overflow. Since we know the source type, we can easily choose &apos;int&apos; as an appropriate return type. Likewise, we would have chosen &apos;float&apos; if we had to sum a sequence of floats. If we want to make this algorithm generic, we would like to derive the appropriate return type automatically. This can be done with NumericTraits. The code would look like this (we use <ref refid="group__DataAccessors" kindref="compound">Data Accessors</ref> to read the data from the sequence):</para><para><programlisting><codeline><highlight class="comment">//<sp/>calculate<sp/>the<sp/>sum<sp/>of<sp/>any<sp/>sequence</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>vigra::NumericTraits&lt;typename<sp/>Accessor::value_type&gt;::Promote</highlight></codeline>
+<codeline><highlight class="normal">sumSequence(Iterator<sp/>begin,<sp/>Iterator<sp/>end,<sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>an<sp/>abbreviation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>vigra::NumericTraits&lt;typename<sp/>Accessor::value_type&gt;<sp/><sp/>SrcTraits;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>find<sp/>out<sp/>result<sp/>type</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SrcTraits::Promote<sp/>ResultType;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>init<sp/>result<sp/>to<sp/>zero</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ResultType<sp/>result<sp/>=<sp/>vigra::NumericTraits&lt;ResultType&gt;::zero();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>begin<sp/>!=<sp/>end;<sp/>++begin)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>cast<sp/>current<sp/>item<sp/>to<sp/>ResultType<sp/>and<sp/>add</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result<sp/>+=<sp/>SrcTraits::toPromote(a(begin));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>In this example NumericTraits is not only used to deduce the ReturnType of the operation, but also to initialize it with the constant &apos;zero&apos;. This is necessary since we do not know in general, which expression must be used to obtain a zero of some arbitrary type - &apos;<computeroutput>ResultType result = 0;</computeroutput>&apos; would only work if the ResultType had an constructor taking an &apos;<computeroutput>int</computeroutput>&apos; argument, and we would not even have any guarantee as to what the semantics of this constructor are. In addition, the traits are used to cast the source type into the promote type.</para><para>Similarly, an algorithm that needs multiplication would use the return type <computeroutput>RealPromote</computeroutput> and the functions <computeroutput>one()</computeroutput> and <computeroutput>toRealPromote()</computeroutput>. The following members are defined in <bold> <computeroutput>NumericTraits&lt;ArithmeticType&gt;</computeroutput></bold>:</para><para><table rows="22" cols="2"><row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... Type;</computeroutput></bold> </para></entry><entry thead="no"><para><verbatim>    the type itself 
+</verbatim></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... Promote;</computeroutput></bold> </para></entry><entry thead="no"><para><verbatim>    promote type for addition and subtraction 
+</verbatim></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... RealPromote;</computeroutput></bold> </para></entry><entry thead="no"><para>promote type for multiplication and division with a real number</para><para>(only defined if <computeroutput>ArithmeticType</computeroutput> supports these operations)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... ComplexPromote;</computeroutput></bold> </para></entry><entry thead="no"><para><verbatim>    promote type for complex arithmetic 
+</verbatim></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... ValueType;</computeroutput></bold> </para></entry><entry thead="no"><para><verbatim>    for scalar types: the type itself&lt;br&gt;
+    otherwise: typename Type::value_type (if defined)
+</verbatim></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static Promote toPromote(ArithmeticType v);</computeroutput></bold> </para></entry><entry thead="no"><para>convert to <computeroutput>Promote</computeroutput> type</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static RealPromote toRealPromote(ArithmeticType v);</computeroutput></bold> </para></entry><entry thead="no"><para>convert to <computeroutput>RealPromote</computeroutput> type</para><para>(only defined if <computeroutput>ArithmeticType</computeroutput> supports multiplication)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType fromPromote(Promote v);</computeroutput></bold> </para></entry><entry thead="no"><para>convert from <computeroutput>Promote</computeroutput> type</para><para>if <computeroutput>v</computeroutput> is outside the range of <computeroutput>ArithmeticType</computeroutput> it is clipped;</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType fromRealPromote(RealPromote v);</computeroutput></bold> </para></entry><entry thead="no"><para>convert from <computeroutput>RealPromote</computeroutput> type</para><para>(only defined if <computeroutput>ArithmeticType</computeroutput> supports multiplication)</para><para>if <computeroutput>ArithmeticType</computeroutput> is an integral type, the result is rounded</para><para>if <computeroutput>v</computeroutput> is outside the range of <computeroutput>ArithmeticType</computeroutput> it is clipped</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType zero();</computeroutput></bold> </para></entry><entry thead="no"><para>create neutral element of addition</para><para>i.e. <computeroutput>(ArithmeticType a = ...,</computeroutput> <computeroutput> a + NumericTraits&lt;ArithmeticType&gt;::zero() == a)</computeroutput> must always yield <computeroutput>true</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType nonZero();</computeroutput></bold> </para></entry><entry thead="no"><para>create a non-zero element (if multiplication is defined, this yields one())</para><para>i.e. <computeroutput>(ArithmeticType a = ...,</computeroutput> <computeroutput> a + NumericTraits&lt;ArithmeticType&gt;::nonZero() == a)</computeroutput> must always yield <computeroutput>false</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType <ref refid="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" kindref="member">min()</ref>;</computeroutput></bold> </para></entry><entry thead="no"><para>the smallest number representable in this type.<linebreak/>
+ Only available if isOrdered is VigraTrueType. For integral types, this equals <computeroutput>INT_MIN</computeroutput> etc., for real valued types it is <computeroutput>-FLT_MAX</computeroutput> etc. (<bold>not</bold> <computeroutput>FLT_MIN</computeroutput> <ndash/> this is the smallest positive <computeroutput>float</computeroutput>)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType <ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">max()</ref>;</computeroutput></bold> </para></entry><entry thead="no"><para>the largest number representable in this type.<linebreak/>
+ Only available if isOrdered is VigraTrueType. For integral types, this equals <computeroutput>INT_MAX</computeroutput> etc., for real valued types it is <computeroutput>FLT_MAX</computeroutput> etc.</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static ArithmeticType one();</computeroutput></bold> </para></entry><entry thead="no"><para>create neutral element of multiplication</para><para>(only defined if <computeroutput>ArithmeticType</computeroutput> supports multiplication)</para><para>i.e. <computeroutput>(ArithmeticType a = ...,</computeroutput> <computeroutput> a * NumericTraits&lt;ArithmeticType&gt;::one() == a)</computeroutput> must always yield <computeroutput>true</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... isIntegral;</computeroutput></bold> </para></entry><entry thead="no"><para>VigraTrueType if <computeroutput>ArithmeticType</computeroutput> is an integral type, VigraFalseType otherwise</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... isScalar;</computeroutput></bold> </para></entry><entry thead="no"><para>VigraTrueType if <computeroutput>ArithmeticType</computeroutput> is a scalar type, VigraFalseType otherwise</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... isSigned;</computeroutput></bold> </para></entry><entry thead="no"><para>VigraTrueType if <computeroutput>ArithmeticType</computeroutput> is a signed type, VigraFalseType otherwise</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... isOrdered;</computeroutput></bold> </para></entry><entry thead="no"><para>VigraTrueType if <computeroutput>ArithmeticType</computeroutput> supports <ref refid="group__FixedPointOperations_1ga59b7015d21fe02774a7663e6b663e3fc" kindref="member">operator&lt;()</ref>, VigraFalseType otherwise</para><para></para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... isComplex;</computeroutput></bold> </para></entry><entry thead="no"><para>VigraTrueType if <computeroutput>ArithmeticType</computeroutput> is a complex number, VigraFalseType otherwise</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para></entry></row>
+</table>
+</para><para>NumericTraits for the built-in types are defined in <bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

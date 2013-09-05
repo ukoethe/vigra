@@ -1,0 +1,685 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1NodeBase" kind="class" prot="public">
+    <compoundname>vigra::NodeBase</compoundname>
+    <derivedcompoundref refid="classvigra_1_1Node_3_01e__ConstProbNode_01_4" prot="public" virt="non-virtual">Node&lt; e_ConstProbNode &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Node_3_01i__HyperplaneNode_01_4" prot="public" virt="non-virtual">Node&lt; i_HyperplaneNode &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Node_3_01i__HypersphereNode_01_4" prot="public" virt="non-virtual">Node&lt; i_HypersphereNode &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4" prot="public" virt="non-virtual">Node&lt; i_ThresholdNode &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode" prot="public" virt="non-virtual">ClusterNode</derivedcompoundref>
+    <includes refid="rf__nodeproxy_8hxx" local="no">vigra/random_forest/rf_nodeproxy.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1NodeBase_1a3c27387e011446faece596a3512747e3" prot="public" static="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>typedef Int32 INT</definition>
+        <argsstring></argsstring>
+        <name>INT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NodeBase_1a2772ac823499b142d7a6121088de74dd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>typedef ArrayVector&lt;double&gt; P_Container_type</definition>
+        <argsstring></argsstring>
+        <name>P_Container_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="92" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NodeBase_1a4efdd224735574a9c5526311b3f0ce9b" prot="public" static="no">
+        <type>P_Container_type::iterator</type>
+        <definition>typedef P_Container_type::iterator Parameter_type</definition>
+        <argsstring></argsstring>
+        <name>Parameter_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="94" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NodeBase_1a8ee8474c7bc7881ddbaa51b02cb350df" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; INT &gt;</type>
+        <definition>typedef ArrayVector&lt;INT&gt; T_Container_type</definition>
+        <argsstring></argsstring>
+        <name>T_Container_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1NodeBase_1a9dd576b4c7c93f5ddda63365a6138846" prot="public" static="no">
+        <type>T_Container_type::iterator</type>
+        <definition>typedef T_Container_type::iterator Topology_type</definition>
+        <argsstring></argsstring>
+        <name>Topology_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a3fccf09f4a699b59bdaaef92cf57421d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int classCount_</definition>
+        <argsstring></argsstring>
+        <name>classCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a2fdc050911157bc63d2c34ffec04ebb1" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int featureCount_</definition>
+        <argsstring></argsstring>
+        <name>featureCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a7691d58cca0888fcc7eb864cae64af82" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool hasData_</definition>
+        <argsstring></argsstring>
+        <name>hasData_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a20634f6eb739ff8272c00f3bf7294199" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int parameter_size_</definition>
+        <argsstring></argsstring>
+        <name>parameter_size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1aa695a5aa261abef117dfc8b87bca85a2" prot="public" static="no" mutable="yes">
+        <type>Parameter_type</type>
+        <definition>Parameter_type parameters_</definition>
+        <argsstring></argsstring>
+        <name>parameters_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a91e7e3aab813bf8964cc8567c9f8a7fc" prot="public" static="no" mutable="yes">
+        <type>Topology_type</type>
+        <definition>Topology_type topology_</definition>
+        <argsstring></argsstring>
+        <name>topology_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NodeBase_1a060308950bc46d8353295dbde5b60491" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int topology_size_</definition>
+        <argsstring></argsstring>
+        <name>topology_size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1afbee722241ea157626d951705d92765a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT &amp;</type>
+        <definition>INT&amp; child</definition>
+        <argsstring>(Int32 l)</argsstring>
+        <name>child</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>where are the child nodes? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="225" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="224" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1aef1d376bdbb67276c2ca594efb80a8ec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT const &amp;</type>
+        <definition>INT const&amp; child</definition>
+        <argsstring>(Int32 l) const </argsstring>
+        <name>child</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>where are the child nodes? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="231" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1aa1b5f48a16c72fa7bc0eebe5b6f567ff" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Topology_type</type>
+        <definition>Topology_type column_data</definition>
+        <argsstring>() const </argsstring>
+        <name>column_data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Column Range </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="159" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1aff0b528dc48e3783d3d114ba59d03cf0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Topology_type</type>
+        <definition>Topology_type columns_begin</definition>
+        <argsstring>() const </argsstring>
+        <name>columns_begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>get the start iterator to the columns<itemizedlist>
+<listitem><para>once again - throw out - static members are crap. </para></listitem></itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="168" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="167" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a1a98316670a4ba476aa898e878e07150" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Topology_type</type>
+        <definition>Topology_type columns_end</definition>
+        <argsstring>() const </argsstring>
+        <name>columns_end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>end iterator to the columns </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="185" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="184" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1af681aefe39dee326f0c384c06876d2df" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int columns_size</definition>
+        <argsstring>() const </argsstring>
+        <name>columns_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>how many columns? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="174" bodyend="180"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a8abe81cffd3fdf2d3a263a8cf8535820" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void copy</definition>
+        <argsstring>(const NodeBase &amp;o)</argsstring>
+        <name>copy</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref> &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="241" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1ab1cb33e6d4bdf35450953a9e8e5936b5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool data</definition>
+        <argsstring>() const </argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>has the data been set? todo: throw this out - bad design </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="128" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1ab0d2335945496a120d668b209f14140c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>()</argsstring>
+        <name>NodeBase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default Constructor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="240" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="237" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1ab9e2534c9a671cc64c318142d423b1df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>(T_Container_type const &amp;topology, P_Container_type const &amp;parameter, INT n)</argsstring>
+        <name>NodeBase</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">T_Container_type</ref> const &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">P_Container_type</ref> const &amp;</type>
+          <declname>parameter</declname>
+        </param>
+        <param>
+          <type>INT</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>create ReadOnly Base Node at position n (actual length is unknown) only common features i.e. children etc are accessible. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="254" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a828aadf61afa6b1cf6224d98f23f3f72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>(int tLen, int pLen, T_Container_type const &amp;topology, P_Container_type const &amp;parameter, INT n)</argsstring>
+        <name>NodeBase</name>
+        <param>
+          <type>int</type>
+          <declname>tLen</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>pLen</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">T_Container_type</ref> const &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">P_Container_type</ref> const &amp;</type>
+          <declname>parameter</declname>
+        </param>
+        <param>
+          <type>INT</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>create ReadOnly node with known length (the parameter range is valid) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="285" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="272" bodyend="288"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a10f09963f49d9080438d223173545eaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>(int tLen, int pLen, NodeBase &amp;node)</argsstring>
+        <name>NodeBase</name>
+        <param>
+          <type>int</type>
+          <declname>tLen</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>pLen</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref> &amp;</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>create ReadOnly node with known length from existing Node </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="292" bodyend="306"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a63012063efba7f30e3862efa38cc1ec3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>(int tLen, int pLen, T_Container_type &amp;topology, P_Container_type &amp;parameter)</argsstring>
+        <name>NodeBase</name>
+        <param>
+          <type>int</type>
+          <declname>tLen</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>pLen</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">T_Container_type</ref> &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">P_Container_type</ref> &amp;</type>
+          <declname>parameter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>create new Node at end of vector <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tLen</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of integers needed in the topolog vector </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pLen</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of parameters needed (this includes the node weight) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>topology</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to Topology array of decision tree. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>parameter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>reference to Parameter array of decision tree. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="316" bodyend="346"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1ac53d1493afb00198446c7345cea663fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NodeBase</definition>
+        <argsstring>(NodeBase const &amp;toCopy, T_Container_type &amp;topology, P_Container_type &amp;parameter)</argsstring>
+        <name>NodeBase</name>
+        <param>
+          <type><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref> const &amp;</type>
+          <declname>toCopy</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">T_Container_type</ref> &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">P_Container_type</ref> &amp;</type>
+          <declname>parameter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>PseudoCopy Constructor -</para><para>Copy Node to the end of a container. Since each Node views on different data there can&apos;t be a real copy constructor (unless both objects should point to the same underlying data. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="365" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="356" bodyend="379"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a7af73990cbba31c405b745c28b602aa8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT &amp;</type>
+        <definition>INT&amp; parameter_addr</definition>
+        <argsstring>()</argsstring>
+        <name>parameter_addr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Where in the parameter_ array are the weights? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="148" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a2ec7aa5eacd1493d9ce3642e3a14d8ed" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT const &amp;</type>
+        <definition>INT const&amp; parameter_addr</definition>
+        <argsstring>() const </argsstring>
+        <name>parameter_addr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="153" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a1d5a8a3e2a5f05941bdb3bbde4faa508" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Parameter_type</type>
+        <definition>Parameter_type parameters_begin</definition>
+        <argsstring>() const </argsstring>
+        <name>parameters_begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Parameter Range </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="207" bodyend="210"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a9b4ea98e352b479140a1b621c46a24dc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Parameter_type</type>
+        <definition>Parameter_type parameters_end</definition>
+        <argsstring>() const </argsstring>
+        <name>parameters_end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="212" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="211" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a62c4da34c22c0b66c21ad3eaa09c6f73" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int parameters_size</definition>
+        <argsstring>() const </argsstring>
+        <name>parameters_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="216" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a6b3a692effa8129f2bc91079c8810fe2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Topology_type</type>
+        <definition>Topology_type topology_begin</definition>
+        <argsstring>() const </argsstring>
+        <name>topology_begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Topology Range - gives access to the raw Topo memory the size_ member was added as a result of premature optimisation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="193" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a6932a1eef19e5e598c7a2321cfd82efe" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Topology_type</type>
+        <definition>Topology_type topology_end</definition>
+        <argsstring>() const </argsstring>
+        <name>topology_end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="198" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="197" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a67bbba8f267817ce7ad546f8807df676" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int topology_size</definition>
+        <argsstring>() const </argsstring>
+        <name>topology_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="201" bodyend="204"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a4aeb85940eb4eb34739f29b01a576286" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT &amp;</type>
+        <definition>INT&amp; typeID</definition>
+        <argsstring>()</argsstring>
+        <name>typeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>get the node type id <simplesect kind="see"><para>NodeTags </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="136" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a4eef16cc017527b5189bd7ce0b2a6dce" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>INT const &amp;</type>
+        <definition>INT const&amp; typeID</definition>
+        <argsstring>() const </argsstring>
+        <name>typeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1acd65bf00c655f601231bc895812eacde" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; weights</definition>
+        <argsstring>()</argsstring>
+        <name>weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>get Node Weight </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="115" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NodeBase_1a840c72759db564e7eb4492dff89899de" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double const &amp;</type>
+        <definition>double const&amp; weights</definition>
+        <argsstring>() const </argsstring>
+        <name>weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="120" bodyend="123"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref> class.</para><para>This class implements common features of all nodes. Memory Structure: Int32 Array: TypeID, ParameterAddr, Child0, Child1, [ColumnData]0_ double Array: NodeWeight, [Parameters]1_</para><para>TODO: Throw away the crappy iterators and use <ref refid="classvigra_1_1ArrayVectorView" kindref="compound">vigra::ArrayVectorView</ref> it is not like anybody else is going to use this <ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref> class is it?</para><para>TODO: use the RF_Traits::ProblemSpec_t to specify the external parameters instead of the options. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="1195">
+        <label>Node&lt; e_ConstProbNode &gt;</label>
+        <link refid="classvigra_1_1Node_3_01e__ConstProbNode_01_4"/>
+        <childnode refid="1194" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1194">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="87" bodyend="380"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1NodeBase_1afbee722241ea157626d951705d92765a" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1aef1d376bdbb67276c2ca594efb80a8ec" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3fccf09f4a699b59bdaaef92cf57421d" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>classCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa1b5f48a16c72fa7bc0eebe5b6f567ff" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>column_data</name></member>
+      <member refid="classvigra_1_1NodeBase_1aff0b528dc48e3783d3d114ba59d03cf0" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>columns_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1a98316670a4ba476aa898e878e07150" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>columns_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1af681aefe39dee326f0c384c06876d2df" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>columns_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8abe81cffd3fdf2d3a263a8cf8535820" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>copy</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab1cb33e6d4bdf35450953a9e8e5936b5" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>data</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2fdc050911157bc63d2c34ffec04ebb1" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>featureCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7691d58cca0888fcc7eb864cae64af82" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>hasData_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3c27387e011446faece596a3512747e3" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>INT</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab0d2335945496a120d668b209f14140c" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab9e2534c9a671cc64c318142d423b1df" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a828aadf61afa6b1cf6224d98f23f3f72" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a10f09963f49d9080438d223173545eaa" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a63012063efba7f30e3862efa38cc1ec3" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ac53d1493afb00198446c7345cea663fe" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2772ac823499b142d7a6121088de74dd" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>P_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7af73990cbba31c405b745c28b602aa8" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2ec7aa5eacd1493d9ce3642e3a14d8ed" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a20634f6eb739ff8272c00f3bf7294199" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameter_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4efdd224735574a9c5526311b3f0ce9b" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>Parameter_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa695a5aa261abef117dfc8b87bca85a2" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameters_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1d5a8a3e2a5f05941bdb3bbde4faa508" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameters_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9b4ea98e352b479140a1b621c46a24dc" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameters_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a62c4da34c22c0b66c21ad3eaa09c6f73" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>parameters_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8ee8474c7bc7881ddbaa51b02cb350df" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>T_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a91e7e3aab813bf8964cc8567c9f8a7fc" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>topology_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6b3a692effa8129f2bc91079c8810fe2" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>topology_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6932a1eef19e5e598c7a2321cfd82efe" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>topology_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a67bbba8f267817ce7ad546f8807df676" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>topology_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a060308950bc46d8353295dbde5b60491" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>topology_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9dd576b4c7c93f5ddda63365a6138846" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>Topology_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4aeb85940eb4eb34739f29b01a576286" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4eef16cc017527b5189bd7ce0b2a6dce" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1acd65bf00c655f601231bc895812eacde" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>weights</name></member>
+      <member refid="classvigra_1_1NodeBase_1a840c72759db564e7eb4492dff89899de" prot="public" virt="non-virtual"><scope>vigra::NodeBase</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

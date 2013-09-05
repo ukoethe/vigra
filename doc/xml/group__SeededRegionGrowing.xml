@@ -1,0 +1,2739 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__SeededRegionGrowing" kind="group">
+    <compoundname>SeededRegionGrowing</compoundname>
+    <title>Region Segmentation Algorithms</title>
+    <innerclass refid="classvigra_1_1SeedOptions" prot="public">vigra::SeedOptions</innerclass>
+    <innerclass refid="classvigra_1_1SeedRgDirectValueFunctor" prot="public">vigra::SeedRgDirectValueFunctor</innerclass>
+    <innerclass refid="classvigra_1_1WatershedOptions" prot="public">vigra::WatershedOptions</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" prot="public" static="no">
+        <name>SRGType</name>
+        <enumvalue id="group__SeededRegionGrowing_1gga01b5439c31bc7008fe4b8b280dd12bf2a575b21432d75be2cad89127d1abdfa42" prot="public">
+          <name>CompleteGrow</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__SeededRegionGrowing_1gga01b5439c31bc7008fe4b8b280dd12bf2ac374f57cdf628049fbf62128cae519ec" prot="public">
+          <name>KeepContours</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__SeededRegionGrowing_1gga01b5439c31bc7008fe4b8b280dd12bf2ac06b81e4aa58cc3ad8c491dee4166c6a" prot="public">
+          <name>StopAtThreshold</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__SeededRegionGrowing_1gga01b5439c31bc7008fe4b8b280dd12bf2a0be3bde266fffe473b91ba9816c57083" prot="public">
+          <name>SRGWatershedLabel</name>
+          <initializer> -1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Choose between different types of Region Growing </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="176" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="176" bodyend="181"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gac5a57fb3b9d63a70825940c2e1f7cdd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>DestAccessor::value_type</type>
+        <definition>DestAccessor::value_type vigra::fastSeededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood, double max_cost, std::ptrdiff_t bucket_count=256)</argsstring>
+        <name>fastSeededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <param>
+          <type>std::ptrdiff_t</type>
+          <declname>bucket_count</declname>
+          <defval>256</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="663" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="656" bodyend="779"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga4b86b05fada3cd366d3236fb75b1d1e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>DestAccessor::value_type</type>
+        <definition>DestAccessor::value_type vigra::fastSeededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n)</argsstring>
+        <name>fastSeededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="790" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="785" bodyend="794"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga8535b2fd7328ed48d758c40b3af10389" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>DestAccessor::value_type</type>
+        <definition>DestAccessor::value_type vigra::fastSeededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType)</argsstring>
+        <name>fastSeededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="804" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="800" bodyend="808"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga560bd03281467f37127d580ab1cd5bb8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>DestAccessor::value_type</type>
+        <definition>DestAccessor::value_type vigra::fastSeededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats)</argsstring>
+        <name>fastSeededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="817" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="814" bodyend="821"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga543d808490514bc6981e85100b6e946e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>DestAccessor::value_type</type>
+        <definition>DestAccessor::value_type vigra::fastSeededRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n, double max_cost, std::ptrdiff_t bucket_count=256)</argsstring>
+        <name>fastSeededRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <param>
+          <type>std::ptrdiff_t</type>
+          <declname>bucket_count</declname>
+          <defval>256</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="834" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="827" bodyend="838"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds</definition>
+        <argsstring>(...)</argsstring>
+        <name>generateWatershedSeeds</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Generate seeds for watershed computation and seeded region growing. </para>        </briefdescription>
+        <detaileddescription>
+<para>The source image is a boundary indicator such as the gradient magnitude or the trace of the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>. Seeds are generally generated at locations where the boundaryness (i.e. the likelihood of the point being on the boundary) is very small. In particular, seeds can be placed by either looking for local minima (possibly including minimal plateaus) of the boundaryness, of by looking at level sets (i.e. regions where the boundaryness is below a threshold). Both methods can also be combined, so that only minima below a threshold are returned. The particular seeding strategy is specified by the <computeroutput>options</computeroutput> object (see <ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref>).</para><para>The pixel type of the input image must be <computeroutput>LessThanComparable</computeroutput>. The pixel type of the output image must be large enough to hold the labels for all seeds. (typically, you will use <computeroutput>UInt32</computeroutput>). The function will label seeds by consecutive integers (starting from 1) and returns the largest label it used.</para><para>Pass <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">vigra::EightNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">vigra::FourNeighborCode</ref> to determine the neighborhood where pixel values are compared.</para><para>The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(SrcIterator<sp/>upperlefts,<sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SeedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SeedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds_8hxx_source" kindref="compound">vigra/watersheds.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>For detailed examples see <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="475"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga63017004078881633e124f6f08304706" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, Neighborhood neighborhood, SeedOptions const &amp;options=SeedOptions())</argsstring>
+        <name>generateWatershedSeeds</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>SeedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SeedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="481" bodyend="518"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gac3911a080ae5e8b8eb79e8a699d94676" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, SeedOptions const &amp;options=SeedOptions())</argsstring>
+        <name>generateWatershedSeeds</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>SeedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SeedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="523" bodyend="529"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga048d69afb38ebaebeee60fa763a23a81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood neighborhood, SeedOptions const &amp;options=SeedOptions())</argsstring>
+        <name>generateWatershedSeeds</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>SeedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SeedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="535" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gab92938ea3ef01326aa6c296ce770c3de" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, SeedOptions const &amp;options=SeedOptions())</argsstring>
+        <name>generateWatershedSeeds</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>SeedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SeedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="548" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga8e8dc694375ee65cb24707f1f94be28e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::generateWatershedSeeds3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>generateWatershedSeeds3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Generate seeds for watershed computation and seeded region growing. </para>        </briefdescription>
+        <detaileddescription>
+<para>The source image is a boundary indicator such as the gradient magnitude or the trace of the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>. Seeds are generally generated at locations where the boundaryness (i.e. the likelihood of the point being on the boundary) is very small. In particular, seeds can be placed by either looking for local minima (possibly including minimal plateaus) of the boundaryness, of by looking at level sets (i.e. regions where the boundaryness is below a threshold). Both methods can also be combined, so that only minima below a threshold are returned. The particular seeding strategy is specified by the <computeroutput>options</computeroutput> object (see <ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref>).</para><para>The pixel type of the input image must be <computeroutput>LessThanComparable</computeroutput>. The pixel type of the output image must be large enough to hold the labels for all seeds. (typically, you will use <computeroutput>UInt32</computeroutput>). The function will label seeds by consecutive integers (starting from 1) and returns the largest label it used.</para><para>Pass <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">vigra::EightNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">vigra::FourNeighborCode</ref> to determine the neighborhood where pixel values are compared.</para><para>The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(SrcIterator<sp/>upperlefts,<sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SeedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SeedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds_8hxx_source" kindref="compound">vigra/watersheds.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>For detailed examples see <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" line="304"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing</definition>
+        <argsstring>(...)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Region Segmentation by means of Seeded Region Growing. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements seeded region growing as described in</para><para>R. Adams, L. Bischof: &quot;&lt;em&gt; Seeded Region Growing&lt;/em&gt;&quot;, IEEE Trans. on Pattern Analysis and Maschine Intelligence, vol 16, no 6, 1994, and</para><para>Ullrich K<umlaut char="o"/>the: <emphasis><ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_primary_segmentation">Primary Image Segmentation</ulink></emphasis>, in: G. Sagerer, S. Posch, F. Kummert (eds.): Mustererkennung 1995, Proc. 17. DAGM-Symposium, Springer 1995</para><para>The seed image is a partly segmented image which contains uniquely labeled regions (the seeds) and unlabeled pixels (the candidates, label 0). The highest seed label found in the seed image is returned by the algorithm.</para><para>Seed regions can be as large as you wish and as small as one pixel. If there are no candidates, the algorithm will simply copy the seed image into the output image. Otherwise it will aggregate the candidates into the existing regions so that a cost function is minimized. Candidates are taken from the neighborhood of the already assigned pixels, where the type of neighborhood is determined by parameter <computeroutput>neighborhood</computeroutput> which can take the values <computeroutput><ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">FourNeighborCode()</ref></computeroutput> (the default) or <computeroutput><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode()</ref></computeroutput>. The algorithm basically works as follows (illustrated for 4-neighborhood, but 8-neighborhood works in the same way):</para><para><orderedlist>
+<listitem>
+<para>Find all candidate pixels that are 4-adjacent to a seed region. Calculate the cost for aggregating each candidate into its adjacent region and put the candidates into a priority queue.</para><para></para></listitem>
+<listitem>
+<para>While( priority queue is not empty and termination criterion is not fulfilled)</para><para><orderedlist>
+<listitem>
+<para>Take the candidate with least cost from the queue. If it has not already been merged, merge it with it&apos;s adjacent region.</para><para></para></listitem>
+<listitem>
+<para>Put all candidates that are 4-adjacent to the pixel just processed into the priority queue.</para><para></para></listitem>
+</orderedlist>
+</para><para></para></listitem>
+</orderedlist>
+</para><para><computeroutput>SRGType</computeroutput> can take the following values:</para><para><variablelist>
+<varlistentry><term><computeroutput>CompleteGrow</computeroutput> </term></varlistentry>
+<listitem><para>produce a complete tesselation of the volume (default). </para></listitem>
+<varlistentry><term><computeroutput>KeepContours</computeroutput> </term></varlistentry>
+<listitem><para>keep a 1-voxel wide unlabeled contour between all regions. </para></listitem>
+<varlistentry><term><computeroutput>StopAtThreshold</computeroutput> </term></varlistentry>
+<listitem><para>stop when the boundary indicator values exceed the threshold given by parameter <computeroutput>max_cost</computeroutput>. </para></listitem>
+<varlistentry><term><computeroutput>KeepContours | StopAtThreshold</computeroutput> </term></varlistentry>
+<listitem><para>keep 1-voxel wide contour and stop at given <computeroutput>max_cost</computeroutput>. </para></listitem>
+</variablelist>
+</para><para>The cost is determined jointly by the source image and the region statistics functor. The source image contains feature values for each pixel which will be used by the region statistics functor to calculate and update statistics for each region and to calculate the cost for each candidate. The <computeroutput>RegionStatisticsArray</computeroutput> must be compatible to the <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">ArrayOfRegionStatistics</ref> functor and contains an <emphasis> array</emphasis> of statistics objects for each region. The indices must correspond to the labels of the seed regions. The statistics for the initial regions must have been calculated prior to calling <computeroutput><ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref></computeroutput> (for example by means of <ref refid="group__InspectAlgo_1gade5a57c06d2ab13ddf4522c931d9e757" kindref="member">inspectTwoImagesIf()</ref>).</para><para>For each candidate <computeroutput>x</computeroutput> that is adjacent to region <computeroutput>i</computeroutput>, the algorithm will call <computeroutput>stats[i].cost(as(x))</computeroutput> to get the cost (where <computeroutput>x</computeroutput> is a <computeroutput>SrcIterator</computeroutput> and <computeroutput>as</computeroutput> is the SrcAccessor). When a candidate has been merged with a region, the statistics are updated by calling <computeroutput>stats[i].operator()(as(x))</computeroutput>. Since the <computeroutput>RegionStatisticsArray</computeroutput> is passed by reference, this will overwrite the original statistics.</para><para>If a candidate could be merged into more than one regions with identical cost, the algorithm will favour the nearest region. If <computeroutput>StopAtThreshold</computeroutput> is active, and the cost of the current candidate at any point in the algorithm exceeds the optional <computeroutput>max_cost</computeroutput> value (which defaults to <computeroutput><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">NumericTraits&lt;double&gt;::max()</ref></computeroutput>), region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.</para><para>In some cases, the cost only depends on the feature value of the current pixel. Then the update operation will simply be a no-op, and the <computeroutput>cost()</computeroutput> function returns its argument. This behavior is implemented by the <ref refid="classvigra_1_1SeedRgDirectValueFunctor" kindref="compound">SeedRgDirectValueFunctor</ref>. With <computeroutput>SRGType == KeepContours</computeroutput>, this is equivalent to the watershed algorithm.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RegionStatisticsArray,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SeedAccessor::value_type<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member" tooltip="Region Segmentation by means of Seeded Region Growing.">seededRegionGrowing</ref>(SrcIterator<sp/>srcul,<sp/>SrcIterator<sp/>srclr,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedImageIterator<sp/>seedsul,<sp/>SeedAccessor<sp/>aseeds,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>destul,<sp/>DestAccessor<sp/>ad,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RegionStatisticsArray<sp/>&amp;<sp/>stats,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref><sp/>srgType<sp/>=<sp/>CompleteGrow,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">FourNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_cost<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">NumericTraits&lt;double&gt;::max</ref>());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RegionStatisticsArray,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SeedAccessor::value_type</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member" tooltip="Region Segmentation by means of Seeded Region Growing.">seededRegionGrowing</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SeedImageIterator,<sp/>SeedAccessor&gt;<sp/>seeds,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RegionStatisticsArray<sp/>&amp;<sp/>stats,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref><sp/>srgType<sp/>=<sp/>CompleteGrow,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">FourNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_cost<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">NumericTraits&lt;double&gt;::max</ref>());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="seededregiongrowing_8hxx_source" kindref="compound">vigra/seededregiongrowing.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>Example: implementation of the voronoi tesselation</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>points(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>dist(x,y);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">points<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">dist<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/>100;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>throw<sp/>in<sp/>some<sp/>random<sp/>points:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>1;<sp/>i<sp/>&lt;=<sp/>max_region_label;<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>points(w<sp/>*<sp/>rand()<sp/>/<sp/>RAND_MAX<sp/>,<sp/>h<sp/>*<sp/>rand()<sp/>/<sp/>RAND_MAX)<sp/>=<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>Euclidean<sp/>distance<sp/>transform</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__DistanceTransform_1gad481d272471bfa808196959dffca524b" kindref="member">vigra::distanceTransform</ref>(srcImageRange(points),<sp/>destImage(dist),<sp/>2);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>statistics<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound" tooltip="Calculate statistics for all regions of a labeled image.">vigra::ArrayOfRegionStatistics&lt;vigra::SeedRgDirectValueFunctor&lt;float&gt;</ref><sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stats(max_region_label);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>voronoi<sp/>region<sp/>of<sp/>each<sp/>point</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member" tooltip="Region Segmentation by means of Seeded Region Growing.">vigra:: seededRegionGrowing</ref>(srcImageRange(dist),<sp/>srcImage(points),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(points),<sp/>stats);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SeedImageIterator<sp/>seed_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">SeedAccessor<sp/>seed_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">RegionStatisticsArray<sp/>stats;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>costs</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">RegionStatisticsArray::value_type::cost_type<sp/>cost<sp/>=</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stats[seed_accessor(seed_upperleft)].cost(src_accessor(src_upperleft));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compare<sp/>costs</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cost<sp/>&lt;<sp/>cost;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>update<sp/>statistics</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stats[seed_accessor(seed_upperleft)](src_accessor(src_upperleft));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(seed_accessor(seed_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para>Further requirements are determined by the <computeroutput>RegionStatisticsArray</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="372"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gac3861885061993789461ec8291e213a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood, double max_cost)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="379" bodyend="524"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gae71a3840a9d6f1e7e231bb8cf43a8145" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="531" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga9a0ac70fc5dbb10bd094e5f1aa6bac10" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="558" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="552" bodyend="563"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gaf464d5cbd6628cd0dfbcc8d4e9c88e30" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(SrcIterator srcul, SrcIterator srclr, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="570" bodyend="580"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gade3a38c9f4b6592ef166ca5be45d96d6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n, double max_cost)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="587" bodyend="599"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga9b896dfae4184a1e5c5cf602869255ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="612" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="606" bodyend="617"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gacdebcbd24d7907f512e5eaebdf2a8518" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="629" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="624" bodyend="634"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gab64b3a87d67eb4f82c57fa2e521e72cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>SeedAccessor::value_type</type>
+        <definition>SeedAccessor::value_type vigra::seededRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats)</argsstring>
+        <name>seededRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="645" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="641" bodyend="650"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Three-dimensional Region Segmentation by means of Seeded Region Growing. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm implements seeded region growing as described in</para><para>The seed image is a partly segmented multi-dimensional array which contains uniquely labeled regions (the seeds) and unlabeled voxels (the candidates, label 0). Seed regions can be as large as you wish and as small as one voxel. If there are no candidates, the algorithm will simply copy the seed array into the output array. Otherwise it will aggregate the candidates into the existing regions so that a cost function is minimized. Candidates are taken from the neighborhood of the already assigned pixels, where the type of neighborhood is determined by parameter <computeroutput>neighborhood</computeroutput> which can take the values <computeroutput><ref refid="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" kindref="member">NeighborCode3DSix()</ref></computeroutput> (the default) or <computeroutput><ref refid="group__VoxelNeighborhood_1ga89b6c2a18b23d145b3bc2fe983803f08" kindref="member">NeighborCode3DTwentySix()</ref></computeroutput>. The algorithm basically works as follows (illustrated for 6-neighborhood, but 26-neighborhood works in the same way):</para><para><orderedlist>
+<listitem>
+<para>Find all candidate pixels that are 6-adjacent to a seed region. Calculate the cost for aggregating each candidate into its adjacent region and put the candidates into a priority queue.</para><para></para></listitem>
+<listitem>
+<para>While( priority queue is not empty)</para><para><orderedlist>
+<listitem>
+<para>Take the candidate with least cost from the queue. If it has not already been merged, merge it with it&apos;s adjacent region.</para><para></para></listitem>
+<listitem>
+<para>Put all candidates that are 4-adjacent to the pixel just processed into the priority queue.</para><para></para></listitem>
+</orderedlist>
+</para><para></para></listitem>
+</orderedlist>
+</para><para><computeroutput>SRGType</computeroutput> can take the following values:</para><para><variablelist>
+<varlistentry><term><computeroutput>CompleteGrow</computeroutput> </term></varlistentry>
+<listitem><para>produce a complete tesselation of the volume (default). </para></listitem>
+<varlistentry><term><computeroutput>KeepContours</computeroutput> </term></varlistentry>
+<listitem><para>keep a 1-voxel wide unlabeled contour between all regions. </para></listitem>
+<varlistentry><term><computeroutput>StopAtThreshold</computeroutput> </term></varlistentry>
+<listitem><para>stop when the boundary indicator values exceed the threshold given by parameter <computeroutput>max_cost</computeroutput>. </para></listitem>
+<varlistentry><term><computeroutput>KeepContours | StopAtThreshold</computeroutput> </term></varlistentry>
+<listitem><para>keep 1-voxel wide contour and stop at given <computeroutput>max_cost</computeroutput>. </para></listitem>
+</variablelist>
+</para><para>The cost is determined jointly by the source array and the region statistics functor. The source array contains feature values for each pixel which will be used by the region statistics functor to calculate and update statistics for each region and to calculate the cost for each candidate. The <computeroutput>RegionStatisticsArray</computeroutput> must be compatible to the <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">ArrayOfRegionStatistics</ref> functor and contains an <emphasis> array</emphasis> of statistics objects for each region. The indices must correspond to the labels of the seed regions. The statistics for the initial regions must have been calculated prior to calling <computeroutput><ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member">seededRegionGrowing3D()</ref></computeroutput></para><para>For each candidate <computeroutput>x</computeroutput> that is adjacent to region <computeroutput>i</computeroutput>, the algorithm will call <computeroutput>stats[i].cost(as(x))</computeroutput> to get the cost (where <computeroutput>x</computeroutput> is a <computeroutput>SrcImageIterator</computeroutput> and <computeroutput>as</computeroutput> is the SrcAccessor). When a candidate has been merged with a region, the statistics are updated by calling <computeroutput>stats[i].operator()(as(x))</computeroutput>. Since the <computeroutput>RegionStatisticsArray</computeroutput> is passed by reference, this will overwrite the original statistics.</para><para>If a candidate could be merged into more than one regions with identical cost, the algorithm will favour the nearest region. If <computeroutput>StopAtThreshold</computeroutput> is active, and the cost of the current candidate at any point in the algorithm exceeds the optional <computeroutput>max_cost</computeroutput> value (which defaults to <computeroutput><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">NumericTraits&lt;double&gt;::max()</ref></computeroutput>), region growing is aborted, and all voxels not yet assigned to a region remain unlabeled.</para><para>In some cases, the cost only depends on the feature value of the current voxel. Then the update operation will simply be a no-op, and the <computeroutput>cost()</computeroutput> function returns its argument. This behavior is implemented by the <ref refid="classvigra_1_1SeedRgDirectValueFunctor" kindref="compound">SeedRgDirectValueFunctor</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RegionStatisticsArray,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member" tooltip="Three-dimensional Region Segmentation by means of Seeded Region Growing.">seededRegionGrowing3D</ref>(SrcImageIterator<sp/>srcul,<sp/>Shape<sp/>shape,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedImageIterator<sp/>seedsul,<sp/>SeedAccessor<sp/>aseeds,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>destul,<sp/>DestAccessor<sp/>ad,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RegionStatisticsArray<sp/>&amp;<sp/>stats,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref><sp/>srgType<sp/>=<sp/>CompleteGrow,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" kindref="member">NeighborCode3DSix</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_cost<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">NumericTraits&lt;double&gt;::max</ref>());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SeedAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RegionStatisticsArray,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member" tooltip="Three-dimensional Region Segmentation by means of Seeded Region Growing.">seededRegionGrowing3D</ref>(triple&lt;SrcImageIterator,<sp/>Shape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SeedImageIterator,<sp/>SeedAccessor&gt;<sp/>seeds,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RegionStatisticsArray<sp/>&amp;<sp/>stats,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref><sp/>srgType<sp/>=<sp/>CompleteGrow,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" kindref="member">NeighborCode3DSix</ref>(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>max_cost<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">NumericTraits&lt;double&gt;::max</ref>());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="290"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga503c9551c8992ca34adfd21b70146361" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Diff_type</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(SrcImageIterator srcul, Diff_type shape, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestImageIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood, double max_cost)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>Diff_type</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="304" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="297" bodyend="460"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga74d3ce2024e10eacf707700dbd56c3a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Diff_type</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(SrcImageIterator srcul, Diff_type shape, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestImageIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>Diff_type</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="471" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="467" bodyend="474"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga30f26931e34c04dafdb3e19ab2471a93" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Diff_type</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(SrcImageIterator srcul, Diff_type shape, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestImageIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats, SRGType srgType)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>Diff_type</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="481" bodyend="488"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga7248ded9cdab21893f65ce756fb91ee4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Diff_type</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(SrcImageIterator srcul, Diff_type shape, SrcAccessor as, SeedImageIterator seedsul, SeedAccessor aseeds, DestImageIterator destul, DestAccessor ad, RegionStatisticsArray &amp;stats)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>Diff_type</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>SeedImageIterator</type>
+          <declname>seedsul</declname>
+        </param>
+        <param>
+          <type>SeedAccessor</type>
+          <declname>aseeds</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="495" bodyend="502"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga63cb1d132023dc18d0608cd00541167b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(triple&lt; SrcImageIterator, Shape, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestImageIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n, double max_cost)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, Shape, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>max_cost</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="509" bodyend="519"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gaea3a37487e8d0284120e424bcea84568" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(triple&lt; SrcImageIterator, Shape, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestImageIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType, Neighborhood n)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, Shape, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="531" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="526" bodyend="536"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gabb9586aaaa464b1a523994a7d9e3d192" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(triple&lt; SrcImageIterator, Shape, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestImageIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats, SRGType srgType)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, Shape, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>SRGType</type>
+          <declname>srgType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="543" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga8a551e0ee525fd18eeef78e86e52defb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SeedImageIterator</type>
+          </param>
+          <param>
+            <type>class SeedAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class RegionStatisticsArray</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::seededRegionGrowing3D</definition>
+        <argsstring>(triple&lt; SrcImageIterator, Shape, SrcAccessor &gt; img1, pair&lt; SeedImageIterator, SeedAccessor &gt; img3, pair&lt; DestImageIterator, DestAccessor &gt; img4, RegionStatisticsArray &amp;stats)</argsstring>
+        <name>seededRegionGrowing3D</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, Shape, SrcAccessor &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SeedImageIterator, SeedAccessor &gt;</type>
+          <declname>img3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>img4</declname>
+        </param>
+        <param>
+          <type>RegionStatisticsArray &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" line="563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing3d.hxx" bodystart="559" bodyend="568"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga848b9a3983f20e8ad753d104aad16810" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watersheds3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>watersheds3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Region Segmentation by means of the watershed algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__SeededRegionGrowing_1ga848b9a3983f20e8ad753d104aad16810" kindref="member" tooltip="Region Segmentation by means of the watershed algorithm.">watersheds3D</ref>(SrcIterator<sp/>s_Iter,<sp/>SrcShape<sp/>srcShape,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d_Iter,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__SeededRegionGrowing_1ga848b9a3983f20e8ad753d104aad16810" kindref="member" tooltip="Region Segmentation by means of the watershed algorithm.">watersheds3D</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use with 3D-Six-Neighborhood: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>watersheds3DSix(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use with 3D-TwentySix-Neighborhood: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>watersheds3DTwentySix(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This function implements the union-find version of the watershed algorithms as described in</para><para>J. Roerdink, R. Meijster: &quot;&lt;em&gt;The watershed transform: definitions, algorithms,
+and parallelization strategies&lt;/em&gt;&quot;, Fundamenta Informaticae, 41:187-228, 2000</para><para>The source volume is a boundary indicator such as the gradient magnitude of the trace of the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>. Local minima of the boundary indicator are used as region seeds, and all other voxels are recursively assigned to the same region as their lowest neighbor. Pass <ref refid="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" kindref="member">vigra::NeighborCode3DSix</ref> or <ref refid="group__VoxelNeighborhood_1ga89b6c2a18b23d145b3bc2fe983803f08" kindref="member">vigra::NeighborCode3DTwentySix</ref> to determine the neighborhood where voxel values are compared. The voxel type of the input volume must be <computeroutput>LessThanComparable</computeroutput>. The function uses accessors.</para><para>...probably soon in VIGRA: Note that VIGRA provides an alternative implementation of the watershed transform via <ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member">seededRegionGrowing3D()</ref>. It is slower, but handles plateaus better and allows to keep a one pixel wide boundary between regions.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds3d_8hxx_source" kindref="compound">vigra/watersheds3D.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>Example: watersheds3D of the gradient magnitude.</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3,int&gt;</ref><sp/>IntVolume;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3,double&gt;</ref><sp/>DVolume;</highlight></codeline>
+<codeline><highlight class="normal">DVolume<sp/>src(DVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal">IntVolume<sp/>dest(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>gauss=1;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3, vigra::TinyVector&lt;float,3&gt;</ref><sp/>&gt;<sp/>temp(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member" tooltip="Calculate Gaussian gradient of a multi-dimensional arrays.">vigra::gaussianGradientMultiArray</ref>(srcMultiArrayRange(vol),destMultiArray(temp),gauss);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">IntVolume::iterator<sp/>temp_iter=temp.begin();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(DVolume::iterator<sp/>iter=src.begin();<sp/>iter!=src.end();<sp/>++iter,<sp/>++temp_iter)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>*iter<sp/>=<sp/><ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member" tooltip="norm (= magnitude)">norm</ref>(*temp_iter);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>6-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/>vigra::watersheds3DSix(srcMultiArrayRange(src),<sp/>destMultiArray(dest));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>26-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">max_region_label<sp/>=<sp/>vigra::watersheds3DTwentySix(srcMultiArrayRange(src),<sp/>destMultiArray(dest));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_begin;</highlight></codeline>
+<codeline><highlight class="normal">SrcShape<sp/>src_shape;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_begin;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compare<sp/>src<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_begin)<sp/>&lt;=<sp/>src_accessor(src_begin)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>label;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(label,<sp/>dest_begin);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" line="508"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga4405a8cb3b42979b25f7259e5cc2fc16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watersheds3D</definition>
+        <argsstring>(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa, DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D)</argsstring>
+        <name>watersheds3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s_Iter</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>srcShape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d_Iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" line="515" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" bodystart="513" bodyend="541"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gabcc07beb6d1c66b48d3c9993ae021857" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watersheds3DSix</definition>
+        <argsstring>(vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, vigra::pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>watersheds3DSix</name>
+        <param>
+          <type>vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>vigra::pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" line="547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" bodystart="545" bodyend="549"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga78c6d3f7c0ad9e22f4c755916d62e3d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watersheds3DTwentySix</definition>
+        <argsstring>(vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, vigra::pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>watersheds3DTwentySix</name>
+        <param>
+          <type>vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>vigra::pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds3d.hxx" bodystart="553" bodyend="557"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsRegionGrowing</definition>
+        <argsstring>(...)</argsstring>
+        <name>watershedsRegionGrowing</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Region segmentation by means of a flooding-based watershed algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements variants of the watershed algorithm described in</para><para>L. Vincent and P. Soille: &quot;&lt;em&gt;Watersheds in digital spaces: An efficient algorithm
+based on immersion simulations&lt;/em&gt;&quot;, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991</para><para>The source image is a boundary indicator such as the <ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member">gaussianGradientMagnitude()</ref> or the trace of the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>, and the destination is a label image designating membership of each pixel in one of the regions. Plateaus in the boundary indicator (i.e. regions of constant gray value) are handled via a Euclidean distance transform by default.</para><para>By default, the destination image is assumed to hold seeds for a seeded watershed transform. Seeds may, for example, be created by means of <ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member">generateWatershedSeeds()</ref>. Note that the seeds will be overridden with the final watershed segmentation.</para><para>Alternatively, you may provide <ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> in order to instruct <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref> to generate its own seeds (it will call <ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member">generateWatershedSeeds()</ref> internally). In that case, the destination image should be zero-initialized.</para><para>You can specify the neighborhood system to be used by passing <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">FourNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref> (default).</para><para>Further options to be specified via <ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> are:</para><para><itemizedlist>
+<listitem>
+<para>Whether to keep a 1-pixel-wide contour (with label 0) between regions or perform complete grow (i.e. all pixels are assigned to a region). </para></listitem>
+<listitem>
+<para>Whether to stop growing when the boundaryness exceeds a threshold (remaining pixels keep label 0). </para></listitem>
+<listitem>
+<para>Whether to use a faster, but less powerful algorithm (&quot;turbo algorithm&quot;). It is faster because it orders pixels by means of a <ref refid="classvigra_1_1BucketQueue" kindref="compound">BucketQueue</ref> (therefore, the boundary indicator must contain integers in the range <computeroutput>[0, ..., bucket_count-1]</computeroutput>, where <computeroutput>bucket_count</computeroutput> is specified in the options object), it only supports complete growing (no contour between regions is possible), and it handles plateaus in a simplistic way. It also saves some memory because it allocates less temporary storage. </para></listitem>
+<listitem>
+<para>Whether one region (label) is to be preferred or discouraged by biasing its cost with a given factor (smaller than 1 for preference, larger than 1 for discouragement). </para></listitem>
+</itemizedlist>
+</para><para>Note that VIGRA provides an alternative implementation of the watershed transform via <ref refid="group__SeededRegionGrowing_1ga798e1da19d24c46a3762057b1708e8b3" kindref="member">watershedsUnionFind()</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(SrcIterator<sp/>upperlefts,<sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>WatershedOptions());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(SrcIterator<sp/>upperlefts,<sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>WatershedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>WatershedOptions());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>WatershedOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds_8hxx_source" kindref="compound">vigra/watersheds.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>Example: watersheds of the gradient magnitude.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>read<sp/>input<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>gradient<sp/>magnitude<sp/>at<sp/>scale<sp/>1.0<sp/>as<sp/>a<sp/>boundary<sp/>indicator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>gradMag(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member" tooltip="Calculate the gradient magnitude by means of a 1st derivatives of Gaussian filter.">gaussianGradientMagnitude</ref>(srcImageRange(src),<sp/>destImage(gradMag),<sp/>1.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>example<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>pixel<sp/>type<sp/>of<sp/>the<sp/>destination<sp/>image<sp/>must<sp/>be<sp/>large<sp/>enough<sp/>to<sp/>hold</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>numbers<sp/>up<sp/>to<sp/>&apos;max_region_label&apos;<sp/>to<sp/>prevent<sp/>overflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labeling(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>call<sp/>watershed<sp/>algorithm<sp/>for<sp/>4-neighborhood,<sp/>leave<sp/>a<sp/>1-pixel<sp/>boundary<sp/>between<sp/>regions,</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>autogenerate<sp/>seeds<sp/>from<sp/>all<sp/>gradient<sp/>minima<sp/>where<sp/>the<sp/>magnitude<sp/>is<sp/>below<sp/>2.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(srcImageRange(gradMag),<sp/>destImage(labeling),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">FourNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions().keepContours()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.seedOptions(SeedOptions().minima().threshold(2.0)));</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>example<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labeling(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>seeds<sp/>beforehand<sp/>(use<sp/>connected<sp/>components<sp/>of<sp/>all<sp/>pixels<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>where<sp/>the<sp/>gradient<sp/><sp/>is<sp/>below<sp/>4.0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member" tooltip="Generate seeds for watershed computation and seeded region growing.">generateWatershedSeeds</ref>(srcImageRange(gradMag),<sp/>destImage(labeling),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SeedOptions().levelSets(4.0));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>quantize<sp/>the<sp/>gradient<sp/>image<sp/>to<sp/>256<sp/>gray<sp/>levels</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>gradMag256(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1FindMinMax" kindref="compound" tooltip="Find the minimum and maximum pixel value in an image or ROI.">vigra::FindMinMax&lt;float&gt;</ref><sp/>minmax;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">inspectImage</ref>(srcImageRange(gradMag),<sp/>minmax);<sp/></highlight><highlight class="comment">//<sp/>find<sp/>original<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">transformImage</ref>(srcImageRange(gradMag),<sp/>destImage(gradMag256),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__TransformFunctor_1ga500478e445d819abfc4dc9a748dcba5d" kindref="member" tooltip="Map a source intensity range linearly to a destination range.">linearRangeMapping</ref>(minmax,<sp/>0,<sp/>255));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>call<sp/>the<sp/>turbo<sp/>algorithm<sp/>with<sp/>256<sp/>bins,<sp/>using<sp/>8-neighborhood</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(srcImageRange(gradMag256),<sp/>destImage(labeling),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions().turboAlgorithm(256));</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>example<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labeling(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>..<sp/></highlight><highlight class="comment">//<sp/>get<sp/>seeds<sp/>from<sp/>somewhere,<sp/>e.g.<sp/>an<sp/>interactive<sp/>labeling<sp/>program,</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>make<sp/>sure<sp/>that<sp/>label<sp/>1<sp/>corresponds<sp/>to<sp/>the<sp/>background</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>bias<sp/>the<sp/>watershed<sp/>algorithm<sp/>so<sp/>that<sp/>the<sp/>background<sp/>is<sp/>preferred</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>by<sp/>reducing<sp/>the<sp/>cost<sp/>for<sp/>label<sp/>1<sp/>to<sp/>90%</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member" tooltip="Region segmentation by means of a flooding-based watershed algorithm.">watershedsRegionGrowing</ref>(srcImageRange(gradMag),<sp/>destImage(labeling),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>WatershedOptions().biasLabel(1,<sp/>0.9));</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compare<sp/>src<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft)<sp/>&lt;=<sp/>src_accessor(src_upperleft)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>label;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(label,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="1148"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga8c0f3ae72fed54eecbbef132fce1b005" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsRegionGrowing</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, Neighborhood neighborhood, WatershedOptions const &amp;options=WatershedOptions())</argsstring>
+        <name>watershedsRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>WatershedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>WatershedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="1158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="1154" bodyend="1222"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gad14111af8c25d54d1710e77dc38bc4b4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsRegionGrowing</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, WatershedOptions const &amp;options=WatershedOptions())</argsstring>
+        <name>watershedsRegionGrowing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>WatershedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>WatershedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="1230" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="1227" bodyend="1233"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gaf5fb77a708f227c777e4202b3885ff49" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood neighborhood, WatershedOptions const &amp;options=WatershedOptions())</argsstring>
+        <name>watershedsRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>WatershedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>WatershedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="1243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="1239" bodyend="1247"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga956bc260beb7ec6480b653bee9eed99f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsRegionGrowing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, WatershedOptions const &amp;options=WatershedOptions())</argsstring>
+        <name>watershedsRegionGrowing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>WatershedOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>WatershedOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="1255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="1252" bodyend="1259"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga798e1da19d24c46a3762057b1708e8b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsUnionFind</definition>
+        <argsstring>(...)</argsstring>
+        <name>watershedsUnionFind</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Region segmentation by means of the union-find watershed algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements the union-find version of the watershed algorithms as described in</para><para>J. Roerdink, R. Meijster: &quot;&lt;em&gt;The watershed transform: definitions, algorithms,
+and parallelization strategies&lt;/em&gt;&quot;, Fundamenta Informaticae, 41:187-228, 2000</para><para>The source image is a boundary indicator such as the <ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member">gaussianGradientMagnitude()</ref> or the trace of the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>. Local minima of the boundary indicator are used as region seeds, and all other pixels are recursively assigned to the same region as their lowest neighbor. Pass <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">vigra::EightNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">vigra::FourNeighborCode</ref> to determine the neighborhood where pixel values are compared. The pixel type of the input image must be <computeroutput>LessThanComparable</computeroutput>. The function uses accessors.</para><para>Note that VIGRA provides an alternative implementation of the watershed transform via <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref>. It is slower, but offers many more configuration options.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga798e1da19d24c46a3762057b1708e8b3" kindref="member" tooltip="Region segmentation by means of the union-find watershed algorithm.">watershedsUnionFind</ref>(SrcIterator<sp/>upperlefts,<sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SeededRegionGrowing_1ga798e1da19d24c46a3762057b1708e8b3" kindref="member" tooltip="Region segmentation by means of the union-find watershed algorithm.">watershedsUnionFind</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="watersheds_8hxx_source" kindref="compound">vigra/watersheds.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>Example: watersheds of the gradient magnitude.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>in(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>read<sp/>input<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>gradient<sp/>magnitude<sp/>as<sp/>boundary<sp/>indicator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>gradMag(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member" tooltip="Calculate the gradient magnitude by means of a 1st derivatives of Gaussian filter.">gaussianGradientMagnitude</ref>(srcImageRange(src),<sp/>destImage(gradMag),<sp/>3.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>the<sp/>pixel<sp/>type<sp/>of<sp/>the<sp/>destination<sp/>image<sp/>must<sp/>be<sp/>large<sp/>enough<sp/>to<sp/>hold</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>numbers<sp/>up<sp/>to<sp/>&apos;max_region_label&apos;<sp/>to<sp/>prevent<sp/>overflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labeling(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/><ref refid="group__SeededRegionGrowing_1ga798e1da19d24c46a3762057b1708e8b3" kindref="member" tooltip="Region segmentation by means of the union-find watershed algorithm.">watershedsUnionFind</ref>(srcImageRange(gradMag),<sp/>destImage(labeling));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compare<sp/>src<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft)<sp/>&lt;=<sp/>src_accessor(src_upperleft)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>label;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(label,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="649"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1ga0004d1101ba5048fbeff5024db4d0952" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsUnionFind</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, Neighborhood neighborhood)</argsstring>
+        <name>watershedsUnionFind</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="658" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="655" bodyend="665"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gaaecbd9e09e508e58d1926701ae9e3f47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsUnionFind</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da)</argsstring>
+        <name>watershedsUnionFind</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="672" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="670" bodyend="674"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gafcbf2c66d72339edb3380369c379d72a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsUnionFind</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood neighborhood)</argsstring>
+        <name>watershedsUnionFind</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="682" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="680" bodyend="685"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeededRegionGrowing_1gabb10f755a4a8fa453b69c8a20f0c159e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::watershedsUnionFind</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>watershedsUnionFind</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="692" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="690" bodyend="695"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Region growing, watersheds, and voronoi tesselation </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,571 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__PolarColors" kind="group">
+    <compoundname>PolarColors</compoundname>
+    <title>Polar Color Coordinates</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__PolarColors_1ga7ac70bee121e35247722c80fa20a9232" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::lab2Polar</definition>
+        <argsstring>(V const &amp;lab)</argsstring>
+        <name>lab2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>lab</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form L*a*b*. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1ga7ac70bee121e35247722c80fa20a9232" kindref="member" tooltip="Create polar representation form L*a*b*.">lab2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>lab);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1gafdec7ac4d8ba3ec5a076372eea278c66" kindref="member">polar2Lab()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="2976" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="2975" bodyend="2987"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga66419f33a9597d249c04c4e52e92fa00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::luv2Polar</definition>
+        <argsstring>(V const &amp;luv)</argsstring>
+        <name>luv2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>luv</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form L*u*v*. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1ga66419f33a9597d249c04c4e52e92fa00" kindref="member" tooltip="Create polar representation form L*u*v*.">luv2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>luv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1gacda9420225ef2bb0075597549fc493e2" kindref="member">polar2Luv()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3061" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3060" bodyend="3072"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gafdec7ac4d8ba3ec5a076372eea278c66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2Lab</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2Lab</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init L*a*b* color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gafdec7ac4d8ba3ec5a076372eea278c66" kindref="member" tooltip="Init L*a*b* color triple from polar representation.">polar2Lab</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gafdec7ac4d8ba3ec5a076372eea278c66" kindref="member" tooltip="Init L*a*b* color triple from polar representation.">polar2Lab</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+L*a*b* polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>0.532406,<sp/>0.781353]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[62.8531,<sp/>0.971395,<sp/>0.724189]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[96.0184,<sp/>0.877351,<sp/>0.895108]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[156.378,<sp/>0.911133,<sp/>0.374577]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[266.287,<sp/>0.322957,<sp/>0.999997]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[288.237,<sp/>0.603235,<sp/>0.863482]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="2938" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="2937" bodyend="2947"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga0ce6de6806fb3de0e4cc7525a710e9e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2Lab</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2Lab</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="2953" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="2952" bodyend="2955"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gacda9420225ef2bb0075597549fc493e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2Luv</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2Luv</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init L*u*v* color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gacda9420225ef2bb0075597549fc493e2" kindref="member" tooltip="Init L*u*v* color triple from polar representation.">polar2Luv</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gacda9420225ef2bb0075597549fc493e2" kindref="member" tooltip="Init L*u*v* color triple from polar representation.">polar2Luv</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+L*u*v* polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>0.532406,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[<sp/><sp/><sp/>73.7,<sp/>0.971395,<sp/>0.597953]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[115.552,<sp/>0.877351,<sp/>0.758352]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>180.0,<sp/>0.911133,<sp/>0.402694]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>253.7,<sp/>0.322957,<sp/>0.729883]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[295.553,<sp/>0.603235,<sp/>0.767457]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3024" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3023" bodyend="3033"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gabb4fe1a90e1b3600c1adf3275e48b6c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2Luv</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2Luv</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3037" bodyend="3040"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gadb4ecbf1f3cd03559da19f5930bf308e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeCbCr</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2YPrimeCbCr</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init Y&apos;CbCr color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gadb4ecbf1f3cd03559da19f5930bf308e" kindref="member" tooltip="Init Y&amp;#39;CbCr color triple from polar representation.">polar2YPrimeCbCr</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gadb4ecbf1f3cd03559da19f5930bf308e" kindref="member" tooltip="Init Y&amp;#39;CbCr color triple from polar representation.">polar2YPrimeCbCr</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+Y&apos;CbCr polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0.299,<sp/>0.988419]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[62.1151,<sp/><sp/>0.886,<sp/>0.948831]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[123.001,<sp/><sp/>0.587,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>180.0,<sp/><sp/>0.701,<sp/>0.988419]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[242.115,<sp/><sp/>0.114,<sp/>0.948831]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[303.001,<sp/><sp/>0.413,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3193" bodyend="3203"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga2461a22732a10a77edd2149ed5ca2ca1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeCbCr</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2YPrimeCbCr</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3207" bodyend="3210"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gaeb7ea17d644d4bb1c9a11f5298e96c97" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeIQ</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2YPrimeIQ</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init Y&apos;IQ color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gaeb7ea17d644d4bb1c9a11f5298e96c97" kindref="member" tooltip="Init Y&amp;#39;IQ color triple from polar representation.">polar2YPrimeIQ</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gaeb7ea17d644d4bb1c9a11f5298e96c97" kindref="member" tooltip="Init Y&amp;#39;IQ color triple from polar representation.">polar2YPrimeIQ</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+Y&apos;IQ polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>0.299,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[63.5851,<sp/>0.886,<sp/>0.707681]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[137.231,<sp/>0.587,<sp/>0.933362]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>180.0,<sp/>0.701,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[243.585,<sp/>0.114,<sp/>0.707681]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[317.231,<sp/>0.413,<sp/>0.933362]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3281" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3280" bodyend="3290"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga27525ac053bd75de1e2b877f8bb7d200" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeIQ</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2YPrimeIQ</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3294" bodyend="3297"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gaaed05183ac67f4ce6a88bce59be43d47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimePbPr</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2YPrimePbPr</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init Y&apos;PbPr color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gaaed05183ac67f4ce6a88bce59be43d47" kindref="member" tooltip="Init Y&amp;#39;PbPr color triple from polar representation.">polar2YPrimePbPr</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1gaaed05183ac67f4ce6a88bce59be43d47" kindref="member" tooltip="Init Y&amp;#39;PbPr color triple from polar representation.">polar2YPrimePbPr</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+Y&apos;PbPr polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/><sp/>0.299,<sp/>0.988419]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[62.1151,<sp/><sp/>0.886,<sp/>0.948831]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[123.001,<sp/><sp/>0.587,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>180.0,<sp/><sp/>0.701,<sp/>0.988419]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[242.115,<sp/><sp/>0.114,<sp/>0.948831]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[303.001,<sp/><sp/>0.413,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3109" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3108" bodyend="3118"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga14c71255ab1d6ad50574654e2cbb6429" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimePbPr</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2YPrimePbPr</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3122" bodyend="3125"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga04dfa11029f88093e78cd5b8c620a928" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeUV</definition>
+        <argsstring>(double color, double brightness, double saturation)</argsstring>
+        <name>polar2YPrimeUV</name>
+        <param>
+          <type>double</type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>saturation</declname>
+        </param>
+        <briefdescription>
+<para>Init Y&apos;UV color triple from polar representation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1ga04dfa11029f88093e78cd5b8c620a928" kindref="member" tooltip="Init Y&amp;#39;UV color triple from polar representation.">polar2YPrimeUV</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>color,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>brightness,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>saturation);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;float,<sp/>3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__PolarColors_1ga04dfa11029f88093e78cd5b8c620a928" kindref="member" tooltip="Init Y&amp;#39;UV color triple from polar representation.">polar2YPrimeUV</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>polar);</highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>color - the color angle in degrees </para></listitem>
+<listitem><para>brightness - between 0 and 1 </para></listitem>
+<listitem><para>saturation - between 0 and 1</para></listitem>
+</itemizedlist>
+Y&apos;UV polar coordinates of some important colors:</para><para><programlisting><codeline><highlight class="normal">black<sp/><sp/><sp/>=<sp/>[*,<sp/>0,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal">white<sp/><sp/><sp/>=<sp/>[*,<sp/>1,<sp/>0]<sp/><sp/><sp/><sp/>*<sp/>-<sp/>arbitrary</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">red<sp/><sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/><sp/><sp/><sp/><sp/>0,<sp/>0.299,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">yellow<sp/><sp/>=<sp/>[63.5851,<sp/>0.886,<sp/>0.707681]</highlight></codeline>
+<codeline><highlight class="normal">green<sp/><sp/><sp/>=<sp/>[137.231,<sp/>0.587,<sp/>0.933362]</highlight></codeline>
+<codeline><highlight class="normal">cyan<sp/><sp/><sp/><sp/>=<sp/>[<sp/><sp/>180.0,<sp/>0.701,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1]</highlight></codeline>
+<codeline><highlight class="normal">blue<sp/><sp/><sp/><sp/>=<sp/>[243.585,<sp/>0.114,<sp/>0.707681]</highlight></codeline>
+<codeline><highlight class="normal">magenta<sp/>=<sp/>[317.231,<sp/>0.413,<sp/>0.933362]</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3366" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3365" bodyend="3375"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga9fd456bccf5febfce392d086424fdd51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::polar2YPrimeUV</definition>
+        <argsstring>(V const &amp;polar)</argsstring>
+        <name>polar2YPrimeUV</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>polar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3380" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3379" bodyend="3382"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga789ff96bd5b7fbcf75100307dcd4617d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::yPrimeCbCr2Polar</definition>
+        <argsstring>(V const &amp;ycbcr)</argsstring>
+        <name>yPrimeCbCr2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>ycbcr</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form Y&apos;CbCr. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1ga789ff96bd5b7fbcf75100307dcd4617d" kindref="member" tooltip="Create polar representation form Y&amp;#39;CbCr.">yPrimeCbCr2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ycbcr);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1gadb4ecbf1f3cd03559da19f5930bf308e" kindref="member">polar2YPrimeCbCr()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3231" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3230" bodyend="3244"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1gaf75e5be718b502797ecece452fac99a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::yPrimeIQ2Polar</definition>
+        <argsstring>(V const &amp;yiq)</argsstring>
+        <name>yPrimeIQ2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>yiq</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form Y&apos;IQ. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1gaf75e5be718b502797ecece452fac99a1" kindref="member" tooltip="Create polar representation form Y&amp;#39;IQ.">yPrimeIQ2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>yiq);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1gaeb7ea17d644d4bb1c9a11f5298e96c97" kindref="member">polar2YPrimeIQ()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3318" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3317" bodyend="3329"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga46c5522efdc3fc857675fcee909e4110" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::yPrimePbPr2Polar</definition>
+        <argsstring>(V const &amp;ypbpr)</argsstring>
+        <name>yPrimePbPr2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>ypbpr</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form Y&apos;PbPr. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1ga46c5522efdc3fc857675fcee909e4110" kindref="member" tooltip="Create polar representation form Y&amp;#39;PbPr.">yPrimePbPr2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ypbpr);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1gaaed05183ac67f4ce6a88bce59be43d47" kindref="member">polar2YPrimePbPr()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3145" bodyend="3157"/>
+      </memberdef>
+      <memberdef kind="function" id="group__PolarColors_1ga2976f7502ebf84fc190a6f02ee3b46e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; float, 3 &gt;</type>
+        <definition>TinyVector&lt;float, 3&gt; vigra::yPrimeUV2Polar</definition>
+        <argsstring>(V const &amp;yuv)</argsstring>
+        <name>yPrimeUV2Polar</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>yuv</declname>
+        </param>
+        <briefdescription>
+<para>Create polar representation form Y&apos;UV. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TinyVector&lt;float,<sp/>3&gt;<sp/><ref refid="group__PolarColors_1ga2976f7502ebf84fc190a6f02ee3b46e8" kindref="member" tooltip="Create polar representation form Y&amp;#39;UV.">yPrimeUV2Polar</ref>(TinyVector&lt;float,<sp/>3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>yuv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>This realizes the inverse of the transformation described in <ref refid="group__PolarColors_1ga04dfa11029f88093e78cd5b8c620a928" kindref="member">polar2YPrimeUV()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="3403" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="3402" bodyend="3414"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Transform colors from/to a polar representation (hue, brightness, saturation). In many situations, this is more intuitive than direct initialization in a particular color space. The polar coordinates are normalized so that a color angle of 0 degrees is always associated with red (green is at about 120 degrees, blue at about 240 degrees - exact values differ between color spaces). A saturation of 1 is the highest saturation that any RGB color gets after transformation into the respective color space, and saturation 0 corresponds to gray. Thus, different color spaces become somewhat comparable. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

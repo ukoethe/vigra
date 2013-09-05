@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits&lt; RGBValue&lt; T, R, G, B &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>R</declname>
+        <defname>R</defname>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>G</declname>
+        <defname>G</defname>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>B</declname>
+        <defname>B</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1ac61c9824a0284e58855b59e627b11e0e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RGBValue_1aa11561600b526e44d8c17a13010528f1" kindref="member">Type::NormType</ref></type>
+        <definition>typedef Type::NormType NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="523" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1a3ba5750000eaec73072df667408596bd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RGBValue_1ac8884953a21c99c833a065cf12892914" kindref="member">Type::SquaredNormType</ref></type>
+        <definition>typedef Type::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="522" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="522" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1a37ddd5e07cd51fa13feff1a43966bd65" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>&lt; T, R, G, B &gt;</type>
+        <definition>typedef RGBValue&lt;T, R, G, B&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="521" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="519" bodyend="524"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1ac61c9824a0284e58855b59e627b11e0e" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; RGBValue&lt; T, R, G, B &gt; &gt;</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1a3ba5750000eaec73072df667408596bd" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; RGBValue&lt; T, R, G, B &gt; &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_01_4_1a37ddd5e07cd51fa13feff1a43966bd65" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; RGBValue&lt; T, R, G, B &gt; &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

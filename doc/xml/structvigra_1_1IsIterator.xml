@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IsIterator" kind="struct" prot="public">
+    <compoundname>vigra::IsIterator</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::sfinae_test&lt; T, IsIterator &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1IsIterator_1a0532fe99668fe8ad1555d04e8b992863" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>IsIterator</definition>
+        <argsstring>(U *, typename U::iterator_category *=0)</argsstring>
+        <name>IsIterator</name>
+        <param>
+          <type>U *</type>
+        </param>
+        <param>
+          <type>typename U::iterator_category *</type>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="488"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="486" bodyend="489"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1sfinae__test_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>falseResult</name></member>
+      <member refid="structvigra_1_1IsIterator_1a0532fe99668fe8ad1555d04e8b992863" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>IsIterator</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a05589fbab0657f08285ebdfe93f5ec9ea730cb5310614d92e239dd7c7c1e9a60d" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>resultSize</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a27486c507eae8eb686387bf9f785a96a" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>test</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a762924d444d56c1a5cdd74ffde5eab85" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>test</name></member>
+      <member refid="structvigra_1_1sfinae__test_1abda572a18508e06ee0e9af4f446f1786" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>trueResult</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>type</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::IsIterator</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

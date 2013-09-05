@@ -1,0 +1,412 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ConvolutionOptions" kind="class" prot="public">
+    <compoundname>vigra::ConvolutionOptions</compoundname>
+    <includes refid="multi__convolution_8hxx" local="no">vigra/multi_convolution.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>dim</declname>
+        <defname>dim</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ConvolutionOptions_1a6fa36586a48ca8a82b188e42ffe45cdb" prot="public" static="no">
+        <type>ParamVec::return_type</type>
+        <definition>typedef ParamVec::return_type ParamIt</definition>
+        <argsstring></argsstring>
+        <name>ParamIt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="328" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ConvolutionOptions_1ab17c1d3cf701c246428d00589f69355b" prot="public" static="no">
+        <type>detail::multiArrayScaleParam&lt; dim &gt;</type>
+        <definition>typedef detail::multiArrayScaleParam&lt;dim&gt; ParamVec</definition>
+        <argsstring></argsstring>
+        <name>ParamVec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="327" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ConvolutionOptions_1a579cb7e48b10c56ed0c7cc79481e9cb2" prot="public" static="no">
+        <type>detail::WrapDoubleIteratorTriple&lt; ParamIt, ParamIt, ParamIt &gt;</type>
+        <definition>typedef detail::WrapDoubleIteratorTriple&lt;ParamIt, ParamIt, ParamIt&gt; ScaleIterator</definition>
+        <argsstring></argsstring>
+        <name>ScaleIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="346" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ConvolutionOptions_1a4d0288670bae9cdeb53d6967b55db3eb" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; dim &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;dim&gt;::type Shape</definition>
+        <argsstring></argsstring>
+        <name>Shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="326" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ConvolutionOptions_1a4fc6a662ed6184df77c8ebe87cdb5c5e" prot="public" static="no">
+        <type>detail::WrapDoubleIterator&lt; ParamIt &gt;::type</type>
+        <definition>typedef detail::WrapDoubleIterator&lt;ParamIt&gt;::type StepIterator</definition>
+        <argsstring></argsstring>
+        <name>StepIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="348" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a60234b47344ea64824af34f061e3e1f6" prot="public" static="no" mutable="no">
+        <type>Shape</type>
+        <definition>Shape from_point</definition>
+        <argsstring></argsstring>
+        <name>from_point</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="335" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a6f39b7984f36753a12c07b6a823d8eb5" prot="public" static="no" mutable="no">
+        <type>ParamVec</type>
+        <definition>ParamVec outer_scale</definition>
+        <argsstring></argsstring>
+        <name>outer_scale</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="333" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a6e921353a826afd262a28c4cbaf11084" prot="public" static="no" mutable="no">
+        <type>ParamVec</type>
+        <definition>ParamVec sigma_d</definition>
+        <argsstring></argsstring>
+        <name>sigma_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="331" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1afaa5a0a480a9eaa05adfff8ed50b2c3f" prot="public" static="no" mutable="no">
+        <type>ParamVec</type>
+        <definition>ParamVec sigma_eff</definition>
+        <argsstring></argsstring>
+        <name>sigma_eff</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="330" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a45009ed7360b57350a70dae14e795fc6" prot="public" static="no" mutable="no">
+        <type>ParamVec</type>
+        <definition>ParamVec step_size</definition>
+        <argsstring></argsstring>
+        <name>step_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="332" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a6269646d247b86cb03dbb909932f5fcd" prot="public" static="no" mutable="no">
+        <type>Shape</type>
+        <definition>Shape to_point</definition>
+        <argsstring></argsstring>
+        <name>to_point</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="335" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ConvolutionOptions_1a0ade3e000d89cd2da35029527d80f26a" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double window_ratio</definition>
+        <argsstring></argsstring>
+        <name>window_ratio</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="334" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a28b3e9c18d5774ae65422449c359cd3f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ConvolutionOptions</definition>
+        <argsstring>()</argsstring>
+        <name>ConvolutionOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="337" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1aeef9e5ce743f44c1fe80980ee3e09a43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; filterWindowSize</definition>
+        <argsstring>(double ratio)</argsstring>
+        <name>filterWindowSize</name>
+        <param>
+          <type>double</type>
+          <declname>ratio</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Size of the filter window as a multiple of the scale parameter.</para><para>This option is only used for <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filters and their derivatives. By default, the window size of a <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter is automatically determined such that the error resulting from restricting the infinitely large <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> function to a finite size is minimized. In particular, the window radius is determined as <computeroutput>radius = round(3.0 * sigma + 0.5 * order)</computeroutput>, where &apos;order&apos; is the desired derivative order. In some cases, it is desirable to trade off accuracy for speed, and this function can be used to request a smaller window radius.</para><para>Default: <computeroutput>0.0</computeroutput> (i.e. determine the window size automatically) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="465" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="464" bodyend="470"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1af8e16b4d2701b528f97365621b05c665" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; innerScale</definition>
+        <argsstring>(...)</argsstring>
+        <name>innerScale</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Standard deviation(s) of scale space operators, or inner scale(s) for <ref refid="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" kindref="member">structureTensorMultiArray()</ref>.</para><para>Usually not needed, since a single value for all axes may be specified as a parameter <computeroutput>sigma</computeroutput> to the call of an convolution operator such as <ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member">gaussianGradientMultiArray()</ref>, and anisotropic data requiring the use of the <ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize()</ref> member function. Default value for the options object if this member function is not used: A value of 0.0 for each dimension. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a8dcc4a7bd786b1acbd0c51ab81df46b5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref></type>
+        <definition>ConvolutionOptions outerOptions</definition>
+        <argsstring>() const </argsstring>
+        <name>outerOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="359" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1ac84853f37f5a2556c8cd62dbf4d1b91e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; outerScale</definition>
+        <argsstring>(...)</argsstring>
+        <name>outerScale</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Standard deviation(s) of the second convolution of the structure tensor.</para><para>Usually not needed, since a single value for all axes may be specified as a parameter <computeroutput>outerScale</computeroutput> to the call of <ref refid="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" kindref="member">structureTensorMultiArray()</ref>, and anisotropic data requiring the use of the <ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize()</ref> member function. Default value for the options object if this member function is not used: A value of 0.0 for each dimension. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="447"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a5b14f01ee6ff3b970159b550f8ce6a78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; resolutionStdDev</definition>
+        <argsstring>(...)</argsstring>
+        <name>resolutionStdDev</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resolution standard deviation(s) per axis, i.e., a supposed pre-existing gaussian filtering by this value.</para><para>The standard deviation actually used by the convolution operators is <formula id="65">$\sqrt{{\rm sigma}^{2} - {\rm resolutionStdDev}^{2}}$</formula> for each axis. Default value for the options object if this member function is not used: A value of 0.0 for each dimension. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="398"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1aa5364087ba0fe6b926cf76398f9f3ff5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ScaleIterator</type>
+        <definition>ScaleIterator scaleParams</definition>
+        <argsstring>() const </argsstring>
+        <name>scaleParams</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="350" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a4c8001cd83bd36760f0f3b7ea27c7db6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; stdDev</definition>
+        <argsstring>(...)</argsstring>
+        <name>stdDev</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Standard deviation(s) of scale space operators, or inner scale(s) for <ref refid="group__MultiArrayConvolutionFilters_1ga6be0fb8e178b6b589e2441cc4ae0f54d" kindref="member">structureTensorMultiArray()</ref>.</para><para>Usually not needed, since a single value for all axes may be specified as a parameter <computeroutput>sigma</computeroutput> to the call of an convolution operator such as <ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member">gaussianGradientMultiArray()</ref>, and anisotropic data requiring the use of the <ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize()</ref> member function. Default value for the options object if this member function is not used: A value of 0.0 for each dimension. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="417"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1ab86786c5fbb9d6b67ad3c3a590b928a4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>StepIterator</type>
+        <definition>StepIterator stepParams</definition>
+        <argsstring>() const </argsstring>
+        <name>stepParams</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="355" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="354" bodyend="357"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; stepSize</definition>
+        <argsstring>(...)</argsstring>
+        <name>stepSize</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Step size(s) per axis, i.e., the distance between two adjacent pixels. Required for <computeroutput><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref></computeroutput> containing anisotropic data.</para><para>Note that a convolution containing a derivative operator of order <computeroutput>n</computeroutput> results in a multiplication by <formula id="64">${\rm stepSize}^{-n}$</formula> for each axis. Also, the above standard deviations are scaled according to the step size of each axis. Default value for the options object if this member function is not used: A value of 1.0 for each dimension. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="382"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ConvolutionOptions_1a8e1bf075cb838ca557d8c7f7e700c972" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref>&lt; dim &gt; &amp;</type>
+        <definition>ConvolutionOptions&lt;dim&gt;&amp; subarray</definition>
+        <argsstring>(Shape const &amp;from, Shape const &amp;to)</argsstring>
+        <name>subarray</name>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>to</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Restrict the filter to a subregion of the input array.</para><para>This is useful for speeding up computations by ignoring irrelevant areas in the array. <bold>Note:</bold> It is assumed that the output array of the convolution has the size given in this function.</para><para>Default: <computeroutput>from = Shape(), to = Shape()</computeroutput> (i.e. use entire array) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="480" bodyend="485"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options class template for convolutions. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="multi__convolution_8hxx_source" kindref="compound">vigra/multi_convolution.hxx</ref>&gt;</para><para>This class enables the calculation of scale space convolutions such as <ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member">gaussianGradientMultiArray()</ref> on data with anisotropic discretization. For these, the result of the ordinary calculation has to be multiplied by factors of <formula id="57">$1/w^{n}$</formula> for each dimension, where <formula id="58">$w$</formula> is the step size of the grid in said dimension and <formula id="59">$n$</formula> is the differential order of the convolution, e.g., 1 for <ref refid="group__MultiArrayConvolutionFilters_1ga4d5e9021732f13248ca3a0fe1b7c0552" kindref="member">gaussianGradientMultiArray()</ref>, and 0 for <ref refid="group__MultiArrayConvolutionFilters_1ga11d81ef630205d44b8517c464217207d" kindref="member">gaussianSmoothMultiArray()</ref>, respectively. Also for each dimension in turn, the convolution&apos;s scale parameter <formula id="60">$\sigma$</formula> has to be replaced by <formula id="61">$\sqrt{\sigma_\mathrm{eff}^2 - \sigma_\mathrm{D}^2}\Big/w$</formula>, where <formula id="62">$\sigma_\mathrm{eff}$</formula> is the resulting effective filtering scale. The data is assumed to be already filtered by a gaussian smoothing with the scale parameter <formula id="63">$\sigma_\mathrm{D}$</formula> (such as by measuring equipment). All of the above changes are automatically employed by the convolution functions for <computeroutput><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref></computeroutput>s if a corresponding options object is provided.</para><para>The <computeroutput><ref refid="classvigra_1_1ConvolutionOptions" kindref="compound">ConvolutionOptions</ref></computeroutput> class must be parameterized by the dimension <computeroutput>dim</computeroutput> of the <computeroutput><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref></computeroutput>s on which it is used. The actual per-axis options are set by (overloaded) member functions explained below, or else default to neutral values corresponding to the absence of the particular option.</para><para>All member functions set <computeroutput>dim</computeroutput> values of the respective convolution option, one for each dimension. They may be set explicitly by multiple arguments for up to five dimensions, or by a single argument to the same value for all dimensions. For the general case, a single argument that is either a C-syle array, an iterator, or a C++ standard library style sequence (such as <computeroutput>std::vector</computeroutput>, with member functions <computeroutput>begin()</computeroutput> and <computeroutput>size()</computeroutput>) supplies the option values for any number of dimensions.</para><para>Note that the return value of all member functions is <computeroutput>*this</computeroutput>, which provides the mechanism for concatenating member function calls as shown below.</para><para><bold>usage with explicit parameters:</bold></para><para><programlisting><codeline><highlight class="normal">ConvolutionOptions&lt;2&gt;<sp/>opt<sp/>=<sp/>ConvolutionOptions&lt;2&gt;().<ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize</ref>(1,<sp/>2.3);</highlight></codeline>
+</programlisting></para><para><bold>usage with arrays:</bold></para><para><programlisting><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>step_size[3]<sp/>=<sp/>{<sp/>x_scale,<sp/>y_scale,<sp/>z_scale<sp/>};</highlight></codeline>
+<codeline><highlight class="normal">ConvolutionOptions&lt;3&gt;<sp/>opt<sp/>=<sp/>ConvolutionOptions&lt;3&gt;().<ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize</ref>(step_size);</highlight></codeline>
+</programlisting></para><para><bold>usage with C++ standard library style sequences:</bold></para><para><programlisting><codeline><highlight class="normal">TinyVector&lt;double,<sp/>4&gt;<sp/>step_size(1,<sp/>1,<sp/>2.0,<sp/>1.5);</highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;double,<sp/>4&gt;<sp/><sp/>r_sigmas(1,<sp/>1,<sp/>2.3,<sp/>3.2);</highlight></codeline>
+<codeline><highlight class="normal">ConvolutionOptions&lt;4&gt;<sp/>opt<sp/>=<sp/>ConvolutionOptions&lt;4&gt;().<ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize</ref>(step_size).resolutionStdDev(r_sigmas);</highlight></codeline>
+</programlisting></para><para><bold>usage with iterators:</bold></para><para><programlisting><codeline><highlight class="normal">ArrayVector&lt;double&gt;<sp/>step_size;</highlight></codeline>
+<codeline><highlight class="normal">step_size.push_back(0);</highlight></codeline>
+<codeline><highlight class="normal">step_size.push_back(3);</highlight></codeline>
+<codeline><highlight class="normal">step_size.push_back(4);</highlight></codeline>
+<codeline><highlight class="normal">ArrayVector&lt;double&gt;::iterator<sp/>i<sp/>=<sp/>step_size.begin();</highlight></codeline>
+<codeline><highlight class="normal">++i;</highlight></codeline>
+<codeline><highlight class="normal">ConvolutionOptions&lt;2&gt;<sp/>opt<sp/>=<sp/>ConvolutionOptions&lt;2&gt;().<ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize</ref>(i);</highlight></codeline>
+</programlisting></para><para><bold>general usage in a convolution function call:</bold></para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>double&gt;<sp/>test_image;</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>double&gt;<sp/>out_image;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiArrayConvolutionFilters_1ga11d81ef630205d44b8517c464217207d" kindref="member" tooltip="Isotropic Gaussian smoothing of a multi-dimensional arrays.">gaussianSmoothMultiArray</ref>(srcMultiArrayRange(test_image),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destMultiArray(out_image),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>5.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ConvolutionOptions&lt;3&gt;()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" kindref="member">stepSize</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1,<sp/>1,<sp/>3.2)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classvigra_1_1ConvolutionOptions_1a5b14f01ee6ff3b970159b550f8ce6a78" kindref="member">resolutionStdDev</ref>(1,<sp/>1,<sp/>4)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="303">
+        <label>MultiArrayShape&lt; dim &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="302">
+        <label>ConvolutionOptions&lt; dim &gt;</label>
+        <link refid="classvigra_1_1ConvolutionOptions"/>
+        <childnode refid="303" relation="usage">
+          <edgelabel>to_point</edgelabel>
+          <edgelabel>from_point</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" line="324" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_convolution.hxx" bodystart="323" bodyend="486"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ConvolutionOptions_1a28b3e9c18d5774ae65422449c359cd3f" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>ConvolutionOptions</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1aeef9e5ce743f44c1fe80980ee3e09a43" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>filterWindowSize</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a60234b47344ea64824af34f061e3e1f6" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>from_point</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1af8e16b4d2701b528f97365621b05c665" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>innerScale</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a6f39b7984f36753a12c07b6a823d8eb5" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>outer_scale</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a8dcc4a7bd786b1acbd0c51ab81df46b5" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>outerOptions</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1ac84853f37f5a2556c8cd62dbf4d1b91e" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>outerScale</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a6fa36586a48ca8a82b188e42ffe45cdb" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>ParamIt</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1ab17c1d3cf701c246428d00589f69355b" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>ParamVec</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a5b14f01ee6ff3b970159b550f8ce6a78" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>resolutionStdDev</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a579cb7e48b10c56ed0c7cc79481e9cb2" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>ScaleIterator</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1aa5364087ba0fe6b926cf76398f9f3ff5" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>scaleParams</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a4d0288670bae9cdeb53d6967b55db3eb" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>Shape</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a6e921353a826afd262a28c4cbaf11084" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>sigma_d</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1afaa5a0a480a9eaa05adfff8ed50b2c3f" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>sigma_eff</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a4c8001cd83bd36760f0f3b7ea27c7db6" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>stdDev</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a45009ed7360b57350a70dae14e795fc6" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>step_size</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a4fc6a662ed6184df77c8ebe87cdb5c5e" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>StepIterator</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1ab86786c5fbb9d6b67ad3c3a590b928a4" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>stepParams</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a2107ed4012bc5ef75f69c0d95d051eb5" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>stepSize</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a8e1bf075cb838ca557d8c7f7e700c972" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>subarray</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a6269646d247b86cb03dbb909932f5fcd" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>to_point</name></member>
+      <member refid="classvigra_1_1ConvolutionOptions_1a0ade3e000d89cd2da35029527d80f26a" prot="public" virt="non-virtual"><scope>vigra::ConvolutionOptions</scope><name>window_ratio</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

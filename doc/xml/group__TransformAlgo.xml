@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__TransformAlgo" kind="group">
+    <compoundname>TransformAlgo</compoundname>
+    <title>Algorithms to Transform Images</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientBasedTransform</definition>
+        <argsstring>(...)</argsstring>
+        <name>gradientBasedTransform</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate a function of the image gradient. </para>        </briefdescription>
+        <detaileddescription>
+<para>The gradient and the function represented by <computeroutput>Functor f</computeroutput> are calculated in one go: for each location, the symmetric difference in x- and y-directions (asymmetric difference at the image borders) are passed to the given functor, and the result is written the destination image. Functors to be used with this function include <ref refid="classvigra_1_1MagnitudeFunctor" kindref="compound">MagnitudeFunctor</ref> and <ref refid="classvigra_1_1RGBGradientMagnitudeFunctor" kindref="compound">RGBGradientMagnitudeFunctor</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" kindref="member" tooltip="Calculate a function of the image gradient.">gradientBasedTransform</ref>(SrcImageIterator<sp/>srcul,<sp/>SrcImageIterator<sp/>srclr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>destul,<sp/>DestAccessor<sp/>da,<sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" kindref="member" tooltip="Calculate a function of the image gradient.">gradientBasedTransform</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="transformimage_8hxx_source" kindref="compound">vigra/transformimage.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>magnitude(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">gradientBasedTransform(srcImageRange(src),<sp/>destImage(magnitude),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1MagnitudeFunctor" kindref="compound">vigra::MagnitudeFunctor&lt;float&gt;</ref>());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>NumericTraits&lt;typename<sp/>SrcAccessor::value_type&gt;::RealPromote</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>diffx,<sp/>diffy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">diffx<sp/>=<sp/>src_accessor(is,<sp/>Diff2D(-1,0))<sp/>-<sp/>src_accessor(is,<sp/>Diff2D(1,0));</highlight></codeline>
+<codeline><highlight class="normal">diffy<sp/>=<sp/>src_accessor(is,<sp/>Diff2D(0,-1))<sp/>-<sp/>src_accessor(is,<sp/>Diff2D(0,1));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(f(diffx,<sp/>diffy),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="402"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1ga613b8ac8fdc5f2c221f415fa4f6d35fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientBasedTransform</definition>
+        <argsstring>(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa, DestImageIterator destul, DestAccessor da, Functor const &amp;grad)</argsstring>
+        <name>gradientBasedTransform</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srcul</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>srclr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>grad</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="409" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="407" bodyend="484"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gad52c9e7137c098dee9d67110f9592880" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientBasedTransform</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;grad)</argsstring>
+        <name>gradientBasedTransform</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>grad</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="490" bodyend="495"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>transformImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply unary point transformation to each pixel. </para>        </briefdescription>
+        <detaileddescription>
+<para>The transformation given by the functor is applied to every source pixel and the result written into the corresponding destination pixel. The function uses accessors to access the pixel data. Note that the unary functors of the STL can be used in addition to the functors specifically defined in <ref refid="group__TransformFunctor" kindref="compound">Functors to Transform Images</ref>. Creation of new functors is easiest by using <ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">transformImage</ref>(SrcImageIterator<sp/>src_upperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">transformImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="transformimage_8hxx_source" kindref="compound">vigra/transformimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>sqrt()</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">(*)(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">))&amp;std::sqrt<sp/>);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/><sp/><sp/><sp/><sp/><sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator::row_iterator<sp/>sx<sp/>=<sp/>src_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(functor(src_accessor(sx)),<sp/>dx);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="165"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gab92886a194a13dc6f9bc1b7f0eb1fffe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImage</definition>
+        <argsstring>(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa, DestImageIterator dest_upperleft, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>transformImage</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="174" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="170" bodyend="183"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1ga3fedd41f5536ce5429b35ec738f9dd15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;f)</argsstring>
+        <name>transformImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="189" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1ga2104c7ffff3c6f9fe8f649fbc7a06a94" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImageIf</definition>
+        <argsstring>(...)</argsstring>
+        <name>transformImageIf</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply unary point transformation to each pixel within the ROI (i.e., where the mask is non-zero). </para>        </briefdescription>
+        <detaileddescription>
+<para>The transformation given by the functor is applied to every source pixel in the ROI (i.e. when the return value of the mask&apos;s accessor is not zero) and the result is written into the corresponding destination pixel. The function uses accessors to access the pixel data. Note that the unary functors of the STL can be used in addition to the functors specifically defined in <ref refid="group__TransformFunctor" kindref="compound">Functors to Transform Images</ref>. Creation of new functors is easiest by using <ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/>clas<sp/>DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1ga2104c7ffff3c6f9fe8f649fbc7a06a94" kindref="member" tooltip="Apply unary point transformation to each pixel within the ROI (i.e., where the mask is non-zero)...">transformImageIf</ref>(SrcImageIterator<sp/>src_upperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/>clas<sp/>DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TransformAlgo_1ga2104c7ffff3c6f9fe8f649fbc7a06a94" kindref="member" tooltip="Apply unary point transformation to each pixel within the ROI (i.e., where the mask is non-zero)...">transformImageIf</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/transformimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>sqrt()</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1ga2104c7ffff3c6f9fe8f649fbc7a06a94" kindref="member" tooltip="Apply unary point transformation to each pixel within the ROI (i.e., where the mask is non-zero)...">vigra::transformImageIf</ref>(srcImageRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(mask),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">(*)(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">))&amp;std::sqrt<sp/>);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/><sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator::row_iterator<sp/>sx<sp/>=<sp/>src_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mask_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask_accessor(mx))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>dest_accessor.set(functor(src_accessor(sx)),<sp/>dx);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="285"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gae133ca32f76af106c9e2b40166d422fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImageIf</definition>
+        <argsstring>(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa, MaskImageIterator mask_upperleft, MaskAccessor ma, DestImageIterator dest_upperleft, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>transformImageIf</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>src_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mask_upperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>ma</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="297" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="292" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gaa0f78a1b9e5524d99ab94a7fbd896a10" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformImageIf</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; MaskImageIterator, MaskAccessor &gt; mask, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;f)</argsstring>
+        <name>transformImageIf</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="320" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="316" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1ga898a663b980eed58a90751a0142de237" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformLine</definition>
+        <argsstring>(SrcIterator s, SrcIterator send, SrcAccessor src, DestIterator d, DestAccessor dest, Functor const &amp;f)</argsstring>
+        <name>transformLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="64" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TransformAlgo_1gadda81b7851890148f43bcb8622a54ad8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transformLineIf</definition>
+        <argsstring>(SrcIterator s, SrcIterator send, SrcAccessor src, MaskIterator m, MaskAccessor mask, DestIterator d, DestAccessor dest, Functor const &amp;f)</argsstring>
+        <name>transformLineIf</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="78" bodyend="87"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Apply functor to calculate a pixelwise transformation of one image </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

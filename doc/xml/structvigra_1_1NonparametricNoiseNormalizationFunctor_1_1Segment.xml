@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment" kind="struct" prot="private">
+    <compoundname>vigra::NonparametricNoiseNormalizationFunctor::Segment</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a1031d0e0a97a340abfe0a6ab9e831045" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double a</definition>
+        <argsstring></argsstring>
+        <name>a</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a1510a66dacf9cf3586de5fc89ae2a073" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double b</definition>
+        <argsstring></argsstring>
+        <name>b</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1abb82b111deb51f3a5917cf8780fee484" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double lower</definition>
+        <argsstring></argsstring>
+        <name>lower</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a96059d6a5d7c39fab3ae98297844903c" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double shift</definition>
+        <argsstring></argsstring>
+        <name>shift</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="191" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="190" bodyend="193"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a1031d0e0a97a340abfe0a6ab9e831045" prot="public" virt="non-virtual"><scope>vigra::NonparametricNoiseNormalizationFunctor::Segment</scope><name>a</name></member>
+      <member refid="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a1510a66dacf9cf3586de5fc89ae2a073" prot="public" virt="non-virtual"><scope>vigra::NonparametricNoiseNormalizationFunctor::Segment</scope><name>b</name></member>
+      <member refid="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1abb82b111deb51f3a5917cf8780fee484" prot="public" virt="non-virtual"><scope>vigra::NonparametricNoiseNormalizationFunctor::Segment</scope><name>lower</name></member>
+      <member refid="structvigra_1_1NonparametricNoiseNormalizationFunctor_1_1Segment_1a96059d6a5d7c39fab3ae98297844903c" prot="public" virt="non-virtual"><scope>vigra::NonparametricNoiseNormalizationFunctor::Segment</scope><name>shift</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

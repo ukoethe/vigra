@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="Installation" kind="page">
+    <compoundname>Installation</compoundname>
+    <title>Installation</title>
+    <detaileddescription>
+<para>VIGRA can be downloaded from <ulink url="http://hci.iwr.uni-heidelberg.de/vigra/">http://hci.iwr.uni-heidelberg.de/vigra/</ulink>. It should work with any standard conforming C++ compiler on both 32-bit and 64-bit machines.</para><para>VIGRA is mainly a header library, i.e. much of its functionality can be accessed by simply copying the include files to a convenient location. A more involved build process is necessary for image file import and export, for the VIGRA Python bindings, and for the test suite and examples. VIGRA can take advantage of the following external software packages:</para><para><itemizedlist>
+<listitem>
+<para><ulink url="http://www.ijg.org/">libjpeg</ulink>, <ulink url="http://www.libtiff.org/">libtiff</ulink>, <ulink url="http://www.libpng.org/">libpng</ulink>, <ulink url="http://www.openexr.com/">OpenEXR</ulink> for reading and writing JPEG, TIFF, PNG, and EXR images respectively. </para></listitem>
+<listitem>
+<para><ulink url="http://www.hdfgroup.org/HDF5/">HDF5</ulink> for reading and writing HDF5 files (storage of MultiArray and RandomForest). </para></listitem>
+<listitem>
+<para><ulink url="http://www.fftw.org/">libfftw</ulink> for fast Fourier transforms. </para></listitem>
+<listitem>
+<para><ulink url="http://www.doxygen.org/">doxygen</ulink> and <ulink url="http://www.python.org/">Python</ulink> to generate C++ documentation. </para></listitem>
+<listitem>
+<para><ulink url="http://www.python.org/">Python</ulink>, <ulink url="http://www.boost.org/">boost_python</ulink>, and <ulink url="http://numpy.scipy.org/">numpy</ulink> to compile and run vigranumpy (the VIGRA Python bindings). </para></listitem>
+<listitem>
+<para><ulink url="http://sphinx.pocoo.org/">sphinx</ulink> to generate vigranumpy documentation. </para></listitem>
+<listitem>
+<para><ulink url="http://readthedocs.org/docs/nose/en/latest/">nosetests</ulink> to execute the vigranumpy test suite. </para></listitem>
+</itemizedlist>
+</para><para>These dependencies are optional - the functionality will simply be unavailable if the libraries cannot be found.</para><para>VIGRA installation is based on <ulink url="http://www.cmake.org/">cmake</ulink> which has to be installed on your machine. In order to configure the build and installation process, execute the following on the command line:</para><para><programlisting><codeline><highlight class="normal">&gt;<sp/>mkdir<sp/>\&lt;vigra_build_path\&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>cd<sp/>\&lt;vigra_build_path\&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>cmake<sp/>[options]<sp/>\&lt;vigra_source_path\&gt;</highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>make<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>build<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>make<sp/>check<sp/><sp/><sp/><sp/>#<sp/>compile<sp/>and<sp/>run<sp/>tests<sp/>(optional,<sp/>Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>make<sp/>doc<sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>generate<sp/>documentation<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>make<sp/>install<sp/><sp/>#<sp/>install<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline><highlight class="normal">&gt;<sp/>make<sp/>examples<sp/>#<sp/>build<sp/>examples<sp/>(optional,<sp/>Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+</programlisting></para><para>If you use Microsoft Visual C++, you just execute <computeroutput>cmake</computeroutput> (not <computeroutput>make</computeroutput>) or <computeroutput>cmake-gui</computeroutput> with the appropriate generator which creates a solution file &apos;&lt;vigra_build_path&gt;/vigra.sln&apos;. This file must be opened in Visual Studio, and the projects &apos;ALL_BUILD&apos;, &apos;check&apos;, &apos;doc&apos;, &apos;INSTALL&apos;, and &apos;examples&apos; should be generated. <bold>Important note</bold>: If you include <bold>&quot;windows.h&quot;</bold> in your projects: there are some name clashes with VIGRA <ndash/> always include <bold>&quot;vigra/windows.h&quot;</bold> instead.</para><para>cmake [options] customize installation directories and guide cmake in its search for the VIGRA dependencies. On a Linux system, it is often possible to configure without any options. The most commonly used options are:</para><para><variablelist>
+<varlistentry><term>-DCMAKE_INSTALL_PREFIX=&lt;path&gt; </term></varlistentry>
+<listitem><para>where to install VIGRA (binaries will be installed in &lt;path&gt;/bin, libraries in &lt;path&gt;/lib, headers in &lt;path&gt;/include/vigra, and documentation in &lt;path&gt;/doc/vigra and &lt;path&gt;/doc/vigranumpy, default is platform dependent) </para></listitem>
+<varlistentry><term>-DDEPENDENCY_SEARCH_PREFIX=&lt;path1&gt;[;&lt;path2&gt;...] </term></varlistentry>
+<listitem><para>where to look for VIGRA dependencies (for every given path, cmake will search for libraries in &lt;path&gt;/lib and for headers in &lt;path&gt;/include) </para></listitem>
+<varlistentry><term>-DDOCDIR=&lt;path&gt; </term></varlistentry>
+<listitem><para>where to generate VIGRA documentation (default: &lt;vigra_source_path&gt;/doc). Note that this is not the documentation install directory (the latter can be changed by -DDOCINSTALL=... and defaults to $CMAKE_INSTALL_PREFIX/doc). </para></listitem>
+<varlistentry><term>-DWITH_VIGRANUMPY=1 </term></varlistentry>
+<listitem><para>build VIGRA Python bindings (default: 1). Pass -DWITH_VIGRANUMPY=0 to suppress vigranumpy. </para></listitem>
+<varlistentry><term>-DWITH_HDF5=1 </term></varlistentry>
+<listitem><para>build VIGRA with HDF5 support (default: 1). Pass -DDWITH_HDF5=0 to compile without HDF5. </para></listitem>
+<varlistentry><term>-DLIB_SUFFIX=64 </term></varlistentry>
+<listitem><para>define suffix of lib directory name (default: empty string, i.e. no suffix). Use -DLIB_SUFFIX=64 when you want to install libraries in $CMAKE_INSTALL_PREFIX/lib64. </para></listitem>
+</variablelist>
+</para><para>More fine-grained customization (e.g. specification of explicit paths for all dependencies, customization of compiler flags) is possible by editing the file &lt;vigra_build_path&gt;/CMakeCache.txt. This is best done by means of the interactive programs <bold>ccmake</bold> or <bold>cmake-gui</bold>. Consult the <ulink url="http://www.cmake.org/cmake/help/documentation.html">cmake documentation</ulink> for more detailed help.</para><para>For using VIGRA in another CMake-built project, you can use the CMake command FIND_PACKAGE(Vigra), which will set the CMake variables ${Vigra_INCLUDE_DIRS} with the correct include path, and import the binary targets (currently vigraimpex) to link against (e.g., TARGET_LINK_LIBRARIES(targetname vigraimpex)). For this mechanism to work, CMake reads a config file VigraConfig.cmake, which is installed along with the library in CMAKE_INSTALL_PREFIX/lib/vigra. Alternatively, you can point CMake (cache entry Vigra_DIR) to VIGRA&apos;s build directory, where a corresponding VigraConfig.cmake resides for using the build version directly without installation. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

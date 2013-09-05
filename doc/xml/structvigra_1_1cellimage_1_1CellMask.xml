@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1cellimage_1_1CellMask" kind="struct" prot="public">
+    <compoundname>vigra::cellimage::CellMask</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1cellimage_1_1CellMask_1aa02ab845047685e10da3c45e11031ebf" prot="public" static="no" mutable="no">
+        <type>vigra::cellimage::CellPixel</type>
+        <definition>vigra::cellimage::CellPixel maskPixel_</definition>
+        <argsstring></argsstring>
+        <name>maskPixel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="188" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellMask_1ab1e557c34ae761b8ea3914ecbbc50eab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CellMask</definition>
+        <argsstring>(vigra::cellimage::CellPixel maskPixel)</argsstring>
+        <name>CellMask</name>
+        <param>
+          <type>vigra::cellimage::CellPixel</type>
+          <declname>maskPixel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="190" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellMask_1ac383b4ff62994a3d0a2058459d777373" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(const Iterator &amp;it) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const Iterator &amp;</type>
+          <declname>it</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="196" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="195" bodyend="198"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="187" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="186" bodyend="199"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1cellimage_1_1CellMask_1ab1e557c34ae761b8ea3914ecbbc50eab" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellMask</scope><name>CellMask</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellMask_1aa02ab845047685e10da3c45e11031ebf" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellMask</scope><name>maskPixel_</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellMask_1ac383b4ff62994a3d0a2058459d777373" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellMask</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

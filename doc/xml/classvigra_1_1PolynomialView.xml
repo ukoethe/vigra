@@ -1,0 +1,631 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1PolynomialView" kind="class" prot="public">
+    <compoundname>vigra::PolynomialView</compoundname>
+    <derivedcompoundref refid="classvigra_1_1Polynomial" prot="public" virt="non-virtual">Polynomial&lt; T &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StaticPolynomial" prot="public" virt="non-virtual">StaticPolynomial&lt; MAXORDER, T &gt;</derivedcompoundref>
+    <includes refid="polynomial_8hxx" local="no">vigra/polynomial.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" prot="public" static="no">
+        <type>NumericTraits&lt; <ref refid="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" kindref="member">RealPromote</ref> &gt;::ComplexPromote</type>
+        <definition>typedef NumericTraits&lt;RealPromote&gt;::ComplexPromote Complex</definition>
+        <argsstring></argsstring>
+        <name>Complex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Complex type associated with <computeroutput>RealPromote</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="92" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a7ef18933bfa122eec84272f7f3034cee" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Polynomial" kindref="compound">Polynomial</ref>&lt; <ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">Complex</ref> &gt;</type>
+        <definition>typedef Polynomial&lt;Complex&gt; ComplexPolynomial</definition>
+        <argsstring></argsstring>
+        <name>ComplexPolynomial</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a04e99e4ddf6a51c07b094d8efea95201" prot="public" static="no">
+        <type>T const *</type>
+        <definition>typedef T const* const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Const iterator for the coefficient sequence </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a35c955cacac6aacaa1e82874b1628865" prot="public" static="no">
+        <type>T *</type>
+        <definition>typedef T* iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Iterator for the coefficient sequence </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" prot="public" static="no">
+        <type>NumericTraits&lt; <ref refid="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" kindref="member">RealPromote</ref> &gt;::ValueType</type>
+        <definition>typedef NumericTraits&lt;RealPromote&gt;::ValueType Real</definition>
+        <argsstring></argsstring>
+        <name>Real</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Scalar type associated with <computeroutput>RealPromote</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a33270166819e87ebc22804735f834be9" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Polynomial" kindref="compound">Polynomial</ref>&lt; <ref refid="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" kindref="member">Real</ref> &gt;</type>
+        <definition>typedef Polynomial&lt;Real&gt; RealPolynomial</definition>
+        <argsstring></argsstring>
+        <name>RealPolynomial</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" prot="public" static="no">
+        <type>NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" kindref="member">RealPromote</ref></type>
+        <definition>typedef NumericTraits&lt;T&gt;::RealPromote RealPromote</definition>
+        <argsstring></argsstring>
+        <name>RealPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Promote type of <computeroutput>value_type</computeroutput> used for polynomial calculations </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1PolynomialView_1a265a253612b46abed17c61b0a5e5ce30" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Coefficient type of the polynomial </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="79" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1PolynomialView_1aaab3e5bd00d641878054f54b678b6344" prot="protected" static="no" mutable="no">
+        <type>T *</type>
+        <definition>T* coeffs_</definition>
+        <argsstring></argsstring>
+        <name>coeffs_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="258" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1PolynomialView_1a2dbee5c3528b25493ecded7e22083138" prot="protected" static="no" mutable="no">
+        <type>double</type>
+        <definition>double epsilon_</definition>
+        <argsstring></argsstring>
+        <name>epsilon_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="260" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="260" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1PolynomialView_1a76f3e8810ddd88849d9ecc60d0986785" prot="protected" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int order_</definition>
+        <argsstring></argsstring>
+        <name>order_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="259" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a2ed8e06acb873178a9e7b6892d22803b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void backwardDeflate</definition>
+        <argsstring>(T v)</argsstring>
+        <name>backwardDeflate</name>
+        <param>
+          <type>T</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Backward-deflate the polynomial at the root <computeroutput>r</computeroutput>.</para><para>The behavior of this function is undefined if <computeroutput>r</computeroutput> is not a root. Backward deflation is best if <computeroutput>r</computeroutput> is the smallest root (by magnitude). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="367" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1aeceb989c9c8ba1acf0e2864e67351dc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void balance</definition>
+        <argsstring>()</argsstring>
+        <name>balance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="201" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="415" bodyend="423"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1PolynomialView_1a35c955cacac6aacaa1e82874b1628865" kindref="member">iterator</ref></type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get iterator for the coefficient sequence. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="206" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="205" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1PolynomialView_1a04e99e4ddf6a51c07b094d8efea95201" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get const_iterator for the coefficient sequence. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="216" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="215" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a3ed9e6a756a40ed411e03e428a1e8ae2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void deflate</definition>
+        <argsstring>(T const &amp;r, unsigned int multiplicity=1)</argsstring>
+        <name>deflate</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>multiplicity</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Deflate the polynomial at the root <computeroutput>r</computeroutput> with the given <computeroutput>multiplicity</computeroutput>.</para><para>The behavior of this function is undefined if <computeroutput>r</computeroutput> is not a root with at least the given multiplicity. This function calls <ref refid="classvigra_1_1PolynomialView_1aa2d1a12ea5a246a61eb1199146e6dca1" kindref="member">forwardBackwardDeflate()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="312" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a8010642a1b898e086582526dab1f7441" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void deflateConjugatePair</definition>
+        <argsstring>(Complex const &amp;v)</argsstring>
+        <name>deflateConjugatePair</name>
+        <param>
+          <type><ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">Complex</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Deflate the polynomial with the complex conjugate roots <computeroutput>r</computeroutput> and <computeroutput>conj(r)</computeroutput>.</para><para>The behavior of this function is undefined if these are not roots. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="189" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="380" bodyend="394"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a903f3ab60dd20a8bc3653be362acb1da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void differentiate</definition>
+        <argsstring>(unsigned int n=1)</argsstring>
+        <name>differentiate</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Differentiate the polynomial <computeroutput>n</computeroutput> times. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="292" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1PolynomialView_1a35c955cacac6aacaa1e82874b1628865" kindref="member">iterator</ref></type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get end iterator for the coefficient sequence. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="210" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1PolynomialView_1a04e99e4ddf6a51c07b094d8efea95201" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get end const_iterator for the coefficient sequence. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="220" bodyend="221"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a91db8fa5451f775cfc220bdfc6f165fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double epsilon</definition>
+        <argsstring>() const </argsstring>
+        <name>epsilon</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get requested precision for polynomial algorithms (especially root finding). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="236" bodyend="237"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1aa2d1a12ea5a246a61eb1199146e6dca1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void forwardBackwardDeflate</definition>
+        <argsstring>(T v)</argsstring>
+        <name>forwardBackwardDeflate</name>
+        <param>
+          <type>T</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Forward/backward eflate the polynomial at the root <computeroutput>r</computeroutput>.</para><para>The behavior of this function is undefined if <computeroutput>r</computeroutput> is not a root. Combined forward/backward deflation is best if <computeroutput>r</computeroutput> is an intermediate root or we don&apos;t know <computeroutput>r</computeroutput>&apos;s relation to the other roots of the polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="346" bodyend="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a7a517f5fffaa43ae68bd1457c0abe494" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void forwardDeflate</definition>
+        <argsstring>(T const &amp;v)</argsstring>
+        <name>forwardDeflate</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Forward-deflate the polynomial at the root <computeroutput>r</computeroutput>.</para><para>The behavior of this function is undefined if <computeroutput>r</computeroutput> is not a root. Forward deflation is best if <computeroutput>r</computeroutput> is the biggest root (by magnitude). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="334" bodyend="342"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a00bf4aa7b51b65485ce9d7af7a9c1be1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void minimizeOrder</definition>
+        <argsstring>(double epsilon=0.0)</argsstring>
+        <name>minimizeOrder</name>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adjust the polynomial&apos;s order if the highest coefficients are near zero. The order is reduced as long as the absolute value does not exceed the given <emphasis>epsilon</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="398" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1acd0de676568888d848beb97dcc53ae47" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void normalize</definition>
+        <argsstring>()</argsstring>
+        <name>normalize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalize the polynomial, i.e. dived by the highest coefficient. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="199" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="406" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a29e4078ae36bdfd9b5ec2f99b227c4d5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; T, V &gt;::Promote</type>
+        <definition>PromoteTraits&lt;T, V&gt;::Promote operator()</definition>
+        <argsstring>(V v) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>V</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Evaluate the polynomial at the point <computeroutput>v</computeroutput></para><para>Multiplication must be defined between the types <computeroutput>V</computeroutput> and <computeroutput>PromoteTraits&lt;T, V&gt;::Promote</computeroutput>. If both <computeroutput>V</computeroutput> and <computeroutput>V</computeroutput> are scalar, the result will be a scalar, otherwise it will be complex. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a012412af9d2dcc528aefc7e2ca5fee22" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; T, U &gt;::Promote</type>
+        <definition>PromoteTraits&lt;T, U&gt;::Promote operator()</definition>
+        <argsstring>(U v) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>U</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="267" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="266" bodyend="274"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1acc931891ae9e3bb537e3a0a78ff87d8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>T &amp;</type>
+        <definition>T&amp; operator[]</definition>
+        <argsstring>(unsigned int i)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Access the coefficient of x^i. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="127" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a003eb5a121b992aad152e495baca6d02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T const &amp;</type>
+        <definition>T const&amp; operator[]</definition>
+        <argsstring>(unsigned int i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>Access the coefficient of x^i. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="131" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1aa66058cb2120a1a92dc8d81934595834" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int order</definition>
+        <argsstring>() const </argsstring>
+        <name>order</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get order of the polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="231" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="230" bodyend="231"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a03f33c6a36d6e1e8d7a8196ce38f5953" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PolynomialView</definition>
+        <argsstring>(T *coeffs, unsigned int order, double epsilon=1.0e-14)</argsstring>
+        <name>PolynomialView</name>
+        <param>
+          <type>T *</type>
+          <declname>coeffs</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>1.0e-14</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from a coefficient array of given <computeroutput>order</computeroutput>.</para><para>The externally managed array must have length <computeroutput>order+1</computeroutput> and is interpreted as representing the polynomial:</para><para><programlisting><codeline><highlight class="normal">coeffs[0]<sp/>+<sp/>x<sp/>*<sp/>coeffs[1]<sp/>+<sp/>x<sp/>*<sp/>x<sp/>*<sp/>coeffs[2]<sp/>+<sp/>...</highlight></codeline>
+</programlisting></para><para>The coefficients are not copied, we only store a pointer to the array.<computeroutput>epsilon</computeroutput> (default: 1.0e-14) determines the precision of subsequent algorithms (especially root finding) performed on the polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="124" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="120" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1ab6b2a6129bc556259fb1480a64b82de4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setEpsilon</definition>
+        <argsstring>(double eps)</argsstring>
+        <name>setEpsilon</name>
+        <param>
+          <type>double</type>
+          <declname>eps</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set requested precision for polynomial algorithms (especially root finding). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="242" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get length of the coefficient sequence (<computeroutput><ref refid="classvigra_1_1PolynomialView_1aa66058cb2120a1a92dc8d81934595834" kindref="member">order()</ref> + 1</computeroutput>). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="225" bodyend="226"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1afb4d7619ee5fb322ec1ac833365b2bb9" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PolynomialView</definition>
+        <argsstring>(double epsilon=1e-14)</argsstring>
+        <name>PolynomialView</name>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>1e-14</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="246" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1PolynomialView_1a73f13d757d9a380ce494958f7c9a79ac" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setCoeffs</definition>
+        <argsstring>(T *coeffs, unsigned int order)</argsstring>
+        <name>setCoeffs</name>
+        <param>
+          <type>T *</type>
+          <declname>coeffs</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="253" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="252" bodyend="256"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classvigra_1_1Polynomial" kindref="compound">Polynomial</ref> interface for an externally managed array.</para><para>The coefficient type <computeroutput>T</computeroutput> can be either a scalar or complex (compatible to <computeroutput>std::complex</computeroutput>) type.</para><para><simplesect kind="see"><para><ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref>, <ref refid="classvigra_1_1StaticPolynomial" kindref="compound">vigra::StaticPolynomial</ref>, <ref refid="group__Polynomials_1gaf46ab7ff907f8abcaccdb43990c4df6b" kindref="member">polynomialRoots()</ref></para></simplesect>
+<bold>#include</bold> &lt;<ref refid="polynomial_8hxx_source" kindref="compound">vigra/polynomial.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="1405">
+        <label>Polynomial&lt; T &gt;</label>
+        <link refid="classvigra_1_1Polynomial"/>
+        <childnode refid="1404" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1406">
+        <label>StaticPolynomial&lt; T &gt;</label>
+        <link refid="classvigra_1_1StaticPolynomial"/>
+        <childnode refid="1404" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1404">
+        <label>PolynomialView&lt; T &gt;</label>
+        <link refid="classvigra_1_1PolynomialView"/>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="73" bodyend="261"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1PolynomialView_1a2ed8e06acb873178a9e7b6892d22803b" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>backwardDeflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aeceb989c9c8ba1acf0e2864e67351dc6" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>balance</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aaab3e5bd00d641878054f54b678b6344" prot="protected" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>coeffs_</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>Complex</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a7ef18933bfa122eec84272f7f3034cee" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>ComplexPolynomial</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a04e99e4ddf6a51c07b094d8efea95201" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a3ed9e6a756a40ed411e03e428a1e8ae2" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>deflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a8010642a1b898e086582526dab1f7441" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>deflateConjugatePair</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a903f3ab60dd20a8bc3653be362acb1da" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>differentiate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>end</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>end</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a91db8fa5451f775cfc220bdfc6f165fc" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>epsilon</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a2dbee5c3528b25493ecded7e22083138" prot="protected" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>epsilon_</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa2d1a12ea5a246a61eb1199146e6dca1" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>forwardBackwardDeflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a7a517f5fffaa43ae68bd1457c0abe494" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>forwardDeflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a35c955cacac6aacaa1e82874b1628865" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a00bf4aa7b51b65485ce9d7af7a9c1be1" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>minimizeOrder</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acd0de676568888d848beb97dcc53ae47" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>normalize</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a29e4078ae36bdfd9b5ec2f99b227c4d5" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a012412af9d2dcc528aefc7e2ca5fee22" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acc931891ae9e3bb537e3a0a78ff87d8f" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a003eb5a121b992aad152e495baca6d02" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa66058cb2120a1a92dc8d81934595834" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>order</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a76f3e8810ddd88849d9ecc60d0986785" prot="protected" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>order_</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a03f33c6a36d6e1e8d7a8196ce38f5953" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>PolynomialView</name></member>
+      <member refid="classvigra_1_1PolynomialView_1afb4d7619ee5fb322ec1ac833365b2bb9" prot="protected" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>PolynomialView</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>Real</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a33270166819e87ebc22804735f834be9" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>RealPolynomial</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>RealPromote</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a73f13d757d9a380ce494958f7c9a79ac" prot="protected" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>setCoeffs</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ab6b2a6129bc556259fb1480a64b82de4" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>setEpsilon</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>size</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::PolynomialView</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

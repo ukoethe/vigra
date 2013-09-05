@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FoerstnerKernelBase" kind="class" prot="public">
+    <compoundname>vigra::FoerstnerKernelBase</compoundname>
+    <derivedcompoundref refid="classvigra_1_1Cos2Kernel" prot="public" virt="non-virtual">Cos2Kernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Cos2RingKernel" prot="public" virt="non-virtual">Cos2RingKernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Cos6Kernel" prot="public" virt="non-virtual">Cos6Kernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Cos6RingKernel" prot="public" virt="non-virtual">Cos6RingKernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FoerstnerRingKernelBase" prot="public" virt="non-virtual">FoerstnerRingKernelBase</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Sin2Kernel" prot="public" virt="non-virtual">Sin2Kernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Sin2RingKernel" prot="public" virt="non-virtual">Sin2RingKernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Sin6Kernel" prot="public" virt="non-virtual">Sin6Kernel</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1Sin6RingKernel" prot="public" virt="non-virtual">Sin6RingKernel</derivedcompoundref>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FoerstnerKernelBase_1a9a1247a9213f552c041fd48cbd89042c" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double ResultType</definition>
+        <argsstring></argsstring>
+        <name>ResultType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="287" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FoerstnerKernelBase_1ac48d84277177fb97ea8b35297dc3ac28" prot="public" static="no">
+        <type>VectorType::value_type</type>
+        <definition>typedef VectorType::value_type ValueType</definition>
+        <argsstring></argsstring>
+        <name>ValueType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="290" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FoerstnerKernelBase_1a2855935a4b1218be55d1010ea6eaf855" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">DVector2Image::value_type</ref></type>
+        <definition>typedef DVector2Image::value_type VectorType</definition>
+        <argsstring></argsstring>
+        <name>VectorType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="289" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="289" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FoerstnerKernelBase_1a7758f4dcb69e626ef0a108cedf1e5c28" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double WeightType</definition>
+        <argsstring></argsstring>
+        <name>WeightType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="288" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1FoerstnerKernelBase_1aedffe52f50dc6d525d2b310992044172" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int radius_</definition>
+        <argsstring></argsstring>
+        <name>radius_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="322" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="322" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FoerstnerKernelBase_1ac0a0084178affd77974808675f63c3f7" prot="public" static="no" mutable="no">
+        <type><ref refid="group__StandardImageTypes_1gac2804d94abe2f4d5c601f5501f4c294f" kindref="member">DVector2Image</ref></type>
+        <definition>DVector2Image vectors_</definition>
+        <argsstring></argsstring>
+        <name>vectors_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="324" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="324" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FoerstnerKernelBase_1a6b79d1e416a854d01a66c5e29e2a5a94" prot="public" static="no" mutable="no">
+        <type><ref refid="group__StandardImageTypes_1gaa506d6092a193e037a1766737c781f7b" kindref="member">DImage</ref></type>
+        <definition>DImage weights_</definition>
+        <argsstring></argsstring>
+        <name>weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="323" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FoerstnerKernelBase_1ac33b8c57b658d98ba6009b097695ba0c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FoerstnerKernelBase</definition>
+        <argsstring>(double scale, bool ringShaped=false)</argsstring>
+        <name>FoerstnerKernelBase</name>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>ringShaped</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="292" bodyend="314"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FoerstnerKernelBase_1a5fc42cc60e9815800e09d6de1010af61" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ResultType</type>
+        <definition>ResultType operator()</definition>
+        <argsstring>(int x, int y, VectorType const &amp;) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">VectorType</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="316" bodyend="320"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="583">
+        <label>FoerstnerKernelBase</label>
+        <childnode refid="584" relation="usage">
+          <edgelabel>weights_</edgelabel>
+        </childnode>
+        <childnode refid="585" relation="usage">
+          <edgelabel>vectors_</edgelabel>
+        </childnode>
+      </node>
+      <node id="585">
+        <label>BasicImage&lt; TinyVector&lt; double, 2 &gt; &gt;</label>
+        <link refid="classvigra_1_1BasicImage"/>
+      </node>
+      <node id="584">
+        <label>BasicImage&lt; double &gt;</label>
+        <link refid="classvigra_1_1BasicImage"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="285" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="284" bodyend="325"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac33b8c57b658d98ba6009b097695ba0c" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>FoerstnerKernelBase</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a5fc42cc60e9815800e09d6de1010af61" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1aedffe52f50dc6d525d2b310992044172" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>radius_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a9a1247a9213f552c041fd48cbd89042c" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>ResultType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac48d84277177fb97ea8b35297dc3ac28" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>ValueType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac0a0084178affd77974808675f63c3f7" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>vectors_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a2855935a4b1218be55d1010ea6eaf855" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>VectorType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a6b79d1e416a854d01a66c5e29e2a5a94" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>weights_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a7758f4dcb69e626ef0a108cedf1e5c28" prot="public" virt="non-virtual"><scope>vigra::FoerstnerKernelBase</scope><name>WeightType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

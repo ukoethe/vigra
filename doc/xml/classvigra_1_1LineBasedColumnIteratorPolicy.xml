@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1LineBasedColumnIteratorPolicy" kind="class" prot="public">
+    <compoundname>vigra::LineBasedColumnIteratorPolicy</compoundname>
+    <innerclass refid="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType" prot="public">vigra::LineBasedColumnIteratorPolicy::BaseType</innerclass>
+    <templateparamlist>
+      <param>
+        <type>class IMAGEITERATOR</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a69d164324c1bfd121cae01a217898680" prot="public" static="no">
+        <type>IMAGEITERATOR::difference_type::MoveY</type>
+        <definition>typedef IMAGEITERATOR::difference_type::MoveY difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="64" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a60d66b02e3e83ecd5879cab8ec911239" prot="public" static="no">
+        <type>IMAGEITERATOR</type>
+        <definition>typedef IMAGEITERATOR ImageIterator</definition>
+        <argsstring></argsstring>
+        <name>ImageIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="60" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1ac1576ffdb066ea81a73179202eb7a586" prot="public" static="no">
+        <type>IMAGEITERATOR::index_reference</type>
+        <definition>typedef IMAGEITERATOR::index_reference index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="66" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>typedef std::random_access_iterator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a49b2e9afdd573233ed066df0b3840e4e" prot="public" static="no">
+        <type>IMAGEITERATOR::LineStartIterator</type>
+        <definition>typedef IMAGEITERATOR::LineStartIterator LineStartIterator</definition>
+        <argsstring></argsstring>
+        <name>LineStartIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="61" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a71758dbf707427c37fd54148ad777d36" prot="public" static="no">
+        <type>IMAGEITERATOR::pointer</type>
+        <definition>typedef IMAGEITERATOR::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a80f409c27526ee8b9ee23d09c71e56f2" prot="public" static="no">
+        <type>IMAGEITERATOR::reference</type>
+        <definition>typedef IMAGEITERATOR::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="65" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a8befe55d3ad20662a1a09f41d54ffd2e" prot="public" static="no">
+        <type>IMAGEITERATOR::value_type</type>
+        <definition>typedef IMAGEITERATOR::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a30e65aa9c7eda66322f509fcdf0180c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void advance</definition>
+        <argsstring>(BaseType &amp;d, difference_type n)</argsstring>
+        <name>advance</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="107" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a529736ecd161189550723cebf022c747" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void decrement</definition>
+        <argsstring>(BaseType &amp;d)</argsstring>
+        <name>decrement</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="104" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1aba720e1b1ad270aa4733da93335b1bd7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>static reference dereference</definition>
+        <argsstring>(BaseType const &amp;d)</argsstring>
+        <name>dereference</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="84" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a35c00bbdd601b1481621e13535f48d7c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>index_reference</type>
+        <definition>static index_reference dereference</definition>
+        <argsstring>(BaseType const &amp;d, difference_type n)</argsstring>
+        <name>dereference</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="87" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a9d762be6e14a5c799eb48cb33580fbec" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>difference_type</type>
+        <definition>static difference_type difference</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>difference</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="99" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="98" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1af531dcd09797a7276453d2dfd2adeb27" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool equal</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>equal</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="92" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1aff8874051e84275d024c7e7f7814e082" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void increment</definition>
+        <argsstring>(BaseType &amp;d)</argsstring>
+        <name>increment</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="101" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a1c9ca99d49fcc03f9936221f22221030" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void initialize</definition>
+        <argsstring>(BaseType &amp;)</argsstring>
+        <name>initialize</name>
+        <param>
+          <type>BaseType &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="82" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LineBasedColumnIteratorPolicy_1a3ee86e344d51aab730dd91f605e45811" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool less</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>less</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="95" bodyend="96"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="58" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="57" bodyend="109"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a30e65aa9c7eda66322f509fcdf0180c7" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>advance</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a529736ecd161189550723cebf022c747" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>decrement</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1aba720e1b1ad270aa4733da93335b1bd7" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>dereference</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a35c00bbdd601b1481621e13535f48d7c" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>dereference</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a9d762be6e14a5c799eb48cb33580fbec" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>difference</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a69d164324c1bfd121cae01a217898680" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1af531dcd09797a7276453d2dfd2adeb27" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>equal</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a60d66b02e3e83ecd5879cab8ec911239" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>ImageIterator</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1aff8874051e84275d024c7e7f7814e082" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>increment</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1ac1576ffdb066ea81a73179202eb7a586" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a1c9ca99d49fcc03f9936221f22221030" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>initialize</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a3ee86e344d51aab730dd91f605e45811" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>less</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a49b2e9afdd573233ed066df0b3840e4e" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>LineStartIterator</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a71758dbf707427c37fd54148ad777d36" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a80f409c27526ee8b9ee23d09c71e56f2" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>reference</name></member>
+      <member refid="classvigra_1_1LineBasedColumnIteratorPolicy_1a8befe55d3ad20662a1a09f41d54ffd2e" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

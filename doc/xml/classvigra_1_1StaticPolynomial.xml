@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1StaticPolynomial" kind="class" prot="public">
+    <compoundname>vigra::StaticPolynomial</compoundname>
+    <basecompoundref refid="classvigra_1_1PolynomialView" prot="public" virt="non-virtual">vigra::PolynomialView&lt; T &gt;</basecompoundref>
+    <includes refid="polynomial_8hxx" local="no">vigra/polynomial.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>MAXORDER</declname>
+        <defname>MAXORDER</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a8d2e2a46ef17cd17e815bf6b73738699" prot="private" static="no">
+        <type><ref refid="classvigra_1_1PolynomialView" kindref="compound">PolynomialView</ref>&lt; T &gt;</type>
+        <definition>typedef PolynomialView&lt;T&gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="577" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="577" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a0512bfc360c106b1aed28b80402a28c8" prot="public" static="no">
+        <type><ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">BaseType::Complex</ref></type>
+        <definition>typedef BaseType::Complex Complex</definition>
+        <argsstring></argsstring>
+        <name>Complex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="581" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="581" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a5163560c11cf16556c82c087de3cb8b8" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref>&lt; MAXORDER, <ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">Complex</ref> &gt;</type>
+        <definition>typedef StaticPolynomial&lt;MAXORDER, Complex&gt; ComplexPolynomial</definition>
+        <argsstring></argsstring>
+        <name>ComplexPolynomial</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="583" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="583" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a04e99e4ddf6a51c07b094d8efea95201" prot="public" static="no">
+        <type>T const *</type>
+        <definition>typedef T const* const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="587" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a35c955cacac6aacaa1e82874b1628865" prot="public" static="no">
+        <type>T *</type>
+        <definition>typedef T* iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="586" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="586" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a86c7199c9e9e02391b77651c29edd06f" prot="public" static="no">
+        <type><ref refid="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" kindref="member">BaseType::Real</ref></type>
+        <definition>typedef BaseType::Real Real</definition>
+        <argsstring></argsstring>
+        <name>Real</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="580" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="580" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1adeb64b026583249b01d1e0ad3ca83243" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref>&lt; MAXORDER, <ref refid="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" kindref="member">Real</ref> &gt;</type>
+        <definition>typedef StaticPolynomial&lt;MAXORDER, Real&gt; RealPolynomial</definition>
+        <argsstring></argsstring>
+        <name>RealPolynomial</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="582" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StaticPolynomial_1a265a253612b46abed17c61b0a5e5ce30" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="585" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1StaticPolynomial_1a47631fb28c460ed31db02a49f28d2fdf" prot="protected" static="no" mutable="no">
+        <type>T</type>
+        <definition>T polynomial_[MAXORDER+1]</definition>
+        <argsstring>[MAXORDER+1]</argsstring>
+        <name>polynomial_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="696" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="696" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1a58a1b65f7e52d81d508cad108d130ba6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref></type>
+        <definition>StaticPolynomial getDeflated</definition>
+        <argsstring>(Real r) const </argsstring>
+        <name>getDeflated</name>
+        <param>
+          <type><ref refid="classvigra_1_1PolynomialView_1aa904949252e7d2d7fe3c2347cd79f7ca" kindref="member">Real</ref></type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct new polynomial representing this polynomial after deflation at the real root <computeroutput>r</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="669" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="668" bodyend="673"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1ac09d4ce3fe5bf5e87e3d6dcd0c35e012" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref>&lt; MAXORDER, <ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">Complex</ref> &gt;</type>
+        <definition>StaticPolynomial&lt;MAXORDER, Complex&gt; getDeflated</definition>
+        <argsstring>(Complex const &amp;r) const </argsstring>
+        <name>getDeflated</name>
+        <param>
+          <type><ref refid="classvigra_1_1PolynomialView_1a2f4d97791c5ec7d2f8cf5caff7e586f1" kindref="member">Complex</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct new polynomial representing this polynomial after deflation at the complex root <computeroutput>r</computeroutput>. The resulting polynomial will have complex coefficients, even if this polynomial had real ones. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="682" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="681" bodyend="686"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1ae83f7d2f14725747cea8c9ae1f943c58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref></type>
+        <definition>StaticPolynomial getDerivative</definition>
+        <argsstring>(unsigned int n=1) const </argsstring>
+        <name>getDerivative</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct new polynomial representing the derivative of this polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="658" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="657" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1a775bc5cd1a01dd6825502ea61ad18c21" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref> &amp;</type>
+        <definition>StaticPolynomial&amp; operator=</definition>
+        <argsstring>(StaticPolynomial const &amp;p)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assigment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="645" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="644" bodyend="652"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1ada26044d76b052228e33f926f7d7d5eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setOrder</definition>
+        <argsstring>(unsigned int order)</argsstring>
+        <name>setOrder</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="688" bodyend="693"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1abfb1699f16514ff08612347c6df2fce9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StaticPolynomial</definition>
+        <argsstring>(unsigned int order=0, double epsilon=1.0e-14)</argsstring>
+        <name>StaticPolynomial</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>1.0e-14</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct polynomial with given <computeroutput>order &lt;= MAXORDER</computeroutput> and all coefficients set to zero (they can be set later using <computeroutput>operator[]</computeroutput> or the iterators). <computeroutput>epsilon</computeroutput> (default: 1.0e-14) determines the precision of subsequent algorithms (especially root finding) performed on the polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="598" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="596" bodyend="603"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1a2e0de46f67875690d02621d1d6df0458" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StaticPolynomial</definition>
+        <argsstring>(StaticPolynomial const &amp;p)</argsstring>
+        <name>StaticPolynomial</name>
+        <param>
+          <type><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="607" bodyend="612"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1ac5d0470adf413b35e2e70bc58ff1fd9b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITER</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>StaticPolynomial</definition>
+        <argsstring>(ITER i, unsigned int order)</argsstring>
+        <name>StaticPolynomial</name>
+        <param>
+          <type>ITER</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct polynomial by copying the given coefficient sequence. <computeroutput>order &lt;= MAXORDER</computeroutput> is required. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="620" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="618" bodyend="625"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StaticPolynomial_1ae47a02c30b44fe290b1c102bb8965b5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITER</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>StaticPolynomial</definition>
+        <argsstring>(ITER i, unsigned int order, double epsilon)</argsstring>
+        <name>StaticPolynomial</name>
+        <param>
+          <type>ITER</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct polynomial by copying the given coefficient sequence. <computeroutput>order &lt;= MAXORDER</computeroutput> is required. Set <computeroutput>epsilon</computeroutput> (default: 1.0e-14) as the precision of subsequent algorithms (especially root finding) performed on the polynomial. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="635" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="633" bodyend="640"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classvigra_1_1Polynomial" kindref="compound">Polynomial</ref> with internally managed array of static length.</para><para>Most interesting functionality is inherited from <ref refid="classvigra_1_1PolynomialView" kindref="compound">vigra::PolynomialView</ref>. This class differs from <ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref> in that it allocates its memory statically which is much faster. Therefore, <computeroutput><ref refid="classvigra_1_1StaticPolynomial" kindref="compound">StaticPolynomial</ref></computeroutput> can only represent polynomials up to the given <computeroutput>MAXORDER</computeroutput>.</para><para><simplesect kind="see"><para><ref refid="classvigra_1_1PolynomialView" kindref="compound">vigra::PolynomialView</ref>, <ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref>, <ref refid="group__Polynomials_1gaf46ab7ff907f8abcaccdb43990c4df6b" kindref="member">polynomialRoots()</ref></para></simplesect>
+<bold>#include</bold> &lt;<ref refid="polynomial_8hxx_source" kindref="compound">vigra/polynomial.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2390">
+        <label>PolynomialView&lt; T &gt;</label>
+        <link refid="classvigra_1_1PolynomialView"/>
+      </node>
+      <node id="2389">
+        <label>StaticPolynomial&lt; MAXORDER, T &gt;</label>
+        <link refid="classvigra_1_1StaticPolynomial"/>
+        <childnode refid="2390" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2392">
+        <label>PolynomialView&lt; T &gt;</label>
+        <link refid="classvigra_1_1PolynomialView"/>
+      </node>
+      <node id="2391">
+        <label>StaticPolynomial&lt; MAXORDER, T &gt;</label>
+        <link refid="classvigra_1_1StaticPolynomial"/>
+        <childnode refid="2392" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" line="576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polynomial.hxx" bodystart="574" bodyend="697"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1PolynomialView_1a2ed8e06acb873178a9e7b6892d22803b" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>backwardDeflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aeceb989c9c8ba1acf0e2864e67351dc6" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>balance</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a8d2e2a46ef17cd17e815bf6b73738699" prot="private" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>begin</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>begin</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aaab3e5bd00d641878054f54b678b6344" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>coeffs_</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a0512bfc360c106b1aed28b80402a28c8" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>Complex</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a5163560c11cf16556c82c087de3cb8b8" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>ComplexPolynomial</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a04e99e4ddf6a51c07b094d8efea95201" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a3ed9e6a756a40ed411e03e428a1e8ae2" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>deflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a8010642a1b898e086582526dab1f7441" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>deflateConjugatePair</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a903f3ab60dd20a8bc3653be362acb1da" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>differentiate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>end</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>end</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a91db8fa5451f775cfc220bdfc6f165fc" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>epsilon</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a2dbee5c3528b25493ecded7e22083138" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>epsilon_</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa2d1a12ea5a246a61eb1199146e6dca1" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>forwardBackwardDeflate</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a7a517f5fffaa43ae68bd1457c0abe494" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>forwardDeflate</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a58a1b65f7e52d81d508cad108d130ba6" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>getDeflated</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1ac09d4ce3fe5bf5e87e3d6dcd0c35e012" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>getDeflated</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1ae83f7d2f14725747cea8c9ae1f943c58" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>getDerivative</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a35c955cacac6aacaa1e82874b1628865" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a00bf4aa7b51b65485ce9d7af7a9c1be1" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>minimizeOrder</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acd0de676568888d848beb97dcc53ae47" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>normalize</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a29e4078ae36bdfd9b5ec2f99b227c4d5" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a012412af9d2dcc528aefc7e2ca5fee22" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a775bc5cd1a01dd6825502ea61ad18c21" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1PolynomialView_1acc931891ae9e3bb537e3a0a78ff87d8f" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a003eb5a121b992aad152e495baca6d02" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1PolynomialView_1aa66058cb2120a1a92dc8d81934595834" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>order</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a76f3e8810ddd88849d9ecc60d0986785" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>order_</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a47631fb28c460ed31db02a49f28d2fdf" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>polynomial_</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a03f33c6a36d6e1e8d7a8196ce38f5953" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>PolynomialView</name></member>
+      <member refid="classvigra_1_1PolynomialView_1afb4d7619ee5fb322ec1ac833365b2bb9" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>PolynomialView</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a86c7199c9e9e02391b77651c29edd06f" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>Real</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1adeb64b026583249b01d1e0ad3ca83243" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>RealPolynomial</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ac95c0b96ef6e344da032fd708c3f623f" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>RealPromote</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a73f13d757d9a380ce494958f7c9a79ac" prot="protected" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>setCoeffs</name></member>
+      <member refid="classvigra_1_1PolynomialView_1ab6b2a6129bc556259fb1480a64b82de4" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>setEpsilon</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1ada26044d76b052228e33f926f7d7d5eb" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>setOrder</name></member>
+      <member refid="classvigra_1_1PolynomialView_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>size</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1abfb1699f16514ff08612347c6df2fce9" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>StaticPolynomial</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a2e0de46f67875690d02621d1d6df0458" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>StaticPolynomial</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1ac5d0470adf413b35e2e70bc58ff1fd9b" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>StaticPolynomial</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1ae47a02c30b44fe290b1c102bb8965b5a" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>StaticPolynomial</name></member>
+      <member refid="classvigra_1_1StaticPolynomial_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::StaticPolynomial</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

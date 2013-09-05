@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1VectorNormSqFunctor" kind="class" prot="public">
+    <compoundname>vigra::VectorNormSqFunctor</compoundname>
+    <includes refid="transformimage_8hxx" local="no">vigra/transformimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class ValueType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1VectorNormSqFunctor_1a327eb5b994f1ff9ca372f91051f49325" prot="public" static="no">
+        <type>ValueType</type>
+        <definition>typedef ValueType argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1519" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1519" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1VectorNormSqFunctor_1a7c05131c20aa8fecf170338ed03adbbd" prot="public" static="no">
+        <type>NumericTraits&lt; typename ValueType::value_type &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;typename ValueType::value_type&gt;::RealPromote result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1523" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1VectorNormSqFunctor_1accc16fa1805fc4130d617cbe0ee01d90" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1VectorNormSqFunctor_1a7c05131c20aa8fecf170338ed03adbbd" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(const argument_type &amp;a) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1VectorNormSqFunctor_1a327eb5b994f1ff9ca372f91051f49325" kindref="member">argument_type</ref> &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate transform &apos;<computeroutput>v1*v1 + v2*v2 + ...</computeroutput>&apos;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1527" bodyend="1530"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A functor for computing the squared vector norm. </para>    </briefdescription>
+    <detaileddescription>
+<para>Calculate the squared magnitude or norm from a given vector-valued entity. The vector type will typically be some sort of <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>.</para><para>At least, the vector type is required to have a function &apos;<emphasis>result</emphasis><computeroutput> = dot(v,v)</computeroutput>&apos;.</para><para>For an example of its usage see <ref refid="classvigra_1_1VectorNormFunctor" kindref="compound">VectorNormFunctor</ref></para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryFunctor</computeroutput> is true (<computeroutput>VigraTrueType</computeroutput>)</para><para><simplesect kind="see"><para><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>, <ref refid="group__RGBValueOperators_1gaabe9d910ba7a54cbf606254a81e409e6" kindref="member">dot()</ref> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1515" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1514" bodyend="1531"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1VectorNormSqFunctor_1a327eb5b994f1ff9ca372f91051f49325" prot="public" virt="non-virtual"><scope>vigra::VectorNormSqFunctor</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1VectorNormSqFunctor_1accc16fa1805fc4130d617cbe0ee01d90" prot="public" virt="non-virtual"><scope>vigra::VectorNormSqFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1VectorNormSqFunctor_1a7c05131c20aa8fecf170338ed03adbbd" prot="public" virt="non-virtual"><scope>vigra::VectorNormSqFunctor</scope><name>result_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RegressionForestCounter" kind="class" prot="public">
+    <compoundname>vigra::RegressionForestCounter</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class DataSource</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RegressionForestCounter_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="570" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="570" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1a6b06728795e8f208c0755874665b3a51" prot="public" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t count_</definition>
+        <argsstring></argsstring>
+        <name>count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="575" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1ad43b345b04a9b0fbb9bde225ca96eaec" prot="public" static="no" mutable="no">
+        <type>int *</type>
+        <definition>int* end_</definition>
+        <argsstring></argsstring>
+        <name>end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="576" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1ae37c58a5ed278fb26fe56eed8a487869" prot="public" static="no" mutable="no">
+        <type>DataSource const &amp;</type>
+        <definition>DataSource const&amp; labels_</definition>
+        <argsstring></argsstring>
+        <name>labels_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="571" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="571" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1a5bc4d3e2db960e13a226f15d545f1750" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; mean_</definition>
+        <argsstring></argsstring>
+        <name>mean_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="572" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1a896218eb9f22054f5558b58a1f8f07c9" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; tmp_</definition>
+        <argsstring></argsstring>
+        <name>tmp_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="574" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RegressionForestCounter_1a0ae119ccde1d12d4023c0d8e9fd23c09" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; variance_</definition>
+        <argsstring></argsstring>
+        <name>variance_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="573" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="573" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1a980e5ddc295e8db861c2fb1c3c8c2edb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double decrement</definition>
+        <argsstring>(Iter begin, Iter end)</argsstring>
+        <name>decrement</name>
+        <param>
+          <type>Iter</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="613" bodyend="644"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1a7c88e7b651c732504147e4472b900b2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double increment</definition>
+        <argsstring>(Iter begin, Iter end)</argsstring>
+        <name>increment</name>
+        <param>
+          <type>Iter</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="590" bodyend="610"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1ab7cbec6ee9f67c50bc065f3314abcce9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+          <param>
+            <type>class Resp_t</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double init</definition>
+        <argsstring>(Iter begin, Iter end, Resp_t resp)</argsstring>
+        <name>init</name>
+        <param>
+          <type>Iter</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Resp_t</type>
+          <declname>resp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="649" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="648" bodyend="653"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1ab096573c451cd813905b628340516213" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>RegressionForestCounter</definition>
+        <argsstring>(DataSource const &amp;labels, ProblemSpec&lt; T &gt; const &amp;ext_)</argsstring>
+        <name>RegressionForestCounter</name>
+        <param>
+          <type>DataSource const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="579" bodyend="587"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="662" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="661" bodyend="666"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RegressionForestCounter_1a07152566f5fce054813ccd74e97563e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt;double&gt; const&amp; response</definition>
+        <argsstring>()</argsstring>
+        <name>response</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="657" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="656" bodyend="659"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2152">
+        <label>RegressionForestCounter&lt; DataSource &gt;</label>
+        <childnode refid="2153" relation="usage">
+          <edgelabel>mean_</edgelabel>
+          <edgelabel>tmp_</edgelabel>
+          <edgelabel>variance_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2153">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2154" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2154">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="568" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="567" bodyend="667"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RegressionForestCounter_1a6b06728795e8f208c0755874665b3a51" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>count_</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a980e5ddc295e8db861c2fb1c3c8c2edb" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>decrement</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1ad43b345b04a9b0fbb9bde225ca96eaec" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>end_</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a7c88e7b651c732504147e4472b900b2a" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>increment</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1ab7cbec6ee9f67c50bc065f3314abcce9" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>init</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1ae37c58a5ed278fb26fe56eed8a487869" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>labels_</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a5bc4d3e2db960e13a226f15d545f1750" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>mean_</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1ab096573c451cd813905b628340516213" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>RegressionForestCounter</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>reset</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a07152566f5fce054813ccd74e97563e7" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>response</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>Shp</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a896218eb9f22054f5558b58a1f8f07c9" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>tmp_</name></member>
+      <member refid="classvigra_1_1RegressionForestCounter_1a0ae119ccde1d12d4023c0d8e9fd23c09" prot="public" virt="non-virtual"><scope>vigra::RegressionForestCounter</scope><name>variance_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

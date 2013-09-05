@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1UnaryReduceFunctorTag" kind="struct" prot="public">
+    <compoundname>vigra::UnaryReduceFunctorTag</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">InitializerTag</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">UnaryAnalyserTag</basecompoundref>
+    <derivedcompoundref refid="classvigra_1_1FindSum" prot="public" virt="non-virtual">FindSum&lt; VALUETYPE &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2661">
+        <label>FindSum&lt; VALUETYPE &gt;</label>
+        <link refid="classvigra_1_1FindSum"/>
+        <childnode refid="2660" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2660">
+        <label>UnaryReduceFunctorTag</label>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="55" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="53" bodyend="55"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

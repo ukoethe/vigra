@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SIFImportInfo" kind="class" prot="public">
+    <compoundname>vigra::SIFImportInfo</compoundname>
+    <includes refid="sifImport_8hxx" local="no">vigra/sifImport.hxx</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a323a7064fba6e15e3e542e34fb19764e" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int bottom</definition>
+        <argsstring></argsstring>
+        <name>bottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a49a0ecc6d27a850b1aceaaa6a1546abd" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string cycleTime</definition>
+        <argsstring></argsstring>
+        <name>cycleTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a00cc3c9c7fdae004730a8c1688950e7b" prot="private" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long d</definition>
+        <argsstring></argsstring>
+        <name>d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="162" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a1da524b48858ca9844ddfb533e50e343" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string EMGain</definition>
+        <argsstring></argsstring>
+        <name>EMGain</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a9c146dd29f1a28dedc202978562f6ce3" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string exposureTime</definition>
+        <argsstring></argsstring>
+        <name>exposureTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1ab098377a95401616fe523fc66ce6e212" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t filesize</definition>
+        <argsstring></argsstring>
+        <name>filesize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a7154aed7bd76f4f04f1985eb87b45d31" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int headerlen</definition>
+        <argsstring></argsstring>
+        <name>headerlen</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="159" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="159" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1ad8f5e19e19f12974c9713e920ec54331" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int left</definition>
+        <argsstring></argsstring>
+        <name>left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a7d5bb08fa2fa9f3042298226688e248b" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; size_t &gt;</type>
+        <definition>ArrayVector&lt;size_t&gt; m_dims</definition>
+        <argsstring></argsstring>
+        <name>m_dims</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="154" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1af99d4965bf81a26ae6a0ca8c509c90b2" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* m_filename</definition>
+        <argsstring></argsstring>
+        <name>m_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a1353b3418f9b9c0d28b4a5c820fd11e8" prot="private" static="no" mutable="no">
+        <type>std::ptrdiff_t</type>
+        <definition>std::ptrdiff_t m_offset</definition>
+        <argsstring></argsstring>
+        <name>m_offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a9a72f3dcc6f4a19af79744c85a319f32" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int mod</definition>
+        <argsstring></argsstring>
+        <name>mod</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a2e5f0c4b01fa6a42a6a2215b44a116d9" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string model</definition>
+        <argsstring></argsstring>
+        <name>model</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1afe9c3a5c5994686a199b99cdb8f3ebb5" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string originalFilename</definition>
+        <argsstring></argsstring>
+        <name>originalFilename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a5d35c40c3fb34715bab0932be1603274" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string preAmpGain</definition>
+        <argsstring></argsstring>
+        <name>preAmpGain</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1af2f2fce91dd0d1739a41f28d2336d898" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double readout</definition>
+        <argsstring></argsstring>
+        <name>readout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a2f54f8b71f0d765e2b7dbd9a8b9774ff" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int right</definition>
+        <argsstring></argsstring>
+        <name>right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1abf6dd746ff03d994f824e856a90caed5" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string temperature</definition>
+        <argsstring></argsstring>
+        <name>temperature</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1ac29b0893d85c131f11cab62560255a37" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double temperature1</definition>
+        <argsstring></argsstring>
+        <name>temperature1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a1552e7600256085747c385583c318352" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double temperature2</definition>
+        <argsstring></argsstring>
+        <name>temperature2</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1af93f4f37fc2ad9c37af4a715423b110c" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int top</definition>
+        <argsstring></argsstring>
+        <name>top</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a728b969e374aba4020e39aea7e02e64f" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string version</definition>
+        <argsstring></argsstring>
+        <name>version</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1aea218cadeac046239b523ca54859011c" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string verticalShiftSpeed</definition>
+        <argsstring></argsstring>
+        <name>verticalShiftSpeed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1ad7169c70e1a584942ce6b5ba50b09f81" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int xbin</definition>
+        <argsstring></argsstring>
+        <name>xbin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a64bd209719805b927440b59fa98dfeb5" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int xres</definition>
+        <argsstring></argsstring>
+        <name>xres</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1a5b700352485fccd25d83cb9907cb39fb" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ybin</definition>
+        <argsstring></argsstring>
+        <name>ybin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SIFImportInfo_1aa56a403ffdfe2aec14965c0b618de1c1" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int yres</definition>
+        <argsstring></argsstring>
+        <name>yres</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a09ee81e40060d94bf70d03532fb7adb3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getFileName</definition>
+        <argsstring>() const </argsstring>
+        <name>getFileName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the filename of this SIF object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1ad72f42fa2451cc9f5933ebde565a1ccc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ptrdiff_t</type>
+        <definition>std::ptrdiff_t getOffset</definition>
+        <argsstring>() const </argsstring>
+        <name>getOffset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the offset to the beginning of the actual data. Everything before this point belongs to the variable length header. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="130"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the height in pixels. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a9d9a0fea1dafecfb3169daacb20a3df1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex numDimensions</definition>
+        <argsstring>() const </argsstring>
+        <name>numDimensions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the number of dimensions of the dataset represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a0320b014730e0f7aa213c1cffc60d01f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; size_t &gt; const &amp;</type>
+        <definition>ArrayVector&lt;size_t&gt; const&amp; shape</definition>
+        <argsstring>() const </argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the shape of the dataset represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="120"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a870279e82e759db5f6bc7747077e23c8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex shapeOfDimension</definition>
+        <argsstring>(const int dim) const </argsstring>
+        <name>shapeOfDimension</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the shape (length) of the dataset along dimension <emphasis>dim</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="124"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a18cd5ff8443aed2a6dd6d4d7bb09f6a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>SIFImportInfo</definition>
+        <argsstring>(const char *filename)</argsstring>
+        <name>SIFImportInfo</name>
+        <param>
+          <type>const char *</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct <ref refid="classvigra_1_1SIFImportInfo" kindref="compound">SIFImportInfo</ref> object.</para><para>The header of the Andor SIF file <emphasis>filename</emphasis> is accessed to read the image properties.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1SIFImportInfo_1a18cd5ff8443aed2a6dd6d4d7bb09f6a4" kindref="member">SIFImportInfo</ref><sp/>info(filename);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="99"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1aadcb67df78a073c625f613ec7c27a7dc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int stacksize</definition>
+        <argsstring>() const </argsstring>
+        <name>stacksize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the stacksize, that is the number of images contained in the dataset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SIFImportInfo_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the width in pixels. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="103"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classvigra_1_1SIFImportInfo_1acb49c573f9b14f981b942ff75eadf1cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend std::ostream &amp;</type>
+        <definition>std::ostream&amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const SIFImportInfo &amp;info)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1SIFImportInfo" kindref="compound">SIFImportInfo</ref> &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Output all information such as shutter, Temperature etc. 
+</verbatim> as human readable output.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="sifImport_8hxx_source" kindref="compound">vigra/sifImport.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1SIFImportInfo_1a18cd5ff8443aed2a6dd6d4d7bb09f6a4" kindref="member">SIFImportInfo</ref><sp/>info(filename);</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>info<sp/>&lt;&lt;<sp/>std::endl;<sp/></highlight><highlight class="comment">//<sp/>print<sp/>infos<sp/>to<sp/>the<sp/>console</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="150"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Extracts image properties from an Andor SIF file header. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ref refid="group__VigraSIFImport_1ga6d4fea3f886159b3e14ac64880cdb794" kindref="member">readSIF()</ref> for a usage example. This object must be used to read the image header of an Andor SIF file and enquire its properties.</para><para><bold>#include</bold> &lt;<ref refid="sifImport_8hxx_source" kindref="compound">vigra/sifImport.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sifImport.hxx" bodystart="87" bodyend="167"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SIFImportInfo_1a323a7064fba6e15e3e542e34fb19764e" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>bottom</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a49a0ecc6d27a850b1aceaaa6a1546abd" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>cycleTime</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a00cc3c9c7fdae004730a8c1688950e7b" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>d</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a1da524b48858ca9844ddfb533e50e343" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>EMGain</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a9c146dd29f1a28dedc202978562f6ce3" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>exposureTime</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ab098377a95401616fe523fc66ce6e212" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>filesize</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a09ee81e40060d94bf70d03532fb7adb3" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>getFileName</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ad72f42fa2451cc9f5933ebde565a1ccc" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>getOffset</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a7154aed7bd76f4f04f1985eb87b45d31" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>headerlen</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>height</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ad8f5e19e19f12974c9713e920ec54331" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>left</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a7d5bb08fa2fa9f3042298226688e248b" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>m_dims</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1af99d4965bf81a26ae6a0ca8c509c90b2" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>m_filename</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a1353b3418f9b9c0d28b4a5c820fd11e8" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>m_offset</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a9a72f3dcc6f4a19af79744c85a319f32" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>mod</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a2e5f0c4b01fa6a42a6a2215b44a116d9" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>model</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a9d9a0fea1dafecfb3169daacb20a3df1" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>numDimensions</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1acb49c573f9b14f981b942ff75eadf1cd" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1afe9c3a5c5994686a199b99cdb8f3ebb5" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>originalFilename</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a5d35c40c3fb34715bab0932be1603274" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>preAmpGain</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1af2f2fce91dd0d1739a41f28d2336d898" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>readout</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a2f54f8b71f0d765e2b7dbd9a8b9774ff" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>right</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a0320b014730e0f7aa213c1cffc60d01f" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>shape</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a870279e82e759db5f6bc7747077e23c8" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>shapeOfDimension</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a18cd5ff8443aed2a6dd6d4d7bb09f6a4" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>SIFImportInfo</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1aadcb67df78a073c625f613ec7c27a7dc" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>stacksize</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1abf6dd746ff03d994f824e856a90caed5" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>temperature</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ac29b0893d85c131f11cab62560255a37" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>temperature1</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a1552e7600256085747c385583c318352" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>temperature2</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1af93f4f37fc2ad9c37af4a715423b110c" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>top</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a728b969e374aba4020e39aea7e02e64f" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>version</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1aea218cadeac046239b523ca54859011c" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>verticalShiftSpeed</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>width</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1ad7169c70e1a584942ce6b5ba50b09f81" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>xbin</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a64bd209719805b927440b59fa98dfeb5" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>xres</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1a5b700352485fccd25d83cb9907cb39fb" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>ybin</name></member>
+      <member refid="classvigra_1_1SIFImportInfo_1aa56a403ffdfe2aec14965c0b618de1c1" prot="private" virt="non-virtual"><scope>vigra::SIFImportInfo</scope><name>yres</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

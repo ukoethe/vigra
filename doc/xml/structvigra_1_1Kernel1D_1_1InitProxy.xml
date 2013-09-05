@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1Kernel1D_1_1InitProxy" kind="struct" prot="public">
+    <compoundname>vigra::Kernel1D::InitProxy</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1Kernel1D_1_1InitProxy_1a7d5b9dc4cbedeb0ac588fc544fcc4f4f" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel1D_1adef84b9c9d4f014effcfecbca87629d2" kindref="member">Iterator</ref></type>
+        <definition>Iterator base_</definition>
+        <argsstring></argsstring>
+        <name>base_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1337" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1337" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel1D_1_1InitProxy_1a9acf5084c965a76d24ec228412256bc3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int count_</definition>
+        <argsstring></argsstring>
+        <name>count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1338" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel1D_1_1InitProxy_1aab87cdecff5a712b212fda808877d7c1" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel1D_1adef84b9c9d4f014effcfecbca87629d2" kindref="member">Iterator</ref></type>
+        <definition>Iterator iter_</definition>
+        <argsstring></argsstring>
+        <name>iter_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1337" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1337" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel1D_1_1InitProxy_1af94ab3b949d7bfa845f0ceba4ad7ded4" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel1D_1a821b18fa86c2bc45ccf17716429d438b" kindref="member">value_type</ref> &amp;</type>
+        <definition>value_type&amp; norm_</definition>
+        <argsstring></argsstring>
+        <name>norm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1339" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1339" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel1D_1_1InitProxy_1ae19129de4f29722b899b09321b6fc5bf" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sum_</definition>
+        <argsstring></argsstring>
+        <name>sum_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1338" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1Kernel1D_1_1InitProxy_1acca96f98aa8052ccd7ab9825599a62ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>InitProxy</definition>
+        <argsstring>(Iterator i, int count, value_type &amp;norm)</argsstring>
+        <name>InitProxy</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D_1adef84b9c9d4f014effcfecbca87629d2" kindref="member">Iterator</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D_1a821b18fa86c2bc45ccf17716429d438b" kindref="member">value_type</ref> &amp;</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1306" bodyend="1310"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Kernel1D_1_1InitProxy_1af3903e32b316b8820f8ec8b78bb664dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>InitProxy &amp;</type>
+        <definition>InitProxy&amp; operator,</definition>
+        <argsstring>(value_type const &amp;v)</argsstring>
+        <name>operator,</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel1D_1a821b18fa86c2bc45ccf17716429d438b" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1320" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1319" bodyend="1335"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Kernel1D_1_1InitProxy_1a10fe2833d11bb538e76b673127d812e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~InitProxy</definition>
+        <argsstring>()</argsstring>
+        <name>~InitProxy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1313" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1312" bodyend="1317"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1305" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1304" bodyend="1340"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1a7d5b9dc4cbedeb0ac588fc544fcc4f4f" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>base_</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1a9acf5084c965a76d24ec228412256bc3" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>count_</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1acca96f98aa8052ccd7ab9825599a62ed" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>InitProxy</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1aab87cdecff5a712b212fda808877d7c1" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>iter_</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1af94ab3b949d7bfa845f0ceba4ad7ded4" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>norm_</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1af3903e32b316b8820f8ec8b78bb664dc" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>operator,</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1ae19129de4f29722b899b09321b6fc5bf" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>sum_</name></member>
+      <member refid="structvigra_1_1Kernel1D_1_1InitProxy_1a10fe2833d11bb538e76b673127d812e4" prot="public" virt="non-virtual"><scope>vigra::Kernel1D::InitProxy</scope><name>~InitProxy</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

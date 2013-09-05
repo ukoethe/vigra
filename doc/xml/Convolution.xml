@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="Convolution" kind="page">
+    <compoundname>Convolution</compoundname>
+    <title>Functions to Convolve Images and Signals</title>
+    <detaileddescription>
+<para>1D and 2D filters, including separable and recursive convolution, and non-linear diffusion</para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><itemizedlist>
+<listitem>
+<para><ref refid="group__CommonConvolutionFilters" kindref="compound">Common Filters</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Short-hands for the most common 2D convolution filters</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayConvolutionFilters" kindref="compound">Convolution filters for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ResamplingConvolutionFilters" kindref="compound">Resampling Convolution Filters</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Resampling convolution filters</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__StandardConvolution" kindref="compound">Two-dimensional convolution functions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>2D non-separable convolution, with and without ROI mask </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Kernel2D" kindref="compound">vigra::Kernel2D</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Generic 2-dimensional discrete convolution kernel </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__SeparableConvolution" kindref="compound">One-dimensional and separable convolution functions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>1D convolution and separable filters in 2 dimensions </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Kernel1D" kindref="compound">vigra::Kernel1D</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Generic 1-dimensional discrete convolution kernel </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__RecursiveConvolution" kindref="compound">Recursive convolution functions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Recursive filters (1st and 2nd order)</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__NonLinearDiffusion" kindref="compound">Non-linear Diffusion and Total Variation</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Edge-preserving smoothing </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmentMode</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Choose between different border treatment modes </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="KernelArgumentObjectFactories" kindref="compound">Kernel Argument Object Factories</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Factory functions to create argument objects to simplify passing kernels</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

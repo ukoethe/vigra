@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classtype__lists_1_1cond__virtual__tuple_1_1template_01type_3_01feature__types_3_01L_01_4_1_1acc382c559b1a4761fc9b0d466a91b20695" kind="class" prot="public">
+    <compoundname>type_lists::cond_virtual_tuple::template type&lt; feature_types&lt; L &gt;::accu_list, passes&lt; 2 &gt;::template at_least &gt;</compoundname>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1feature__context__base" prot="public" virt="non-virtual">feature_context_base&lt; T, feature_types&lt; L &gt;::accu_list, type_lists::cond_virtual_tuple&lt; SelectedAccumulators, T, detail::v_feature_dispatch &gt;::template type &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="1155"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

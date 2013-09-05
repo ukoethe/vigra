@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Dist2D" kind="class" prot="public">
+    <compoundname>vigra::Dist2D</compoundname>
+    <includes refid="diff2d_8hxx" local="no">vigra/diff2d.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Dist2D_1ad12fc34ce789bce6c8a05d8a17138534" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1380" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1380" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Dist2D_1a2474a5474cbff19523a51eb1de01cda4" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1379" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1379" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1acb0b0ef9ea028d849edf7289a477ba33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Dist2D</definition>
+        <argsstring>(int the_width, int the_height)</argsstring>
+        <name>Dist2D</name>
+        <param>
+          <type>int</type>
+          <declname>the_width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>the_height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1340" bodyend="1343"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1a4fb23b6bf7f50e103503f03464c95336" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Dist2D</definition>
+        <argsstring>(Dist2D const &amp;s)</argsstring>
+        <name>Dist2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1345" bodyend="1348"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1a78b9f8708a3862848509645e43c3eaa5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>operator Diff2D</definition>
+        <argsstring>()</argsstring>
+        <name>operator Diff2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1376" bodyend="1377"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1a14a0db2a27e9d068a08036604c570b54" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref></type>
+        <definition>Dist2D operator+</definition>
+        <argsstring>(Dist2D const &amp;s) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1369" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1368" bodyend="1374"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1a0f9f5aa7b7dde478b196adad9ab09411" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> &amp;</type>
+        <definition>Dist2D&amp; operator+=</definition>
+        <argsstring>(Dist2D const &amp;s)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1360" bodyend="1366"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Dist2D_1a9dd0f78c5d46913a991c29b02499b8c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> &amp;</type>
+        <definition>Dist2D&amp; operator=</definition>
+        <argsstring>(Dist2D const &amp;s)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Dist2D" kindref="compound">Dist2D</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1350" bodyend="1358"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000032"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref> instead </para></xrefdescription></xrefsect></para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1337" bodyend="1381"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Dist2D_1acb0b0ef9ea028d849edf7289a477ba33" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>Dist2D</name></member>
+      <member refid="classvigra_1_1Dist2D_1a4fb23b6bf7f50e103503f03464c95336" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>Dist2D</name></member>
+      <member refid="classvigra_1_1Dist2D_1ad12fc34ce789bce6c8a05d8a17138534" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>height</name></member>
+      <member refid="classvigra_1_1Dist2D_1a78b9f8708a3862848509645e43c3eaa5" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>operator Diff2D</name></member>
+      <member refid="classvigra_1_1Dist2D_1a14a0db2a27e9d068a08036604c570b54" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1Dist2D_1a0f9f5aa7b7dde478b196adad9ab09411" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Dist2D_1a9dd0f78c5d46913a991c29b02499b8c5" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Dist2D_1a2474a5474cbff19523a51eb1de01cda4" prot="public" virt="non-virtual"><scope>vigra::Dist2D</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

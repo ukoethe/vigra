@@ -1,0 +1,1015 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="copyimage_8hxx" kind="file">
+    <compoundname>copyimage.hxx</compoundname>
+    <includes refid="utilities_8hxx" local="yes">utilities.hxx</includes>
+    <includedby refid="multi__pointoperators_8hxx" local="yes">vigra/multi_pointoperators.hxx</includedby>
+    <includedby refid="splineimageview_8hxx" local="yes">vigra/splineimageview.hxx</includedby>
+    <includedby refid="imagecontainer_8hxx" local="yes">vigra/imagecontainer.hxx</includedby>
+    <includedby refid="basicgeometry_8hxx" local="yes">vigra/basicgeometry.hxx</includedby>
+    <includedby refid="stdimagefunctions_8hxx" local="yes">vigra/stdimagefunctions.hxx</includedby>
+    <includedby refid="fftw3_8hxx" local="yes">vigra/fftw3.hxx</includedby>
+    <includedby refid="gaborfilter_8hxx" local="yes">vigra/gaborfilter.hxx</includedby>
+    <includedby refid="impex_8hxx" local="yes">vigra/impex.hxx</includedby>
+    <includedby refid="multi__fft_8hxx" local="yes">vigra/multi_fft.hxx</includedby>
+    <incdepgraph>
+      <node id="1652">
+        <label>functional</label>
+      </node>
+      <node id="1630">
+        <label>limits</label>
+      </node>
+      <node id="1644">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="1628" relation="include">
+        </childnode>
+        <childnode refid="1630" relation="include">
+        </childnode>
+      </node>
+      <node id="1638">
+        <label>iterator</label>
+      </node>
+      <node id="1651">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="1628" relation="include">
+        </childnode>
+      </node>
+      <node id="1645">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="1650">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1641" relation="include">
+        </childnode>
+        <childnode refid="1651" relation="include">
+        </childnode>
+        <childnode refid="1631" relation="include">
+        </childnode>
+        <childnode refid="1652" relation="include">
+        </childnode>
+        <childnode refid="1638" relation="include">
+        </childnode>
+      </node>
+      <node id="1635">
+        <label>cmath</label>
+      </node>
+      <node id="1624">
+        <label>stdexcept</label>
+      </node>
+      <node id="1637">
+        <label>iteratortags.hxx</label>
+        <link refid="iteratortags_8hxx_source"/>
+        <childnode refid="1638" relation="include">
+        </childnode>
+      </node>
+      <node id="1627">
+        <label>string</label>
+      </node>
+      <node id="1620">
+        <label>vigra/copyimage.hxx</label>
+        <link refid="copyimage.hxx"/>
+        <childnode refid="1621" relation="include">
+        </childnode>
+      </node>
+      <node id="1639">
+        <label>iteratortraits.hxx</label>
+        <link refid="iteratortraits_8hxx_source"/>
+        <childnode refid="1640" relation="include">
+        </childnode>
+        <childnode refid="1646" relation="include">
+        </childnode>
+      </node>
+      <node id="1642">
+        <label>cfloat</label>
+      </node>
+      <node id="1621">
+        <label>utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="1622" relation="include">
+        </childnode>
+        <childnode refid="1625" relation="include">
+        </childnode>
+        <childnode refid="1628" relation="include">
+        </childnode>
+        <childnode refid="1632" relation="include">
+        </childnode>
+        <childnode refid="1634" relation="include">
+        </childnode>
+        <childnode refid="1648" relation="include">
+        </childnode>
+        <childnode refid="1627" relation="include">
+        </childnode>
+        <childnode refid="1626" relation="include">
+        </childnode>
+      </node>
+      <node id="1623">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="1632">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="1633" relation="include">
+        </childnode>
+      </node>
+      <node id="1648">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="1635" relation="include">
+        </childnode>
+        <childnode refid="1649" relation="include">
+        </childnode>
+        <childnode refid="1643" relation="include">
+        </childnode>
+        <childnode refid="1622" relation="include">
+        </childnode>
+        <childnode refid="1625" relation="include">
+        </childnode>
+        <childnode refid="1632" relation="include">
+        </childnode>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1641" relation="include">
+        </childnode>
+        <childnode refid="1650" relation="include">
+        </childnode>
+      </node>
+      <node id="1622">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="1623" relation="include">
+        </childnode>
+        <childnode refid="1624" relation="include">
+        </childnode>
+      </node>
+      <node id="1641">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="1629" relation="include">
+        </childnode>
+        <childnode refid="1630" relation="include">
+        </childnode>
+        <childnode refid="1642" relation="include">
+        </childnode>
+        <childnode refid="1643" relation="include">
+        </childnode>
+        <childnode refid="1628" relation="include">
+        </childnode>
+        <childnode refid="1644" relation="include">
+        </childnode>
+        <childnode refid="1645" relation="include">
+        </childnode>
+      </node>
+      <node id="1647">
+        <label>iteratoradapter.hxx</label>
+        <link refid="iteratoradapter_8hxx_source"/>
+      </node>
+      <node id="1646">
+        <label>imageiteratoradapter.hxx</label>
+        <link refid="imageiteratoradapter_8hxx_source"/>
+        <childnode refid="1638" relation="include">
+        </childnode>
+      </node>
+      <node id="1633">
+        <label>utility</label>
+      </node>
+      <node id="1626">
+        <label>sstream</label>
+      </node>
+      <node id="1634">
+        <label>diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="1635" relation="include">
+        </childnode>
+        <childnode refid="1636" relation="include">
+        </childnode>
+        <childnode refid="1622" relation="include">
+        </childnode>
+        <childnode refid="1637" relation="include">
+        </childnode>
+        <childnode refid="1639" relation="include">
+        </childnode>
+        <childnode refid="1647" relation="include">
+        </childnode>
+        <childnode refid="1632" relation="include">
+        </childnode>
+      </node>
+      <node id="1625">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="1624" relation="include">
+        </childnode>
+        <childnode refid="1626" relation="include">
+        </childnode>
+        <childnode refid="1627" relation="include">
+        </childnode>
+        <childnode refid="1622" relation="include">
+        </childnode>
+      </node>
+      <node id="1636">
+        <label>iosfwd</label>
+      </node>
+      <node id="1649">
+        <label>cstdlib</label>
+      </node>
+      <node id="1629">
+        <label>climits</label>
+      </node>
+      <node id="1628">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="1622" relation="include">
+        </childnode>
+        <childnode refid="1629" relation="include">
+        </childnode>
+        <childnode refid="1630" relation="include">
+        </childnode>
+        <childnode refid="1631" relation="include">
+        </childnode>
+      </node>
+      <node id="1643">
+        <label>complex</label>
+      </node>
+      <node id="1631">
+        <label>algorithm</label>
+      </node>
+      <node id="1640">
+        <label>accessor.hxx</label>
+        <link refid="accessor_8hxx_source"/>
+        <childnode refid="1628" relation="include">
+        </childnode>
+        <childnode refid="1641" relation="include">
+        </childnode>
+        <childnode refid="1632" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1690">
+        <label>vigra/splineimageview.hxx</label>
+        <link refid="splineimageview_8hxx_source"/>
+        <childnode refid="1656" relation="include">
+        </childnode>
+        <childnode refid="1669" relation="include">
+        </childnode>
+      </node>
+      <node id="1673">
+        <label>vigra/quaternion.hxx</label>
+        <link refid="quaternion_8hxx_source"/>
+        <childnode refid="1672" relation="include">
+        </childnode>
+        <childnode refid="1674" relation="include">
+        </childnode>
+      </node>
+      <node id="1656">
+        <label>vigra/affine_registration.hxx</label>
+        <link refid="affine__registration_8hxx_source"/>
+      </node>
+      <node id="1654">
+        <label>vigra/multi_pointoperators.hxx</label>
+        <link refid="multi__pointoperators_8hxx_source"/>
+        <childnode refid="1655" relation="include">
+        </childnode>
+        <childnode refid="1681" relation="include">
+        </childnode>
+        <childnode refid="1683" relation="include">
+        </childnode>
+        <childnode refid="1684" relation="include">
+        </childnode>
+        <childnode refid="1685" relation="include">
+        </childnode>
+        <childnode refid="1686" relation="include">
+        </childnode>
+        <childnode refid="1687" relation="include">
+        </childnode>
+        <childnode refid="1688" relation="include">
+        </childnode>
+      </node>
+      <node id="1700">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="1693">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="1694" relation="include">
+        </childnode>
+        <childnode refid="1703" relation="include">
+        </childnode>
+      </node>
+      <node id="1707">
+        <label>vigra/basicgeometry.hxx</label>
+        <link refid="basicgeometry_8hxx_source"/>
+        <childnode refid="1659" relation="include">
+        </childnode>
+      </node>
+      <node id="1672">
+        <label>vigra/invariant_features3D.hxx</label>
+        <link refid="invariant__features3D_8hxx_source"/>
+      </node>
+      <node id="1669">
+        <label>vigra/affinegeometry.hxx</label>
+        <link refid="affinegeometry_8hxx_source"/>
+      </node>
+      <node id="1661">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="1662">
+        <label>vigra/quadprog.hxx</label>
+        <link refid="quadprog_8hxx_source"/>
+      </node>
+      <node id="1679">
+        <label>vigra/random_forest/rf_region.hxx</label>
+        <link refid="rf__region_8hxx_source"/>
+        <childnode refid="1678" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1703">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="1660">
+        <label>vigra/linear_algebra.hxx</label>
+        <link refid="linear__algebra_8hxx_source"/>
+      </node>
+      <node id="1653">
+        <label>vigra/copyimage.hxx</label>
+        <link refid="copyimage.hxx"/>
+        <childnode refid="1654" relation="include">
+        </childnode>
+        <childnode refid="1690" relation="include">
+        </childnode>
+        <childnode refid="1691" relation="include">
+        </childnode>
+        <childnode refid="1707" relation="include">
+        </childnode>
+        <childnode refid="1694" relation="include">
+        </childnode>
+        <childnode refid="1704" relation="include">
+        </childnode>
+        <childnode refid="1706" relation="include">
+        </childnode>
+        <childnode refid="1708" relation="include">
+        </childnode>
+        <childnode refid="1705" relation="include">
+        </childnode>
+      </node>
+      <node id="1678">
+        <label>vigra/random_forest/rf_split.hxx</label>
+        <link refid="rf__split_8hxx_source"/>
+        <childnode refid="1664" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1691">
+        <label>vigra/imagecontainer.hxx</label>
+        <link refid="imagecontainer_8hxx_source"/>
+        <childnode refid="1656" relation="include">
+        </childnode>
+        <childnode refid="1692" relation="include">
+        </childnode>
+        <childnode refid="1704" relation="include">
+        </childnode>
+        <childnode refid="1706" relation="include">
+        </childnode>
+      </node>
+      <node id="1706">
+        <label>vigra/gaborfilter.hxx</label>
+        <link refid="gaborfilter_8hxx_source"/>
+      </node>
+      <node id="1666">
+        <label>vigra/random_forest_hdf5_impex.hxx</label>
+        <link refid="random__forest__hdf5__impex_8hxx_source"/>
+      </node>
+      <node id="1694">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="1695" relation="include">
+        </childnode>
+        <childnode refid="1658" relation="include">
+        </childnode>
+        <childnode refid="1701" relation="include">
+        </childnode>
+        <childnode refid="1688" relation="include">
+        </childnode>
+      </node>
+      <node id="1657">
+        <label>vigra/linear_solve.hxx</label>
+        <link refid="linear__solve_8hxx_source"/>
+        <childnode refid="1656" relation="include">
+        </childnode>
+        <childnode refid="1658" relation="include">
+        </childnode>
+        <childnode refid="1660" relation="include">
+        </childnode>
+        <childnode refid="1661" relation="include">
+        </childnode>
+        <childnode refid="1662" relation="include">
+        </childnode>
+        <childnode refid="1663" relation="include">
+        </childnode>
+        <childnode refid="1659" relation="include">
+        </childnode>
+      </node>
+      <node id="1689">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="1667">
+        <label>vigra/singular_value_decomposition.hxx</label>
+        <link refid="singular__value__decomposition_8hxx_source"/>
+        <childnode refid="1657" relation="include">
+        </childnode>
+        <childnode refid="1663" relation="include">
+        </childnode>
+        <childnode refid="1668" relation="include">
+        </childnode>
+      </node>
+      <node id="1697">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="1658">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="1659" relation="include">
+        </childnode>
+      </node>
+      <node id="1674">
+        <label>vigra/wigner-matrix.hxx</label>
+        <link refid="wigner-matrix_8hxx_source"/>
+      </node>
+      <node id="1705">
+        <label>vigra/multi_fft.hxx</label>
+        <link refid="multi__fft_8hxx_source"/>
+      </node>
+      <node id="1696">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="1697" relation="include">
+        </childnode>
+        <childnode refid="1698" relation="include">
+        </childnode>
+        <childnode refid="1658" relation="include">
+        </childnode>
+        <childnode refid="1699" relation="include">
+        </childnode>
+        <childnode refid="1700" relation="include">
+        </childnode>
+        <childnode refid="1671" relation="include">
+        </childnode>
+      </node>
+      <node id="1695">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="1696" relation="include">
+        </childnode>
+      </node>
+      <node id="1692">
+        <label>vigra/resampling_convolution.hxx</label>
+        <link refid="resampling__convolution_8hxx_source"/>
+        <childnode refid="1693" relation="include">
+        </childnode>
+      </node>
+      <node id="1659">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="1683">
+        <label>vigra/multi_convolution.hxx</label>
+        <link refid="multi__convolution_8hxx_source"/>
+      </node>
+      <node id="1680">
+        <label>vigra/random_forest_deprec.hxx</label>
+        <link refid="random__forest__deprec_8hxx_source"/>
+      </node>
+      <node id="1664">
+        <label>vigra/random_forest/rf_ridge_split.hxx</label>
+        <link refid="rf__ridge__split_8hxx_source"/>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1677">
+        <label>vigra/random_forest/rf_nodeproxy.hxx</label>
+        <link refid="rf__nodeproxy_8hxx_source"/>
+        <childnode refid="1676" relation="include">
+        </childnode>
+        <childnode refid="1678" relation="include">
+        </childnode>
+        <childnode refid="1664" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1668">
+        <label>vigra/unsupervised_decomposition.hxx</label>
+        <link refid="unsupervised__decomposition_8hxx_source"/>
+      </node>
+      <node id="1665">
+        <label>vigra/random_forest.hxx</label>
+        <link refid="random__forest_8hxx_source"/>
+        <childnode refid="1666" relation="include">
+        </childnode>
+      </node>
+      <node id="1663">
+        <label>vigra/regression.hxx</label>
+        <link refid="regression_8hxx_source"/>
+        <childnode refid="1664" relation="include">
+        </childnode>
+      </node>
+      <node id="1675">
+        <label>vigra/matlab.hxx</label>
+        <link refid="matlab_8hxx_source"/>
+      </node>
+      <node id="1676">
+        <label>vigra/random_forest/rf_decisionTree.hxx</label>
+        <link refid="rf__decisionTree_8hxx_source"/>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1684">
+        <label>vigra/multi_distance.hxx</label>
+        <link refid="multi__distance_8hxx_source"/>
+        <childnode refid="1685" relation="include">
+        </childnode>
+      </node>
+      <node id="1671">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="1708">
+        <label>vigra/impex.hxx</label>
+        <link refid="impex_8hxx"/>
+        <childnode refid="1682" relation="include">
+        </childnode>
+        <childnode refid="1681" relation="include">
+        </childnode>
+        <childnode refid="1671" relation="include">
+        </childnode>
+      </node>
+      <node id="1685">
+        <label>vigra/multi_morphology.hxx</label>
+        <link refid="multi__morphology_8hxx_source"/>
+      </node>
+      <node id="1701">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="1688" relation="include">
+        </childnode>
+        <childnode refid="1702" relation="include">
+        </childnode>
+      </node>
+      <node id="1688">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="1689" relation="include">
+        </childnode>
+      </node>
+      <node id="1699">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="1702">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="1689" relation="include">
+        </childnode>
+      </node>
+      <node id="1670">
+        <label>vigra/eigensystem.hxx</label>
+        <link refid="eigensystem_8hxx_source"/>
+        <childnode refid="1660" relation="include">
+        </childnode>
+        <childnode refid="1671" relation="include">
+        </childnode>
+      </node>
+      <node id="1698">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+      <node id="1686">
+        <label>vigra/multi_tensorutilities.hxx</label>
+        <link refid="multi__tensorutilities_8hxx_source"/>
+      </node>
+      <node id="1655">
+        <label>vigra/matrix.hxx</label>
+        <link refid="matrix_8hxx_source"/>
+        <childnode refid="1656" relation="include">
+        </childnode>
+        <childnode refid="1657" relation="include">
+        </childnode>
+        <childnode refid="1667" relation="include">
+        </childnode>
+        <childnode refid="1669" relation="include">
+        </childnode>
+        <childnode refid="1670" relation="include">
+        </childnode>
+        <childnode refid="1672" relation="include">
+        </childnode>
+        <childnode refid="1673" relation="include">
+        </childnode>
+        <childnode refid="1660" relation="include">
+        </childnode>
+        <childnode refid="1675" relation="include">
+        </childnode>
+        <childnode refid="1662" relation="include">
+        </childnode>
+        <childnode refid="1676" relation="include">
+        </childnode>
+        <childnode refid="1677" relation="include">
+        </childnode>
+        <childnode refid="1679" relation="include">
+        </childnode>
+        <childnode refid="1678" relation="include">
+        </childnode>
+        <childnode refid="1663" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+        <childnode refid="1680" relation="include">
+        </childnode>
+        <childnode refid="1668" relation="include">
+        </childnode>
+        <childnode refid="1674" relation="include">
+        </childnode>
+      </node>
+      <node id="1687">
+        <label>vigra/random_forest/rf_visitors.hxx</label>
+        <link refid="rf__visitors_8hxx_source"/>
+        <childnode refid="1676" relation="include">
+        </childnode>
+        <childnode refid="1665" relation="include">
+        </childnode>
+      </node>
+      <node id="1682">
+        <label>vigra/hdf5impex.hxx</label>
+        <link refid="hdf5impex_8hxx_source"/>
+        <childnode refid="1666" relation="include">
+        </childnode>
+      </node>
+      <node id="1681">
+        <label>vigra/multi_impex.hxx</label>
+        <link refid="multi__impex_8hxx_source"/>
+        <childnode refid="1682" relation="include">
+        </childnode>
+      </node>
+      <node id="1704">
+        <label>vigra/fftw3.hxx</label>
+        <link refid="fftw3_8hxx_source"/>
+        <childnode refid="1705" relation="include">
+        </childnode>
+        <childnode refid="1659" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2002<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_COPYIMAGE_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_COPYIMAGE_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;utilities.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">/**<sp/>\addtogroup<sp/>CopyAlgo<sp/>Algorithms<sp/>to<sp/>Copy<sp/>Images</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/>Copy<sp/>images<sp/>or<sp/>regions</highlight></codeline>
+<codeline lineno="46"><highlight class="comment">*/</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment">//@{</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyLine<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal">copyLine(SrcIterator<sp/>s,<sp/></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>send,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d,<sp/>DestAccessor<sp/>dest)</highlight></codeline>
+<codeline lineno="61"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>s<sp/>!=<sp/>send;<sp/>++s,<sp/>++d)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.set(src(s),<sp/>d);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,<sp/></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal">copyLineIf(SrcIterator<sp/>s,<sp/></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>send,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/>m,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d,<sp/>DestAccessor<sp/>dest)</highlight></codeline>
+<codeline lineno="74"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>s<sp/>!=<sp/>send;<sp/>++s,<sp/>++d,<sp/>++m)</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask(m))</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.set(src(s),<sp/>d);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal">swapLine(SrcIterator<sp/>s,<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>send,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d,<sp/>DestAccessor<sp/>dest)</highlight></codeline>
+<codeline lineno="86"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>s<sp/>!=<sp/>send;<sp/>++s,<sp/>++d)</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>SrcAccessor::value_type<sp/>t<sp/>=<sp/>src(s);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src.set(dest(d),<sp/>s);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.set(t,<sp/>d);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="93"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImage<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="101"><highlight class="comment">/**<sp/>\brief<sp/>Copy<sp/>source<sp/>image<sp/>into<sp/>destination<sp/>image.</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"></highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/><sp/>If<sp/>necessary,<sp/>type<sp/>conversion<sp/>takes<sp/>place.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>function<sp/>uses<sp/>accessors<sp/>to<sp/>access<sp/>the<sp/>pixel<sp/>data.</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declarations:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/>pass<sp/>arguments<sp/>explicitly:</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcImageIterator,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestImageIterator,<sp/>class<sp/>DestAccessor&gt;</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImage(SrcImageIterator<sp/>src_upperleft,<sp/></highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/>use<sp/>argument<sp/>objects<sp/>in<sp/>conjunction<sp/>with<sp/>\ref<sp/>ArgumentObjectFactories<sp/>:</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcImageIterator,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestImageIterator,<sp/>class<sp/>DestAccessor&gt;</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImage(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Usage:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/copyimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::copyImage(srcImageRange(src),<sp/>destImage(dest));</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"></highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/><sp/>DestImageIterator<sp/><sp/><sp/><sp/><sp/><sp/>dest_upperleft;</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcImageIterator::row_iterator<sp/>sx<sp/>=<sp/>src_upperleft.rowIterator();</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/><sp/><sp/>DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/><sp/><sp/>DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"></highlight></codeline>
+<codeline lineno="153"><highlight class="comment"><sp/><sp/><sp/><sp/>dest_accessor.set(src_accessor(sx),<sp/>dx);</highlight></codeline>
+<codeline lineno="154"><highlight class="comment"></highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="157"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal">doxygen_overloaded_function(template<sp/>&lt;...&gt;<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CopyAlgo_1ga2624abed63bc46afcf7d2e482c156023" kindref="member" tooltip="Copy source image into destination image.">copyImage</ref>)</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><ref refid="group__CopyAlgo_1ga2624abed63bc46afcf7d2e482c156023" kindref="member" tooltip="Copy source image into destination image.">copyImage</ref>(SrcImageIterator<sp/>src_upperleft,<sp/></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>w<sp/>=<sp/>src_lowerright.x<sp/>-<sp/>src_upperleft.x;</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>src_upperleft.y&lt;src_lowerright.y;<sp/>++src_upperleft.y,<sp/>++dest_upperleft.y)</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyLine(src_upperleft.rowIterator(),<sp/></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src_upperleft.rowIterator()<sp/>+<sp/>w,<sp/>sa,<sp/></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest_upperleft.rowIterator(),<sp/>da);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="175"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><ref refid="group__CopyAlgo_1ga2624abed63bc46afcf7d2e482c156023" kindref="member" tooltip="Copy source image into destination image.">copyImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="183"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CopyAlgo_1ga2624abed63bc46afcf7d2e482c156023" kindref="member" tooltip="Copy source image into destination image.">copyImage</ref>(src.first,<sp/>src.second,<sp/>src.third,<sp/></highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second);</highlight></codeline>
+<codeline lineno="186"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"><highlight class="normal">swapImageData(SrcImageIterator<sp/>src_upperleft,<sp/></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline lineno="194"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>w<sp/>=<sp/>src_lowerright.x<sp/>-<sp/>src_upperleft.x;</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>src_upperleft.y&lt;src_lowerright.y;<sp/>++src_upperleft.y,<sp/>++dest_upperleft.y)</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>swapLine(src_upperleft.rowIterator(),<sp/></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src_upperleft.rowIterator()<sp/>+<sp/>w,<sp/>sa,<sp/></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest_upperleft.rowIterator(),<sp/>da);</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="203"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal">swapImageData(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="211"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/>swapImageData(src.first,<sp/>src.second,<sp/>src.third,<sp/></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second);</highlight></codeline>
+<codeline lineno="214"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImageIf<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight><highlight class="comment">/********************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="222"><highlight class="comment">/**<sp/>\brief<sp/>Copy<sp/>source<sp/>ROI<sp/>into<sp/>destination<sp/>image.</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"></highlight></codeline>
+<codeline lineno="224"><highlight class="comment"><sp/><sp/><sp/><sp/>Pixel<sp/>values<sp/>are<sp/>copied<sp/>whenever<sp/>the<sp/>return<sp/>value<sp/>of<sp/>the<sp/>mask&apos;s</highlight></codeline>
+<codeline lineno="225"><highlight class="comment"><sp/><sp/><sp/><sp/>accessor<sp/>is<sp/>not<sp/>zero.</highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/><sp/><sp/><sp/>If<sp/>necessary,<sp/>type<sp/>conversion<sp/>takes<sp/>place.</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>function<sp/>uses<sp/>accessors<sp/>to<sp/>access<sp/>the<sp/>pixel<sp/>data.</highlight></codeline>
+<codeline lineno="228"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="229"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declarations:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="230"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/><sp/><sp/><sp/>pass<sp/>arguments<sp/>explicitly:</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="234"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcImageIterator,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="235"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>MaskImageIterator,<sp/>class<sp/>MaskAccessor,</highlight></codeline>
+<codeline lineno="236"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestImageIterator,<sp/>clas<sp/>DestAccessor&gt;</highlight></codeline>
+<codeline lineno="237"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="238"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImageIf(SrcImageIterator<sp/>src_upperleft,<sp/></highlight></codeline>
+<codeline lineno="239"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline lineno="240"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline lineno="241"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline lineno="242"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="243"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="244"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="245"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="246"><highlight class="comment"><sp/><sp/><sp/><sp/>use<sp/>argument<sp/>objects<sp/>in<sp/>conjunction<sp/>with<sp/>\ref<sp/>ArgumentObjectFactories<sp/>:</highlight></codeline>
+<codeline lineno="247"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="248"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="249"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcImageIterator,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="250"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>MaskImageIterator,<sp/>class<sp/>MaskAccessor,</highlight></codeline>
+<codeline lineno="251"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestImageIterator,<sp/>clas<sp/>DestAccessor&gt;</highlight></codeline>
+<codeline lineno="252"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="253"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyImageIf(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="254"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline lineno="255"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="256"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="257"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="259"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Usage:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="260"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="261"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/copyimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="262"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="263"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="264"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="265"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::copyImageIf(srcImageRange(src),<sp/>maskImage(mask),<sp/>destImage(dest));</highlight></codeline>
+<codeline lineno="266"><highlight class="comment"></highlight></codeline>
+<codeline lineno="267"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="268"><highlight class="comment"></highlight></codeline>
+<codeline lineno="269"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="270"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="271"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="272"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline lineno="273"><highlight class="comment"><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline lineno="274"><highlight class="comment"><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline lineno="275"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcImageIterator::row_iterator<sp/>sx<sp/>=<sp/>src_upperleft.rowIterator();</highlight></codeline>
+<codeline lineno="276"><highlight class="comment"><sp/><sp/><sp/><sp/>MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mask_upperleft.rowIterator();</highlight></codeline>
+<codeline lineno="277"><highlight class="comment"><sp/><sp/><sp/><sp/>DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline lineno="278"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="279"><highlight class="comment"><sp/><sp/><sp/><sp/>SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline lineno="280"><highlight class="comment"><sp/><sp/><sp/><sp/>DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline lineno="281"><highlight class="comment"><sp/><sp/><sp/><sp/>MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline lineno="282"><highlight class="comment"><sp/><sp/><sp/><sp/>Functor<sp/>functor;</highlight></codeline>
+<codeline lineno="283"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="284"><highlight class="comment"><sp/><sp/><sp/><sp/>if(mask_accessor(mx))</highlight></codeline>
+<codeline lineno="285"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest_accessor.set(src_accessor(sx),<sp/>dx);</highlight></codeline>
+<codeline lineno="286"><highlight class="comment"></highlight></codeline>
+<codeline lineno="287"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="288"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="289"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="290"><highlight class="normal">doxygen_overloaded_function(template<sp/>&lt;...&gt;<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">copyImageIf</ref>)</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">copyImageIf</ref>(SrcImageIterator<sp/>src_upperleft,<sp/></highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>src_lowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline lineno="300"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>w<sp/>=<sp/>src_lowerright.x<sp/>-<sp/>src_upperleft.x;</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>src_upperleft.y&lt;src_lowerright.y;<sp/></highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++src_upperleft.y,<sp/>++mask_upperleft.y,<sp/>++dest_upperleft.y)</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyLineIf(src_upperleft.rowIterator(),<sp/></highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src_upperleft.rowIterator()<sp/>+<sp/>w,<sp/>sa,<sp/></highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mask_upperleft.rowIterator(),<sp/>ma,<sp/></highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest_upperleft.rowIterator(),<sp/>da);</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="311"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"></highlight></codeline>
+<codeline lineno="313"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="318"><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">copyImageIf</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="321"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">copyImageIf</ref>(src.first,<sp/>src.second,<sp/>src.third,<sp/></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mask.first,<sp/>mask.second,<sp/></highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second);</highlight></codeline>
+<codeline lineno="325"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="326"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="327"><highlight class="comment">//@}</highlight></codeline>
+<codeline lineno="328"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="329"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"></highlight></codeline>
+<codeline lineno="331"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_COPYIMAGE_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/copyimage.hxx"/>
+  </compounddef>
+</doxygen>

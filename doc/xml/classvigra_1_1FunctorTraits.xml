@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FunctorTraits" kind="class" prot="public">
+    <compoundname>vigra::FunctorTraits</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::FunctorTraitsBase&lt; T &gt;</basecompoundref>
+    <includes refid="functortraits_8hxx" local="no">vigra/functortraits.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+<para>Export associated information for a functor. </para>    </briefdescription>
+    <detaileddescription>
+<para>The <ref refid="classvigra_1_1FunctorTraits" kindref="compound">FunctorTraits</ref> class contains the following fields:</para><para><programlisting><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">FunctorTraits</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>T<sp/>type;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isInitializer;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isUnaryFunctor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isBinaryFunctor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isTernaryFunctor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isUnaryAnalyser;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isBinaryAnalyser;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>isTernaryAnalyser;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>where the dots are either <computeroutput>VigraTrueType</computeroutput> or <computeroutput>VigraFalseType</computeroutput> depending on whether the functor supports the respective functionality or not. Note that these traits are automatically defined correctly when your functor is derived from the appropriate functor tag classes:</para><para><programlisting><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">InitializerTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">UnaryFunctorTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">BinaryFunctorTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">TernaryFunctorTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">UnaryAnalyserTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">BinaryAnalyserTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">TernaryAnalyserTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">UnaryReduceFunctorTag<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>InitializerTag,<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>UnaryAnalyserTag<sp/>{};</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">BinaryReduceFunctorTag<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>InitializerTag,<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>BinaryAnalyserTag<sp/>{};</highlight></codeline>
+</programlisting></para><para>If a functor <computeroutput>f</computeroutput> is a model of these categories, it supports the following calls (<computeroutput>v</computeroutput> is a variable such that the result type of the functor calls can be converted into <computeroutput>v</computeroutput>&apos;s type, and <computeroutput>a1, a2, a3</computeroutput> are variables convertible into the functor&apos;s argument types):</para><para><variablelist>
+<varlistentry><term><bold>Initializer</bold> </term></varlistentry>
+<listitem><para><computeroutput>v = f()</computeroutput> (used with <ref refid="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" kindref="member">initImageWithFunctor()</ref>) </para></listitem>
+<varlistentry><term><bold>UnaryFunctor</bold> </term></varlistentry>
+<listitem><para><computeroutput>v = f(a1)</computeroutput> (used with <ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member">transformImage()</ref>) </para></listitem>
+<varlistentry><term><bold>BinaryFunctor</bold> </term></varlistentry>
+<listitem><para><computeroutput>v = f(a1, a2)</computeroutput> (used with <ref refid="group__CombineAlgo_1gaccf94cfa4b47ceb10e08dabe668fce23" kindref="member">combineTwoImages()</ref>) </para></listitem>
+<varlistentry><term><bold>TernaryFunctor</bold> </term></varlistentry>
+<listitem><para><computeroutput>v = f(a1, a2, a3)</computeroutput> (used with <ref refid="group__CombineAlgo_1ga9bbc3b2f05707a6d4734f5f63c3884e2" kindref="member">combineThreeImages()</ref>) </para></listitem>
+<varlistentry><term><bold>UnaryAnalyser</bold> </term></varlistentry>
+<listitem><para><computeroutput>f(a1)</computeroutput> (return type <computeroutput>void</computeroutput>, used with <ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member">inspectImage()</ref>) </para></listitem>
+<varlistentry><term><bold>BinaryAnalyser</bold> </term></varlistentry>
+<listitem><para><computeroutput>f(a1, a2)</computeroutput> (return type <computeroutput>void</computeroutput>, used with <ref refid="group__InspectAlgo_1gad70a53a9ab68eab8c6d3371b1269b6ac" kindref="member">inspectTwoImages()</ref>) </para></listitem>
+<varlistentry><term><bold>TernaryAnalyser</bold> </term></varlistentry>
+<listitem><para><computeroutput>f(a1, a2, a3)</computeroutput> (return type <computeroutput>void</computeroutput>) </para></listitem>
+</variablelist>
+</para><para>It should be noted that the functor&apos;s argument and result types are not contained in the traits class: Since the function calls are often member template functions in VIGRA, many functors do not have fixed argument types. Neither are the result types fixed in this case because they are computed (via a template meta-program) from the argument types.</para><para><bold>#include</bold> &lt;<ref refid="functortraits_8hxx_source" kindref="compound">vigra/functortraits.hxx</ref>&gt; Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="159" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="157" bodyend="159"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a6cb018a9f1b095d1ba43901fe0981978" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isBinaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1ad3a8945ee6ab942c5797bfe970c4c6e2" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isBinaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a3c2cbe5667a896d68567fd1695e157ce" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isInitializer</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a9be0a8f594fdc60755f535c5dee13549" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isTernaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a5e8ed03bf2c875398b4f632054647ac9" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isTernaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a72ee54fb00fac7c367a7a39ae7dc2b95" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isUnaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a82f794272cb17400bc48e187420698e8" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>isUnaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a565429e62c1d4fd084335146ba778e17" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

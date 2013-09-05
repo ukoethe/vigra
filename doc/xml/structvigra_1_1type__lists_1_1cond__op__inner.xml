@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__op__inner" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_op_inner</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class ZL</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+      <param>
+        <type>class RRL</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op__inner_1a13bb534cc2a0504417ec20118d537f4d" prot="public" static="no">
+        <type>cond_op&lt; ZL, TEST, RRL &gt;</type>
+        <definition>typedef cond_op&lt;ZL, TEST, RRL&gt; exec_type</definition>
+        <argsstring></argsstring>
+        <name>exec_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1352" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op__inner_1afc1c78767b4ceb5fb74266e034ad9826" prot="public" static="no">
+        <type>exec_type::iter_leftover_type</type>
+        <definition>typedef exec_type::iter_leftover_type iter_leftover_type</definition>
+        <argsstring></argsstring>
+        <name>iter_leftover_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1353" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__op__inner_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void call</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;z)</argsstring>
+        <name>call</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1365" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1364" bodyend="1370"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__op__inner_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;z)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1357" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1356" bodyend="1362"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1350" bodyend="1371"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__op__inner_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op_inner</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op__inner_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op_inner</scope><name>exec</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op__inner_1a13bb534cc2a0504417ec20118d537f4d" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op_inner</scope><name>exec_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op__inner_1afc1c78767b4ceb5fb74266e034ad9826" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op_inner</scope><name>iter_leftover_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

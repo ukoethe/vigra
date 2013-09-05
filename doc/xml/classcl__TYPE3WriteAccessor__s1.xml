@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classcl__TYPE3WriteAccessor__s1" kind="class" prot="public">
+    <compoundname>cl_TYPE3WriteAccessor_s1</compoundname>
+    <includes refid="multi__opencl_8hxx" local="no">vigra/multi_opencl.hxx</includes>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>access the second component. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_opencl.hxx" line="280"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

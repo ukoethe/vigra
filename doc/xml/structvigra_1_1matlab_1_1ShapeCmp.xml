@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1matlab_1_1ShapeCmp" kind="struct" prot="public">
+    <compoundname>vigra::matlab::ShapeCmp</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1matlab_1_1ShapeCmp_1a1514ac7b4903ee355a88c4836f9cc014" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(TinyVector&lt; int, 2 &gt; s1, TinyVector&lt; int, 2 &gt; s2) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; int, 2 &gt;</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; int, 2 &gt;</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1132" bodyend="1138"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1131" bodyend="1139"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1matlab_1_1ShapeCmp_1a1514ac7b4903ee355a88c4836f9cc014" prot="public" virt="non-virtual"><scope>vigra::matlab::ShapeCmp</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

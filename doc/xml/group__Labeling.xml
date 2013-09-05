@@ -1,0 +1,1599 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Labeling" kind="group">
+    <compoundname>Labeling</compoundname>
+    <title>Connected Components Labeling</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>labelImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find the connected components of a segmented image. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">labelImage</ref>(SrcIterator<sp/>upperlefts,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">labelImage</ref>(SrcIterator<sp/>upperlefts,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,<sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">labelImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">labelImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,<sp/>EqualityFunctor<sp/>equal)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Connected components are defined as regions with uniform pixel values. Thus, <computeroutput>SrcAccessor::value_type</computeroutput> either must be equality comparable (first form), or an EqualityFunctor must be provided that realizes the desired predicate (second form). The destination&apos;s value type should be large enough to hold the labels without overflow. Region numbers will be a consecutive sequence starting with one and ending with the region number returned by the function (inclusive). The parameter &apos;<computeroutput>eight_neighbors</computeroutput>&apos; determines whether the regions should be 4-connected or 8-connected. The function uses accessors.</para><para>Return: the number of regions found (= largest region label)</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/labelimage.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labels(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>threshold<sp/>at<sp/>128</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="classvigra_1_1Threshold" kindref="compound" tooltip="Threshold an image.">vigra::Threshold&lt;vigra::BImage::PixelType, vigra::BImage::PixelType&gt;</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>128,<sp/>256,<sp/>0,<sp/>255));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>4-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">vigra::labelImage</ref>(srcImageRange(src),<sp/>destImage(labels),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(i,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="155"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga0efae5dd90e9402e974452e13beb4197" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImage</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, bool eight_neighbors, EqualityFunctor equal)</argsstring>
+        <name>labelImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="160" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gab3221628b8ae01e399c313a1589a0987" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, bool eight_neighbors, EqualityFunctor equal)</argsstring>
+        <name>labelImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="259" bodyend="265"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga8a5fa064dafdd341ecd259dc28dc1620" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImage</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, bool eight_neighbors)</argsstring>
+        <name>labelImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="274" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="270" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga71ad94a3d5dccc8f36ccb4174b1e660f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, bool eight_neighbors)</argsstring>
+        <name>labelImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="286" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="283" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImageWithBackground</definition>
+        <argsstring>(...)</argsstring>
+        <name>labelImageWithBackground</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find the connected components of a segmented image, excluding the background from labeling. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" kindref="member" tooltip="Find the connected components of a segmented image, excluding the background from labeling...">labelImageWithBackground</ref>(SrcIterator<sp/>upperlefts,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueType<sp/>background_value<sp/>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" kindref="member" tooltip="Find the connected components of a segmented image, excluding the background from labeling...">labelImageWithBackground</ref>(SrcIterator<sp/>upperlefts,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>lowerrights,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>upperleftd,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueType<sp/>background_value,<sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" kindref="member" tooltip="Find the connected components of a segmented image, excluding the background from labeling...">labelImageWithBackground</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueType<sp/>background_value);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" kindref="member" tooltip="Find the connected components of a segmented image, excluding the background from labeling...">labelImageWithBackground</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eight_neighbors,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ValueType<sp/>background_value,<sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Connected components are defined as regions with uniform pixel values. Thus, <computeroutput>SrcAccessor::value_type</computeroutput> either must be equality comparable (first form), or an EqualityFunctor must be provided that realizes the desired predicate (second form). All pixel equal to the given &apos;<computeroutput>background_value</computeroutput>&apos; are ignored when determining connected components and remain untouched in the destination image and</para><para>The destination&apos;s value type should be large enough to hold the labels without overflow. Region numbers will be a consecutive sequence starting with one and ending with the region number returned by the function (inclusive). The parameter &apos;<computeroutput>eight_neighbors</computeroutput>&apos; determines whether the regions should be 4-connected or 8-connected. The function uses accessors.</para><para>Return: the number of regions found (= largest region label)</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/labelimage.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labels(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>threshold<sp/>at<sp/>128</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1Threshold" kindref="compound" tooltip="Threshold an image.">vigra::Threshold&lt;vigra::BImage::PixelType, vigra::BImage::PixelType&gt;</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>128,<sp/>256,<sp/>0,<sp/>255));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>4-connected<sp/>regions<sp/>of<sp/>foreground<sp/>(=<sp/>white<sp/>pixels)<sp/>only</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1gad8d7c944ead026988c0a3bcadd8076b6" kindref="member" tooltip="Find the connected components of a segmented image, excluding the background from labeling...">vigra::labelImageWithBackground</ref>(srcImageRange(src),<sp/>destImage(labels),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal">ValueType<sp/>background_value;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>background_value<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>background_value)<sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(i,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="407"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga53cf045adb40b0a18af378f6be5e91c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImageWithBackground</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, bool eight_neighbors, ValueType background_value, EqualityFunctor equal)</argsstring>
+        <name>labelImageWithBackground</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>background_value</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="412" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga7835726be3ae95f9c794875015d49bc4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImageWithBackground</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, bool eight_neighbors, ValueType background_value, EqualityFunctor equal)</argsstring>
+        <name>labelImageWithBackground</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>background_value</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="550" bodyend="559"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga740120c0baab4c654c6141123a26ecf8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImageWithBackground</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, bool eight_neighbors, ValueType background_value)</argsstring>
+        <name>labelImageWithBackground</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>background_value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="570" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="565" bodyend="575"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gac35bacce151c77eaafa676db76427be8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelImageWithBackground</definition>
+        <argsstring>(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa, DestIterator upperleftd, DestAccessor da, bool eight_neighbors, ValueType background_value)</argsstring>
+        <name>labelImageWithBackground</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>upperlefts</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lowerrights</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>upperleftd</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>eight_neighbors</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>background_value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="581" bodyend="592"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolume</definition>
+        <argsstring>(...)</argsstring>
+        <name>labelVolume</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find the connected components of a segmented volume. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member" tooltip="Find the connected components of a segmented volume.">labelVolume</ref>(SrcIterator<sp/>s_Iter,<sp/>SrcShape<sp/>srcShape,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d_Iter,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member" tooltip="Find the connected components of a segmented volume.">labelVolume</ref>(SrcIterator<sp/>s_Iter,<sp/>SrcShape<sp/>srcShape,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d_Iter,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member" tooltip="Find the connected components of a segmented volume.">labelVolume</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member" tooltip="Find the connected components of a segmented volume.">labelVolume</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use with 3D-Six-Neighborhood: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga290823a39ffaae962651442a9de0f445" kindref="member" tooltip="Find the connected components of a segmented volume using the 6-neighborhood.">labelVolumeSix</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Connected components are defined as regions with uniform voxel values. Thus, <computeroutput>SrcAccessor::value_type</computeroutput> either must be equality comparable (first form), or an EqualityFunctor must be provided that realizes the desired predicate (second form). The destination&apos;s value type should be large enough to hold the labels without overflow. Region numbers will be a consecutive sequence starting with one and ending with the region number returned by the function (inclusive).</para><para>Return: the number of regions found (= largest region label)</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="labelvolume_8hxx_source" kindref="compound">vigra/labelvolume.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3,int&gt;</ref><sp/>IntVolume;</highlight></codeline>
+<codeline><highlight class="normal">IntVolume<sp/>src(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal">IntVolume<sp/>dest(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>6-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/><ref refid="group__Labeling_1ga290823a39ffaae962651442a9de0f445" kindref="member" tooltip="Find the connected components of a segmented volume using the 6-neighborhood.">vigra::labelVolumeSix</ref>(srcMultiArrayRange(src),<sp/>destMultiArray(dest));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>26-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member" tooltip="Find the connected components of a segmented volume.">vigra::labelVolume</ref>(srcMultiArrayRange(src),<sp/>destMultiArray(dest),<sp/><ref refid="group__VoxelNeighborhood_1ga89b6c2a18b23d145b3bc2fe983803f08" kindref="member">NeighborCode3DTwentySix</ref>());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_begin;</highlight></codeline>
+<codeline><highlight class="normal">SrcShape<sp/>shape;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_begin;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_begin);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(i,<sp/>dest_begin);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="166"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gaa02bf98e7bfcc02fa8e97daac1ac5e5c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolume</definition>
+        <argsstring>(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa, DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D)</argsstring>
+        <name>labelVolume</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s_Iter</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>srcShape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d_Iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="172" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gad75e83f39acc0837c00d31d89bdf6128" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolume</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood3D neighborhood3D)</argsstring>
+        <name>labelVolume</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="185" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="182" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga6db0213a767a114d7dbc143c2cdfc4f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolume</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood3D neighborhood3D, EqualityFunctor equal)</argsstring>
+        <name>labelVolume</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="192" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gab0fa513196930a427cb811810af76c8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolume</definition>
+        <argsstring>(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa, DestIterator d_Iter, DestAccessor da, Neighborhood3D, EqualityFunctor equal)</argsstring>
+        <name>labelVolume</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s_Iter</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>srcShape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d_Iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="205" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="202" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga290823a39ffaae962651442a9de0f445" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeSix</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>labelVolumeSix</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+<para>Find the connected components of a segmented volume using the 6-neighborhood. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member">labelVolume()</ref> for detailed documentation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="333" bodyend="337"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeWithBackground</definition>
+        <argsstring>(...)</argsstring>
+        <name>labelVolumeWithBackground</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find the connected components of a segmented volume, excluding the background from labeling. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" kindref="member" tooltip="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</ref>(<sp/><sp/><sp/><sp/>SrcIterator<sp/>s_Iter,<sp/>SrcShape<sp/>srcShape,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d_Iter,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>ValueType<sp/>background_value);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" kindref="member" tooltip="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</ref>(<sp/><sp/><sp/><sp/>SrcIterator<sp/>s_Iter,<sp/>SrcShape<sp/>srcShape,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d_Iter,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>ValueType<sp/>background_value,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" kindref="member" tooltip="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</ref>(<sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>ValueType<sp/>background_value);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood3D,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" kindref="member" tooltip="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</ref>(<sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood3D<sp/>neighborhood3D,<sp/>ValueType<sp/>background_value,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Connected components are defined as regions with uniform voxel values. Thus, <computeroutput>SrcAccessor::value_type</computeroutput> either must be equality comparable (first form), or an EqualityFunctor must be provided that realizes the desired predicate (second form). All voxel equal to the given &apos;<computeroutput>background_value</computeroutput>&apos; are ignored when determining connected components and remain untouched in the destination volume.</para><para>The destination&apos;s value type should be large enough to hold the labels without overflow. Region numbers will be a consecutive sequence starting with one and ending with the region number returned by the function (inclusive).</para><para>Return: the number of regions found (= largest region label)</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="labelvolume_8hxx_source" kindref="compound">vigra/labelvolume.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3,int&gt;</ref><sp/>IntVolume;</highlight></codeline>
+<codeline><highlight class="normal">IntVolume<sp/>src(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal">IntVolume<sp/>dest(IntVolume::difference_type(w,h,d));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>6-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>max_region_label<sp/>=<sp/><ref refid="group__Labeling_1ga9ea391a72baa327cf6b3c7ac555d1c75" kindref="member" tooltip="Find the connected components of a segmented volume, excluding the background from labeling...">vigra::labelVolumeWithBackground</ref>(</highlight></codeline>
+<codeline><highlight class="normal">srcMultiArrayRange(src),<sp/>destMultiArray(dest),<sp/><ref refid="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" kindref="member">NeighborCode3DSix</ref>(),<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_begin;</highlight></codeline>
+<codeline><highlight class="normal">SrcShape<sp/>shape;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_begin;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_begin);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>form</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">int<sp/>i;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(i,<sp/>dest_begin);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="449"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga1b15cb0cb03a876d28fec6f192851426" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeWithBackground</definition>
+        <argsstring>(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa, DestIterator d_Iter, DestAccessor da, Neighborhood3D neighborhood3D, ValueType backgroundValue)</argsstring>
+        <name>labelVolumeWithBackground</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s_Iter</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>srcShape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d_Iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>backgroundValue</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="458" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="455" bodyend="460"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga198bf1883883b21a266b919e09d3b8e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeWithBackground</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood3D neighborhood3D, ValueType backgroundValue)</argsstring>
+        <name>labelVolumeWithBackground</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>backgroundValue</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="469" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="466" bodyend="471"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gaf4290592a600707164280b3c7450ce03" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeWithBackground</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Neighborhood3D neighborhood3D, ValueType backgroundValue, EqualityFunctor equal)</argsstring>
+        <name>labelVolumeWithBackground</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+          <declname>neighborhood3D</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>backgroundValue</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="477" bodyend="482"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gad7f78958ab6612385e8fb98041010c29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood3D</type>
+          </param>
+          <param>
+            <type>class ValueType</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::labelVolumeWithBackground</definition>
+        <argsstring>(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa, DestIterator d_Iter, DestAccessor da, Neighborhood3D, ValueType backgroundValue, EqualityFunctor equal)</argsstring>
+        <name>labelVolumeWithBackground</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s_Iter</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>srcShape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d_Iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Neighborhood3D</type>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>backgroundValue</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" line="492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelvolume.hxx" bodystart="488" bodyend="600"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga0d13d25c5b735aaca90c5a506bb274ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToCrackEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>regionImageToCrackEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Transform a labeled image into a crack edge image. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga0d13d25c5b735aaca90c5a506bb274ac" kindref="member" tooltip="Transform a labeled image into a crack edge image.">regionImageToCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga0d13d25c5b735aaca90c5a506bb274ac" kindref="member" tooltip="Transform a labeled image into a crack edge image.">regionImageToCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This algorithm inserts border pixels (so called &quot;crack edges&quot;) between regions in a labeled image like this (<computeroutput>a</computeroutput> and <computeroutput>c</computeroutput> are the original labels, and <computeroutput>0</computeroutput> is the value of <computeroutput>edge_marker</computeroutput> and denotes the inserted edges):</para><para><programlisting><codeline><highlight class="normal">original<sp/>image<sp/><sp/><sp/><sp/><sp/>insert<sp/>zero-<sp/>and<sp/>one-cells</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a<sp/>0<sp/>c<sp/>c<sp/>c</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>c<sp/>c<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a<sp/>0<sp/>0<sp/>0<sp/>c</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>a<sp/>c<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a<sp/>a<sp/>a<sp/>0<sp/>c</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>a<sp/>a<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a<sp/>a<sp/>a<sp/>0<sp/>0</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>a<sp/>a<sp/>a<sp/>a<sp/>a</highlight></codeline>
+</programlisting></para><para>The algorithm assumes that the original labeled image contains no background. Therefore, it is suitable as a post-processing operation of <ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member">labelImage()</ref> or <ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref>.</para><para>The destination image must be twice the size of the original (precisely, <computeroutput>(2*w-1)</computeroutput> by <computeroutput>(2*h-1)</computeroutput> pixels). The source value type (<computeroutput>SrcAccessor::value-type</computeroutput>) must be equality-comparable.</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/labelimage.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labels(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>cellgrid(2*w-1,<sp/>2*h-1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>threshold<sp/>at<sp/>128</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="classvigra_1_1Threshold" kindref="compound" tooltip="Threshold an image.">vigra::Threshold&lt;vigra::BImage::PixelType, vigra::BImage::PixelType&gt;</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>128,<sp/>256,<sp/>0,<sp/>255));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>4-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">vigra::labelImage</ref>(srcImageRange(src),<sp/>destImage(labels),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>cell<sp/>grid<sp/>image,<sp/>mark<sp/>edges<sp/>with<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1ga0d13d25c5b735aaca90c5a506bb274ac" kindref="member" tooltip="Transform a labeled image into a crack edge image.">vigra::regionImageToCrackEdgeImage</ref>(srcImageRange(labels),<sp/>destImage(cellgrid),<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>!=<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para>The destination image must have twice the size of the source: <programlisting><codeline><highlight class="normal">w_dest<sp/>=<sp/>2<sp/>*<sp/>w_src<sp/>-<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">h_dest<sp/>=<sp/>2<sp/>*<sp/>h_src<sp/>-<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="699"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gaf0a8c2be93aaf9462dbb780ddf93714a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToCrackEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue edge_marker)</argsstring>
+        <name>regionImageToCrackEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="707" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="703" bodyend="798"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga73fc6563435995becaba6467854689f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToCrackEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue edge_marker)</argsstring>
+        <name>regionImageToCrackEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="803" bodyend="811"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga6b16eb7df332ab9392e0927c2b5383e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>regionImageToEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Transform a labeled image into an edge image. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga6b16eb7df332ab9392e0927c2b5383e2" kindref="member" tooltip="Transform a labeled image into an edge image.">regionImageToEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__Labeling_1ga6b16eb7df332ab9392e0927c2b5383e2" kindref="member" tooltip="Transform a labeled image into an edge image.">regionImageToEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This algorithm marks all pixels with the given <computeroutput>edge_marker</computeroutput> which belong to a different region (label) than their right or lower neighbors:</para><para><programlisting><codeline><highlight class="normal">original<sp/>image<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>edges</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(assuming<sp/>edge_marker<sp/>==<sp/>1)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>c<sp/>c<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1<sp/>1<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>a<sp/>c<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>1<sp/>1</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>a<sp/>a<sp/>a<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>*<sp/>*</highlight></codeline>
+</programlisting></para><para>The non-edge pixels of the destination image will not be touched. The source value type (<computeroutput>SrcAccessor::value-type</computeroutput>) must be equality-comparable.</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/labelimage.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>labels(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::IImage</ref><sp/>edges(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>255;<sp/><sp/></highlight><highlight class="comment">//<sp/>init<sp/>background<sp/>(non-edge)<sp/>to<sp/>255</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>threshold<sp/>at<sp/>128</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(src),<sp/>destImage(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classvigra_1_1Threshold" kindref="compound" tooltip="Threshold an image.">vigra::Threshold&lt;vigra::BImage::PixelType, vigra::BImage::PixelType&gt;</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>128,<sp/>256,<sp/>0,<sp/>255));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>4-connected<sp/>regions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member" tooltip="Find the connected components of a segmented image.">vigra::labelImage</ref>(srcImageRange(src),<sp/>destImage(labels),<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>edge<sp/>image,<sp/>mark<sp/>edges<sp/>with<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Labeling_1ga6b16eb7df332ab9392e0927c2b5383e2" kindref="member" tooltip="Transform a labeled image into an edge image.">vigra::regionImageToEdgeImage</ref>(srcImageRange(labels),<sp/>destImage(edges),<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>!=<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="905"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1gad25d26b50a19d01fc06da7d929993a98" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue edge_marker)</argsstring>
+        <name>regionImageToEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="913" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="909" bodyend="960"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Labeling_1ga51a033eaeba9d3cd5dea87bef76ea12e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::regionImageToEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue edge_marker)</argsstring>
+        <name>regionImageToEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" line="969" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/labelimage.hxx" bodystart="965" bodyend="973"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The 2-dimensional connected components algorithms may use either 4 or 8 connectivity. By means of a functor the merge criterion can be defined arbitrarily.</para><para>The 3-dimensional connected components algorithms may use either 6 or 26 connectivity. By means of a functor the merge criterion can be defined arbitrarily. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BitArray_3_010_00_01WORD__TYPE_01_4" kind="class" prot="public">
+    <compoundname>vigra::BitArray&lt; 0, WORD_TYPE &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class WORD_TYPE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_010_00_01WORD__TYPE_01_4_1a6181dc80decab67c9c3854f009f96156" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool error[-(long int) sizeof(WORD_TYPE)]</definition>
+        <argsstring>[-(long int) sizeof(WORD_TYPE)]</argsstring>
+        <name>error</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="312" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="312" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="310" bodyend="313"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BitArray_3_010_00_01WORD__TYPE_01_4_1a6181dc80decab67c9c3854f009f96156" prot="private" virt="non-virtual"><scope>vigra::BitArray&lt; 0, WORD_TYPE &gt;</scope><name>error</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

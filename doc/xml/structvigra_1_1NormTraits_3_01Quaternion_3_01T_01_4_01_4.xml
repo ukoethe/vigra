@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits&lt; Quaternion&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1a3aaf2f56b74ba07badf36ce76715e460" prot="public" static="no">
+        <type>SquareRootTraits&lt; SquaredNormType &gt;::SquareRootResult</type>
+        <definition>typedef SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="389" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="389" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1abb4d42520adbb43f067f1791616ceaa0" prot="public" static="no">
+        <type>NumericTraits&lt; T &gt;::Promote</type>
+        <definition>typedef NumericTraits&lt;T&gt;::Promote SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="388" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="388" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1af19f60f7dca2f50353eaaeb6d729ffc2" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref>&lt; T &gt;</type>
+        <definition>typedef Quaternion&lt;T&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="387" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="386" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="385" bodyend="390"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1a3aaf2f56b74ba07badf36ce76715e460" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Quaternion&lt; T &gt; &gt;</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1abb4d42520adbb43f067f1791616ceaa0" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Quaternion&lt; T &gt; &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01Quaternion_3_01T_01_4_01_4_1af19f60f7dca2f50353eaaeb6d729ffc2" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Quaternion&lt; T &gt; &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

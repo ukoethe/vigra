@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="KernelArgumentObjectFactories" kind="page">
+    <compoundname>KernelArgumentObjectFactories</compoundname>
+    <title>Kernel Argument Object Factories</title>
+    <detaileddescription>
+<para>These factory functions allow to create argument objects for 1D and 2D convolution kernel analogously to <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> for images.</para><sect1 id="KernelArgumentObjectFactories_1Kernel1dFactory">
+<title>kernel1d()</title>
+<para><verbatim>Pass a \ref vigra::Kernel1D to a 1D or separable convolution algorithm.
+
+These factories can be used to create argument objects when we
+are given instances or subclasses of \ref vigra::Kernel1D
+(analogous to the \ref ArgumentObjectFactories for images).
+These factory functions access &lt;TT&gt;kernel.center()&lt;/TT&gt;,
+&lt;TT&gt;kernel.left()&lt;/TT&gt;, &lt;TT&gt;kernel.right()&lt;/TT&gt;, &lt;TT&gt;kernel.accessor()&lt;/TT&gt;,
+and  &lt;TT&gt;kernel.borderTreatment()&lt;/TT&gt; to obtain the necessary
+information. The following factory functions are provided:
+
+&lt;table&gt;
+&lt;tr&gt;&lt;th bgcolor=&quot;#f0e0c0&quot; colspan=2 align=left&gt;
+    &lt;TT&gt;\ref vigra::Kernel1D &quot;vigra::Kernel1D&lt;SomeType&gt;&quot; kernel;&lt;/TT&gt;
+    &lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel1d(kernel)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from information provided by
+    kernel
+
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel1d(kernel, vigra::BORDER_TREATMENT_CLIP)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from information provided by
+    kernel, but use given border treatment mode
+
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel1d(kerneliterator, kernelaccessor,&lt;/TT&gt;&lt;br&gt;
+&lt;TT&gt;                kernelleft, kernelright,&lt;/TT&gt;&lt;br&gt;
+&lt;TT&gt;                vigra::BORDER_TREATMENT_CLIP)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from explicitly given iterator
+    (pointing to the center of th kernel), accessor,
+    left and right boundaries, and border treatment mode
+
+&lt;/table&gt;
+
+For usage examples see
+\ref SeparableConvolution &quot;one-dimensional and separable convolution functions&quot;.
+</verbatim></para></sect1>
+<sect1 id="KernelArgumentObjectFactories_1Kernel2dFactory">
+<title>kernel2d()</title>
+<para><verbatim>Pass a \ref vigra::Kernel2D to a 2D (non-separable) convolution algorithm.
+
+These factories can be used to create argument objects when we
+are given instances or subclasses of \ref vigra::Kernel2D
+(analogous to the \ref ArgumentObjectFactories for images).
+These factory functions access &lt;TT&gt;kernel.center()&lt;/TT&gt;,
+&lt;TT&gt;kernel.upperLeft()&lt;/TT&gt;, &lt;TT&gt;kernel.lowerRight()&lt;/TT&gt;, &lt;TT&gt;kernel.accessor()&lt;/TT&gt;,
+and  &lt;TT&gt;kernel.borderTreatment()&lt;/TT&gt; to obtain the necessary
+information. The following factory functions are provided:
+
+&lt;table&gt;
+&lt;tr&gt;&lt;th bgcolor=&quot;#f0e0c0&quot; colspan=2 align=left&gt;
+    &lt;TT&gt;\ref vigra::Kernel2D &quot;vigra::Kernel2D&lt;SomeType&gt;&quot; kernel;&lt;/TT&gt;
+    &lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel2d(kernel)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from information provided by
+    kernel
+
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel2d(kernel, vigra::BORDER_TREATMENT_CLIP)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from information provided by
+    kernel, but use given border treatment mode
+
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;TT&gt;kernel2d(kerneliterator, kernelaccessor,&lt;/TT&gt;
+&lt;TT&gt;                upperleft, lowerright,&lt;/TT&gt;
+&lt;TT&gt;                vigra::BORDER_TREATMENT_CLIP)&lt;/TT&gt;
+&lt;/td&gt;&lt;td&gt;
+    create argument object from explicitly given iterator
+    (pointing to the center of th kernel), accessor,
+    upper left and lower right corners, and border treatment mode
+
+&lt;/table&gt;
+
+For usage examples see \ref StandardConvolution &quot;two-dimensional convolution functions&quot;.</verbatim> </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

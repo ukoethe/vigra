@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1CoscotFunction" kind="class" prot="public">
+    <compoundname>vigra::CoscotFunction</compoundname>
+    <includes refid="resizeimage_8hxx" local="no">vigra/resizeimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1CoscotFunction_1ae45326fbc1e2bb968bbb688bd8da81f1" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the unary functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoscotFunction_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the splines polynomial order </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoscotFunction_1a265a253612b46abed17c61b0a5e5ce30" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the kernel&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1CoscotFunction_1a3bf3e9bb518585f00c516a42f354ec79" prot="protected" static="no" mutable="no">
+        <type>double</type>
+        <definition>double h_</definition>
+        <argsstring></argsstring>
+        <name>h_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1CoscotFunction_1a65d577558fba61bb0d8333fd99b3e5bc" prot="protected" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int m_</definition>
+        <argsstring></argsstring>
+        <name>m_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1abe6a18e30f37312d4697725472fd82bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CoscotFunction</definition>
+        <argsstring>(unsigned int m=3, double h=0.5)</argsstring>
+        <name>CoscotFunction</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>m</declname>
+          <defval>3</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>h</declname>
+          <defval>0.5</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="95" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1adb43d0799ebe95a4baa5adda651f0aa7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int derivativeOrder</definition>
+        <argsstring>() const </argsstring>
+        <name>derivativeOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Derivative order of the function: always 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="125" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1a125f66e1a3dfd9e5621235e8d4fb8b58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CoscotFunction_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(argument_type x) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1CoscotFunction_1ae45326fbc1e2bb968bbb688bd8da81f1" kindref="member">argument_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>function (functor) call </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="102" bodyend="110"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1a9c891605cda7d9543e8ee3e60118a551" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CoscotFunction_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref></type>
+        <definition>value_type operator[]</definition>
+        <argsstring>(value_type x) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1CoscotFunction_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>index operator <ndash/> same as operator() </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="114" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1af9d4bbcb7073e260ae97ad6d2bacfbf0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt;double&gt; const&amp; prefilterCoefficients</definition>
+        <argsstring>() const </argsstring>
+        <name>prefilterCoefficients</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Prefilter coefficients for compatibility with <ref refid="classvigra_1_1BSpline" kindref="compound">vigra::BSpline</ref>. (array has zero length, since prefiltering is not necessary). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="131" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoscotFunction_1a57d76ea64cd2523fcf4d19cc73af0093" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double radius</definition>
+        <argsstring>() const </argsstring>
+        <name>radius</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Radius of the function&apos;s support. Needed for <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref>, equals m. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="120" bodyend="121"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The Coscot interpolation function.</para><para>Implements the Coscot interpolation function proposed by Maria Magnusson Seger (<ulink url="mailto:maria@isy.liu.se">maria@isy.liu.se</ulink>) in the context of tomographic reconstruction. It provides a fast transition between the pass- and stop-bands and minimal ripple outside the transition region. Both properties are important for this application and can be tuned by the parameters <emphasis>m</emphasis> and <emphasis>h</emphasis> (with defaults 3 and 0.5). The function is defined by</para><para><formula id="82">\[ f_{m,h}(x) = \left\{ \begin{array}{ll} \frac{1}{2m}\sin(\pi x)\cot(\pi x / (2 m))(h + (1-h)\cos(\pi x/m)) &amp; |x| \leq m \\ 0 &amp; \mbox{otherwise} \end{array}\right. \]</formula></para><para>It can be used as a functor, and as a kernel for <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref> to create a differentiable interpolant of an image.</para><para><bold>#include</bold> &lt;<ref refid="resizeimage_8hxx_source" kindref="compound">vigra/resizeimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="81" bodyend="141"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1CoscotFunction_1ae45326fbc1e2bb968bbb688bd8da81f1" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1abe6a18e30f37312d4697725472fd82bd" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>CoscotFunction</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1adb43d0799ebe95a4baa5adda651f0aa7" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>derivativeOrder</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a3bf3e9bb518585f00c516a42f354ec79" prot="protected" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>h_</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a65d577558fba61bb0d8333fd99b3e5bc" prot="protected" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>m_</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a125f66e1a3dfd9e5621235e8d4fb8b58" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a9c891605cda7d9543e8ee3e60118a551" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1af9d4bbcb7073e260ae97ad6d2bacfbf0" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>prefilterCoefficients</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a57d76ea64cd2523fcf4d19cc73af0093" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>radius</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1CoscotFunction_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::CoscotFunction</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

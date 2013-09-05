@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4" kind="struct" prot="public">
+    <compoundname>vigra::And&lt; VigraFalseType, VigraTrueType &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1ad04fbf71aca53855079d1b12c0ab3d45" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType result</definition>
+        <argsstring></argsstring>
+        <name>result</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="243" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a360ba595ad65542019d28432231d2295" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="245" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a31c1ed186c8f3cece1ea5cdc46746f94" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool boolResult</definition>
+        <argsstring></argsstring>
+        <name>boolResult</name>
+        <initializer> false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="246" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="241" bodyend="247"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a31c1ed186c8f3cece1ea5cdc46746f94" prot="public" virt="non-virtual"><scope>vigra::And&lt; VigraFalseType, VigraTrueType &gt;</scope><name>boolResult</name></member>
+      <member refid="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1ad04fbf71aca53855079d1b12c0ab3d45" prot="public" virt="non-virtual"><scope>vigra::And&lt; VigraFalseType, VigraTrueType &gt;</scope><name>result</name></member>
+      <member refid="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a360ba595ad65542019d28432231d2295" prot="public" virt="non-virtual"><scope>vigra::And&lt; VigraFalseType, VigraTrueType &gt;</scope><name>type</name></member>
+      <member refid="structvigra_1_1And_3_01VigraFalseType_00_01VigraTrueType_01_4_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::And&lt; VigraFalseType, VigraTrueType &gt;</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

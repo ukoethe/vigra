@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="MultiIteratorPage" kind="page">
+    <compoundname>MultiIteratorPage</compoundname>
+    <title>Multi-dimensional Array Iterators</title>
+    <detaileddescription>
+<para><verbatim>General iterators for arrays of arbitrary dimension.
+</verbatim></para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">vigra::MultiArrayShape</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Difference type for <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref> or <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref></emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Iterator for unstrided <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref></emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1StridedMultiIterator" kindref="compound">vigra::StridedMultiIterator</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Iterator for strided <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref></emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">vigra::StridedScanOrderIterator</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>STL-compatible random access iterator for <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref></emphasis> </para></listitem>
+</itemizedlist>
+</para><para>The Multidimensional Iterator concept allows navigation on arrays of arbitrary dimension. It provides two modes of iteration: <emphasis>direct traversal</emphasis>, and <emphasis>hierarchical traversal</emphasis>. In general, hierarchical traversal will be faster, while only direct traversal allows for true random access in all dimensions. Via the <computeroutput>dim&lt;K&gt;()</computeroutput> function, operations applying to a particular dimension can be used in the direct traversal mode. In contrast, direct traversal functions should not be used in the hierarchical mode because the hierarchical functions are only well-defined if the iterator points to element 0 in all dimensions below its current dimension. The current dimension of a <computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref>&lt;N, ...&gt;</computeroutput> is <computeroutput>N-1</computeroutput>. </para><para><heading level="3">General Requirements for <ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></heading>
+</para><para><table rows="13" cols="3"><row>
+<entry thead="yes"><para>Local Types </para></entry><entry thead="yes"><para>Meaning   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">MultiIterator::value_type</ref></computeroutput></para></entry><entry thead="no"><para>the underlying arrays&apos;s pixel type  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1aabedc6031d7df619a0c453c558af87a0" kindref="member">MultiIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s reference type (return type of <computeroutput>*iter</computeroutput>). Will be <computeroutput>value_type &amp;</computeroutput> for a mutable iterator, and convertible to <computeroutput>value_type const &amp;</computeroutput> for a const iterator.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1afe70b629b395bd93fb14c8300eabcb43" kindref="member">MultiIterator::pointer</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s pointer type (return type of <computeroutput>iter.operator-&gt;()</computeroutput>). Will be <computeroutput>value_type *</computeroutput> for a mutable iterator, and convertible to <computeroutput>value_type const *</computeroutput> for a const iterator.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1a13ca083757a5c2d9c3f8e94efb78fe2a" kindref="member">MultiIterator::iterator_category</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator tag (<computeroutput>vigra::multi_dimensional_traverser_tag</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="yes"><para>Operation </para></entry><entry thead="yes"><para>Result </para></entry><entry thead="yes"><para>Semantics   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> k;</computeroutput></para></entry><entry thead="no"><para>default constructor  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> k(i);</computeroutput></para></entry><entry thead="no"><para>copy constructor  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>k = i</computeroutput> </para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput></para></entry><entry thead="no"><para>assignment  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i == j</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput> </para></entry><entry thead="no"><para>equality (iterators point to the same element)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i != j</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput> </para></entry><entry thead="no"><para>inequality (iterators don&apos;t point to the same element)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>*i</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1aabedc6031d7df619a0c453c558af87a0" kindref="member">MultiIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>access the current element  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i-&gt;member()</computeroutput></para></entry><entry thead="no"><para>depends on operation </para></entry><entry thead="no"><para>call member function of underlying pixel type via <computeroutput>operator-&gt;</computeroutput> of iterator  </para></entry></row>
+</table>
+</para><para><heading level="3">Requirements for Direct Traversal</heading>
+</para><para><table rows="10" cols="3"><row>
+<entry thead="yes"><para>Local Types </para></entry><entry thead="yes"><para>Meaning   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1ad6aeac37a55e24551245f9c9f6ab6985" kindref="member">MultiIterator::multi_difference_type</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s multi-dimensional difference type (<computeroutput>TinyVector&lt;MultiArrayIndex, N&gt;</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="yes"><para>Operation </para></entry><entry thead="yes"><para>Result </para></entry><entry thead="yes"><para>Semantics   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i += diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>add offset to current position  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i -= diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>subtract offset from current position  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i + diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>create traverser by adding offset  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i - diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>create traverser by subtracting offset  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i[diff]</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1aabedc6031d7df619a0c453c558af87a0" kindref="member">MultiIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>access element at offset <computeroutput>diff</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.dim&lt;K&gt;()</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref>&lt;K+1, T, ...&gt;</computeroutput> </para></entry><entry thead="no"><para>Access the traverser with the current dimension set to K. Typically used to call navigation functions referring to a particular dimension.<linebreak/>
+ Example (assuming <computeroutput>i, j</computeroutput> are 3-dimensional):<linebreak/>
+ <programlisting><codeline><highlight class="normal">i.dim&lt;0&gt;()++;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>increment<sp/>dimension<sp/>0<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">i.dim&lt;1&gt;()++;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>increment<sp/>dimension<sp/>1<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">i.dim&lt;2&gt;()++;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>increment<sp/>dimension<sp/>2<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">j<sp/>+=<sp/><ref refid="classvigra_1_1MultiIterator_1ad6aeac37a55e24551245f9c9f6ab6985" kindref="member">MultiIterator::multi_difference_type</ref>(1,1,1);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>same<sp/>effect</highlight></codeline>
+</programlisting>   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i, j</computeroutput> are of type <computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput><linebreak/>
+ <computeroutput>diff</computeroutput> is of type <computeroutput><ref refid="classvigra_1_1MultiIterator_1ad6aeac37a55e24551245f9c9f6ab6985" kindref="member">MultiIterator::multi_difference_type</ref></computeroutput><linebreak/>
+ <computeroutput>K</computeroutput> is an integer compile-time constant   </para></entry></row>
+</table>
+</para><para>Note that it is impossible to support an <computeroutput>operator-</computeroutput> between two iterators which returns a <computeroutput><ref refid="classvigra_1_1MultiIterator_1ad6aeac37a55e24551245f9c9f6ab6985" kindref="member">MultiIterator::multi_difference_type</ref></computeroutput> because it is impossible to decide to which dimension a difference applies. Consider for example, a 2-dimensional iterator <computeroutput>i</computeroutput>, and let <computeroutput>j = i + multi_difference_type(width, 0)</computeroutput>, <computeroutput>k = i + multi_difference_type(0,1)</computeroutput>, where <computeroutput>width</computeroutput> is the array&apos;s total width. In general, <computeroutput>j</computeroutput> and <computeroutput>k</computeroutput> point to the same memory location, so that the two cases cannot easily be distinguished (it is possible, but iterator performance will suffer significantly, as is experienced with <ref refid="classvigra_1_1ImageIterator" kindref="compound">vigra::ImageIterator</ref> where differencing is allowed). </para><para><heading level="3">Requirements for Hierarchical Traversal</heading>
+</para><para><table rows="18" cols="3"><row>
+<entry thead="yes"><para>Local Types </para></entry><entry thead="yes"><para>Meaning   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1ad58401545d290ac6f3be9e2683e782c7" kindref="member">MultiIterator::difference_type</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s difference type (<computeroutput>MultiArrayIndex</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1a53ac148a952872ab0ade71a10c62f36c" kindref="member">MultiIterator::next_type</ref></computeroutput></para></entry><entry thead="no"><para>type of the next iterator (referring to the next lower dimension) in the hierarchy  </para></entry></row>
+<row>
+<entry thead="yes"><para>Operation </para></entry><entry thead="yes"><para>Result </para></entry><entry thead="yes"><para>Semantics   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>++i</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>pre-increment iterator in its current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i++</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>post-increment iterator in its current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ndash/>i</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>pre-decrement iterator in its current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i<ndash/></computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>post-decrement iterator in its current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i += d</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>add <computeroutput>d</computeroutput> in current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i -= d</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>subtract <computeroutput>d</computeroutput> in from dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i + d</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>create new iterator by adding <computeroutput>d</computeroutput> in current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i - d</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput> </para></entry><entry thead="no"><para>create new iterator by subtracting <computeroutput>d</computeroutput> in current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i - j</computeroutput></para></entry><entry thead="no"><para><computeroutput>difference_type</computeroutput> </para></entry><entry thead="no"><para>difference of <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> in the current dimension<linebreak/>
+ <emphasis>Note:</emphasis> The result of this operation is undefined if the iterator doesn&apos;t point to element 0 in all dimensions below its current dimension.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i &lt; j</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput> </para></entry><entry thead="no"><para><computeroutput>i - j &lt; 0</computeroutput><linebreak/>
+ <emphasis>Note:</emphasis> The result of this operation is undefined if the iterator doesn&apos;t point to element 0 in all dimensions below its current dimension.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i[d]</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1MultiIterator_1aabedc6031d7df619a0c453c558af87a0" kindref="member">MultiIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>access element by adding offset <computeroutput>d</computeroutput> in current dimension  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.begin()</computeroutput></para></entry><entry thead="no"><para><computeroutput>next_type</computeroutput> </para></entry><entry thead="no"><para>create the hierarchical iterator pointing to the first element in the next lower dimension.<linebreak/>
+ <emphasis>Note:</emphasis> The result of this operation is undefined if the iterator doesn&apos;t point to element 0 in all dimensions below its current dimension.<linebreak/>
+ Usage:<linebreak/>
+ <programlisting><codeline><highlight class="normal">MultiIterator&lt;3,<sp/>int&gt;<sp/>i3<sp/>=<sp/>...,<sp/>end3<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>i3<sp/>!=<sp/>end3;<sp/>++i3)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>MultiIterator&lt;3,<sp/>int&gt;::next_type<sp/>i2<sp/>=<sp/>i3.begin(),<sp/>end2<sp/>=<sp/>i3.end();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>i2<sp/>!=<sp/>end2;<sp/>++i2)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1MultiIterator_1a53ac148a952872ab0ade71a10c62f36c" kindref="member">MultiIterator&lt;3, int&gt;::next_type::next_type</ref><sp/>i1<sp/>=<sp/>i2.<ref refid="classvigra_1_1MultiIterator_1a75e403e20d59da5b177a169be9f5b64f" kindref="member">begin</ref>(),<sp/>end1<sp/>=<sp/>i2.<ref refid="classvigra_1_1MultiIterator_1aad1c499882f522377548bbbb838070b2" kindref="member">end</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>i1<sp/>!=<sp/>end1;<sp/>++i1)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>...<sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>with<sp/>the<sp/>current<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting>   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.end()</computeroutput></para></entry><entry thead="no"><para><computeroutput>next_type</computeroutput> </para></entry><entry thead="no"><para>create the hierarchical iterator pointing to the past-the-end location in the next lower dimension.<linebreak/>
+ <emphasis>Note:</emphasis> The result of this operation is undefined if the iterator doesn&apos;t point to element 0 in all dimensions below its current dimension.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i, j</computeroutput> are of type <computeroutput><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref></computeroutput><linebreak/>
+ <computeroutput>d</computeroutput> is of type <computeroutput><ref refid="classvigra_1_1MultiIterator_1ad58401545d290ac6f3be9e2683e782c7" kindref="member">MultiIterator::difference_type</ref></computeroutput>   </para></entry></row>
+</table>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

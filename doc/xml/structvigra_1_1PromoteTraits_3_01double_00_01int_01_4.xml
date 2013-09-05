@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01double_00_01int_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; double, int &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">PromoteType&lt; double, int &gt;</basecompoundref>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01double_00_01int_01_4_1aef35454e7c7c06b12a66a89a32d01e6e" prot="public" static="no">
+        <type>detail::PromoteType&lt; double, int &gt;::Promote</type>
+        <definition>typedef detail::PromoteType&lt;double, int&gt;::Promote Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1108" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1106" bodyend="1110"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01double_00_01int_01_4_1aef35454e7c7c06b12a66a89a32d01e6e" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; double, int &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

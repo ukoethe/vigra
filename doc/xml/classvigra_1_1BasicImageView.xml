@@ -1,0 +1,975 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BasicImageView" kind="class" prot="public">
+    <compoundname>vigra::BasicImageView</compoundname>
+    <includes refid="basicimageview_8hxx" local="no">vigra/basicimageview.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class PIXELTYPE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a28a41780fa37a19501034e86747e45b7" prot="public" static="no">
+        <type><ref refid="structvigra_1_1IteratorTraits" kindref="compound">IteratorTraits</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1ac9bb2423ec1e2bcf8f55df79df56d7e4" kindref="member">traverser</ref> &gt;::DefaultAccessor</type>
+        <definition>typedef IteratorTraits&lt;traverser&gt;::DefaultAccessor Accessor</definition>
+        <argsstring></argsstring>
+        <name>Accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s default accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="168" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ab1ee4b0758e9e63ded6ffeb86f101bec" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1aa92bdd7ecc849908fd104c12a8c89360" kindref="member">traverser::column_iterator</ref></type>
+        <definition>typedef traverser::column_iterator column_iterator</definition>
+        <argsstring></argsstring>
+        <name>column_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the column iterator associated with the traverser </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a9296219904e870acefefba5891fbaaa9" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1aa92bdd7ecc849908fd104c12a8c89360" kindref="member">const_traverser::column_iterator</ref></type>
+        <definition>typedef const_traverser::column_iterator const_column_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_column_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the const column iterator associated with the const_traverser </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ab97fc2a79db412ac7937ad5a69440d70" prot="public" static="no">
+        <type>PIXELTYPE const *</type>
+        <definition>typedef PIXELTYPE const* const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s 1D random access const iterator (note: lower case &apos;const_iterator&apos; is a STL compatible 1D random access const iterator) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="119" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" prot="public" static="no">
+        <type>PIXELTYPE const *</type>
+        <definition>typedef PIXELTYPE const* const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s const pointer type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1af6a9a82b2fd29e44c1fd45f60a762c0e" prot="public" static="no">
+        <type>PIXELTYPE const &amp;</type>
+        <definition>typedef PIXELTYPE const&amp; const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s const reference type (i.e. the return type of image[diff] and image(dx,dy) when image is const) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a75bf9053d4e2643c54a5a68adcd65c27" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">const_traverser::row_iterator</ref></type>
+        <definition>typedef const_traverser::row_iterator const_row_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_row_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the const row iterator associated with the const_traverser </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a6f3c353589de37da0e0201bb38adff6c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstImageIterator" kindref="compound">ConstImageIterator</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">value_type</ref> &gt;</type>
+        <definition>typedef ConstImageIterator&lt;value_type&gt; const_traverser</definition>
+        <argsstring></argsstring>
+        <name>const_traverser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s 2D random access const iterator (&apos;const traverser&apos;) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a65676f5294c2039d907f09346c4c2b4c" prot="public" static="no">
+        <type><ref refid="structvigra_1_1IteratorTraits" kindref="compound">IteratorTraits</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1a6f3c353589de37da0e0201bb38adff6c" kindref="member">const_traverser</ref> &gt;::DefaultAccessor</type>
+        <definition>typedef IteratorTraits&lt;const_traverser&gt;::DefaultAccessor ConstAccessor</definition>
+        <argsstring></argsstring>
+        <name>ConstAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s default const accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a0f2ba9ef366d692bc16ba9cd79a460bd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstImageIterator" kindref="compound">ConstImageIterator</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">value_type</ref> &gt;</type>
+        <definition>typedef ConstImageIterator&lt;value_type&gt; ConstIterator</definition>
+        <argsstring></argsstring>
+        <name>ConstIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>deprecated, use <computeroutput>const_traverser</computeroutput> instead </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a338a0661cdb9c8c539fed9e3f8741596" prot="public" static="no">
+        <type>PIXELTYPE const *</type>
+        <definition>typedef PIXELTYPE const* ConstScanOrderIterator</definition>
+        <argsstring></argsstring>
+        <name>ConstScanOrderIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>deprecated, use <computeroutput>const_iterator</computeroutput> instead </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="123" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+        <definition>typedef Diff2D difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s difference type (argument type of image[diff]) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="159" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="159" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1aec0a79fed66fd9e64551d0750fe95ada" prot="public" static="no">
+        <type>PIXELTYPE *</type>
+        <definition>typedef PIXELTYPE* iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s 1D random access iterator (note: lower case &apos;iterator&apos; is a STL compatible 1D random access iterator, don&apos;t confuse with capitalized Iterator) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="109" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a6208a21171885301f5c39c388ce838e6" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">value_type</ref> &gt;</type>
+        <definition>typedef ImageIterator&lt;value_type&gt; Iterator</definition>
+        <argsstring></argsstring>
+        <name>Iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>deprecated, use <computeroutput>traverser</computeroutput> instead </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ac8456b73e94855de7203e3e337f2b872" prot="public" static="no">
+        <type>PIXELTYPE</type>
+        <definition>typedef PIXELTYPE PixelType</definition>
+        <argsstring></argsstring>
+        <name>PixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s pixel type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1af9a92dcc413ffd7c4e141b70dde890fa" prot="public" static="no">
+        <type>PIXELTYPE *</type>
+        <definition>typedef PIXELTYPE* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s pointer type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="99" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a68ddf4104dedcf113e01695b35e58f3d" prot="public" static="no">
+        <type>PIXELTYPE &amp;</type>
+        <definition>typedef PIXELTYPE&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s reference type (i.e. the return type of image[diff] and image(dx,dy)) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1aae39d6d46545e796fb291416e5c5360d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">traverser::row_iterator</ref></type>
+        <definition>typedef traverser::row_iterator row_iterator</definition>
+        <argsstring></argsstring>
+        <name>row_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the row iterator associated with the traverser </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a06bdcd64f17baf0c7a661174ed340b83" prot="public" static="no">
+        <type>PIXELTYPE *</type>
+        <definition>typedef PIXELTYPE* ScanOrderIterator</definition>
+        <argsstring></argsstring>
+        <name>ScanOrderIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>deprecated, use <computeroutput>iterator</computeroutput> instead </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1a76688779d76c3d773a2da26ac1bf177d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>typedef Size2D size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s size type (result type of image.size()) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ac9bb2423ec1e2bcf8f55df79df56d7e4" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref>&lt; <ref refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">value_type</ref> &gt;</type>
+        <definition>typedef ImageIterator&lt;value_type&gt; traverser</definition>
+        <argsstring></argsstring>
+        <name>traverser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s 2D random access iterator (&apos;traverser&apos;) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="127" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" prot="public" static="no">
+        <type>PIXELTYPE</type>
+        <definition>typedef PIXELTYPE value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the <ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&apos;s pixel type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="81" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BasicImageView_1a11803c9b3eb51b0a6ee20822c2b1582f" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1BasicImageView_1af9a92dcc413ffd7c4e141b70dde890fa" kindref="member">pointer</ref></type>
+        <definition>pointer data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="461" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BasicImageView_1a45a159d389017b03a58e3508186fb445" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int height_</definition>
+        <argsstring></argsstring>
+        <name>height_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="462" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BasicImageView_1a74bcc4848a43afebc86f2c829675732a" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int stride_</definition>
+        <argsstring></argsstring>
+        <name>stride_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="462" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BasicImageView_1ad2af7588ca87bfadebd74fb4939e64dc" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int width_</definition>
+        <argsstring></argsstring>
+        <name>width_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="462" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ac1e543db9ce291e86b9023cdb9202b5b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a28a41780fa37a19501034e86747e45b7" kindref="member">Accessor</ref></type>
+        <definition>Accessor accessor</definition>
+        <argsstring>()</argsstring>
+        <name>accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return default accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="448" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="447" bodyend="450"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a40e8567a7e13dacc22cadde2f9d1dcd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a65676f5294c2039d907f09346c4c2b4c" kindref="member">ConstAccessor</ref></type>
+        <definition>ConstAccessor accessor</definition>
+        <argsstring>() const </argsstring>
+        <name>accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return default const accessor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="454" bodyend="457"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1afe010fe10a585a274d2d6193816a83cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BasicImageView</definition>
+        <argsstring>()</argsstring>
+        <name>BasicImageView</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>construct image of size 0x0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="177" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a2ce81d9aeaea568de359937079513d8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BasicImageView</definition>
+        <argsstring>(const_pointer data, int w, int h, int stride=0)</argsstring>
+        <name>BasicImageView</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" kindref="member">const_pointer</ref></type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stride</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>construct view of size w x h </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="191" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="186" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a529ca816b784a3a026603e83a03d3489" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BasicImageView</definition>
+        <argsstring>(const_pointer data, difference_type const &amp;size, int stride=0)</argsstring>
+        <name>BasicImageView</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" kindref="member">const_pointer</ref></type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">difference_type</ref> const &amp;</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stride</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>construct view of size size.x x size.y </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="200" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="195" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1aec0a79fed66fd9e64551d0750fe95ada" kindref="member">iterator</ref></type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing to first pixel. Note: Only works if stride equals width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="340" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="339" bodyend="345"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ab97fc2a79db412ac7937ad5a69440d70" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing to first pixel. Note: Only works if stride equals width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="361" bodyend="367"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a81a672d2a2efad2f7d3da68bbcadcfe3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ab1ee4b0758e9e63ded6ffeb86f101bec" kindref="member">column_iterator</ref></type>
+        <definition>column_iterator columnBegin</definition>
+        <argsstring>(int x)</argsstring>
+        <name>columnBegin</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing to first pixel of column <emphasis>x</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="411" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="410" bodyend="414"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a52ccbd6efee6a72f07a743a5c8c7c58f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a9296219904e870acefefba5891fbaaa9" kindref="member">const_column_iterator</ref></type>
+        <definition>const_column_iterator columnBegin</definition>
+        <argsstring>(int x) const </argsstring>
+        <name>columnBegin</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing to first pixel of column <emphasis>x</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="426" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="425" bodyend="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1afe62973b16152efb3d7ff54305c7559e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ab1ee4b0758e9e63ded6ffeb86f101bec" kindref="member">column_iterator</ref></type>
+        <definition>column_iterator columnEnd</definition>
+        <argsstring>(int x)</argsstring>
+        <name>columnEnd</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing past the end of column <emphasis>x</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="419" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="418" bodyend="421"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a8dadadb8e63c4af3414e1beef8f5d0e8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a9296219904e870acefefba5891fbaaa9" kindref="member">const_column_iterator</ref></type>
+        <definition>const_column_iterator columnEnd</definition>
+        <argsstring>(int x) const </argsstring>
+        <name>columnEnd</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing past the end of column <emphasis>x</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="434" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="433" bodyend="436"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" kindref="member">const_pointer</ref></type>
+        <definition>const_pointer data</definition>
+        <argsstring>() const </argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>get a pointer to the internal data </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="441" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="440" bodyend="443"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1aec0a79fed66fd9e64551d0750fe95ada" kindref="member">iterator</ref></type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing past the end. Note: Only works if stride equals width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="350" bodyend="356"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ab97fc2a79db412ac7937ad5a69440d70" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing past the end. Note: Only works if stride equals width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="372" bodyend="378"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>height of Image </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="220" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ac6ebb355ed29b09365bab23a77629319" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref> &amp;</type>
+        <definition>BasicImageView&amp; init</definition>
+        <argsstring>(value_type const &amp;pixel)</argsstring>
+        <name>init</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">value_type</ref> const &amp;</type>
+          <declname>pixel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>set Image with const value </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="205" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="204" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ae5d096d8e0757ab27b827451765ce3a1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isInside</definition>
+        <argsstring>(difference_type const &amp;d) const </argsstring>
+        <name>isInside</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">difference_type</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>test whether a given coordinate is inside the image </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="242" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1acc69aa43c87902b25a957867d68a795b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ac9bb2423ec1e2bcf8f55df79df56d7e4" kindref="member">traverser</ref></type>
+        <definition>traverser lowerRight</definition>
+        <argsstring>()</argsstring>
+        <name>lowerRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 2D random access iterator pointing to pixel(width, height), i.e. one pixel right and below lower right corner of the image as is common in C/C++. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="316" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="315" bodyend="318"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a9dfb3b3c76d19c6a0eedf5fe618aaf56" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a6f3c353589de37da0e0201bb38adff6c" kindref="member">const_traverser</ref></type>
+        <definition>const_traverser lowerRight</definition>
+        <argsstring>() const </argsstring>
+        <name>lowerRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 2D random access const iterator pointing to pixel(width, height), i.e. one pixel right and below lower right corner of the image as is common in C/C++. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="331" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a419f515eb2df97d041fe7843254272f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a68ddf4104dedcf113e01695b35e58f3d" kindref="member">reference</ref></type>
+        <definition>reference operator()</definition>
+        <argsstring>(int dx, int dy)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>dx</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>access pixel at given location. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image(1,2) </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="269" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a4fa5aa5b031457c730b1980a02abfd6e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1af6a9a82b2fd29e44c1fd45f60a762c0e" kindref="member">const_reference</ref></type>
+        <definition>const_reference operator()</definition>
+        <argsstring>(int dx, int dy) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>dx</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>read pixel at given location. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image(1,2) </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="278" bodyend="282"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a804beedadc8234d8bac954f73b8b536f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a68ddf4104dedcf113e01695b35e58f3d" kindref="member">reference</ref></type>
+        <definition>reference operator[]</definition>
+        <argsstring>(difference_type const &amp;d)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">difference_type</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>access pixel at given location. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image[Diff2D(1,2)] </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="252" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="251" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ae48a4ebba183cb71aa55db6fe8cf8a4b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1af6a9a82b2fd29e44c1fd45f60a762c0e" kindref="member">const_reference</ref></type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(difference_type const &amp;d) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">difference_type</ref> const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>read pixel at given location. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image[Diff2D(1,2)] </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="260" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a95f162668a29312a8b6aeaa2075e2c4a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1af9a92dcc413ffd7c4e141b70dde890fa" kindref="member">pointer</ref></type>
+        <definition>pointer operator[]</definition>
+        <argsstring>(int dy)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>access pixel at given location.
+Note that the &apos;x&apos; index is the trailing index. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image[2][1] </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="289" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="288" bodyend="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ac847a82a2a6a4a82dfbb1add647b8aa1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" kindref="member">const_pointer</ref></type>
+        <definition>const_pointer operator[]</definition>
+        <argsstring>(int dy) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>read pixel at given location.
+Note that the &apos;x&apos; index is the trailing index. &lt;br&gt;
+</verbatim> usage: <computeroutput> value_type value = image[2][1] </computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="298" bodyend="302"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a2a6d0cd85af7bc9638658800095dd40e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1aae39d6d46545e796fb291416e5c5360d" kindref="member">row_iterator</ref></type>
+        <definition>row_iterator rowBegin</definition>
+        <argsstring>(int y)</argsstring>
+        <name>rowBegin</name>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing to first pixel of row <emphasis>y</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="382" bodyend="385"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1ad1f1dd334ef9c7c88d0ff4d11f90469f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a75bf9053d4e2643c54a5a68adcd65c27" kindref="member">const_row_iterator</ref></type>
+        <definition>const_row_iterator rowBegin</definition>
+        <argsstring>(int y) const </argsstring>
+        <name>rowBegin</name>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing to first pixel of row <emphasis>y</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="397" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="396" bodyend="399"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a3b155c69bfbde80c60ab22d1765bd2ad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1aae39d6d46545e796fb291416e5c5360d" kindref="member">row_iterator</ref></type>
+        <definition>row_iterator rowEnd</definition>
+        <argsstring>(int y)</argsstring>
+        <name>rowEnd</name>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access iterator pointing past the end of row <emphasis>y</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="389" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a18763d3333909254a420e051529e95d4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a75bf9053d4e2643c54a5a68adcd65c27" kindref="member">const_row_iterator</ref></type>
+        <definition>const_row_iterator rowEnd</definition>
+        <argsstring>(int y) const </argsstring>
+        <name>rowEnd</name>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 1D random access const iterator pointing past the end of row <emphasis>y</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="404" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="403" bodyend="406"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a503ab01f6c0142145d3434f6924714e7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a76688779d76c3d773a2da26ac1bf177d" kindref="member">size_type</ref></type>
+        <definition>size_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>size of Image </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="236" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="235" bodyend="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a2f0529f7f5ff03b8a26e3a3d1925bb2b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int stride</definition>
+        <argsstring>() const </argsstring>
+        <name>stride</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>stride of Image. Memory offset between the start of two successive rows. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="229" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="228" bodyend="231"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1af9eeb6ad11570b4918e6bf2086384bf4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1ac9bb2423ec1e2bcf8f55df79df56d7e4" kindref="member">traverser</ref></type>
+        <definition>traverser upperLeft</definition>
+        <argsstring>()</argsstring>
+        <name>upperLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 2D random access iterator pointing to upper left pixel </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="307" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="306" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a55a21643ddd21b798f2ea3f2b4f72668" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BasicImageView_1a6f3c353589de37da0e0201bb38adff6c" kindref="member">const_traverser</ref></type>
+        <definition>const_traverser upperLeft</definition>
+        <argsstring>() const </argsstring>
+        <name>upperLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init 2D random access const iterator pointing to upper left pixel </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="322" bodyend="325"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BasicImageView_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>width of Image </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="213" bodyend="216"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref> using foreign memory. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class provides the same interface as <ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref> (with the exception of <computeroutput>resize()</computeroutput>) but the image&apos;s memory is provided from the outside instead of allocated internally.</para><para>A <computeroutput><ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref></computeroutput> can also be created from a <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref> with the appropriate shape <ndash/> see <ref refid="group__MultiArrayToImage" kindref="compound">Wrap aref vigra::MultiArrayView in</ref>.</para><para><bold>#include</bold> &lt;<ref refid="basicimageview_8hxx_source" kindref="compound">vigra/basicimageview.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimageview.hxx" bodystart="75" bodyend="463"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BasicImageView_1a28a41780fa37a19501034e86747e45b7" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>Accessor</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac1e543db9ce291e86b9023cdb9202b5b" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>accessor</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a40e8567a7e13dacc22cadde2f9d1dcd0" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>accessor</name></member>
+      <member refid="classvigra_1_1BasicImageView_1afe010fe10a585a274d2d6193816a83cb" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>BasicImageView</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a2ce81d9aeaea568de359937079513d8f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>BasicImageView</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a529ca816b784a3a026603e83a03d3489" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>BasicImageView</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ab1ee4b0758e9e63ded6ffeb86f101bec" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>column_iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a81a672d2a2efad2f7d3da68bbcadcfe3" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>columnBegin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a52ccbd6efee6a72f07a743a5c8c7c58f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>columnBegin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1afe62973b16152efb3d7ff54305c7559e" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>columnEnd</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a8dadadb8e63c4af3414e1beef8f5d0e8" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>columnEnd</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a9296219904e870acefefba5891fbaaa9" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_column_iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ab97fc2a79db412ac7937ad5a69440d70" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac7cc4cab90064d36c394ca4b168f2cd2" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1BasicImageView_1af6a9a82b2fd29e44c1fd45f60a762c0e" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a75bf9053d4e2643c54a5a68adcd65c27" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_row_iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a6f3c353589de37da0e0201bb38adff6c" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>const_traverser</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a65676f5294c2039d907f09346c4c2b4c" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>ConstAccessor</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a0f2ba9ef366d692bc16ba9cd79a460bd" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>ConstIterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a338a0661cdb9c8c539fed9e3f8741596" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>ConstScanOrderIterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>data</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a11803c9b3eb51b0a6ee20822c2b1582f" prot="private" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>data_</name></member>
+      <member refid="classvigra_1_1BasicImageView_1afe1e2807a8c98a020588d6eeb28a1b7a" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1BasicImageView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>end</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>end</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>height</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a45a159d389017b03a58e3508186fb445" prot="private" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>height_</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac6ebb355ed29b09365bab23a77629319" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>init</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ae5d096d8e0757ab27b827451765ce3a1" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>isInside</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a6208a21171885301f5c39c388ce838e6" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>Iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1aec0a79fed66fd9e64551d0750fe95ada" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1acc69aa43c87902b25a957867d68a795b" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>lowerRight</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a9dfb3b3c76d19c6a0eedf5fe618aaf56" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>lowerRight</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a419f515eb2df97d041fe7843254272f6" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a4fa5aa5b031457c730b1980a02abfd6e" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a804beedadc8234d8bac954f73b8b536f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ae48a4ebba183cb71aa55db6fe8cf8a4b" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a95f162668a29312a8b6aeaa2075e2c4a" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac847a82a2a6a4a82dfbb1add647b8aa1" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac8456b73e94855de7203e3e337f2b872" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1BasicImageView_1af9a92dcc413ffd7c4e141b70dde890fa" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a68ddf4104dedcf113e01695b35e58f3d" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>reference</name></member>
+      <member refid="classvigra_1_1BasicImageView_1aae39d6d46545e796fb291416e5c5360d" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>row_iterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a2a6d0cd85af7bc9638658800095dd40e" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>rowBegin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ad1f1dd334ef9c7c88d0ff4d11f90469f" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>rowBegin</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a3b155c69bfbde80c60ab22d1765bd2ad" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>rowEnd</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a18763d3333909254a420e051529e95d4" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>rowEnd</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a06bdcd64f17baf0c7a661174ed340b83" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>ScanOrderIterator</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>size</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a76688779d76c3d773a2da26ac1bf177d" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a2f0529f7f5ff03b8a26e3a3d1925bb2b" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>stride</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a74bcc4848a43afebc86f2c829675732a" prot="private" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>stride_</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ac9bb2423ec1e2bcf8f55df79df56d7e4" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>traverser</name></member>
+      <member refid="classvigra_1_1BasicImageView_1af9eeb6ad11570b4918e6bf2086384bf4" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>upperLeft</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a55a21643ddd21b798f2ea3f2b4f72668" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>upperLeft</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ad618f240f2b743f553b20beac68bbaf8" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1BasicImageView_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>width</name></member>
+      <member refid="classvigra_1_1BasicImageView_1ad2af7588ca87bfadebd74fb4939e64dc" prot="private" virt="non-virtual"><scope>vigra::BasicImageView</scope><name>width_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

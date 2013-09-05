@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits_3_01fftw__complex_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits&lt; fftw_complex &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1a6926716150f5c9876a5de8e24257a23e" prot="public" static="no">
+        <type>fftw_real</type>
+        <definition>typedef fftw_real NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="562" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="562" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1af9e55f72cb3bea5bd2e02e24fac899dd" prot="public" static="no">
+        <type>fftw_real</type>
+        <definition>typedef fftw_real SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="561" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="561" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1a2ed9bdff709ded4b4a92f7cf0ec8319a" prot="public" static="no">
+        <type>fftw_complex</type>
+        <definition>typedef fftw_complex Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="560" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="558" bodyend="563"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1a6926716150f5c9876a5de8e24257a23e" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; fftw_complex &gt;</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1af9e55f72cb3bea5bd2e02e24fac899dd" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; fftw_complex &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01fftw__complex_01_4_1a2ed9bdff709ded4b4a92f7cf0ec8319a" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; fftw_complex &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,2791 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__EdgeDetection" kind="group">
+    <compoundname>EdgeDetection</compoundname>
+    <title>Edge Detection</title>
+    <innerclass refid="classvigra_1_1Edgel" prot="public">vigra::Edgel</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__EdgeDetection_1ga372f1a443c561d454cf46a517f0425e0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::beautifyCrackEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>beautifyCrackEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Beautify crack edge image for visualization. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm is applied as a post-processing operation of <ref refid="group__EdgeDetection_1ga52ce27e210e918ed15281dff03ee712e" kindref="member">differenceOfExponentialCrackEdgeImage()</ref>. The source image must fulfill the requirements of a <ref refid="CrackEdgeImage" kindref="compound">Crack Edge Image</ref>, but will <bold> not</bold> do so after application of this algorithm. In particular, the algorithm removes zero-cells marked as edges to avoid staircase effects on diagonal lines like this:</para><para><programlisting><codeline><highlight class="normal">original<sp/>edge<sp/>points<sp/>(*)<sp/><sp/><sp/><sp/><sp/>resulting<sp/>edge<sp/>points</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>.<sp/>.<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>.<sp/>.<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>*<sp/>*<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>*<sp/>.<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>*<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>*<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>*<sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.<sp/>.<sp/>.</highlight></codeline>
+</programlisting></para><para>Therefore, this algorithm should only be applied as a visualization aid, i.e. for human inspection. The algorithm assumes that edges are marked with <computeroutput>edge_marker</computeroutput>, and background pixels with <computeroutput>background_marker</computeroutput>. The image&apos;s value type must be equality comparable.</para><para>Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, i.e. on only one image.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga372f1a443c561d454cf46a517f0425e0" kindref="member" tooltip="Beautify crack edge image for visualization.">beautifyCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcValue<sp/>edge_marker,<sp/>SrcValue<sp/>background_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga372f1a443c561d454cf46a517f0425e0" kindref="member" tooltip="Beautify crack edge image for visualization.">beautifyCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcValue<sp/>edge_marker,<sp/>SrcValue<sp/>background_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/edgedetection.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(2*w-1,<sp/>2*h-1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>beautify<sp/>edge<sp/>image<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__EdgeDetection_1ga372f1a443c561d454cf46a517f0425e0" kindref="member" tooltip="Beautify crack edge image for visualization.">vigra::beautifyCrackEdgeImage</ref>(destImageRange(edges),<sp/>1,<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>show<sp/>to<sp/>the<sp/>user</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">window.open(edges);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>!=<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcValue<sp/>background_marker;</highlight></codeline>
+<codeline><highlight class="normal">src_accessor.set(background_marker,<sp/>src_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1102"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga9c03b7619707f43ca47190db6014d3ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::beautifyCrackEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, SrcValue edge_marker, SrcValue background_marker)</argsstring>
+        <name>beautifyCrackEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>background_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1105" bodyend="1140"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gac65297ff66be42ef4362c7a2df923a2f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::beautifyCrackEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, SrcValue edge_marker, SrcValue background_marker)</argsstring>
+        <name>beautifyCrackEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>background_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1144" bodyend="1150"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga729ddcc1323a9c0fd31c52812f08adb6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Detect and mark edges in an edge image using Canny&apos;s algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator first calls <ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member">cannyEdgelList()</ref> to generate an edgel list for the given image. Then it scans this list and selects edgels whose strength is above the given <computeroutput>gradient_threshold</computeroutput>. For each of these edgels, the edgel&apos;s location is rounded to the nearest pixel, and that pixel marked with the given <computeroutput>edge_marker</computeroutput>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga729ddcc1323a9c0fd31c52812f08adb6" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,<sp/>DestValue<sp/>edge_marker);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga729ddcc1323a9c0fd31c52812f08adb6" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,<sp/>DestValue<sp/>edge_marker);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgeImage(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see also: <ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member">cannyEdgelList()</ref>.</para><para><programlisting><codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft,<sp/><ref refid="classvigra_1_1Diff2D" kindref="compound" tooltip="Two dimensional difference vector.">vigra::Diff2D</ref>(1,1));</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">gradient_threshold<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1633"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga5c087ba74c94b0813ff35e17bf0dcc9b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1642" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1638" bodyend="1659"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga0e39f87d3d69827cfc3d4032924a8b85" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1668" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1664" bodyend="1672"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gad24417dac847a49d349da6092d86fa7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageFromGradWithThinning</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgeImageFromGradWithThinning</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Detect and mark edges in an edge image using Canny&apos;s algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>The input pixels of this algorithms must be vectors of length 2 (see Required Interface below). It first searches for all pixels whose gradient magnitude is larger than the given <computeroutput>gradient_threshold</computeroutput> and larger than the magnitude of its two neighbors in gradient direction (where these neighbors are determined by nearest neighbor interpolation, i.e. according to the octant where the gradient points into). The resulting edge pixel candidates are then subjected to topological thinning so that the remaining edge pixels can be linked into edgel chains with a provable, non-heuristic algorithm. Thinning is performed so that the pixels with highest gradient magnitude survive. Optionally, the outermost pixels are marked as edge pixels as well when <computeroutput>addBorder</computeroutput> is true. The remaining pixels will be marked in the destination image with the value of <computeroutput>edge_marker</computeroutput> (all non-edge pixels remain untouched).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1gad24417dac847a49d349da6092d86fa7f" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImageFromGradWithThinning</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>addBorder<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1gad24417dac847a49d349da6092d86fa7f" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImageFromGradWithThinning</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>addBorder<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FVector2Image</ref><sp/>grad(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>the<sp/>image<sp/>gradient<sp/>at<sp/>scale<sp/>0.8</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">vigra::gaussianGradient</ref>(srcImageRange(src),<sp/>destImage(grad),<sp/>0.8);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1,<sp/>and<sp/>add<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__EdgeDetection_1gad24417dac847a49d349da6092d86fa7f" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">vigra::cannyEdgeImageFromGradWithThinning</ref>(srcImageRange(grad),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4.0,<sp/>1,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="comment">//<sp/>the<sp/>input<sp/>pixel<sp/>type<sp/>must<sp/>be<sp/>a<sp/>vector<sp/>with<sp/>two<sp/>elements</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SrcAccessor::value_type<sp/>SrcPixel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>NormTraits&lt;SrcPixel&gt;::SquaredNormType<sp/>SrcSquaredNormType;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcPixel<sp/>g<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal">SrcPixel::value_type<sp/>g0<sp/>=<sp/>g[0];</highlight></codeline>
+<codeline><highlight class="normal">SrcSquaredNormType<sp/>gn<sp/>=<sp/><ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member" tooltip="squared norm (= squared magnitude)">squaredNorm</ref>(g);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft,<sp/><ref refid="classvigra_1_1Diff2D" kindref="compound" tooltip="Two dimensional difference vector.">vigra::Diff2D</ref>(1,1));</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">gradient_threshold<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1877"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga91ca9ff7329ad534603fd5eefcb1daef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageFromGradWithThinning</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, GradValue gradient_threshold, DestValue edge_marker, bool addBorder)</argsstring>
+        <name>cannyEdgeImageFromGradWithThinning</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>addBorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1887" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1882" bodyend="1977"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gadf9559aa2b40f10e8602de25f67e3202" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageFromGradWithThinning</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, GradValue gradient_threshold, DestValue edge_marker, bool addBorder)</argsstring>
+        <name>cannyEdgeImageFromGradWithThinning</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>addBorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1987" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1982" bodyend="1991"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga604cc63801570a653c4823d499c79692" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageFromGradWithThinning</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImageFromGradWithThinning</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2000" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1996" bodyend="2004"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga3f29af6e6b48689468f22068b2fad514" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageFromGradWithThinning</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImageFromGradWithThinning</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2013" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2009" bodyend="2017"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga9aa609d12e327e0d633047b78d61c84e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageWithThinning</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgeImageWithThinning</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Detect and mark edges in an edge image using Canny&apos;s algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator first calls <ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member">gaussianGradient()</ref> to compute the gradient of the input image, ad then <ref refid="group__EdgeDetection_1gad24417dac847a49d349da6092d86fa7f" kindref="member">cannyEdgeImageFromGradWithThinning()</ref> to generate an edge image. See there for more detailed documentation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga9aa609d12e327e0d633047b78d61c84e" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImageWithThinning</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>addBorder<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga9aa609d12e327e0d633047b78d61c84e" kindref="member" tooltip="Detect and mark edges in an edge image using Canny&amp;#39;s algorithm.">cannyEdgeImageWithThinning</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>addBorder<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1,<sp/>annd<sp/>add<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgeImageWithThinning(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see also: <ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member">cannyEdgelList()</ref>.</para><para><programlisting><codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft,<sp/><ref refid="classvigra_1_1Diff2D" kindref="compound" tooltip="Two dimensional difference vector.">vigra::Diff2D</ref>(1,1));</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">gradient_threshold<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2097"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gac330a842ff78b473d0d98550c1b2ed72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageWithThinning</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold, DestValue edge_marker, bool addBorder)</argsstring>
+        <name>cannyEdgeImageWithThinning</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>addBorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2102" bodyend="2114"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga97eab0c8e2941981638ee82ac60a2e3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageWithThinning</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold, DestValue edge_marker, bool addBorder)</argsstring>
+        <name>cannyEdgeImageWithThinning</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>addBorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2124" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2119" bodyend="2128"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga14e600fd3f0ebb2ab02ee0e2eabdf699" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageWithThinning</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImageWithThinning</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2133" bodyend="2141"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga8a9574911ab4ef7a12b2ac60aa96ef67" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgeImageWithThinning</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>cannyEdgeImageWithThinning</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2146" bodyend="2154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgelList</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Simple implementation of Canny&apos;s edge detector. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function can be called in two modes: If you pass a &apos;scale&apos;, it is assumed that the original image is scalar, and the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> gradient is internally computed at the given &apos;scale&apos;. If the function is called without scale parameter, it is assumed that the given image already contains the gradient (i.e. its value_type must be a vector of length 2).</para><para>On the basis of the gradient image, a simple non-maxima suppression is performed: for each 3x3 neighborhood, it is determined whether the center pixel has larger gradient magnitude than its two neighbors in gradient direction (where the direction is rounded into octants). If this is the case, a new <ref refid="classvigra_1_1Edgel" kindref="compound">Edgel</ref> is appended to the given vector of <computeroutput>edgels</computeroutput>. The subpixel edgel position is determined by fitting a parabola to the three gradient magnitude values mentioned above. The sub-pixel location of the parabola&apos;s tip and the gradient magnitude and direction (from the pixel center) are written in the newly created edgel.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member" tooltip="Simple implementation of Canny&amp;#39;s edge detector.">cannyEdgelList</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member" tooltip="Simple implementation of Canny&amp;#39;s edge detector.">cannyEdgelList</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member" tooltip="Simple implementation of Canny&amp;#39;s edge detector.">cannyEdgelList</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member" tooltip="Simple implementation of Canny&amp;#39;s edge detector.">cannyEdgelList</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edgel<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::Edgel&gt;<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edgels<sp/>at<sp/>scale<sp/>0.8</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgelList(srcImageRange(src),<sp/>edgels,<sp/>0.8);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">edgels.push_back(Edgel());</highlight></codeline>
+</programlisting></para><para>SrcAccessor::value_type must be a type convertible to float</para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1369"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gafeb7198f24ba87163105e2db3969aaf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, double scale)</argsstring>
+        <name>cannyEdgelList</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1375" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1373" bodyend="1381"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga5a90c257346e059b4320912425c14284" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, double scale)</argsstring>
+        <name>cannyEdgelList</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1385" bodyend="1389"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga9339bd74f13e76f0067b2b536e114732" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels)</argsstring>
+        <name>cannyEdgelList</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1393" bodyend="1405"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga05620676c89fa9c635157b23cd2a3ada" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels)</argsstring>
+        <name>cannyEdgelList</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1411" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1409" bodyend="1413"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgelList3x3</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Improved implementation of Canny&apos;s edge detector. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator first computes pixels which are crossed by the edge using <ref refid="group__EdgeDetection_1ga9aa609d12e327e0d633047b78d61c84e" kindref="member">cannyEdgeImageWithThinning()</ref>. The gradient magnitudes in the 3x3 neighborhood of these pixels are then projected onto the normal of the edge (as determined by the gradient direction). The edgel&apos;s subpixel location is found by fitting a parabola through the 9 gradient values and determining the parabola&apos;s tip. A new <ref refid="classvigra_1_1Edgel" kindref="compound">Edgel</ref> is appended to the given vector of <computeroutput>edgels</computeroutput>. Since the parabola is fitted to 9 points rather than 3 points as in <ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member">cannyEdgelList()</ref>, the accuracy is higher.</para><para>The function can be called in two modes: If you pass a &apos;scale&apos;, it is assumed that the original image is scalar, and the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> gradient is internally computed at the given &apos;scale&apos;. If the function is called without scale parameter, it is assumed that the given image already contains the gradient (i.e. its value_type must be a vector of length 2).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector.">cannyEdgelList3x3</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector.">cannyEdgelList3x3</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector.">cannyEdgelList3x3</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector.">cannyEdgelList3x3</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edgel<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::Edgel&gt;<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edgels<sp/>at<sp/>scale<sp/>0.8</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgelList3x3(srcImageRange(src),<sp/>edgels,<sp/>0.8);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">edgels.push_back(Edgel());</highlight></codeline>
+</programlisting></para><para>SrcAccessor::value_type must be a type convertible to float</para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2317"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga6d1de591e71aba91c158a94cf2dca95a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, double scale)</argsstring>
+        <name>cannyEdgelList3x3</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2321" bodyend="2329"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga20e31828b9491c281d85590741d5f0de" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, double scale)</argsstring>
+        <name>cannyEdgelList3x3</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2333" bodyend="2337"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gabfde30f27282992b092653ae86864edc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels)</argsstring>
+        <name>cannyEdgelList3x3</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2341" bodyend="2352"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gae8e2acd514b0347a1bacc2cbf5898a14" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels)</argsstring>
+        <name>cannyEdgelList3x3</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2358" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2356" bodyend="2360"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3Threshold</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgelList3x3Threshold</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Improved implementation of Canny&apos;s edge detector with thresholding. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function works exactly like <ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member">cannyEdgelList3x3()</ref>, but you also pass a threshold for the minimal gradient magnitude, so that edgels whose strength is below the threshold are not inserted into the edgel list.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector with thresholding.">cannyEdgelList3x3Threshold</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/>GradValue<sp/>grad_thresh);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector with thresholding.">cannyEdgelList3x3Threshold</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>grad_thresh);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector with thresholding.">cannyEdgelList3x3Threshold</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/>GradValue<sp/>grad_thresh);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" kindref="member" tooltip="Improved implementation of Canny&amp;#39;s edge detector with thresholding.">cannyEdgelList3x3Threshold</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>grad_thresh);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edgel<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::Edgel&gt;<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edgels<sp/>at<sp/>scale<sp/>0.8</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgelList3x3(srcImageRange(src),<sp/>edgels,<sp/>0.8);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">edgels.push_back(Edgel());</highlight></codeline>
+</programlisting></para><para>SrcAccessor::value_type must be a type convertible to float</para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2451"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gab77f1e1fafcc807d4df4c13dfa4008d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3Threshold</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, double scale, GradValue grad_thresh)</argsstring>
+        <name>cannyEdgelList3x3Threshold</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2458" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2456" bodyend="2464"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga6b03e70efb66dc882ca62de5b95e1809" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3Threshold</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, double scale, GradValue grad_thresh)</argsstring>
+        <name>cannyEdgelList3x3Threshold</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2471" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2469" bodyend="2473"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gab15926f47a4ac8949312e1d20fdf791e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3Threshold</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, GradValue grad_thresh)</argsstring>
+        <name>cannyEdgelList3x3Threshold</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2478" bodyend="2487"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga1a193c1f1bc066901e7a54654ba1be86" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelList3x3Threshold</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, GradValue grad_thresh)</argsstring>
+        <name>cannyEdgelList3x3Threshold</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2494" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2492" bodyend="2496"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelListThreshold</definition>
+        <argsstring>(...)</argsstring>
+        <name>cannyEdgelListThreshold</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Canny&apos;s edge detector with thresholding. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function works exactly like <ref refid="group__EdgeDetection_1gaf2233c5ec0e42a15134feda453f6fca5" kindref="member">cannyEdgelList()</ref>, but you also pass a threshold for the minimal gradient magnitude, so that edgels whose strength is below the threshold are not inserted into the edgel list.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" kindref="member" tooltip="Canny&amp;#39;s edge detector with thresholding.">cannyEdgelListThreshold</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/>GradValue<sp/>grad_threshold);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" kindref="member" tooltip="Canny&amp;#39;s edge detector with thresholding.">cannyEdgelListThreshold</ref>(SrcIterator<sp/>ul,<sp/>SrcIterator<sp/>lr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>grad_threshold);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>gradient<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" kindref="member" tooltip="Canny&amp;#39;s edge detector with thresholding.">cannyEdgelListThreshold</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/>GradValue<sp/>grad_threshold);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>edgels<sp/>from<sp/>a<sp/>scalar<sp/>image<sp/>(determine<sp/>gradient<sp/>internally<sp/>at<sp/>&apos;scale&apos;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BackInsertable,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" kindref="member" tooltip="Canny&amp;#39;s edge detector with thresholding.">cannyEdgelListThreshold</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>edgels,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>grad_threshold);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="edgedetection_8hxx_source" kindref="compound">vigra/edgedetection.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edgel<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::Edgel&gt;<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edgels<sp/>at<sp/>scale<sp/>0.8,<sp/>only<sp/>considering<sp/>gradient<sp/>above<sp/>2.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::cannyEdgelListThreshold(srcImageRange(src),<sp/>edgels,<sp/>0.8,<sp/>2.0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>edgels;</highlight></codeline>
+<codeline><highlight class="normal">edgels.push_back(Edgel());</highlight></codeline>
+</programlisting></para><para>SrcAccessor::value_type must be a type convertible to float</para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1504"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga171faa6ec4b3867db4d101539308adcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelListThreshold</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, double scale, GradValue grad_threshold)</argsstring>
+        <name>cannyEdgelListThreshold</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1511" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1509" bodyend="1517"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga042800ba2a747f2c23008e6c0ef5d73b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelListThreshold</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, double scale, GradValue grad_threshold)</argsstring>
+        <name>cannyEdgelListThreshold</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1524" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1522" bodyend="1526"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga5e06b5f053f82cc5b0e9e69ac42c915c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelListThreshold</definition>
+        <argsstring>(SrcIterator ul, SrcIterator lr, SrcAccessor src, BackInsertable &amp;edgels, GradValue grad_threshold)</argsstring>
+        <name>cannyEdgelListThreshold</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1531" bodyend="1543"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga8a529449c08eac7a2aebe88b48a607db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cannyEdgelListThreshold</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;edgels, GradValue grad_threshold)</argsstring>
+        <name>cannyEdgelListThreshold</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1548" bodyend="1552"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gab9c56ad0d2769ad7ddca5708e7adfee5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::closeGapsInCrackEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>closeGapsInCrackEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Close one-pixel wide gaps in a cell grid edge image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm is typically applied as a post-processing operation of <ref refid="group__EdgeDetection_1ga52ce27e210e918ed15281dff03ee712e" kindref="member">differenceOfExponentialCrackEdgeImage()</ref>. The source image must fulfill the requirements of a <ref refid="CrackEdgeImage" kindref="compound">Crack Edge Image</ref>, and will still do so after application of this algorithm.</para><para>It closes one pixel wide gaps in the edges resulting from this algorithm. Since these gaps are usually caused by zero crossing slightly below the gradient threshold used in edge detection, this algorithms acts like a weak hysteresis thresholding. The newly found edge pixels are marked with the given <computeroutput>edge_marker</computeroutput>. The image&apos;s value type must be equality comparable.</para><para>Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, i.e. on only one image.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1gab9c56ad0d2769ad7ddca5708e7adfee5" kindref="member" tooltip="Close one-pixel wide gaps in a cell grid edge image.">closeGapsInCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1gab9c56ad0d2769ad7ddca5708e7adfee5" kindref="member" tooltip="Close one-pixel wide gaps in a cell grid edge image.">closeGapsInCrackEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcValue<sp/>edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/edgedetection.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(2*w-1,<sp/>2*h-1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>close<sp/>gaps,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__EdgeDetection_1gab9c56ad0d2769ad7ddca5708e7adfee5" kindref="member" tooltip="Close one-pixel wide gaps in a cell grid edge image.">vigra::closeGapsInCrackEdgeImage</ref>(srcImageRange(edges),<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>zero<sp/>edges<sp/>shorter<sp/>than<sp/>20<sp/>pixels</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" kindref="member" tooltip="Remove short edges from an edge image.">vigra::removeShortEdges</ref>(srcImageRange(edges),<sp/>10,<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>!=<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal">src_accessor.set(edge_marker,<sp/>src_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="885"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gaf99bf7c201e64a8895bda6ebd58d61d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::closeGapsInCrackEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, SrcValue edge_marker)</argsstring>
+        <name>closeGapsInCrackEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="891" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="888" bodyend="996"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gab7b0ab458fc18cbe93a1241d35da20ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::closeGapsInCrackEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, SrcValue edge_marker)</argsstring>
+        <name>closeGapsInCrackEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>SrcValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1003" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1000" bodyend="1006"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga52ce27e210e918ed15281dff03ee712e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialCrackEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>differenceOfExponentialCrackEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Detect and mark edges in a crack edge image using the Shen/Castan zero-crossing detector. </para>        </briefdescription>
+        <detaileddescription>
+<para><verbatim>This operator applies an exponential filter to the source image
+at the given &lt;TT&gt;scale&lt;/TT&gt; and subtracts the result from the original image.
+Zero crossings are detected in the resulting difference image. Whenever the
+gradient at a zero crossing is greater than the given &lt;TT&gt;gradient_threshold&lt;/TT&gt;,
+an edge point is marked (using &lt;TT&gt;edge_marker&lt;/TT&gt;) in the destination image
+&lt;i&gt;between&lt;/i&gt; the corresponding original pixels. Topologically, this means we
+must insert additional pixels between the original ones to represent the
+boundaries between the pixels (the so called zero- and one-cells, with the original
+pixels being two-cells). Within VIGRA, such an image is called \ref CrackEdgeImage.
+To allow insertion of the zero- and one-cells, the destination image must have twice the
+size of the original (precisely, &lt;TT&gt;(2*w-1)&lt;/TT&gt; by &lt;TT&gt;(2*h-1)&lt;/TT&gt; pixels). Then the algorithm
+proceeds as follows:
+
+@code 
+</verbatim> sign of difference image insert zero- and one-cells resulting edge points (*) <verbatim>                                 + . - . -                   . * . . .
+  + - -                          . . . . .                   . * * * .
+  + + -               =&gt;         + . + . -           =&gt;      . . . * .
+  + + +                          . . . . .                   . . . * *
+                                 + . + . +                   . . . . .
+\endcode
+
+Thus the edge points are marked where they actually are - in between the pixels.
+An important property of the resulting edge image is that it conforms to the notion
+of well-composedness as defined by Latecki et al., i.e. connected regions and edges
+obtained by a subsequent \ref Labeling do not depend on
+whether 4- or 8-connectivity is used.
+The non-edge pixels (&lt;TT&gt;.&lt;/TT&gt;) in the destination image remain unchanged.
+The result conforms to the requirements of a \ref CrackEdgeImage. It can be further
+improved by the post-processing operations \ref removeShortEdges() and
+\ref closeGapsInCrackEdgeImage().
+
+The source value type (&lt;TT&gt;SrcAccessor::value_type&lt;/TT&gt;) must be a linear algebra, i.e. addition,
+subtraction and multiplication of the type with itself, and multiplication
+with double and
+\ref NumericTraits &quot;NumericTraits&quot; must
+be defined. In addition, this type must be less-comparable.
+
+&lt;b&gt; Declarations:&lt;/b&gt;
+
+pass arguments explicitly:
+@code 
+namespace vigra {
+    template &lt;class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue,
+          class DestValue = DestAccessor::value_type&gt;
+    void differenceOfExponentialCrackEdgeImage(
+           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+           DestIterator dul, DestAccessor da,
+           double scale, GradValue gradient_threshold,
+           DestValue edge_marker = NumericTraits&lt;DestValue&gt;::one())
+}
+\endcode
+
+use argument objects in conjunction with \ref ArgumentObjectFactories :
+@code 
+namespace vigra {
+    template &lt;class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class GradValue,
+          class DestValue = DestAccessor::value_type&gt;
+    void differenceOfExponentialCrackEdgeImage(
+           triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; src,
+           pair&lt;DestIterator, DestAccessor&gt; dest,
+           double scale, GradValue gradient_threshold,
+           DestValue edge_marker = NumericTraits&lt;DestValue&gt;::one())
+}
+\endcode
+
+&lt;b&gt; Usage:&lt;/b&gt;
+
+    &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/edgedetection.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+
+@code 
+vigra::BImage src(w,h), edges(2*w-1,2*h-1);
+
+// empty edge image
+edges = 0;
+...
+
+// find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges),
+                                 0.8, 4.0, 1);
+\endcode
+
+&lt;b&gt; Required Interface:&lt;/b&gt;
+
+@code 
+SrcImageIterator src_upperleft, src_lowerright;
+DestImageIterator dest_upperleft;
+
+SrcAccessor src_accessor;
+DestAccessor dest_accessor;
+
+SrcAccessor::value_type u = src_accessor(src_upperleft);
+double d;
+GradValue gradient_threshold;
+
+u = u + u
+u = u - u
+u = u * u
+u = d * u
+u &lt; gradient_threshold
+
+DestValue edge_marker;
+dest_accessor.set(edge_marker, dest_upperleft);
+\endcode
+
+&lt;b&gt; Preconditions:&lt;/b&gt;
+
+@code 
+scale &gt; 0
+gradient_threshold &gt; 0
+\endcode
+
+The destination image must have twice the size of the source:
+@code 
+w_dest = 2 * w_src - 1
+h_dest = 2 * h_src - 1
+\endcode</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="465"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gad8c854619788c2a58b9dc7b41f1622ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialCrackEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>differenceOfExponentialCrackEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="475" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="470" bodyend="649"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gab3d1d530b48ca2bb341ba97705bc4998" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialCrackEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>differenceOfExponentialCrackEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="660" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="655" bodyend="665"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga82468161d9b270516e72ab0bc76f63b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialEdgeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>differenceOfExponentialEdgeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Detect and mark edges in an edge image using the Shen/Castan zero-crossing detector. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator applies an exponential filter to the source image at the given <computeroutput>scale</computeroutput> and subtracts the result from the original image. Zero crossings are detected in the resulting difference image. Whenever the gradient at a zero crossing is greater than the given <computeroutput>gradient_threshold</computeroutput>, an edge point is marked (using <computeroutput>edge_marker</computeroutput>) in the destination image on the darker side of the zero crossing (note that zero crossings occur <emphasis>between</emphasis> pixels). For example:</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__MathFunctions_1ga99756ca23b738bdc82afba3b0e49df74" kindref="member">sign</ref><sp/>of<sp/>difference<sp/>image<sp/><sp/><sp/><sp/><sp/>resulting<sp/>edge<sp/>points<sp/>(*)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>+<sp/>-<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>*<sp/>.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>+<sp/>+<sp/>-<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>*<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>+<sp/>+<sp/>+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<sp/>.<sp/>.</highlight></codeline>
+</programlisting></para><para>Non-edge pixels (<computeroutput>.</computeroutput>) remain untouched in the destination image. The result can be improved by the post-processing operation <ref refid="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" kindref="member">removeShortEdges()</ref>. A more accurate edge placement can be achieved with the function <ref refid="group__EdgeDetection_1ga52ce27e210e918ed15281dff03ee712e" kindref="member">differenceOfExponentialCrackEdgeImage()</ref>.</para><para>The source value type (<computeroutput>SrcAccessor::value_type</computeroutput>) must be a linear algebra, i.e. addition, subtraction and multiplication of the type with itself, and multiplication with double and <ref refid="NumericTraits" kindref="compound">NumericTraits</ref> must be defined. In addition, this type must be less-comparable.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga82468161d9b270516e72ab0bc76f63b7" kindref="member" tooltip="Detect and mark edges in an edge image using the Shen/Castan zero-crossing detector.">differenceOfExponentialEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">GradValue,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga82468161d9b270516e72ab0bc76f63b7" kindref="member" tooltip="Detect and mark edges in an edge image using the Shen/Castan zero-crossing detector.">differenceOfExponentialEdgeImage</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/>GradValue<sp/>gradient_threshold,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>edge_marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/edgedetection.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::differenceOfExponentialEdgeImage(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal">GradValue<sp/>gradient_threshold;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>+<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>-<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>*<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>d<sp/>*<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>&lt;<sp/>gradient_threshold</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>edge_marker;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(edge_marker,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">gradient_threshold<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="180"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gaf993cde9929f9603a5559fb788484928" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>differenceOfExponentialEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="189" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="185" bodyend="288"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga66eda3fc553ddda7c418d52ecd4615cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialEdgeImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, double scale, GradValue gradient_threshold)</argsstring>
+        <name>differenceOfExponentialEdgeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="298" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="294" bodyend="301"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gaa8b9ea95f249c06f5ffd7d416d12b1dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold, DestValue edge_marker)</argsstring>
+        <name>differenceOfExponentialEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="312" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="307" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga5365f0e39fb1412355cdb9e4fd01d3d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::differenceOfExponentialEdgeImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, GradValue gradient_threshold)</argsstring>
+        <name>differenceOfExponentialEdgeImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>gradient_threshold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="323" bodyend="331"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga5b56be19984182e70c4c59354b815fb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MagnitudeImage</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::internalCannyFindEdgels</definition>
+        <argsstring>(SrcIterator ul, SrcAccessor grad, MagnitudeImage const &amp;magnitude, BackInsertable &amp;edgels, GradValue grad_thresh)</argsstring>
+        <name>internalCannyFindEdgels</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>grad</declname>
+        </param>
+        <param>
+          <type>MagnitudeImage const &amp;</type>
+          <declname>magnitude</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1219" bodyend="1271"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga2acc53eb4142881bdad2b0b7bce43387" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskImage</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+          <param>
+            <type>class GradValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::internalCannyFindEdgels3x3</definition>
+        <argsstring>(SrcIterator ul, SrcAccessor grad, MaskImage const &amp;mask, BackInsertable &amp;edgels, GradValue grad_thresh)</argsstring>
+        <name>internalCannyFindEdgels3x3</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>grad</declname>
+        </param>
+        <param>
+          <type>MaskImage const &amp;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>edgels</declname>
+        </param>
+        <param>
+          <type>GradValue</type>
+          <declname>grad_thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="2164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="2160" bodyend="2222"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::removeShortEdges</definition>
+        <argsstring>(...)</argsstring>
+        <name>removeShortEdges</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Remove short edges from an edge image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm can be applied as a post-processing operation of <ref refid="group__EdgeDetection_1ga82468161d9b270516e72ab0bc76f63b7" kindref="member">differenceOfExponentialEdgeImage()</ref> and <ref refid="group__EdgeDetection_1ga52ce27e210e918ed15281dff03ee712e" kindref="member">differenceOfExponentialCrackEdgeImage()</ref>. It removes all edges that are shorter than <computeroutput>min_edge_length</computeroutput>. The corresponding pixels are set to the <computeroutput>non_edge_marker</computeroutput>. The idea behind this algorithms is that very short edges are probably caused by noise and don&apos;t represent interesting image structure. Technically, the algorithms executes a connected components labeling, so the image&apos;s value type must be equality comparable.</para><para>If the source image fulfills the requirements of a <ref refid="CrackEdgeImage" kindref="compound">Crack Edge Image</ref>, it will still do so after application of this algorithm.</para><para>Note that this algorithm, unlike most other algorithms in VIGRA, operates in-place, i.e. on only one image. Also, the algorithm assumes that all non-edges pixels are already marked with the given <computeroutput>non_edge_marker</computeroutput> value.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" kindref="member" tooltip="Remove short edges from an edge image.">removeShortEdges</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>sul,<sp/>Iterator<sp/>slr,<sp/>Accessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>min_edge_length,<sp/>SrcValue<sp/>non_edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcValue&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" kindref="member" tooltip="Remove short edges from an edge image.">removeShortEdges</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;Iterator,<sp/>Iterator,<sp/>Accessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>min_edge_length,<sp/>SrcValue<sp/>non_edge_marker)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/edgedetection.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>edges(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>empty<sp/>edge<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edges<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>edges<sp/>at<sp/>scale<sp/>0.8<sp/>with<sp/>gradient<sp/>larger<sp/>than<sp/>4.0,<sp/>mark<sp/>with<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::differenceOfExponentialEdgeImage(srcImageRange(src),<sp/>destImage(edges),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.8,<sp/>4.0,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>zero<sp/>edges<sp/>shorter<sp/>than<sp/>10<sp/>pixels</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__EdgeDetection_1ga6f9601dcf8f062b88b8cb80b8fdd76a5" kindref="member" tooltip="Remove short edges from an edge image.">vigra::removeShortEdges</ref>(srcImageRange(edges),<sp/>10,<sp/>0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcValue<sp/>non_edge_marker;</highlight></codeline>
+<codeline><highlight class="normal">src_accessor.set(non_edge_marker,<sp/>src_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="749"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1gacd932fba641ecc4b3bb5c476c8de3567" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Value</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::removeShortEdges</definition>
+        <argsstring>(Iterator sul, Iterator slr, Accessor sa, unsigned int min_edge_length, Value non_edge_marker)</argsstring>
+        <name>removeShortEdges</name>
+        <param>
+          <type>Iterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>min_edge_length</declname>
+        </param>
+        <param>
+          <type>Value</type>
+          <declname>non_edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="755" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="752" bodyend="789"/>
+      </memberdef>
+      <memberdef kind="function" id="group__EdgeDetection_1ga9caabb3239cbbfc22ff0dc1d2759c5fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Value</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::removeShortEdges</definition>
+        <argsstring>(triple&lt; Iterator, Iterator, Accessor &gt; src, unsigned int min_edge_length, Value non_edge_marker)</argsstring>
+        <name>removeShortEdges</name>
+        <param>
+          <type>triple&lt; Iterator, Iterator, Accessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>min_edge_length</declname>
+        </param>
+        <param>
+          <type>Value</type>
+          <declname>non_edge_marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="796" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="793" bodyend="799"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Edge detectors based on first and second derivatives, and related post-processing. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

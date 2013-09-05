@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1NormalRandomFunctor" kind="class" prot="public">
+    <compoundname>vigra::NormalRandomFunctor</compoundname>
+    <includes refid="random_8hxx" local="no">vigra/random.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Engine</type>
+        <defval><ref refid="group__RandomNumberGeneration_1ga97d0d393c8d83d0c91239d92a8eeca41" kindref="member">RandomTT800</ref></defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1NormalRandomFunctor_1a32403829e9e5baa60c9fd58375e14842" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+<para>STL required functor result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="834" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="834" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1NormalRandomFunctor_1af5a8c1bbfb6917c8fcbf6c73ec250769" prot="private" static="no" mutable="no">
+        <type>Engine const &amp;</type>
+        <definition>Engine const&amp; generator_</definition>
+        <argsstring></argsstring>
+        <name>generator_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="830" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="830" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NormalRandomFunctor_1a830b1880f9dc271a7b6415047d893783" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double mean_</definition>
+        <argsstring></argsstring>
+        <name>mean_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="829" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="829" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NormalRandomFunctor_1a4adda8d9c19a2a9b3474237433fbf1ef" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double stddev_</definition>
+        <argsstring></argsstring>
+        <name>stddev_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="829" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="829" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1NormalRandomFunctor_1a0153cf8c6e6d7b0aac8f98613fdefc94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NormalRandomFunctor</definition>
+        <argsstring>(Engine const &amp;generator=Engine::global())</argsstring>
+        <name>NormalRandomFunctor</name>
+        <param>
+          <type>Engine const &amp;</type>
+          <declname>generator</declname>
+          <defval>Engine::global()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create functor for standard normal random numbers using the given engine.</para><para>That is, mean is 0.0 and standard deviation is 1.0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="845" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="841" bodyend="845"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NormalRandomFunctor_1a87dcb039e81a7f16f7863a0209404fb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NormalRandomFunctor</definition>
+        <argsstring>(double mean, double stddev, Engine &amp;generator=Engine::global())</argsstring>
+        <name>NormalRandomFunctor</name>
+        <param>
+          <type>double</type>
+          <declname>mean</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>stddev</declname>
+        </param>
+        <param>
+          <type>Engine &amp;</type>
+          <declname>generator</declname>
+          <defval>Engine::global()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create functor for normal random numbers with given mean and standard deviation using the given engine. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="855" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="850" bodyend="858"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NormalRandomFunctor_1a8f9baeb5887be0f2b51bacc41dc1964f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double operator()</definition>
+        <argsstring>() const </argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a random number as specified in the constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="863" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="862" bodyend="865"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Functor to create normal variate random numbers.</para><para>This functor encapsulates the function <computeroutput>normal()</computeroutput> of the given random number <computeroutput>Engine</computeroutput> (usually <computeroutput>RandomTT800</computeroutput> or <computeroutput>RandomMT19937</computeroutput>) in an STL-compatible interface.</para><para><bold>Traits defined:</bold></para><para><verbatim>FunctorTraits&lt;UniformIntRandomFunctor&lt;Engine&gt; &gt;::isInitializer </verbatim> is true (<computeroutput>VigraTrueType</computeroutput>). </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="828" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="827" bodyend="867"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1NormalRandomFunctor_1af5a8c1bbfb6917c8fcbf6c73ec250769" prot="private" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>generator_</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a830b1880f9dc271a7b6415047d893783" prot="private" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>mean_</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a0153cf8c6e6d7b0aac8f98613fdefc94" prot="public" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>NormalRandomFunctor</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a87dcb039e81a7f16f7863a0209404fb5" prot="public" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>NormalRandomFunctor</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a8f9baeb5887be0f2b51bacc41dc1964f" prot="public" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a32403829e9e5baa60c9fd58375e14842" prot="public" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1NormalRandomFunctor_1a4adda8d9c19a2a9b3474237433fbf1ef" prot="private" virt="non-virtual"><scope>vigra::NormalRandomFunctor</scope><name>stddev_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

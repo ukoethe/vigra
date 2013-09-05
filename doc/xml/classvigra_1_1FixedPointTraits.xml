@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FixedPointTraits" kind="class" prot="public">
+    <compoundname>vigra::FixedPointTraits</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T1</declname>
+        <defname>T1</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T2</declname>
+        <defname>T2</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FixedPointTraits_1a67692a13560fe51c01eee8e09d97f5b2" prot="public" static="no">
+        <type>Error_FixedPointTraits_not_specialized_for_this_case</type>
+        <definition>typedef Error_FixedPointTraits_not_specialized_for_this_case MinusType</definition>
+        <argsstring></argsstring>
+        <name>MinusType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="56" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FixedPointTraits_1af07e5aa3e8bb7eda2f2f39fba26d5dd0" prot="public" static="no">
+        <type>Error_FixedPointTraits_not_specialized_for_this_case</type>
+        <definition>typedef Error_FixedPointTraits_not_specialized_for_this_case MultipliesType</definition>
+        <argsstring></argsstring>
+        <name>MultipliesType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="57" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FixedPointTraits_1a0efcc15cc672b8d1c998653e747c5c64" prot="public" static="no">
+        <type>Error_FixedPointTraits_not_specialized_for_this_case</type>
+        <definition>typedef Error_FixedPointTraits_not_specialized_for_this_case PlusType</definition>
+        <argsstring></argsstring>
+        <name>PlusType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="55" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="53" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="52" bodyend="59"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FixedPointTraits_1a67692a13560fe51c01eee8e09d97f5b2" prot="public" virt="non-virtual"><scope>vigra::FixedPointTraits</scope><name>MinusType</name></member>
+      <member refid="classvigra_1_1FixedPointTraits_1af07e5aa3e8bb7eda2f2f39fba26d5dd0" prot="public" virt="non-virtual"><scope>vigra::FixedPointTraits</scope><name>MultipliesType</name></member>
+      <member refid="classvigra_1_1FixedPointTraits_1a0efcc15cc672b8d1c998653e747c5c64" prot="public" virt="non-virtual"><scope>vigra::FixedPointTraits</scope><name>PlusType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

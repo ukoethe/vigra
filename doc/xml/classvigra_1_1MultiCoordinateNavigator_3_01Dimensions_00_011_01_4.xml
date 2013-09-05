@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4" kind="class" prot="public">
+    <compoundname>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>Dimensions</declname>
+        <defname>Dimensions</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a96a58e29e8dbf2b5bdeb775cba46556e" prot="public" static="no">
+        <name>@34</name>
+        <enumvalue id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a96a58e29e8dbf2b5bdeb775cba46556ea831fc3a2f78e54e3c4ce5251aa1fc268" prot="public">
+          <name>level</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="372" bodyend="372"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ae6e85d1c0c3069d6fcddb115ecf4c34d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; Dimensions &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;Dimensions&gt;::type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="373" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a2ffc6f75174ba2425d3faf9ceefeb1f4" prot="protected" static="no" mutable="no">
+        <type>value_type</type>
+        <definition>value_type end_</definition>
+        <argsstring></argsstring>
+        <name>end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="425" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ae51e9940bd2ea6204720f29e3ef03740" prot="protected" static="no" mutable="no">
+        <type>value_type</type>
+        <definition>value_type i_</definition>
+        <argsstring></argsstring>
+        <name>i_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="425" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ab6c6ebf70938b10c5e782a4f7675831b" prot="protected" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int inner_dimension_</definition>
+        <argsstring></argsstring>
+        <name>inner_dimension_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="426" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="426" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a48b413a84e0f7afb7e086264acf52cab" prot="protected" static="no" mutable="no">
+        <type>value_type</type>
+        <definition>value_type shape_</definition>
+        <argsstring></argsstring>
+        <name>shape_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="425" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a11cbf4ba82ee565cb9eef28b972bf145" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool atEnd</definition>
+        <argsstring>() const </argsstring>
+        <name>atEnd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="412" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="411" bodyend="414"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a00e352dce09a5c619e6103f5a9fad17b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type const &amp;</type>
+        <definition>value_type const&amp; begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="394" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1aee228494307bc454c1c882527d30d7e8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type</type>
+        <definition>value_type end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="399" bodyend="404"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a97c5fb844c38a720482022f117f2c614" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasMore</definition>
+        <argsstring>() const </argsstring>
+        <name>hasMore</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="407" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="406" bodyend="409"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1acb9c9ea1c6032e3fbcd2cfe03fd15c23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiCoordinateNavigator</definition>
+        <argsstring>(value_type const &amp;shape, unsigned int inner_dimension)</argsstring>
+        <name>MultiCoordinateNavigator</name>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>inner_dimension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="375" bodyend="382"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a00f008b80917746917b874d00abd02a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="384" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a2aefc5a84a51687145f8514f4029c26c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="389" bodyend="392"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="417" bodyend="423"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1121">
+        <label>MultiArrayShape&lt; Dimensions &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="1120">
+        <label>MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</label>
+        <childnode refid="1121" relation="usage">
+          <edgelabel>end_</edgelabel>
+          <edgelabel>i_</edgelabel>
+          <edgelabel>shape_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="370" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="369" bodyend="427"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a11cbf4ba82ee565cb9eef28b972bf145" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>atEnd</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a00e352dce09a5c619e6103f5a9fad17b" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>begin</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1aee228494307bc454c1c882527d30d7e8" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>end</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a2ffc6f75174ba2425d3faf9ceefeb1f4" prot="protected" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>end_</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a97c5fb844c38a720482022f117f2c614" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>hasMore</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ae51e9940bd2ea6204720f29e3ef03740" prot="protected" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>i_</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ab6c6ebf70938b10c5e782a4f7675831b" prot="protected" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>inner_dimension_</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a96a58e29e8dbf2b5bdeb775cba46556ea831fc3a2f78e54e3c4ce5251aa1fc268" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>level</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1acb9c9ea1c6032e3fbcd2cfe03fd15c23" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>MultiCoordinateNavigator</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a00f008b80917746917b874d00abd02a9" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a2aefc5a84a51687145f8514f4029c26c" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>reset</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1a48b413a84e0f7afb7e086264acf52cab" prot="protected" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>shape_</name></member>
+      <member refid="classvigra_1_1MultiCoordinateNavigator_3_01Dimensions_00_011_01_4_1ae6e85d1c0c3069d6fcddb115ecf4c34d" prot="public" virt="non-virtual"><scope>vigra::MultiCoordinateNavigator&lt; Dimensions, 1 &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

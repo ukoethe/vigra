@@ -1,0 +1,521 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FourNeighborhood_1_1NeighborCode" kind="class" prot="public">
+    <compoundname>vigra::FourNeighborhood::NeighborCode</compoundname>
+    <includes refid="pixelneighborhood_8hxx" local="no">vigra/pixelneighborhood.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1afe1e2807a8c98a020588d6eeb28a1b7a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+        <definition>typedef Diff2D difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="169" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" prot="public" static="no">
+        <name>Direction</name>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa4dfd42ec49d09d8c6555c218301cc30f" prot="public">
+          <name>Error</name>
+          <initializer> -1</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" prot="public">
+          <name>East</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaaeb9634ef4d4fd4a5297ada06f89c3fe" prot="public">
+          <name>North</name>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" prot="public">
+          <name>West</name>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaac15660611b40cfc69e36003c8607311a" prot="public">
+          <name>South</name>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa412bddbd66ec635d9afe1fa212063b0b" prot="public">
+          <name>DirectionCount</name>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaf4a7c98c1d85f2ceac24e4b7d46c3862" prot="public">
+          <name>CausalFirst</name>
+          <initializer> North</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa2a66d75381d44600cbc187f9c5c88ca7" prot="public">
+          <name>CausalLast</name>
+          <initializer> West</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa3d180c36ebea2570df8a97e0eab42b5f" prot="public">
+          <name>AntiCausalFirst</name>
+          <initializer> South</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa828471d2a2cfe70c2ac96d203e84141c" prot="public">
+          <name>AntiCausalLast</name>
+          <initializer> East</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaeba9b6f0c26228097a6ea2f1850da531" prot="public">
+          <name>InitialDirection</name>
+          <initializer> East</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaed13eab39716cb73590c7af1b87b7a24" prot="public">
+          <name>OppositeDirPrefix</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaabf8b21ace3b3c47b3439dac9c4b1b27e" prot="public">
+          <name>OppositeOffset</name>
+          <initializer> West</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Freeman direction codes for the 4-neighborhood. <computeroutput>East = 0</computeroutput>, <computeroutput>North = 1</computeroutput> etc. <computeroutput>DirectionCount</computeroutput> may be used for portable loop termination conditions. <computeroutput>CausalFirst</computeroutput> and <computeroutput>CausalLast</computeroutput> are the first and last (inclusive) neighbors in the causal neighborhood, i.e. in the set of neighbors that have already been visited when the image is traversed in scan order. <computeroutput>AntiCausalFirst</computeroutput> and <computeroutput>AntiCausalLast</computeroutput> are the opposite. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="179" bodyend="194"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a333bd16c2c0aaf175e050f22256292e2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; bottom</definition>
+        <argsstring>()</argsstring>
+        <name>bottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the bottom neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="328" bodyend="327"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa5d5d8e55e3ceaa6b3f9ce59648b3c32" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction code</definition>
+        <argsstring>(Diff2D const &amp;diff)</argsstring>
+        <name>code</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Transform <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> offset into corresponding direction code. The code <computeroutput>Direction::Error</computeroutput> will be returned if <computeroutput>diff</computeroutput> is not in the 4-neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="287" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; diff</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>diff</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Transform direction code into corresponding <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> offset. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="237" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aab25a1b6f0311b2e78296b1b1ff9d8d9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; diff</definition>
+        <argsstring>(int code)</argsstring>
+        <name>diff</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to <computeroutput>diff(static_cast&lt;Direction&gt;(code))</computeroutput>. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="248" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="248" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a36356b43b268b2516279f66be9b0fcf9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>static unsigned int directionBit</definition>
+        <argsstring>(Direction d)</argsstring>
+        <name>directionBit</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="197" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="196" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a03e237fcbfbfc9d7e60224bf4827dccf" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dX</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>dX</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>X-component of <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="275" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="275" bodyend="275"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a14116247b9c3e4a405add103573d143b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dX</definition>
+        <argsstring>(int code)</argsstring>
+        <name>dX</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>X-component of <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="279" bodyend="279"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a8605c1a59d576be143a8594243e9b654" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dY</definition>
+        <argsstring>(Direction code)</argsstring>
+        <name>dY</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Y-component of <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="277" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="277" bodyend="277"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1ac7587cc7166385b3c01b4a78b2a18f8c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int dY</definition>
+        <argsstring>(int code)</argsstring>
+        <name>dY</name>
+        <param>
+          <type>int</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Y-component of <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" kindref="member">diff()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="281" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="281" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1ab9ff626e9a961ed61e15d6e3c721117a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; east</definition>
+        <argsstring>()</argsstring>
+        <name>east</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="330" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa7fdc19af11a5dddd71f744d4fba1cb3" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isDiagonal</definition>
+        <argsstring>(Direction)</argsstring>
+        <name>isDiagonal</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether a code refers to a diagonal direction. Useful if you want to abstract the differences between 4- and 8-neighborhood. Always <computeroutput>false</computeroutput> for 4-neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="323" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="323" bodyend="323"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa8479604cafe5d04c20c5e274eb48808" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; left</definition>
+        <argsstring>()</argsstring>
+        <name>left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the left neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="327" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a76d30a575f3debe6433bbc9b462e8cc4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>static unsigned int nearBorderDirectionCount</definition>
+        <argsstring>(AtImageBorder b)</argsstring>
+        <name>nearBorderDirectionCount</name>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtImageBorder</ref></type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of valid neighbors if the current center is at the image border. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="207" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aaaf8d938462a61775f61cee418bb8996" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>static Direction nearBorderDirections</definition>
+        <argsstring>(AtImageBorder b, int index)</argsstring>
+        <name>nearBorderDirections</name>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtImageBorder</ref></type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The valid direction codes when the center is at the image border. <emphasis>index</emphasis> must be in the range <computeroutput>0...nearBorderDirectionCount(b)-1</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="216" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a7ab4654cf1aa2af7249a4ef01aa3e47a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; north</definition>
+        <argsstring>()</argsstring>
+        <name>north</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the north neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="331" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a2d7635eef4dc7e7b092b62d3247854bc" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; relativeDiff</definition>
+        <argsstring>(Direction fromCode, Direction toCode)</argsstring>
+        <name>relativeDiff</name>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>fromCode</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+          <declname>toCode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the relative offset from one neighbor to the other. For example, <computeroutput>relativeDiff(East, West) == <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref>(-2,0)</computeroutput>. (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="254" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a1987771dbce8c4e8d586c5460fc77875" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; relativeDiff</definition>
+        <argsstring>(int fromCode, int toCode)</argsstring>
+        <name>relativeDiff</name>
+        <param>
+          <type>int</type>
+          <declname>fromCode</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toCode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to relativeDiff(static_cast&lt;Direction&gt;(fromCode), static_cast&lt;Direction&gt;(toCode)). (note: there is no bounds checking on the code you pass.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="269" bodyend="272"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1afc0a905a8b4d2805ec49f5154d2f3f5b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; right</definition>
+        <argsstring>()</argsstring>
+        <name>right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the right neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="325" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="325" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a20998949e37fab199697d456bb9b8ccb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; south</definition>
+        <argsstring>()</argsstring>
+        <name>south</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the south neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="333" bodyend="332"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e5761662ad2619ad3ba7dcb3c421cb5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; top</definition>
+        <argsstring>()</argsstring>
+        <name>top</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the top neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="326" bodyend="325"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a5504f77c35d88b7aacdeafbbf8c7b082" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>static Diff2D const&amp; west</definition>
+        <argsstring>()</argsstring>
+        <name>west</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="332" bodyend="331"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Encapsulation of direction management for 4-neighborhood. </para>    </briefdescription>
+    <detaileddescription>
+<para>This helper class allows the transformation between Freeman chain codes (East = 0, North = 1 etc.) and the corresponding <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> instances and back.</para><para>You can either use the chain codes by explicit qualification:</para><para><programlisting><codeline><highlight class="comment">//<sp/>the<sp/>following<sp/>three<sp/>lines<sp/>are<sp/>equivalent</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">FourNeighborhood::NeighborCode::Direction</ref><sp/>d<sp/>=<sp/><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" kindref="member" tooltip=" ">FourNeighborhood::NeighborCode::East</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">FourNeighborCode::Direction</ref><sp/>d<sp/>=<sp/><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" kindref="member" tooltip=" ">FourNeighborCode::East</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1FourNeighborhood_1a988d19830b1f9d64837a9bcd86cbabed" kindref="member">FourNeighborhood::Direction</ref><sp/>d<sp/>=<sp/><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" kindref="member" tooltip=" ">FourNeighborhood::East</ref>;</highlight></codeline>
+</programlisting></para><para>or you can fix 4-neighborhood by importing the entire namespace in your function:</para><para><programlisting><codeline><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">FourNeighborhood;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref><sp/>d<sp/>=<sp/><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" kindref="member" tooltip=" ">East</ref>;</highlight></codeline>
+</programlisting></para><para>If you want to pass 4-neighborhood codes as a template parameter, use the class <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode" kindref="compound">FourNeighborhood::NeighborCode</ref>.</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">vigra::FourNeighborhood</ref> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="166" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="165" bodyend="334"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa3d180c36ebea2570df8a97e0eab42b5f" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>AntiCausalFirst</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa828471d2a2cfe70c2ac96d203e84141c" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>AntiCausalLast</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a333bd16c2c0aaf175e050f22256292e2" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>bottom</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaf4a7c98c1d85f2ceac24e4b7d46c3862" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>CausalFirst</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa2a66d75381d44600cbc187f9c5c88ca7" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>CausalLast</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa5d5d8e55e3ceaa6b3f9ce59648b3c32" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>code</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e1ddb26efee108c20124ee1adaade97" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>diff</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aab25a1b6f0311b2e78296b1b1ff9d8d9" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>diff</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1afe1e2807a8c98a020588d6eeb28a1b7a" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>Direction</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a36356b43b268b2516279f66be9b0fcf9" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>directionBit</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa412bddbd66ec635d9afe1fa212063b0b" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>DirectionCount</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a03e237fcbfbfc9d7e60224bf4827dccf" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>dX</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a14116247b9c3e4a405add103573d143b" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>dX</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a8605c1a59d576be143a8594243e9b654" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>dY</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1ac7587cc7166385b3c01b4a78b2a18f8c" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>dY</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>East</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1ab9ff626e9a961ed61e15d6e3c721117a" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>east</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa4dfd42ec49d09d8c6555c218301cc30f" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>Error</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaeba9b6f0c26228097a6ea2f1850da531" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>InitialDirection</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa7fdc19af11a5dddd71f744d4fba1cb3" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>isDiagonal</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aa8479604cafe5d04c20c5e274eb48808" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>left</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a76d30a575f3debe6433bbc9b462e8cc4" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>nearBorderDirectionCount</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1aaaf8d938462a61775f61cee418bb8996" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>nearBorderDirections</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaaeb9634ef4d4fd4a5297ada06f89c3fe" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>North</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a7ab4654cf1aa2af7249a4ef01aa3e47a" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>north</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaed13eab39716cb73590c7af1b87b7a24" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>OppositeDirPrefix</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaabf8b21ace3b3c47b3439dac9c4b1b27e" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>OppositeOffset</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a2d7635eef4dc7e7b092b62d3247854bc" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>relativeDiff</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a1987771dbce8c4e8d586c5460fc77875" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>relativeDiff</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1afc0a905a8b4d2805ec49f5154d2f3f5b" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>right</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaac15660611b40cfc69e36003c8607311a" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>South</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a20998949e37fab199697d456bb9b8ccb" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>south</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a6e5761662ad2619ad3ba7dcb3c421cb5" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>top</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a5504f77c35d88b7aacdeafbbf8c7b082" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>west</name></member>
+      <member refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" prot="public" virt="non-virtual"><scope>vigra::FourNeighborhood::NeighborCode</scope><name>West</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

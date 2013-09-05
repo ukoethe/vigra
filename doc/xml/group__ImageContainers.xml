@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__ImageContainers" kind="group">
+    <compoundname>ImageContainers</compoundname>
+    <title>Image Containers</title>
+    <innerclass refid="classvigra_1_1ImageArray" prot="public">vigra::ImageArray</innerclass>
+    <innerclass refid="classvigra_1_1ImagePyramid" prot="public">vigra::ImagePyramid</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Classes to manage multiple images (<ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>..) </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

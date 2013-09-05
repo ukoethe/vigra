@@ -1,0 +1,260 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1StopIfBinTest" kind="class" prot="public">
+    <compoundname>vigra::StopIfBinTest</compoundname>
+    <basecompoundref refid="classvigra_1_1StopBase" prot="public" virt="non-virtual">StopBase</basecompoundref>
+    <includes refid="rf__earlystopping_8hxx" local="no">vigra/random_forest/rf_earlystopping.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1StopIfBinTest_1a5e3f0ee315605b7f2d0d4c7443c4189d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StopBase" kindref="compound">StopBase</ref></type>
+        <definition>typedef StopBase SB</definition>
+        <argsstring></argsstring>
+        <name>SB</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="293" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="293" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1StopIfBinTest_1a2869049af2282ea8218bc9bd71b52092" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double alpha_</definition>
+        <argsstring></argsstring>
+        <name>alpha_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="281" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="281" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1StopIfBinTest_1addb47ba6edeaaee2e4ea46b4b611ad9c" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; depths</definition>
+        <argsstring></argsstring>
+        <name>depths</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref> that will contain the fraction of trees that was visited before terminating </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="297" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1StopIfBinTest_1aa2f847e76dd92fb6b21a58c777af355b" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArrayView&lt;2, double&gt; n_choose_k</definition>
+        <argsstring></argsstring>
+        <name>n_choose_k</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="282" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="282" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1StopIfBinTest_1af10febc63c233625c59aa21bb4c1008e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class WeightIter</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool after_prediction</definition>
+        <argsstring>(WeightIter iter, int k, MultiArrayView&lt; 2, T, C &gt; prob, double totalCt)</argsstring>
+        <name>after_prediction</name>
+        <param>
+          <type>WeightIter</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt;</type>
+          <declname>prob</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>totalCt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="307" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="306" bodyend="346"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StopIfBinTest_1a3e162feef67d9695410b2df585301e2e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double binomial</definition>
+        <argsstring>(int N, int k, double p)</argsstring>
+        <name>binomial</name>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="300" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="299" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StopIfBinTest_1a7d1ae3acf4978d89a018b6a5b1ca8234" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StopIfBinTest</definition>
+        <argsstring>(double alpha, MultiArrayView&lt; 2, double &gt; nck_)</argsstring>
+        <name>StopIfBinTest</name>
+        <param>
+          <type>double</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, double &gt;</type>
+          <declname>nck_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>alpha</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>specify alpha (=proportion) value for binomial test. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>nck_</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Matrix with precomputed values for n choose k nck_(n, k) is n choose k. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="288" bodyend="292"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Probabilistic Stopping criterion (binomial test)</para><para>Can only be used in a two class setting</para><para>Stop if the Parameters estimated for the underlying binomial distribution can be estimated with certainty over 1-alpha. (Thesis, Rahul Nair Page 80 onwards: called the &quot;binomial&quot; criterion </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2425">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+      </node>
+      <node id="2424">
+        <label>StopIfBinTest</label>
+        <link refid="classvigra_1_1StopIfBinTest"/>
+        <childnode refid="2425" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2432">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2427">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+        <childnode refid="2428" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2428">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="2429" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2431" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="2433">
+        <label>MultiArrayView&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="2434" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2429">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2430" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2426">
+        <label>StopIfBinTest</label>
+        <link refid="classvigra_1_1StopIfBinTest"/>
+        <childnode refid="2427" relation="public-inheritance">
+        </childnode>
+        <childnode refid="2429" relation="usage">
+          <edgelabel>depths</edgelabel>
+        </childnode>
+        <childnode refid="2433" relation="usage">
+          <edgelabel>n_choose_k</edgelabel>
+        </childnode>
+      </node>
+      <node id="2430">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2434">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="2431">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2432" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="278" bodyend="347"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1StopIfBinTest_1af10febc63c233625c59aa21bb4c1008e" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>after_prediction</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1a2869049af2282ea8218bc9bd71b52092" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>alpha_</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1a3e162feef67d9695410b2df585301e2e" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>binomial</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1addb47ba6edeaaee2e4ea46b4b611ad9c" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>depths</name></member>
+      <member refid="classvigra_1_1StopBase_1a99db359c49053ebe05644db4810bba24" prot="protected" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1StopBase_1acf3de57c3731277817b02853efb8d48a" prot="protected" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>is_weighted_</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1aa2f847e76dd92fb6b21a58c777af355b" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>n_choose_k</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1a5e3f0ee315605b7f2d0d4c7443c4189d" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>SB</name></member>
+      <member refid="classvigra_1_1StopBase_1a289ea1591011505e9e891401cde546fd" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>set_external_parameters</name></member>
+      <member refid="classvigra_1_1StopIfBinTest_1a7d1ae3acf4978d89a018b6a5b1ca8234" prot="public" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>StopIfBinTest</name></member>
+      <member refid="classvigra_1_1StopBase_1ac648afda832826f3e0fa454bba5c263e" prot="protected" virt="non-virtual"><scope>vigra::StopIfBinTest</scope><name>tree_count_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

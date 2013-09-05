@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry" kind="struct" prot="public">
+    <compoundname>vigra::rf::algorithms::HC_Entry</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1aafb8164f20f79a2dd0290502a25367d1" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int addr</definition>
+        <argsstring></argsstring>
+        <name>addr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="615" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="615" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a3d68e144aa4e63f335b6fd2993827774" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool infm</definition>
+        <argsstring></argsstring>
+        <name>infm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="616" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="616" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1acf4d33ee4cff36f69b924471174dcb11" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int level</definition>
+        <argsstring></argsstring>
+        <name>level</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="614" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a4dafd66c26e6b8acf64d2feba6141bcc" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int parent</definition>
+        <argsstring></argsstring>
+        <name>parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="613" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="613" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a965ce9c48cef2929b7857ee153f7a001" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>HC_Entry</definition>
+        <argsstring>(int p, int l, int a, bool in)</argsstring>
+        <name>HC_Entry</name>
+        <param>
+          <type>int</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="619" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="617" bodyend="619"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Stackentry class for <ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> class </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="612" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="611" bodyend="620"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1aafb8164f20f79a2dd0290502a25367d1" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HC_Entry</scope><name>addr</name></member>
+      <member refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a965ce9c48cef2929b7857ee153f7a001" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HC_Entry</scope><name>HC_Entry</name></member>
+      <member refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a3d68e144aa4e63f335b6fd2993827774" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HC_Entry</scope><name>infm</name></member>
+      <member refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1acf4d33ee4cff36f69b924471174dcb11" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HC_Entry</scope><name>level</name></member>
+      <member refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry_1a4dafd66c26e6b8acf64d2feba6141bcc" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HC_Entry</scope><name>parent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

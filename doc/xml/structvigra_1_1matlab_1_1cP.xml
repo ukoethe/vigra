@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1matlab_1_1cP" kind="struct" prot="public">
+    <compoundname>vigra::matlab::cP</compoundname>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>x</declname>
+        <defname>x</defname>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>y</declname>
+        <defname>y</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1matlab_1_1cP_1ab04a0655cd1e3bcac5e8f48c18df1a57" prot="public" static="no">
+        <name>@9</name>
+        <enumvalue id="structvigra_1_1matlab_1_1cP_1ab04a0655cd1e3bcac5e8f48c18df1a57a97de9ab6885342a574053b8f64a563a9" prot="public">
+          <name>value</name>
+          <initializer> (int)(((x+y)*(x+y+1))/2+y)</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1101" bodyend="1101"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1100" bodyend="1102"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1matlab_1_1cP_1ab04a0655cd1e3bcac5e8f48c18df1a57a97de9ab6885342a574053b8f64a563a9" prot="public" virt="non-virtual"><scope>vigra::matlab::cP</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

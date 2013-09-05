@@ -1,0 +1,874 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="multi__resize_8hxx" kind="file">
+    <compoundname>multi_resize.hxx</compoundname>
+    <includes local="no">vector</includes>
+    <includes refid="resizeimage_8hxx" local="yes">resizeimage.hxx</includes>
+    <includes refid="navigator_8hxx" local="yes">navigator.hxx</includes>
+    <incdepgraph>
+      <node id="5372">
+        <label>functional</label>
+      </node>
+      <node id="5350">
+        <label>limits</label>
+      </node>
+      <node id="5374">
+        <label>basicimage.hxx</label>
+        <link refid="basicimage_8hxx_source"/>
+        <childnode refid="5375" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5359" relation="include">
+        </childnode>
+        <childnode refid="5360" relation="include">
+        </childnode>
+        <childnode refid="5376" relation="include">
+        </childnode>
+      </node>
+      <node id="5340">
+        <label>resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="5339" relation="include">
+        </childnode>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5373" relation="include">
+        </childnode>
+        <childnode refid="5380" relation="include">
+        </childnode>
+        <childnode refid="5383" relation="include">
+        </childnode>
+        <childnode refid="5385" relation="include">
+        </childnode>
+        <childnode refid="5393" relation="include">
+        </childnode>
+      </node>
+      <node id="5364">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="5348" relation="include">
+        </childnode>
+        <childnode refid="5350" relation="include">
+        </childnode>
+      </node>
+      <node id="5358">
+        <label>iterator</label>
+      </node>
+      <node id="5393">
+        <label>splines.hxx</label>
+        <link refid="splines_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5394" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+        <childnode refid="5395" relation="include">
+        </childnode>
+      </node>
+      <node id="5371">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="5348" relation="include">
+        </childnode>
+      </node>
+      <node id="5365">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="5370">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="5364" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5371" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5372" relation="include">
+        </childnode>
+        <childnode refid="5358" relation="include">
+        </childnode>
+      </node>
+      <node id="5386">
+        <label>rational.hxx</label>
+        <link refid="rational_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5344" relation="include">
+        </childnode>
+        <childnode refid="5356" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5348" relation="include">
+        </childnode>
+      </node>
+      <node id="5355">
+        <label>cmath</label>
+      </node>
+      <node id="5338">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi_resize.hxx"/>
+        <childnode refid="5339" relation="include">
+        </childnode>
+        <childnode refid="5340" relation="include">
+        </childnode>
+        <childnode refid="5396" relation="include">
+        </childnode>
+      </node>
+      <node id="5344">
+        <label>stdexcept</label>
+      </node>
+      <node id="5387">
+        <label>functortraits.hxx</label>
+        <link refid="functortraits_8hxx_source"/>
+        <childnode refid="5372" relation="include">
+        </childnode>
+        <childnode refid="5348" relation="include">
+        </childnode>
+      </node>
+      <node id="5357">
+        <label>iteratortags.hxx</label>
+        <link refid="iteratortags_8hxx_source"/>
+        <childnode refid="5358" relation="include">
+        </childnode>
+      </node>
+      <node id="5383">
+        <label>separableconvolution.hxx</label>
+        <link refid="separableconvolution_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5366" relation="include">
+        </childnode>
+        <childnode refid="5381" relation="include">
+        </childnode>
+        <childnode refid="5384" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+      </node>
+      <node id="5347">
+        <label>string</label>
+      </node>
+      <node id="5392">
+        <label>copyimage.hxx</label>
+        <link refid="copyimage_8hxx_source"/>
+        <childnode refid="5341" relation="include">
+        </childnode>
+      </node>
+      <node id="5391">
+        <label>imagecontainer.hxx</label>
+        <link refid="imagecontainer_8hxx_source"/>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+        <childnode refid="5392" relation="include">
+        </childnode>
+      </node>
+      <node id="5359">
+        <label>iteratortraits.hxx</label>
+        <link refid="iteratortraits_8hxx_source"/>
+        <childnode refid="5360" relation="include">
+        </childnode>
+        <childnode refid="5366" relation="include">
+        </childnode>
+      </node>
+      <node id="5380">
+        <label>recursiveconvolution.hxx</label>
+        <link refid="recursiveconvolution_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5339" relation="include">
+        </childnode>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5366" relation="include">
+        </childnode>
+        <childnode refid="5381" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+      </node>
+      <node id="5362">
+        <label>cfloat</label>
+      </node>
+      <node id="5341">
+        <label>utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5348" relation="include">
+        </childnode>
+        <childnode refid="5352" relation="include">
+        </childnode>
+        <childnode refid="5354" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5347" relation="include">
+        </childnode>
+        <childnode refid="5346" relation="include">
+        </childnode>
+      </node>
+      <node id="5384">
+        <label>gaussians.hxx</label>
+        <link refid="gaussians_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+      </node>
+      <node id="5343">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="5389">
+        <label>transformimage.hxx</label>
+        <link refid="transformimage_8hxx_source"/>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5359" relation="include">
+        </childnode>
+        <childnode refid="5377" relation="include">
+        </childnode>
+        <childnode refid="5387" relation="include">
+        </childnode>
+        <childnode refid="5390" relation="include">
+        </childnode>
+      </node>
+      <node id="5352">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="5353" relation="include">
+        </childnode>
+      </node>
+      <node id="5378">
+        <label>tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5369" relation="include">
+        </childnode>
+        <childnode refid="5356" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5348" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5376" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5354" relation="include">
+        </childnode>
+      </node>
+      <node id="5385">
+        <label>resampling_convolution.hxx</label>
+        <link refid="resampling__convolution_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5373" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+        <childnode refid="5386" relation="include">
+        </childnode>
+        <childnode refid="5387" relation="include">
+        </childnode>
+        <childnode refid="5388" relation="include">
+        </childnode>
+        <childnode refid="5389" relation="include">
+        </childnode>
+        <childnode refid="5391" relation="include">
+        </childnode>
+      </node>
+      <node id="5373">
+        <label>stdimage.hxx</label>
+        <link refid="stdimage_8hxx_source"/>
+        <childnode refid="5364" relation="include">
+        </childnode>
+        <childnode refid="5352" relation="include">
+        </childnode>
+        <childnode refid="5374" relation="include">
+        </childnode>
+        <childnode refid="5359" relation="include">
+        </childnode>
+        <childnode refid="5360" relation="include">
+        </childnode>
+        <childnode refid="5377" relation="include">
+        </childnode>
+      </node>
+      <node id="5390">
+        <label>inspectimage.hxx</label>
+        <link refid="inspectimage_8hxx_source"/>
+        <childnode refid="5339" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5341" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5359" relation="include">
+        </childnode>
+        <childnode refid="5387" relation="include">
+        </childnode>
+        <childnode refid="5377" relation="include">
+        </childnode>
+        <childnode refid="5371" relation="include">
+        </childnode>
+      </node>
+      <node id="5368">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5369" relation="include">
+        </childnode>
+        <childnode refid="5363" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5352" relation="include">
+        </childnode>
+        <childnode refid="5364" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5370" relation="include">
+        </childnode>
+      </node>
+      <node id="5342">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="5343" relation="include">
+        </childnode>
+        <childnode refid="5344" relation="include">
+        </childnode>
+      </node>
+      <node id="5361">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="5349" relation="include">
+        </childnode>
+        <childnode refid="5350" relation="include">
+        </childnode>
+        <childnode refid="5362" relation="include">
+        </childnode>
+        <childnode refid="5363" relation="include">
+        </childnode>
+        <childnode refid="5348" relation="include">
+        </childnode>
+        <childnode refid="5364" relation="include">
+        </childnode>
+        <childnode refid="5365" relation="include">
+        </childnode>
+      </node>
+      <node id="5339">
+        <label>vector</label>
+      </node>
+      <node id="5367">
+        <label>iteratoradapter.hxx</label>
+        <link refid="iteratoradapter_8hxx_source"/>
+      </node>
+      <node id="5366">
+        <label>imageiteratoradapter.hxx</label>
+        <link refid="imageiteratoradapter_8hxx_source"/>
+        <childnode refid="5358" relation="include">
+        </childnode>
+      </node>
+      <node id="5353">
+        <label>utility</label>
+      </node>
+      <node id="5346">
+        <label>sstream</label>
+      </node>
+      <node id="5377">
+        <label>rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5369" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5360" relation="include">
+        </childnode>
+        <childnode refid="5378" relation="include">
+        </childnode>
+        <childnode refid="5379" relation="include">
+        </childnode>
+      </node>
+      <node id="5354">
+        <label>diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5356" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5357" relation="include">
+        </childnode>
+        <childnode refid="5359" relation="include">
+        </childnode>
+        <childnode refid="5367" relation="include">
+        </childnode>
+        <childnode refid="5352" relation="include">
+        </childnode>
+      </node>
+      <node id="5345">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="5344" relation="include">
+        </childnode>
+        <childnode refid="5346" relation="include">
+        </childnode>
+        <childnode refid="5347" relation="include">
+        </childnode>
+        <childnode refid="5342" relation="include">
+        </childnode>
+      </node>
+      <node id="5379">
+        <label>static_assert.hxx</label>
+        <link refid="static__assert_8hxx_source"/>
+      </node>
+      <node id="5382">
+        <label>array_vector.hxx</label>
+        <link refid="array__vector_8hxx_source"/>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5376" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5375" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5356" relation="include">
+        </childnode>
+      </node>
+      <node id="5356">
+        <label>iosfwd</label>
+      </node>
+      <node id="5381">
+        <label>bordertreatment.hxx</label>
+        <link refid="bordertreatment_8hxx_source"/>
+      </node>
+      <node id="5369">
+        <label>cstdlib</label>
+      </node>
+      <node id="5349">
+        <label>climits</label>
+      </node>
+      <node id="5348">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="5342" relation="include">
+        </childnode>
+        <childnode refid="5349" relation="include">
+        </childnode>
+        <childnode refid="5350" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+      </node>
+      <node id="5388">
+        <label>functorexpression.hxx</label>
+        <link refid="functorexpression_8hxx_source"/>
+      </node>
+      <node id="5363">
+        <label>complex</label>
+      </node>
+      <node id="5351">
+        <label>algorithm</label>
+      </node>
+      <node id="5395">
+        <label>fixedpoint.hxx</label>
+        <link refid="fixedpoint_8hxx_source"/>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5379" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+      </node>
+      <node id="5376">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="5348" relation="include">
+        </childnode>
+      </node>
+      <node id="5360">
+        <label>accessor.hxx</label>
+        <link refid="accessor_8hxx_source"/>
+        <childnode refid="5348" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5352" relation="include">
+        </childnode>
+      </node>
+      <node id="5375">
+        <label>memory</label>
+      </node>
+      <node id="5394">
+        <label>polynomial.hxx</label>
+        <link refid="polynomial_8hxx_source"/>
+        <childnode refid="5355" relation="include">
+        </childnode>
+        <childnode refid="5363" relation="include">
+        </childnode>
+        <childnode refid="5351" relation="include">
+        </childnode>
+        <childnode refid="5356" relation="include">
+        </childnode>
+        <childnode refid="5345" relation="include">
+        </childnode>
+        <childnode refid="5368" relation="include">
+        </childnode>
+        <childnode refid="5361" relation="include">
+        </childnode>
+        <childnode refid="5382" relation="include">
+        </childnode>
+      </node>
+      <node id="5396">
+        <label>navigator.hxx</label>
+        <link refid="navigator_8hxx_source"/>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2004<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_MULTI_RESIZE_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_MULTI_RESIZE_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;resizeimage.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;navigator.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">detail<sp/>{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal">internalResizeMultiArrayOneDimension(</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>si,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>sshape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>di,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dshape,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>spline,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>d)</highlight></codeline>
+<codeline lineno="55"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/>N<sp/>=<sp/>1<sp/>+<sp/>SrcIterator::level<sp/>};</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>NumericTraits&lt;typename<sp/>DestAccessor::value_type&gt;::RealPromote<sp/>TmpType;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>MultiArrayNavigator&lt;SrcIterator,<sp/>N&gt;<sp/>SNavigator;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>MultiArrayNavigator&lt;DestIterator,<sp/>N&gt;<sp/>DNavigator;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/>SNavigator<sp/>snav(<sp/>si,<sp/>sshape,<sp/>d<sp/>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/>DNavigator<sp/>dnav(<sp/>di,<sp/>dshape,<sp/>d<sp/>);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ssize<sp/>=<sp/>sshape[d];</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>dsize<sp/>=<sp/>dshape[d];</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/>vigra_precondition(ssize<sp/>&gt;<sp/>1,</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;resizeMultiArraySplineInterpolation():<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;Source<sp/>array<sp/>too<sp/>small.\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/>ratio(dsize<sp/>-<sp/>1,<sp/>ssize<sp/>-<sp/>1);</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/>offset(0);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>resampling_detail::MapTargetToSourceCoordinate<sp/>mapCoordinate(ratio,<sp/>offset);</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>period<sp/>=<sp/><ref refid="group__MathFunctions_1ga1aa613671eda401daa90a686497c27da" kindref="member">lcm</ref>(ratio.numerator(),<sp/>ratio.denominator());</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;double&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>prefilterCoeffs<sp/>=<sp/>spline.prefilterCoefficients();</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;Kernel1D&lt;double&gt;<sp/>&gt;<sp/>kernels(period);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>createResamplingKernels(spline,<sp/>mapCoordinate,<sp/>kernels);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>temporary<sp/>array<sp/>to<sp/>hold<sp/>the<sp/>current<sp/>line<sp/>to<sp/>enable<sp/>in-place<sp/>operation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;TmpType&gt;<sp/>tmp(<sp/>ssize<sp/>);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>ArrayVector&lt;TmpType&gt;::iterator<sp/>t<sp/>=<sp/>tmp.begin(),<sp/>tend<sp/>=<sp/>tmp.end();</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>AccessorTraits&lt;TmpType&gt;::default_accessor<sp/>ta;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/>;<sp/>snav.hasMore();<sp/>snav++,<sp/>dnav++<sp/>)</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>copy<sp/>source<sp/>to<sp/>temp<sp/>for<sp/>maximum<sp/>cache<sp/>efficiency</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>copyLine(<sp/>snav.begin(),<sp/>snav.end(),<sp/>src,<sp/>t,<sp/>ta);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b<sp/>=<sp/>0;<sp/>b<sp/>&lt;<sp/>prefilterCoeffs.size();<sp/>++b)</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member" tooltip="Performs a 1-dimensional recursive convolution of the source signal.">recursiveFilterLine</ref>(t,<sp/>tend,<sp/>ta,<sp/>t,<sp/>ta,</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>prefilterCoeffs[b],<sp/>BORDER_TREATMENT_REFLECT);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1gaa9dc5f38f7cb55b8539de6f1648191f8" kindref="member" tooltip="Performs a 1-dimensional resampling convolution of the source signal using the given set of kernels...">resamplingConvolveLine</ref>(t,<sp/>tend,<sp/>ta,</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dnav.begin(),<sp/>dnav.begin()<sp/>+<sp/>dsize,<sp/>dest,</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kernels,<sp/>mapCoordinate);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="101"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>detail</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="105"><highlight class="comment">/**<sp/>\addtogroup<sp/>GeometricTransformations<sp/>Geometric<sp/>Transformations</highlight></codeline>
+<codeline lineno="106"><highlight class="comment">*/</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="107"><highlight class="comment">//@{</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="comment">/***************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>resizeMultiArraySplineInterpolation<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="comment">/***************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="116"><highlight class="comment">/**<sp/>\brief<sp/>Resize<sp/>MultiArray<sp/>using<sp/>B-spline<sp/>interpolation.</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"></highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declarations:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/><sp/>pass<sp/>arguments<sp/>explicitly:</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcIterator,<sp/>class<sp/>Shape,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestIterator,<sp/>class<sp/>DestAccessor,</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>Kernel<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;<sp/>&gt;</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>resizeMultiArraySplineInterpolation(</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>si,<sp/>Shape<sp/>const<sp/>&amp;<sp/>sshape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>di,<sp/>Shape<sp/>const<sp/>&amp;<sp/>dshape,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/>const<sp/>&amp;<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;());</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"></highlight></codeline>
+<codeline lineno="134"><highlight class="comment"></highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/>use<sp/>argument<sp/>objects<sp/>in<sp/>conjunction<sp/>with<sp/>\ref<sp/>ArgumentObjectFactories<sp/>:</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>SrcIterator,<sp/>class<sp/>Shape,<sp/>class<sp/>SrcAccessor,</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>DestIterator,<sp/>class<sp/>DestAccessor,</highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>Kernel<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;<sp/>&gt;</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>resizeMultiArraySplineInterpolation(</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>Shape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>Shape,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/>const<sp/>&amp;<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;());</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"></highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>function<sp/>implements<sp/>separable<sp/>spline<sp/>interpolation<sp/>algorithm<sp/>described<sp/>in</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"></highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/><sp/><sp/>M.<sp/>Unser,<sp/>A.<sp/>Aldroubi,<sp/>M.<sp/>Eden,<sp/>&lt;i&gt;&quot;B-Spline<sp/>Signal<sp/>Processing&quot;&lt;/i&gt;</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/><sp/><sp/><sp/>IEEE<sp/>Transactions<sp/>on<sp/>Signal<sp/>Processing,<sp/>vol.<sp/>41,<sp/>no.<sp/>2,<sp/>pp.<sp/>821-833<sp/>(part<sp/>I),</highlight></codeline>
+<codeline lineno="153"><highlight class="comment"><sp/><sp/><sp/><sp/>pp.<sp/>834-848<sp/>(part<sp/>II),<sp/>1993.</highlight></codeline>
+<codeline lineno="154"><highlight class="comment"></highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/><sp/>to<sp/>obtain<sp/>optimal<sp/>interpolation<sp/>quality<sp/>and<sp/>speed.<sp/>You<sp/>may<sp/>pass<sp/>the<sp/>function</highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/><sp/>a<sp/>spline<sp/>of<sp/>arbitrary<sp/>order<sp/>(e.g.<sp/>&lt;TT&gt;BSpline&lt;ORDER,<sp/>double&gt;&lt;/tt&gt;<sp/>or</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;TT&gt;CatmullRomSpline&lt;double&gt;&lt;/tt&gt;).<sp/>The<sp/>default<sp/>is<sp/>a<sp/>third<sp/>order<sp/>spline</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/><sp/>which<sp/>gives<sp/>a<sp/>twice<sp/>continuously<sp/>differentiable<sp/>interpolant.</highlight></codeline>
+<codeline lineno="159"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>implementation<sp/>ensures<sp/>that<sp/>image<sp/>values<sp/>are<sp/>interpolated<sp/>rather</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/><sp/><sp/><sp/>than<sp/>smoothed<sp/>by<sp/>first<sp/>calling<sp/>a<sp/>recursive<sp/>(sharpening)<sp/>prefilter<sp/>as</highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/><sp/><sp/>described<sp/>in<sp/>the<sp/>above<sp/>paper.<sp/>Then<sp/>the<sp/>actual<sp/>interpolation<sp/>is<sp/>done</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/><sp/>using<sp/>\ref<sp/>resamplingConvolveLine().</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"></highlight></codeline>
+<codeline lineno="164"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>range<sp/>of<sp/>both<sp/>the<sp/>input<sp/>and<sp/>output<sp/>images<sp/>(resp.<sp/>regions)</highlight></codeline>
+<codeline lineno="165"><highlight class="comment"><sp/><sp/><sp/><sp/>must<sp/>be<sp/>given.<sp/>The<sp/>input<sp/>image<sp/>must<sp/>have<sp/>a<sp/>size<sp/>of<sp/>at</highlight></codeline>
+<codeline lineno="166"><highlight class="comment"><sp/><sp/><sp/><sp/>least<sp/>4x4,<sp/>the<sp/>destination<sp/>of<sp/>at<sp/>least<sp/>2x2.<sp/>The<sp/>scaling<sp/>factors<sp/>are<sp/>then<sp/>calculated</highlight></codeline>
+<codeline lineno="167"><highlight class="comment"><sp/><sp/><sp/><sp/>accordingly.<sp/>If<sp/>the<sp/>source<sp/>image<sp/>is<sp/>larger<sp/>than<sp/>the<sp/>destination,<sp/>it</highlight></codeline>
+<codeline lineno="168"><highlight class="comment"><sp/><sp/><sp/><sp/>is<sp/>smoothed<sp/>(band<sp/>limited)<sp/>using<sp/>a<sp/>recursive</highlight></codeline>
+<codeline lineno="169"><highlight class="comment"><sp/><sp/><sp/><sp/>exponential<sp/>filter.<sp/>The<sp/>source<sp/>value_type<sp/>(SrcAccessor::value_type)<sp/>must</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/><sp/><sp/><sp/>be<sp/>a<sp/>linear<sp/>algebra,<sp/>i.e.<sp/>it<sp/>must<sp/>support<sp/>addition,<sp/>subtraction,</highlight></codeline>
+<codeline lineno="171"><highlight class="comment"><sp/><sp/><sp/><sp/>and<sp/>multiplication<sp/>(+,<sp/>-,<sp/>*),<sp/>multiplication<sp/>with<sp/>a<sp/>scalar</highlight></codeline>
+<codeline lineno="172"><highlight class="comment"><sp/><sp/><sp/><sp/>real<sp/>number<sp/>and<sp/>\ref<sp/>NumericTraits<sp/>&quot;NumericTraits&quot;.</highlight></codeline>
+<codeline lineno="173"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>function<sp/>uses<sp/>accessors.</highlight></codeline>
+<codeline lineno="174"><highlight class="comment"></highlight></codeline>
+<codeline lineno="175"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Usage:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="176"><highlight class="comment"></highlight></codeline>
+<codeline lineno="177"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/multi_resize.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="178"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="179"><highlight class="comment"></highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/><sp/><sp/>typedef<sp/>vigra::MultiArray&lt;3,<sp/>float&gt;::difference_type<sp/>Shape;</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::MultiArray&lt;3,<sp/>float&gt;<sp/>src(Shape(5,<sp/>7,<sp/>10)),</highlight></codeline>
+<codeline lineno="183"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest(Shape(9,<sp/>13,<sp/>19));<sp/>//<sp/>double<sp/>the<sp/>size</highlight></codeline>
+<codeline lineno="184"><highlight class="comment"></highlight></codeline>
+<codeline lineno="185"><highlight class="comment"><sp/><sp/><sp/><sp/>//<sp/>use<sp/>default<sp/>cubic<sp/>spline<sp/>interpolator</highlight></codeline>
+<codeline lineno="186"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::resizeMultiArraySplineInterpolation(</highlight></codeline>
+<codeline lineno="187"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcMultiArrayRange(src),</highlight></codeline>
+<codeline lineno="188"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destMultiArrayRange(dest));</highlight></codeline>
+<codeline lineno="189"><highlight class="comment"></highlight></codeline>
+<codeline lineno="190"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="191"><highlight class="comment"></highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="193"><highlight class="comment"></highlight></codeline>
+<codeline lineno="194"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>source<sp/>and<sp/>destination<sp/>iterators<sp/>must<sp/>be<sp/>compatible<sp/>with<sp/>\ref<sp/>vigra::MultiIterator.<sp/>The<sp/>array<sp/>value</highlight></codeline>
+<codeline lineno="195"><highlight class="comment"><sp/><sp/><sp/><sp/>types<sp/>must<sp/>be<sp/>models<sp/>of<sp/>\ref<sp/>LinearSpace.</highlight></codeline>
+<codeline lineno="196"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal">doxygen_overloaded_function(template<sp/>&lt;...&gt;<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>)</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>si,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>sshape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>di,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dshape,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>spline)</highlight></codeline>
+<codeline lineno="207"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{<sp/>N<sp/>=<sp/>1<sp/>+<sp/>SrcIterator::level<sp/>};</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>NumericTraits&lt;typename<sp/>DestAccessor::value_type&gt;::RealPromote<sp/>TmpType;</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>MultiArray&lt;N,<sp/>TmpType&gt;<sp/>TmpArray;</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>AccessorTraits&lt;TmpType&gt;::default_accessor<sp/>TmpAccessor;</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N==1)</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::internalResizeMultiArrayOneDimension(si,<sp/>sshape,<sp/>src,<sp/></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>di,<sp/>dshape,<sp/>dest,<sp/>spline,<sp/>0);</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Shape<sp/>tmpShape(sshape);</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tmpShape[d]<sp/>=<sp/>dshape[d];</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArray&lt;N,<sp/>TmpType&gt;<sp/>tmp(tmpShape);</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TmpAccessor<sp/>ta;</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::internalResizeMultiArrayOneDimension(si,<sp/>sshape,<sp/>src,<sp/></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tmp.traverser_begin(),<sp/>tmpShape,<sp/>ta,<sp/>spline,<sp/>d);</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>d<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>d&lt;N-1;<sp/>++d)</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tmpShape[d]<sp/>=<sp/>dshape[d];</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArray&lt;N,<sp/>TmpType&gt;<sp/>dtmp(tmpShape);</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(),<sp/>tmp.shape(),<sp/>ta,<sp/></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dtmp.traverser_begin(),<sp/>tmpShape,<sp/>ta,<sp/>spline,<sp/>d);</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dtmp.swap(tmp);</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::internalResizeMultiArrayOneDimension(tmp.traverser_begin(),<sp/>tmp.shape(),<sp/>ta,<sp/></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>di,<sp/>dshape,<sp/>dest,<sp/>spline,<sp/>d);</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="241"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(triple&lt;SrcIterator,<sp/>Shape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>Shape,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>spline)</highlight></codeline>
+<codeline lineno="250"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(src.first,<sp/>src.second,<sp/>src.third,</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second,<sp/>dest.third,<sp/>spline);</highlight></codeline>
+<codeline lineno="253"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight></codeline>
+<codeline lineno="255"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>si,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>sshape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>di,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dshape,<sp/>DestAccessor<sp/>dest)</highlight></codeline>
+<codeline lineno="261"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(si,<sp/>sshape,<sp/>src,<sp/>di,<sp/>dshape,<sp/>dest,<sp/>BSpline&lt;3,<sp/>double&gt;());</highlight></codeline>
+<codeline lineno="263"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(triple&lt;SrcIterator,<sp/>Shape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>Shape,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline lineno="270"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(src.first,<sp/>src.second,<sp/>src.third,</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second,<sp/>dest.third);</highlight></codeline>
+<codeline lineno="273"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="275"><highlight class="comment">//@}</highlight></codeline>
+<codeline lineno="276"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight></codeline>
+<codeline lineno="279"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_MULTI_RESIZE_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1has__depends__on" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::has_depends_on</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::sfinae_test&lt; T, has_depends_on &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1has__depends__on_1aed802eb3c1ce49fcc8a1201e3783b08e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>has_depends_on</definition>
+        <argsstring>(U *, typename U::depends_on *=0)</argsstring>
+        <name>has_depends_on</name>
+        <param>
+          <type>U *</type>
+        </param>
+        <param>
+          <type>typename U::depends_on *</type>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="561"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="559" bodyend="562"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1sfinae__test_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>falseResult</name></member>
+      <member refid="structvigra_1_1type__lists_1_1has__depends__on_1aed802eb3c1ce49fcc8a1201e3783b08e" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>has_depends_on</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a05589fbab0657f08285ebdfe93f5ec9ea730cb5310614d92e239dd7c7c1e9a60d" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>resultSize</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a27486c507eae8eb686387bf9f785a96a" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>test</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a762924d444d56c1a5cdd74ffde5eab85" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>test</name></member>
+      <member refid="structvigra_1_1sfinae__test_1abda572a18508e06ee0e9af4f446f1786" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>trueResult</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>type</name></member>
+      <member refid="structvigra_1_1sfinae__test_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::type_lists::has_depends_on</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

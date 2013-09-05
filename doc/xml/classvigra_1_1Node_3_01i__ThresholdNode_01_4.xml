@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Node_3_01i__ThresholdNode_01_4" kind="class" prot="public">
+    <compoundname>vigra::Node&lt; i_ThresholdNode &gt;</compoundname>
+    <basecompoundref refid="classvigra_1_1NodeBase" prot="public" virt="non-virtual">NodeBase</basecompoundref>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a364e695864a337dd48ec8f68c1262b7e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NodeBase" kindref="compound">NodeBase</ref></type>
+        <definition>typedef NodeBase BT</definition>
+        <argsstring></argsstring>
+        <name>BT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="393" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="393" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a0f3608a32f8e5fb7b1e9b305ad4fa2fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BT::INT &amp;</type>
+        <definition>BT::INT&amp; column</definition>
+        <argsstring>()</argsstring>
+        <name>column</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="424" bodyend="427"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a475e43ba37816793d8dad0596c09cc90" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BT::INT const &amp;</type>
+        <definition>BT::INT const&amp; column</definition>
+        <argsstring>() const </argsstring>
+        <name>column</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="429" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="428" bodyend="431"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ac662446d54eafbc966c10f9d193dd987" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>BT::INT</type>
+        <definition>BT::INT next</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;feature) const </argsstring>
+        <name>next</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>feature</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="435" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="434" bodyend="437"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a3b60eb0ce45ef7920d224527632db046" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(BT::T_Container_type &amp;topology, BT::P_Container_type &amp;param)</argsstring>
+        <name>Node</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> &amp;</type>
+          <declname>param</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>constructors </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="397" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a62bf84b3dd5662558d175480d669e62c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(BT::T_Container_type const &amp;topology, BT::P_Container_type const &amp;param, INT n)</argsstring>
+        <name>Node</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::T_Container_type</ref> const &amp;</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">BT::P_Container_type</ref> const &amp;</type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type>INT</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="404" bodyend="408"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ad63d5e08a848d53812d4b8d42570b5b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Node</definition>
+        <argsstring>(BT &amp;node_)</argsstring>
+        <name>Node</name>
+        <param>
+          <type><ref refid="classvigra_1_1NodeBase" kindref="compound">BT</ref> &amp;</type>
+          <declname>node_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="412" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="410" bodyend="412"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ada8b140380c87500aa583138d42e65ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; threshold</definition>
+        <argsstring>()</argsstring>
+        <name>threshold</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="415" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="414" bodyend="417"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1aff5618d1cb74686b6c1cc251838e7793" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double const &amp;</type>
+        <definition>double const&amp; threshold</definition>
+        <argsstring>() const </argsstring>
+        <name>threshold</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="420" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="419" bodyend="422"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1190">
+        <label>Node&lt; i_ThresholdNode &gt;</label>
+        <childnode refid="1191" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1191">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1192">
+        <label>Node&lt; i_ThresholdNode &gt;</label>
+        <childnode refid="1193" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1193">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" line="389" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_nodeproxy.hxx" bodystart="387" bodyend="438"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a364e695864a337dd48ec8f68c1262b7e" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>BT</name></member>
+      <member refid="classvigra_1_1NodeBase_1afbee722241ea157626d951705d92765a" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1aef1d376bdbb67276c2ca594efb80a8ec" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>child</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3fccf09f4a699b59bdaaef92cf57421d" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>classCount_</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a0f3608a32f8e5fb7b1e9b305ad4fa2fa" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>column</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a475e43ba37816793d8dad0596c09cc90" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>column</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa1b5f48a16c72fa7bc0eebe5b6f567ff" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>column_data</name></member>
+      <member refid="classvigra_1_1NodeBase_1aff0b528dc48e3783d3d114ba59d03cf0" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>columns_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1a98316670a4ba476aa898e878e07150" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>columns_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1af681aefe39dee326f0c384c06876d2df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>columns_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8abe81cffd3fdf2d3a263a8cf8535820" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>copy</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab1cb33e6d4bdf35450953a9e8e5936b5" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>data</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2fdc050911157bc63d2c34ffec04ebb1" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>featureCount_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7691d58cca0888fcc7eb864cae64af82" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>hasData_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a3c27387e011446faece596a3512747e3" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>INT</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ac662446d54eafbc966c10f9d193dd987" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>next</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a3b60eb0ce45ef7920d224527632db046" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1a62bf84b3dd5662558d175480d669e62c" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ad63d5e08a848d53812d4b8d42570b5b2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>Node</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab0d2335945496a120d668b209f14140c" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ab9e2534c9a671cc64c318142d423b1df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a828aadf61afa6b1cf6224d98f23f3f72" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a10f09963f49d9080438d223173545eaa" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a63012063efba7f30e3862efa38cc1ec3" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1ac53d1493afb00198446c7345cea663fe" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>NodeBase</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2772ac823499b142d7a6121088de74dd" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>P_Container_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a7af73990cbba31c405b745c28b602aa8" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a2ec7aa5eacd1493d9ce3642e3a14d8ed" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameter_addr</name></member>
+      <member refid="classvigra_1_1NodeBase_1a20634f6eb739ff8272c00f3bf7294199" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameter_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4efdd224735574a9c5526311b3f0ce9b" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>Parameter_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1aa695a5aa261abef117dfc8b87bca85a2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameters_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a1d5a8a3e2a5f05941bdb3bbde4faa508" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameters_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9b4ea98e352b479140a1b621c46a24dc" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameters_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a62c4da34c22c0b66c21ad3eaa09c6f73" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>parameters_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a8ee8474c7bc7881ddbaa51b02cb350df" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>T_Container_type</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1ada8b140380c87500aa583138d42e65ed" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>threshold</name></member>
+      <member refid="classvigra_1_1Node_3_01i__ThresholdNode_01_4_1aff5618d1cb74686b6c1cc251838e7793" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>threshold</name></member>
+      <member refid="classvigra_1_1NodeBase_1a91e7e3aab813bf8964cc8567c9f8a7fc" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>topology_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6b3a692effa8129f2bc91079c8810fe2" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>topology_begin</name></member>
+      <member refid="classvigra_1_1NodeBase_1a6932a1eef19e5e598c7a2321cfd82efe" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>topology_end</name></member>
+      <member refid="classvigra_1_1NodeBase_1a67bbba8f267817ce7ad546f8807df676" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>topology_size</name></member>
+      <member refid="classvigra_1_1NodeBase_1a060308950bc46d8353295dbde5b60491" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>topology_size_</name></member>
+      <member refid="classvigra_1_1NodeBase_1a9dd576b4c7c93f5ddda63365a6138846" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>Topology_type</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4aeb85940eb4eb34739f29b01a576286" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1a4eef16cc017527b5189bd7ce0b2a6dce" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>typeID</name></member>
+      <member refid="classvigra_1_1NodeBase_1acd65bf00c655f601231bc895812eacde" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>weights</name></member>
+      <member refid="classvigra_1_1NodeBase_1a840c72759db564e7eb4492dff89899de" prot="public" virt="non-virtual"><scope>vigra::Node&lt; i_ThresholdNode &gt;</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

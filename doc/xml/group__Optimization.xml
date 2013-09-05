@@ -1,0 +1,603 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Optimization" kind="group">
+    <compoundname>Optimization</compoundname>
+    <title>Optimization and Regression</title>
+    <innerclass refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" prot="public">vigra::linalg::LeastAngleRegressionOptions</innerclass>
+    <innernamespace refid="namespacevigra_1_1linalg_1_1detail">vigra::linalg::detail</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::leastAngleRegression</definition>
+        <argsstring>(...)</argsstring>
+        <name>leastAngleRegression</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Least Angle Regression.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref></para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">linalg<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>either<sp/>LASSO<sp/>or<sp/>least<sp/>squares<sp/>solutions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Array1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Array2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression</ref>(MultiArrayView&lt;2,<sp/>T,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>A,<sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C2&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array1<sp/>&amp;<sp/>activeSets,<sp/>Array2<sp/>&amp;<sp/>solutions,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LeastAngleRegressionOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LeastAngleRegressionOptions());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>compute<sp/>LASSO<sp/>and<sp/>least<sp/>squares<sp/>solutions</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Array1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Array2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression</ref>(MultiArrayView&lt;2,<sp/>T,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>A,<sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C2&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;b,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array1<sp/>&amp;<sp/>activeSets,<sp/>Array2<sp/>&amp;<sp/>lasso_solutions,<sp/>Array2<sp/>&amp;<sp/>lsq_solutions,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LeastAngleRegressionOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LeastAngleRegressionOptions());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">linalg::leastAngleRegression</ref>;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This function implements Least Angle Regression (LARS) as described in</para><para><nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> B.Efron, T.Hastie, I.Johnstone, and R.Tibshirani: <emphasis>&quot;Least Angle Regression&quot;</emphasis>, Annals of Statistics 32(2):407-499, 2004.</para><para>It is an efficient algorithm to solve the L1-regularized least squares (LASSO) problem</para><para><formula id="77">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s \]</formula></para><para>and the L1-regularized non-negative least squares (NN-LASSO) problem</para><para><formula id="78">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s \textrm{ and } \textrm{\bf x}\ge \textrm{\bf 0} \]</formula></para><para>where <emphasis>A</emphasis> is a matrix with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (often with <computeroutput>m &lt; n</computeroutput>), <emphasis>b</emphasis> a vector of length <computeroutput>m</computeroutput>, and a regularization parameter s &gt;= 0.0. L1-regularization has the desirable effect that it causes the solution <emphasis>x</emphasis> to be sparse, i.e. only the most important variables (called the <emphasis>active set</emphasis>) have non-zero values. The key insight of the LARS algorithm is the following: When the solution vector is considered as a function of the regularization parameter s, then <bold>x</bold>(s) is a piecewise linear function, i.e. a polyline in n-dimensional space. The knots of the polyline occur precisely at those values of s where one variable enters or leaves the active set, and can be efficiently computed.</para><para>Therefore, <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref> returns the entire solution path as a sequence of knot points, starting at <formula id="79">$\textrm{\bf x}(s=0)$</formula> (where the only feasible solution is obviously <bold>x</bold> = 0) and ending at <formula id="80">$\textrm{\bf x}(s=\infty)$</formula> (where the solution becomes the ordinary least squares solution). Actually, the initial null solution is not explicitly returned, i.e. the sequence starts at the first non-zero solution with one variable in the active set. The function <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref> returns the number of solutions( i.e. knot points) computed.</para><para>The sequences of active sets and corresponding variable weights are returned in <emphasis>activeSets</emphasis> and <emphasis>solutions</emphasis> respectively. That is, <computeroutput>activeSets[i]</computeroutput> is an <ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector&lt;int&gt;</ref> containing the indices of the variables that are active at the i-th knot, and <computeroutput>solutions</computeroutput> is a <ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix&lt;T&gt;</ref> containing the weights of those variables, in the same order (see example below). Variables not contained in <computeroutput>activeSets[i]</computeroutput> are zero at this solution.</para><para>The behavior of the algorithm can be adapted by <ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref>: <variablelist>
+<varlistentry><term><bold>options.lasso()</bold> (active by default) </term></varlistentry>
+<listitem><para>Compute the LASSO solution as described above. </para></listitem>
+<varlistentry><term><bold>options.nnlasso()</bold> (inactive by default) </term></varlistentry>
+<listitem><para>Compute non-negative LASSO solutions, i.e. use the additional constraint that <bold>x</bold> &gt;= 0 in all solutions. </para></listitem>
+<varlistentry><term><bold>options.lars()</bold> (inactive by default) </term></varlistentry>
+<listitem><para>Compute a solution path according to the plain LARS rule, i.e. never remove a variable from the active set once it entered. </para></listitem>
+<varlistentry><term><bold>options.leastSquaresSolutions(bool)</bold> (default: true) </term></varlistentry>
+<listitem><para>Use the algorithm mode selected above to determine the sequence of active sets, but then compute and return an ordinary (unconstrained) least squares solution for every active set.<linebreak/>
+ <bold>Note:</bold> The second form of <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref> ignores this option and does always compute both constrained and unconstrained solutions (returned in <emphasis>lasso_solutions</emphasis> and <emphasis>lsq_solutions</emphasis> respectively). </para></listitem>
+<varlistentry><term><bold>maxSolutionCount(unsigned int n)</bold> (default: n = 0, i.e. compute all solutions) </term></varlistentry>
+<listitem><para>Compute at most <computeroutput>n</computeroutput> solutions. </para></listitem>
+</variablelist>
+</para><para><bold>Usage:</bold></para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m<sp/>=<sp/>...,<sp/>n<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>A(m,<sp/>n),<sp/>b(m,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>A<sp/>and<sp/>b</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>normalize<sp/>the<sp/>input</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>offset(1,n),<sp/>scaling(1,n);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LinearAlgebraFunctions_1ga9570361590f341c6a3699b1d2074c3de" kindref="member">prepareColumns</ref>(A,<sp/>A,<sp/>offset,<sp/>scaling,<sp/>DataPreparationGoals(ZeroMean|UnitVariance));</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LinearAlgebraFunctions_1ga9570361590f341c6a3699b1d2074c3de" kindref="member">prepareColumns</ref>(b,<sp/>b,<sp/>DataPreparationGoals(ZeroMean));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>arrays<sp/>to<sp/>hold<sp/>the<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ArrayVector&lt;ArrayVector&lt;int&gt;<sp/>&gt;<sp/>activeSets;</highlight></codeline>
+<codeline><highlight class="normal">ArrayVector&lt;Matrix&lt;double&gt;<sp/>&gt;<sp/>solutions;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>leastAngleRegression()<sp/>in<sp/>non-negative<sp/>LASSO<sp/>mode</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numSolutions<sp/>=<sp/><ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression</ref>(A,<sp/>b,<sp/>activeSets,<sp/>solutions,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LeastAngleRegressionOptions().nnlasso());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>print<sp/>results</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>denseSolution(1,<sp/>n);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(<ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/>numSolutions;<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>transform<sp/>the<sp/>sparse<sp/>solution<sp/>into<sp/>a<sp/>dense<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>denseSolution.init(0.0);<sp/></highlight><highlight class="comment">//<sp/>ensure<sp/>that<sp/>inactive<sp/>variables<sp/>are<sp/>zero</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>activeSets[k].size();<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>the<sp/>values<sp/>of<sp/>the<sp/>active<sp/>variables;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>activeSets[k][i]<sp/>is<sp/>the<sp/>true<sp/>index<sp/>of<sp/>the<sp/>i-th<sp/>variable<sp/>in<sp/>the<sp/>active<sp/>set</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>denseSolution(0,<sp/>activeSets[k][i])<sp/>=<sp/>solutions[k](i,0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>invert<sp/>the<sp/>input<sp/>normalization</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>denseSolution<sp/>=<sp/>denseSolution<sp/>*<sp/>pointWise(scaling);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>the<sp/>solution</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;solution<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>k<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;:\n&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>denseSolution<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>Required Interface:</bold></para><para><itemizedlist>
+<listitem>
+<para><computeroutput>T</computeroutput> must be numeric type (compatible to double) </para></listitem>
+<listitem>
+<para><computeroutput>Array1 a1;</computeroutput><linebreak/>
+ <computeroutput>a1.push_back(<ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt;int&gt;());</computeroutput> </para></listitem>
+<listitem>
+<para><computeroutput>Array2 a2;</computeroutput><linebreak/>
+ <computeroutput>a2.push_back(<ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt;T&gt;());</computeroutput> </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="879"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1ga352a17160c533cf5e93331c63d36d752" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Array1</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::leastAngleRegression</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, Array1 &amp;activeSets, Array2 &amp;solutions, LeastAngleRegressionOptions const &amp;options=LeastAngleRegressionOptions())</argsstring>
+        <name>leastAngleRegression</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Array1 &amp;</type>
+          <declname>activeSets</declname>
+        </param>
+        <param>
+          <type>Array2 &amp;</type>
+          <declname>solutions</declname>
+        </param>
+        <param>
+          <type>LeastAngleRegressionOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LeastAngleRegressionOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="886" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="883" bodyend="891"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1gaa89e04745166537245291144b711be03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Array1</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::leastAngleRegression</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, Array1 &amp;activeSets, Array2 &amp;lasso_solutions, Array2 &amp;lsq_solutions, LeastAngleRegressionOptions const &amp;options=LeastAngleRegressionOptions())</argsstring>
+        <name>leastAngleRegression</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Array1 &amp;</type>
+          <declname>activeSets</declname>
+        </param>
+        <param>
+          <type>Array2 &amp;</type>
+          <declname>lasso_solutions</declname>
+        </param>
+        <param>
+          <type>Array2 &amp;</type>
+          <declname>lsq_solutions</declname>
+        </param>
+        <param>
+          <type>LeastAngleRegressionOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LeastAngleRegressionOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="898" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="895" bodyend="900"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1gab3be347f5631d0aa2ee74c07479e0383" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::leastSquares</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;x, std::string method=&quot;QR&quot;)</argsstring>
+        <name>leastSquares</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>method</declname>
+          <defval>&quot;QR&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ordinary Least Squares Regression.</para><para>Given a matrix <emphasis>A</emphasis> with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (with <computeroutput>m &gt;= n</computeroutput>), and a column vector <emphasis>b</emphasis> of length <computeroutput>m</computeroutput> rows, this function computes the column vector <emphasis>x</emphasis> of length <computeroutput>n</computeroutput> rows that solves the optimization problem</para><para><formula id="71">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \]</formula></para><para>When <emphasis>b</emphasis> is a matrix with <computeroutput>k</computeroutput> columns, <emphasis>x</emphasis> must also have <computeroutput>k</computeroutput> columns, which will contain the solutions for the corresponding columns of <emphasis>b</emphasis>. Note that all matrices must already have the correct shape.</para><para>This function is just another name for <ref refid="group__MatrixAlgebra_1gac51ce45fdb17942988cdc77e50611983" kindref="member">linearSolve()</ref>, perhaps leading to more readable code when <emphasis>A</emphasis> is a rectangular matrix. It returns <computeroutput>false</computeroutput> when the rank of <emphasis>A</emphasis> is less than <computeroutput>n</computeroutput>. See <ref refid="group__MatrixAlgebra_1gac51ce45fdb17942988cdc77e50611983" kindref="member">linearSolve()</ref> for more documentation.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="80" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1ga73b680f4375cd2963543db1a7cf85e41" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::nonnegativeLeastSquares</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;x)</argsstring>
+        <name>nonnegativeLeastSquares</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Non-negative Least Squares Regression.</para><para>Given a matrix <emphasis>A</emphasis> with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (with <computeroutput>m &gt;= n</computeroutput>), and a column vector <emphasis>b</emphasis> of length <computeroutput>m</computeroutput> rows, this function computes a column vector <emphasis>x</emphasis> of length <computeroutput>n</computeroutput> with <bold>non-negative entries</bold> that solves the optimization problem</para><para><formula id="81">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \textrm{\bf x} \ge \textrm{\bf 0} \]</formula></para><para>Both <emphasis>b</emphasis> and <emphasis>x</emphasis> must be column vectors (i.e. matrices with <computeroutput>1</computeroutput> column). Note that all matrices must already have the correct shape. The solution is computed by means of <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref> with non-negativity constraint.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="924" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="922" bodyend="939"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1ga60bf3f23776bd500a5009b2a25442860" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class C4</type>
+          </param>
+          <param>
+            <type>class C5</type>
+          </param>
+          <param>
+            <type>class C6</type>
+          </param>
+          <param>
+            <type>class C7</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::quadraticProgramming</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;G, MultiArrayView&lt; 2, T, C2 &gt; const &amp;g, MultiArrayView&lt; 2, T, C3 &gt; const &amp;CE, MultiArrayView&lt; 2, T, C4 &gt; const &amp;ce, MultiArrayView&lt; 2, T, C5 &gt; const &amp;CI, MultiArrayView&lt; 2, T, C6 &gt; const &amp;ci, MultiArrayView&lt; 2, T, C7 &gt; &amp;x)</argsstring>
+        <name>quadraticProgramming</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>G</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; const &amp;</type>
+          <declname>CE</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C4 &gt; const &amp;</type>
+          <declname>ce</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C5 &gt; const &amp;</type>
+          <declname>CI</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C6 &gt; const &amp;</type>
+          <declname>ci</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C7 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Solve Quadratic Programming Problem.</para><para>The <ref refid="group__Optimization_1ga60bf3f23776bd500a5009b2a25442860" kindref="member">quadraticProgramming()</ref> function implements the algorithm described in</para><para>D. Goldfarb, A. Idnani: <emphasis>&quot;A numerically stable dual method for solving
+            strictly convex quadratic programs&quot;</emphasis>, Mathematical Programming 27:1-33, 1983.</para><para>for the solution of (convex) quadratic programming problems by means of a primal-dual method.</para><para><bold>#include</bold> &lt;<ref refid="quadprog_8hxx_source" kindref="compound">vigra/quadprog.hxx</ref>&gt; Namespaces: vigra</para><para><bold>Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C4,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C5,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C6,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C7&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Optimization_1ga60bf3f23776bd500a5009b2a25442860" kindref="member">quadraticProgramming</ref>(MultiArrayView&lt;2,<sp/>T,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>GG,<sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C2&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>g,<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C3&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>CE,<sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C4&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ce,<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C5&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>CI,<sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C6&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ci,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>T,<sp/>C7&gt;<sp/>&amp;<sp/>x);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The problem must be specified in the form:</para><para><formula id="69">\begin{eqnarray*} \mbox{minimize } &amp;\,&amp; \frac{1}{2} \mbox{\bf x}&apos;\,\mbox{\bf G}\, \mbox{\bf x} + \mbox{\bf g}&apos;\,\mbox{\bf x} \\ \mbox{subject to} &amp;\,&amp; \mbox{\bf C}_E\, \mbox{\bf x} = \mbox{\bf c}_e \\ &amp;\,&amp; \mbox{\bf C}_I\,\mbox{\bf x} \ge \mbox{\bf c}_i \end{eqnarray*}</formula> Matrix <bold>G</bold> G must be symmetric positive definite, and matrix <bold>C</bold><subscript>E</subscript> must have full row rank. Matrix and vector dimensions must be as follows: <itemizedlist>
+<listitem>
+<para><bold>G</bold>: [n * n], <bold>g</bold>: [n * 1] </para></listitem>
+<listitem>
+<para><bold>C</bold><subscript>E</subscript>: [me * n], <bold>c</bold><subscript>e</subscript>: [me * 1] </para></listitem>
+<listitem>
+<para><bold>C</bold><subscript>I</subscript>: [mi * n], <bold>c</bold><subscript>i</subscript>: [mi * 1] </para></listitem>
+<listitem>
+<para><bold>x</bold>: [n * 1] </para></listitem>
+</itemizedlist>
+</para><para>The function writes the optimal solution into the vector <emphasis>x</emphasis> and returns the cost of this solution. If the problem is infeasible, std::numeric_limits::infinity() is returned. In this case the value of vector <emphasis>x</emphasis> is undefined.</para><para><bold>Usage:</bold></para><para>Minimize <computeroutput> f = 0.5 * x&apos;*G*x + g&apos;*x </computeroutput> subject to <computeroutput> -1 &lt;= x &lt;= 1</computeroutput>. The solution is <computeroutput> x&apos; = [1.0, 0.5, -1.0] </computeroutput> with <computeroutput> f = -22.625</computeroutput>. <programlisting><codeline><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>Gdata[]<sp/>=<sp/>{13.0,<sp/>12.0,<sp/>-2.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>12.0,<sp/>17.0,<sp/><sp/>6.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-2.0,<sp/><sp/>6.0,<sp/>12.0};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>gdata[]<sp/>=<sp/>{-22.0,<sp/>-14.5,<sp/>13.0};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>CIdata[]<sp/>=<sp/>{<sp/>1.0,<sp/><sp/>0.0,<sp/><sp/>0.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0,<sp/><sp/>1.0,<sp/><sp/>0.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0,<sp/><sp/>0.0,<sp/><sp/>1.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-1.0,<sp/><sp/>0.0,<sp/><sp/>0.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0,<sp/>-1.0,<sp/><sp/>0.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0,<sp/><sp/>0.0,<sp/>-1.0};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>cidata[]<sp/>=<sp/>{-1.0,<sp/>-1.0,<sp/>-1.0,<sp/>-1.0,<sp/>-1.0,<sp/>-1.0};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>G(3,3,<sp/>Gdata),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>g(3,1,<sp/>gdata),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CE,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>empty<sp/>since<sp/>there<sp/>are<sp/>no<sp/>equality<sp/>constraints</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ce,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>likewise</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CI(7,3,<sp/>CIdata),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ci(7,1,<sp/>cidata),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>x(3,1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>f<sp/>=<sp/><ref refid="group__Optimization_1ga60bf3f23776bd500a5009b2a25442860" kindref="member">quadraticProgramming</ref>(G,<sp/>g,<sp/>CE,<sp/>ce,<sp/>CI,<sp/>ci,<sp/>x);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quadprog.hxx" line="174" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quadprog.hxx" bodystart="170" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1ga647810e9f3f2ff2e401f410b4855c58a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::ridgeRegression</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;x, double lambda)</argsstring>
+        <name>ridgeRegression</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ridge Regression.</para><para>Given a matrix <emphasis>A</emphasis> with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (with <computeroutput>m &gt;= n</computeroutput>), a vector <emphasis>b</emphasis> of length <computeroutput>m</computeroutput>, and a regularization parameter <computeroutput>lambda &gt;= 0.0</computeroutput>, this function computes the vector <emphasis>x</emphasis> of length <computeroutput>n</computeroutput> that solves the optimization problem</para><para><formula id="74">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 + \lambda \textrm{\bf x}^T\textrm{\bf x} \]</formula></para><para>This is implemented by means of <ref refid="group__MatrixAlgebra_1gaf20e05edcc344f32d96fdaf5a6b3b972" kindref="member">singularValueDecomposition()</ref>.</para><para>When <emphasis>b</emphasis> is a matrix with <computeroutput>k</computeroutput> columns, <emphasis>x</emphasis> must also have <computeroutput>k</computeroutput> columns, which will contain the solutions for the corresponding columns of <emphasis>b</emphasis>. Note that all matrices must already have the correct shape.</para><para>The function returns <computeroutput>false</computeroutput> if the rank of <emphasis>A</emphasis> is less than <computeroutput>n</computeroutput> and <computeroutput>lambda == 0.0</computeroutput>.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="182" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1gad20a4d83649e2c65d9d553105882af9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::ridgeRegressionSeries</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; &amp;x, Array const &amp;lambda)</argsstring>
+        <name>ridgeRegressionSeries</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ridge Regression with many lambdas.</para><para>This executes <ref refid="group__Optimization_1ga647810e9f3f2ff2e401f410b4855c58a" kindref="member">ridgeRegression()</ref> for a sequence of regularization parameters. This is implemented so that the <ref refid="group__MatrixAlgebra_1gaf20e05edcc344f32d96fdaf5a6b3b972" kindref="member">singularValueDecomposition()</ref> has to be executed only once. <emphasis>lambda</emphasis> must be an array conforming to the <computeroutput>std::vector</computeroutput> interface, i.e. must support <computeroutput>lambda.size()</computeroutput> and <computeroutput>lambda[k]</computeroutput>. The columns of the matrix <emphasis>x</emphasis> will contain the solutions for the corresponding lambda, so the number of columns of the matrix <emphasis>x</emphasis> must be equal to <computeroutput>lambda.size()</computeroutput>, and <emphasis>b</emphasis> must be a columns vector, i.e. cannot contain several right hand sides at once.</para><para>The function returns <computeroutput>false</computeroutput> when the matrix <emphasis>A</emphasis> is rank deficient. If this happens, and one of the lambdas is zero, the corresponding column of <emphasis>x</emphasis> will be skipped.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="309" bodyend="344"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1ga591ca4f43e4114253d7bfa2953f07c4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class C4</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::weightedLeastSquares</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; const &amp;weights, MultiArrayView&lt; 2, T, C4 &gt; &amp;x, std::string method=&quot;QR&quot;)</argsstring>
+        <name>weightedLeastSquares</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; const &amp;</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C4 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>method</declname>
+          <defval>&quot;QR&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Weighted Least Squares Regression.</para><para>Given a matrix <emphasis>A</emphasis> with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (with <computeroutput>m &gt;= n</computeroutput>), a vector <emphasis>b</emphasis> of length <computeroutput>m</computeroutput>, and a weight vector <emphasis>weights</emphasis> of length <computeroutput>m</computeroutput> with non-negative entries, this function computes the vector <emphasis>x</emphasis> of length <computeroutput>n</computeroutput> that solves the optimization problem</para><para><formula id="72">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T \textrm{diag}(\textrm{\bf weights}) \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right) \]</formula></para><para>where <computeroutput>diag(weights)</computeroutput> creates a diagonal matrix from <emphasis>weights</emphasis>. The algorithm calls <ref refid="group__Optimization_1gab3be347f5631d0aa2ee74c07479e0383" kindref="member">leastSquares()</ref> on the equivalent problem</para><para><formula id="73">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2 \]</formula></para><para>where the square root of <emphasis>weights</emphasis> is just taken element-wise.</para><para>When <emphasis>b</emphasis> is a matrix with <computeroutput>k</computeroutput> columns, <emphasis>x</emphasis> must also have <computeroutput>k</computeroutput> columns, which will contain the solutions for the corresponding columns of <emphasis>b</emphasis>. Note that all matrices must already have the correct shape.</para><para>The function returns <computeroutput>false</computeroutput> when the rank of the weighted matrix <emphasis>A</emphasis> is less than <computeroutput>n</computeroutput>.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="122" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Optimization_1gade6eb7c915e0e6b1820974316b1d5d32" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class C4</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::weightedRidgeRegression</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, MultiArrayView&lt; 2, T, C3 &gt; const &amp;weights, MultiArrayView&lt; 2, T, C4 &gt; &amp;x, double lambda)</argsstring>
+        <name>weightedRidgeRegression</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt; const &amp;</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C4 &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>lambda</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Weighted ridge Regression.</para><para>Given a matrix <emphasis>A</emphasis> with <computeroutput>m</computeroutput> rows and <computeroutput>n</computeroutput> columns (with <computeroutput>m &gt;= n</computeroutput>), a vector <emphasis>b</emphasis> of length <computeroutput>m</computeroutput>, a weight vector <emphasis>weights</emphasis> of length <computeroutput>m</computeroutput> with non-negative entries, and a regularization parameter <computeroutput>lambda &gt;= 0.0</computeroutput> this function computes the vector <emphasis>x</emphasis> of length <computeroutput>n</computeroutput> that solves the optimization problem</para><para><formula id="75">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T \textrm{diag}(\textrm{\bf weights}) \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right) + \lambda \textrm{\bf x}^T\textrm{\bf x} \]</formula></para><para>where <computeroutput>diag(weights)</computeroutput> creates a diagonal matrix from <emphasis>weights</emphasis>. The algorithm calls <ref refid="group__Optimization_1ga647810e9f3f2ff2e401f410b4855c58a" kindref="member">ridgeRegression()</ref> on the equivalent problem</para><para><formula id="76">\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2 + \lambda \textrm{\bf x}^T\textrm{\bf x} \]</formula></para><para>where the square root of <emphasis>weights</emphasis> is just taken element-wise. This solution is computed by means of <ref refid="group__MatrixAlgebra_1gaf20e05edcc344f32d96fdaf5a6b3b972" kindref="member">singularValueDecomposition()</ref>.</para><para>When <emphasis>b</emphasis> is a matrix with <computeroutput>k</computeroutput> columns, <emphasis>x</emphasis> must also have <computeroutput>k</computeroutput> columns, which will contain the solutions for the corresponding columns of <emphasis>b</emphasis>. Note that all matrices must already have the correct shape.</para><para>The function returns <computeroutput>false</computeroutput> if the rank of <emphasis>A</emphasis> is less than <computeroutput>n</computeroutput> and <computeroutput>lambda == 0.0</computeroutput>.</para><para><bold>#include</bold> &lt;<ref refid="regression_8hxx_source" kindref="compound">vigra/regression.hxx</ref>&gt; Namespaces: vigra and <ref refid="namespacevigra_1_1linalg" kindref="compound">vigra::linalg</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="255" bodyend="289"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,837 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Rect2D" kind="class" prot="public">
+    <compoundname>vigra::Rect2D</compoundname>
+    <includes refid="diff2d_8hxx" local="no">vigra/diff2d.hxx</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Rect2D_1a7f28e74b83bab8d5851e52bfc8b7f455" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D lowerRight_</definition>
+        <argsstring></argsstring>
+        <name>lowerRight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="874" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="874" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Rect2D_1a84fb75247094c0ead68038ff126c5449" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D upperLeft_</definition>
+        <argsstring></argsstring>
+        <name>upperLeft_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="874" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="874" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a20b65eddf551b61a036568b3c0da14dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void addBorder</definition>
+        <argsstring>(int borderWidth)</argsstring>
+        <name>addBorder</name>
+        <param>
+          <type>int</type>
+          <declname>borderWidth</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds a border of the given width around the rectangle. That means, <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref>&apos;s components are moved by -borderWidth and <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref>&apos;s by borderWidth. (If borderWidth is negative, the rectangle will get smaller accordingly.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1068" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1067" bodyend="1071"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a0afab1c29a8a2f2e58b3c5fbfbacafb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void addBorder</definition>
+        <argsstring>(int borderWidth, int borderHeight)</argsstring>
+        <name>addBorder</name>
+        <param>
+          <type>int</type>
+          <declname>borderWidth</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>borderHeight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds a border with possibly different widths in x- and y-directions around the rectangle. That means, each x component is moved borderWidth pixels and each y component is moved borderHeight pixels to the outside. (If borderWidth is negative, the rectangle will get smaller accordingly.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1081" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1080" bodyend="1084"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a7f24f3144e82f8c8fbe7e77a58702eb3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void addSize</definition>
+        <argsstring>(Size2D const &amp;offset)</argsstring>
+        <name>addSize</name>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Increase the size of the rectangle by the given offset. This will move the lower right corner only. (If any of offset&apos;s components is negative, the rectangle will get smaller accordingly.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1058" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1057" bodyend="1060"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a93dbb554c75a0bded227ab0320be72eb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int area</definition>
+        <argsstring>() const </argsstring>
+        <name>area</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Determine and return the area of this rectangle. That is, if this rect <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref>, returns zero, otherwise returns <ref refid="classvigra_1_1Rect2D_1a369399896761e31ae71db57fdd0ba431" kindref="member">width()</ref>*height(). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1023" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1022" bodyend="1025"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a02c3eeeccf5a7236f7029cdd9489075f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int bottom</definition>
+        <argsstring>() const </argsstring>
+        <name>bottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the bottom coordinate of this rectangle. That is the first row below the rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="998" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="997" bodyend="1000"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1aa430354b753c6d6fc1fb601f7155110a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool contains</definition>
+        <argsstring>(Point2D const &amp;p) const </argsstring>
+        <name>contains</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return whether this rectangle contains the given point. That is, if the point lies within the valid range of an <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> walking from <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> to <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> (excluding the latter). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1116" bodyend="1122"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a8130895f76d0daa2e4502b72b569d307" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool contains</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>contains</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return whether this rectangle contains the given one. <computeroutput>r1.contains(r2)</computeroutput> returns the same as <computeroutput>r1 == (r1|r2)</computeroutput> (but is of course more efficient). That also means, a rectangle (even an empty one!) <ref refid="classvigra_1_1Rect2D_1aa430354b753c6d6fc1fb601f7155110a" kindref="member">contains()</ref> any empty rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1130" bodyend="1134"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Determine and return the height of this rectangle. It might be zero or even negative, and if so, <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref> will return true. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1014" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1013" bodyend="1016"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a9f3c25a0b863f934222f0d5fafc64fe5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool intersects</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>intersects</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return whether this rectangle overlaps with the given one. <computeroutput>r1.intersects(r2)</computeroutput> returns the same as <computeroutput>!(r1&amp;r2).<ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref></computeroutput> (but is of course much more efficient). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1141" bodyend="1148"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isEmpty</definition>
+        <argsstring>() const </argsstring>
+        <name>isEmpty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return whether this rectangle is considered empty. It is non-empty if both coordinates of the lower right corner are greater than the corresponding coordinate of the upper left corner. Uniting an empty rectangle with something will return the bounding rectangle of the &apos;something&apos;, intersecting with an empty rectangle will yield again an empty rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1106" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1105" bodyend="1109"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a265321ef4c7ad76f60e512fc09eef7c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int left</definition>
+        <argsstring>() const </argsstring>
+        <name>left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the left coordinate of this rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="975" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="974" bodyend="977"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+        <definition>Point2D const&amp; lowerRight</definition>
+        <argsstring>() const </argsstring>
+        <name>lowerRight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the first point to the right and below the rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="920" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="919" bodyend="922"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a2d5aace1343d5974f398e34fa8ee3970" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void moveBy</definition>
+        <argsstring>(Diff2D const &amp;offset)</argsstring>
+        <name>moveBy</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move the whole rectangle by the given 2D offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="960" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="959" bodyend="963"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a470c39cf50f3186ba33d26c7949ba86c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void moveBy</definition>
+        <argsstring>(int xOffset, int yOffset)</argsstring>
+        <name>moveBy</name>
+        <param>
+          <type>int</type>
+          <declname>xOffset</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>yOffset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move the whole rectangle by the given x- and y-offsets. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="968" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="967" bodyend="970"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1abd8431d3d755412c5e70c25da7e98f00" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void moveTo</definition>
+        <argsstring>(Point2D const &amp;newUpperLeft)</argsstring>
+        <name>moveTo</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>newUpperLeft</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move the whole rectangle so that the given point will be <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> afterwards. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="944" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="943" bodyend="947"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ae1a15d726ba9f9461b32a9fe729c75a8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void moveTo</definition>
+        <argsstring>(int left, int top)</argsstring>
+        <name>moveTo</name>
+        <param>
+          <type>int</type>
+          <declname>left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>top</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move the whole rectangle so that <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> will become Point2D(left, top) afterwards. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="953" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="952" bodyend="955"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a94a8fb2cb11cbd5b18671ec99c1e1851" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>inequality check </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1094" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1093" bodyend="1096"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a1ac2baa741eca3c4538b82c1472ca14a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator&amp;</definition>
+        <argsstring>(Point2D const &amp;p) const </argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Intersects this rectangle with the given point. The result is the bounding rect of the point (with width and height equal to 1) if it was contained in the original rect, or an empty rect otherwise. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1246" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1245" bodyend="1250"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a6ba550b10bad4ca3641e8326b0eadb68" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator&amp;</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Intersects this rectangle with the given one. The result is the maximal rectangle contained in both original ones. Intersecting with an empty rectangle will yield again an empty rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1320" bodyend="1325"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a445471fbe687df5fbb712aa7dc52298b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator&amp;=</definition>
+        <argsstring>(Point2D const &amp;p)</argsstring>
+        <name>operator&amp;=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies this rectangle by intersecting it with the given point. The result is the bounding rect of the point (with width and height equal to 1) if it was contained in the original rect, or an empty rect otherwise. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1229" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1228" bodyend="1238"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ae48429d090fbd62a0475328f6d06ff5e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator&amp;=</definition>
+        <argsstring>(Rect2D const &amp;r)</argsstring>
+        <name>operator&amp;=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies this rectangle by intersecting it with the given one. The result is the maximal rectangle contained in both original ones. Intersecting with an empty rectangle will yield again an empty rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1257" bodyend="1273"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ac735fe48dc7bdf9d606b61e48b3c37f0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator*</definition>
+        <argsstring>(int factor) const </argsstring>
+        <name>operator*</name>
+        <param>
+          <type>int</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return rectangle scaled by the given factor. To be specific, both <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> and <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> are multiplied by <computeroutput>factor</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1302" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1301" bodyend="1304"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a6e51a367e72f664534fe1f612c659b5b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator*</definition>
+        <argsstring>(double factor) const </argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return rectangle scaled by the given factor. To be specific, both <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> and <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> are multiplied by <computeroutput>factor</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1310" bodyend="1313"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ae613297d6d9489efe5f1f605c032ec94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator*=</definition>
+        <argsstring>(int factor)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>int</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Scale this rectangle by the given factor. To be specific, both <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> and <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> are multiplied by <computeroutput>factor</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1280" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1279" bodyend="1284"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a4f5acf3c72fde6599d7ef3a5a9c967b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator*=</definition>
+        <argsstring>(double factor)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Scale this rectangle by the given factor. To be specific, both <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> and <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> are multiplied by <computeroutput>factor</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1290" bodyend="1295"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a81fbcbc63f4f6e48d8779beb1a894d5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>equality check </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1088" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1087" bodyend="1090"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a76a2a82a2d111c4ccee79c714032c675" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator|</definition>
+        <argsstring>(Point2D const &amp;p) const </argsstring>
+        <name>operator|</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the union of this rectangle and the given point. The result is the bounding rectangle of the rectangle and the point. If isEmpty returns true, the union will be a rectangle containing only the given point. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1181" bodyend="1186"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a590bc86af81d04131a0108c351a3eca0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref></type>
+        <definition>Rect2D operator|</definition>
+        <argsstring>(Rect2D const &amp;r) const </argsstring>
+        <name>operator|</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the union of this rectangle and the given one. The result is the bounding rectangle of both rectangles. If one of the rectangles <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref>, the union will be the other one. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1216" bodyend="1221"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a7fc716fb84f22b38c10a0231695937e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator|=</definition>
+        <argsstring>(Point2D const &amp;p)</argsstring>
+        <name>operator|=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies this rectangle by including the given point. The result is the bounding rectangle of the rectangle and the point. If isEmpty returns true, the union will be a rectangle containing only the given point. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1155" bodyend="1174"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a53b42d0607b02f3fd3c843d8748eb690" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> &amp;</type>
+        <definition>Rect2D&amp; operator|=</definition>
+        <argsstring>(Rect2D const &amp;r)</argsstring>
+        <name>operator|=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Modifies this rectangle by uniting it with the given one. The result is the bounding rectangle of both rectangles. If one of the rectangles <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref>, the union will be the other one. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1193" bodyend="1209"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a1fb859fb6575200721e3e7d41521d369" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rect2D</definition>
+        <argsstring>()</argsstring>
+        <name>Rect2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a null rectangle (<ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref> will return true) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="880" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="879" bodyend="880"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1aa5846176b6ff35321e484a0ac85136a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rect2D</definition>
+        <argsstring>(Point2D const &amp;upperLeft, Point2D const &amp;lowerRight)</argsstring>
+        <name>Rect2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>upperLeft</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>lowerRight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a rectangle representing the given range (lowerRight is considered to be outside the rectangle as usual in the VIGRA) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="888" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="886" bodyend="888"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ad3aa4d9c36bcd29a30c7fcbaec991a5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rect2D</definition>
+        <argsstring>(int left, int top, int right, int bottom)</argsstring>
+        <name>Rect2D</name>
+        <param>
+          <type>int</type>
+          <declname>left</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>top</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>right</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>bottom</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a rectangle representing the given range </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="894" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="892" bodyend="894"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a2141ca5f4d5fe901529acb36b4df2e0e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rect2D</definition>
+        <argsstring>(Point2D const &amp;upperLeft, Size2D const &amp;size)</argsstring>
+        <name>Rect2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>upperLeft</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> const &amp;</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a rectangle of given position and size </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="900" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="898" bodyend="900"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1af2d7d6114260291d0c569d1e80552890" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rect2D</definition>
+        <argsstring>(Size2D const &amp;size)</argsstring>
+        <name>Rect2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> const &amp;</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a rectangle of given size at position (0,0) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="906" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="904" bodyend="906"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ad04ec796f4e7db479575644d114974ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int right</definition>
+        <argsstring>() const </argsstring>
+        <name>right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the right coordinate of this rectangle. That is the first column to the right of the rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="990" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="989" bodyend="992"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a5edfed94d4e3ea56b3f9e0ce0024deb6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setLowerRight</definition>
+        <argsstring>(Point2D const &amp;lr)</argsstring>
+        <name>setLowerRight</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>lr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref> without changing <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref>, which will change the size most probably. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="936" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="935" bodyend="938"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a208f4e25454b6051888f8e40dc225716" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setSize</definition>
+        <argsstring>(Size2D const &amp;size)</argsstring>
+        <name>setSize</name>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> const &amp;</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize this rectangle to the given extents. This will move the lower right corner only. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1040" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1039" bodyend="1042"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a2e0ba07bec2a8049e7a7e76fff1451df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setSize</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>setSize</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize this rectangle to the given extents. This will move the lower right corner only. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1048" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1047" bodyend="1050"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a68375ee982da5662e86a820fa65c3337" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setUpperLeft</definition>
+        <argsstring>(Point2D const &amp;ul)</argsstring>
+        <name>setUpperLeft</name>
+        <param>
+          <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+          <declname>ul</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change <ref refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" kindref="member">upperLeft()</ref> without changing <ref refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" kindref="member">lowerRight()</ref>, which will change the size most probably. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="928" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="927" bodyend="930"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ada7e687e2eff4c367496c91daf04e66c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Determine and return the size of this rectangle. The width and/or height might be zero or even negative, and if so, <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref> will return true. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1032" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1031" bodyend="1034"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1ae8fc263e094c9367712a452ad522bf08" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int top</definition>
+        <argsstring>() const </argsstring>
+        <name>top</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the top coordinate of this rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="982" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="981" bodyend="984"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+        <definition>Point2D const&amp; upperLeft</definition>
+        <argsstring>() const </argsstring>
+        <name>upperLeft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the first point (scan-order wise) which is considered to be &quot;in&quot; the rectangle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="912" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="911" bodyend="914"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rect2D_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Determine and return the width of this rectangle. It might be zero or even negative, and if so, <ref refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" kindref="member">isEmpty()</ref> will return true. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="1006" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="1005" bodyend="1008"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Two dimensional rectangle. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class stores a 2-dimensional rectangular range or region. Thus, it follows the VIGRA convention that the upper left corner is inside the rectangle, while the lower right is 1 pixel to the right and below the last pixel in the rectangle.</para><para>A major advantage of this class is that it can be constructed from either a pair of <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>, or from a <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> and an extend (<ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref>). <ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref> overloads operators |=, &amp;=, |, &amp; to realize set union (in the sense of a minimal bounding rectangle) and set intersection.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1Rect2D_1a1fb859fb6575200721e3e7d41521d369" kindref="member">Rect2D</ref><sp/>r1(Point2D(0,0),<sp/>Point2D(10,<sp/>20)),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>r2(Point2D(10,<sp/>15),<sp/>Size2D(20,<sp/>20));</highlight></codeline>
+<codeline><highlight class="normal">Point2D<sp/>p(0,100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1Rect2D_1a1fb859fb6575200721e3e7d41521d369" kindref="member">Rect2D</ref><sp/>r3<sp/>=<sp/><sp/>r1<sp/>|<sp/>r2;<sp/></highlight><highlight class="comment">//<sp/>upper<sp/>left<sp/>is<sp/>(0,0),<sp/>lower<sp/>right<sp/>is<sp/>(30,<sp/>35)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(r3.contains(r2));</highlight></codeline>
+<codeline><highlight class="normal">assert(!r3.contains(p));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">r3<sp/>|=<sp/>p;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>lower<sp/>right<sp/>now<sp/>(30,101)<sp/>so<sp/>that<sp/>p<sp/>is<sp/>inside<sp/>r3</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(r3.contains(p));</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="diff2d_8hxx_source" kindref="compound">vigra/diff2d.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="873" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="872" bodyend="1326"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Rect2D_1a20b65eddf551b61a036568b3c0da14dd" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>addBorder</name></member>
+      <member refid="classvigra_1_1Rect2D_1a0afab1c29a8a2f2e58b3c5fbfbacafb9" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>addBorder</name></member>
+      <member refid="classvigra_1_1Rect2D_1a7f24f3144e82f8c8fbe7e77a58702eb3" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>addSize</name></member>
+      <member refid="classvigra_1_1Rect2D_1a93dbb554c75a0bded227ab0320be72eb" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>area</name></member>
+      <member refid="classvigra_1_1Rect2D_1a02c3eeeccf5a7236f7029cdd9489075f" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>bottom</name></member>
+      <member refid="classvigra_1_1Rect2D_1aa430354b753c6d6fc1fb601f7155110a" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>contains</name></member>
+      <member refid="classvigra_1_1Rect2D_1a8130895f76d0daa2e4502b72b569d307" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>contains</name></member>
+      <member refid="classvigra_1_1Rect2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>height</name></member>
+      <member refid="classvigra_1_1Rect2D_1a9f3c25a0b863f934222f0d5fafc64fe5" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>intersects</name></member>
+      <member refid="classvigra_1_1Rect2D_1a479432127ee77145cc19d6a2d1590821" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>isEmpty</name></member>
+      <member refid="classvigra_1_1Rect2D_1a265321ef4c7ad76f60e512fc09eef7c2" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>left</name></member>
+      <member refid="classvigra_1_1Rect2D_1ab5a19e57ce4a64087f51754da65d8ae7" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>lowerRight</name></member>
+      <member refid="classvigra_1_1Rect2D_1a7f28e74b83bab8d5851e52bfc8b7f455" prot="private" virt="non-virtual"><scope>vigra::Rect2D</scope><name>lowerRight_</name></member>
+      <member refid="classvigra_1_1Rect2D_1a2d5aace1343d5974f398e34fa8ee3970" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>moveBy</name></member>
+      <member refid="classvigra_1_1Rect2D_1a470c39cf50f3186ba33d26c7949ba86c" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>moveBy</name></member>
+      <member refid="classvigra_1_1Rect2D_1abd8431d3d755412c5e70c25da7e98f00" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>moveTo</name></member>
+      <member refid="classvigra_1_1Rect2D_1ae1a15d726ba9f9461b32a9fe729c75a8" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>moveTo</name></member>
+      <member refid="classvigra_1_1Rect2D_1a94a8fb2cb11cbd5b18671ec99c1e1851" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1Rect2D_1a1ac2baa741eca3c4538b82c1472ca14a" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator&amp;</name></member>
+      <member refid="classvigra_1_1Rect2D_1a6ba550b10bad4ca3641e8326b0eadb68" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator&amp;</name></member>
+      <member refid="classvigra_1_1Rect2D_1a445471fbe687df5fbb712aa7dc52298b" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator&amp;=</name></member>
+      <member refid="classvigra_1_1Rect2D_1ae48429d090fbd62a0475328f6d06ff5e" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator&amp;=</name></member>
+      <member refid="classvigra_1_1Rect2D_1ac735fe48dc7bdf9d606b61e48b3c37f0" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1Rect2D_1a6e51a367e72f664534fe1f612c659b5b" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1Rect2D_1ae613297d6d9489efe5f1f605c032ec94" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Rect2D_1a4f5acf3c72fde6599d7ef3a5a9c967b0" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Rect2D_1a81fbcbc63f4f6e48d8779beb1a894d5a" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1Rect2D_1a76a2a82a2d111c4ccee79c714032c675" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator|</name></member>
+      <member refid="classvigra_1_1Rect2D_1a590bc86af81d04131a0108c351a3eca0" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator|</name></member>
+      <member refid="classvigra_1_1Rect2D_1a7fc716fb84f22b38c10a0231695937e9" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator|=</name></member>
+      <member refid="classvigra_1_1Rect2D_1a53b42d0607b02f3fd3c843d8748eb690" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>operator|=</name></member>
+      <member refid="classvigra_1_1Rect2D_1a1fb859fb6575200721e3e7d41521d369" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>Rect2D</name></member>
+      <member refid="classvigra_1_1Rect2D_1aa5846176b6ff35321e484a0ac85136a4" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>Rect2D</name></member>
+      <member refid="classvigra_1_1Rect2D_1ad3aa4d9c36bcd29a30c7fcbaec991a5c" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>Rect2D</name></member>
+      <member refid="classvigra_1_1Rect2D_1a2141ca5f4d5fe901529acb36b4df2e0e" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>Rect2D</name></member>
+      <member refid="classvigra_1_1Rect2D_1af2d7d6114260291d0c569d1e80552890" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>Rect2D</name></member>
+      <member refid="classvigra_1_1Rect2D_1ad04ec796f4e7db479575644d114974ef" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>right</name></member>
+      <member refid="classvigra_1_1Rect2D_1a5edfed94d4e3ea56b3f9e0ce0024deb6" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>setLowerRight</name></member>
+      <member refid="classvigra_1_1Rect2D_1a208f4e25454b6051888f8e40dc225716" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>setSize</name></member>
+      <member refid="classvigra_1_1Rect2D_1a2e0ba07bec2a8049e7a7e76fff1451df" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>setSize</name></member>
+      <member refid="classvigra_1_1Rect2D_1a68375ee982da5662e86a820fa65c3337" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>setUpperLeft</name></member>
+      <member refid="classvigra_1_1Rect2D_1ada7e687e2eff4c367496c91daf04e66c" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>size</name></member>
+      <member refid="classvigra_1_1Rect2D_1ae8fc263e094c9367712a452ad522bf08" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>top</name></member>
+      <member refid="classvigra_1_1Rect2D_1af47612fdc2200afa5a30bbfab45d6899" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>upperLeft</name></member>
+      <member refid="classvigra_1_1Rect2D_1a84fb75247094c0ead68038ff126c5449" prot="private" virt="non-virtual"><scope>vigra::Rect2D</scope><name>upperLeft_</name></member>
+      <member refid="classvigra_1_1Rect2D_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::Rect2D</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

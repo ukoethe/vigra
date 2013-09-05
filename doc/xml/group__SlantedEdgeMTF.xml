@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__SlantedEdgeMTF" kind="group">
+    <compoundname>SlantedEdgeMTF</compoundname>
+    <title>Camera MTF Estimation</title>
+    <innerclass refid="classvigra_1_1SlantedEdgeMTFOptions" prot="public">vigra::SlantedEdgeMTFOptions</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__SlantedEdgeMTF_1gab9793ce908aa2693c05ac0244d37dd20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Vector</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double vigra::mtfFitGaussian</definition>
+        <argsstring>(Vector const &amp;mtf)</argsstring>
+        <name>mtfFitGaussian</name>
+        <param>
+          <type>Vector const &amp;</type>
+          <declname>mtf</declname>
+        </param>
+        <briefdescription>
+<para>Fit a <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> function to a given MTF. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function expects a sequence of frequency / attenuation pairs as produced by <ref refid="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" kindref="member">slantedEdgeMTF()</ref> and finds the best fitting <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> point spread function (<ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> functions are good approximations of the PSF of many real cameras). It returns the standard deviation (scale) of this function. The algorithm computes the standard deviation by means of a linear least square on the logarithm of the MTF, i.e. an algebraic fit rather than a Euclidean fit - thus, the resulting <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> may not be the one that intuitively fits the data optimally.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Vector&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group__SlantedEdgeMTF_1gab9793ce908aa2693c05ac0244d37dd20" kindref="member" tooltip="Fit a Gaussian function to a given MTF.">mtfFitGaussian</ref>(Vector<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>mtf);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/slanted_edge_mtf.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>mtf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::slantedEdgeMTF(srcImageRange(src),<sp/>mtf);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale<sp/>=<sp/><ref refid="group__SlantedEdgeMTF_1gab9793ce908aa2693c05ac0244d37dd20" kindref="member" tooltip="Fit a Gaussian function to a given MTF.">vigra::mtfFitGaussian</ref>(mtf)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>&quot;The<sp/>camera<sp/>PSF<sp/>is<sp/>approximately<sp/>a<sp/>Gaussian<sp/>at<sp/>scale<sp/>&quot;<sp/>&lt;&lt;<sp/>scale<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">Vector<sp/>mtf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numberOfMeasurements<sp/>=<sp/>mtf.size()</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>frequency<sp/>=<sp/>mtf[0][0];</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>attenuation<sp/>=<sp/>mtf[0][1];</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="674" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="673" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::slantedEdgeMTF</definition>
+        <argsstring>(...)</argsstring>
+        <name>slantedEdgeMTF</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Determine the magnitude transfer function of the camera. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator estimates the magnitude transfer function (MTF) of a camera by means of the slanted edge method described in:</para><para>ISO Standard No. 12233: <emphasis>&quot;Photography - Electronic still picture cameras - Resolution measurements&quot;</emphasis>, 2000</para><para>The input must be an image that contains a single step edge with bright pixels on one side and dark pixels on the other. However, the intensity values must be neither saturated nor zero. The algorithms computes the MTF from the Fourier transform of the edge&apos;s derivative. Thus, if the actual MTF is anisotropic, the estimated MTF does actually only apply in the direction perpendicular to the edge - several edges at different orientations are required to estimate an anisotropic MTF.</para><para>The algorithm returns a sequence of frequency / attenuation pairs. The frequency axis is normalized so that the Nyquist frequency of the original image is 0.5. Since the edge&apos;s derivative is computed with subpixel accuracy, the attenuation can usually be computed for frequencies significantly above the Nyquist frequency as well. The MTF estimate ends at either the first zero crossing of the MTF or at frequency 1, whichever comes earlier.</para><para>The present implementation improves the original slanted edge algorithm according to ISO 12233 in a number of ways:</para><para><itemizedlist>
+<listitem>
+<para>The edge is not required to run nearly vertically or horizontally (i.e. with a slant of approximately 5 degrees). The algorithm will automatically compute the edge&apos;s actual angle and adjust estimates accordingly. However, it is still necessary for the edge to be somewhat slanted, because subpixel-accurate estimation of the derivative is impossible otherwise (i.e. the edge position perpendicular to the edge direction must differ by at least 1 pixel between the two ends of the edge).</para><para></para></listitem>
+<listitem>
+<para>Our implementation uses a more accurate subpixel derivative algorithm. In addition, we first perform a shading correction in order to reduce possible derivative bias due to nonuniform illumination.</para><para></para></listitem>
+<listitem>
+<para>If the input image is large enough (i.e. there are at least 20 pixels on either side of the edge over the edge&apos;s entire length), our algorithm attempts to subtract the estimated noise power spectrum from the estimated MTF. </para></listitem>
+</itemizedlist>
+</para><para>The source value type (<computeroutput>SrcAccessor::value_type</computeroutput>) must be a scalar type which is convertible to <computeroutput>double</computeroutput>. The result is written into the <emphasis>result</emphasis> sequence, whose <computeroutput>value_type</computeroutput> must be constructible from two <computeroutput>double</computeroutput> values. Algorithm options can be set via the <emphasis>options</emphasis> object (see <ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">vigra::NoiseNormalizationOptions</ref> for details).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" kindref="member" tooltip="Determine the magnitude transfer function of the camera.">slantedEdgeMTF</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,<sp/>BackInsertable<sp/>&amp;<sp/>mtf,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SlantedEdgeMTFOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SlantedEdgeMTFOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" kindref="member" tooltip="Determine the magnitude transfer function of the camera.">slantedEdgeMTF</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,<sp/>BackInsertable<sp/>&amp;<sp/>mtf,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SlantedEdgeMTFOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>SlantedEdgeMTFOptions())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/slanted_edge_mtf.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>mtf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::slantedEdgeMTF(srcImageRange(src),<sp/>mtf);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>print<sp/>the<sp/>frequency<sp/>/<sp/>attenuation<sp/>pairs<sp/>found</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;result.size();<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;frequency:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>mtf[k][0]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>estimated<sp/>attenuation:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>mtf[k][1]<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SrcAccessor::value_type<sp/>SrcType;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>NumericTraits&lt;SrcType&gt;::isScalar<sp/>isScalar;</highlight></codeline>
+<codeline><highlight class="normal">assert(isScalar::asBool<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value<sp/>=<sp/>src(uperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>BackInsertable::value_type<sp/>ResultType;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>intensity,<sp/>variance;</highlight></codeline>
+<codeline><highlight class="normal">result.push_back(ResultType(intensity,<sp/>variance));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="593"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SlantedEdgeMTF_1ga2e9bc648acac50927eaf269abb2b0093" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::slantedEdgeMTF</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable &amp;mtf, SlantedEdgeMTFOptions const &amp;options=SlantedEdgeMTFOptions())</argsstring>
+        <name>slantedEdgeMTF</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>mtf</declname>
+        </param>
+        <param>
+          <type>SlantedEdgeMTFOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SlantedEdgeMTFOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="599" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="597" bodyend="612"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SlantedEdgeMTF_1ga8af55ef20abf56ba252d2d39fa258469" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::slantedEdgeMTF</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;mtf, SlantedEdgeMTFOptions const &amp;options=SlantedEdgeMTFOptions())</argsstring>
+        <name>slantedEdgeMTF</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>mtf</declname>
+        </param>
+        <param>
+          <type>SlantedEdgeMTFOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>SlantedEdgeMTFOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="616" bodyend="620"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Determine the magnitude transfer function (MTF) of a camera using the slanted edge method. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

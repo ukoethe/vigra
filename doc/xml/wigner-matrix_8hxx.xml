@@ -1,0 +1,880 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="wigner-matrix_8hxx" kind="file">
+    <compoundname>wigner-matrix.hxx</compoundname>
+    <includes local="no">complex</includes>
+    <includes refid="config_8hxx" local="yes">config.hxx</includes>
+    <includes refid="error_8hxx" local="yes">error.hxx</includes>
+    <includes refid="utilities_8hxx" local="yes">utilities.hxx</includes>
+    <includes refid="mathutil_8hxx" local="yes">mathutil.hxx</includes>
+    <includes refid="array__vector_8hxx" local="yes">array_vector.hxx</includes>
+    <includes refid="matrix_8hxx" local="yes">matrix.hxx</includes>
+    <includes refid="tinyvector_8hxx" local="yes">tinyvector.hxx</includes>
+    <includes refid="quaternion_8hxx" local="yes">quaternion.hxx</includes>
+    <includes refid="clebsch-gordan_8hxx" local="yes">clebsch-gordan.hxx</includes>
+    <incdepgraph>
+      <node id="9768">
+        <label>quaternion.hxx</label>
+        <link refid="quaternion_8hxx_source"/>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9753" relation="include">
+        </childnode>
+        <childnode refid="9750" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9731" relation="include">
+        </childnode>
+      </node>
+      <node id="9762">
+        <label>multi_pointoperators.hxx</label>
+        <link refid="multi__pointoperators_8hxx_source"/>
+        <childnode refid="9758" relation="include">
+        </childnode>
+        <childnode refid="9763" relation="include">
+        </childnode>
+        <childnode refid="9764" relation="include">
+        </childnode>
+        <childnode refid="9767" relation="include">
+        </childnode>
+        <childnode refid="9765" relation="include">
+        </childnode>
+        <childnode refid="9752" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9745" relation="include">
+        </childnode>
+      </node>
+      <node id="9751">
+        <label>iomanip</label>
+      </node>
+      <node id="9746">
+        <label>functional</label>
+      </node>
+      <node id="9725">
+        <label>limits</label>
+      </node>
+      <node id="9738">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9725" relation="include">
+        </childnode>
+      </node>
+      <node id="9733">
+        <label>iterator</label>
+      </node>
+      <node id="9752">
+        <label>multi_array.hxx</label>
+        <link refid="multi__array_8hxx_source"/>
+        <childnode refid="9749" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+        <childnode refid="9735" relation="include">
+        </childnode>
+        <childnode refid="9753" relation="include">
+        </childnode>
+        <childnode refid="9754" relation="include">
+        </childnode>
+        <childnode refid="9756" relation="include">
+        </childnode>
+        <childnode refid="9757" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9760" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+      </node>
+      <node id="9745">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="9723" relation="include">
+        </childnode>
+      </node>
+      <node id="9739">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="9758">
+        <label>initimage.hxx</label>
+        <link refid="initimage_8hxx_source"/>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9734" relation="include">
+        </childnode>
+        <childnode refid="9759" relation="include">
+        </childnode>
+      </node>
+      <node id="9769">
+        <label>clebsch-gordan.hxx</label>
+        <link refid="clebsch-gordan_8hxx_source"/>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9747" relation="include">
+        </childnode>
+      </node>
+      <node id="9744">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="9738" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9745" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+        <childnode refid="9746" relation="include">
+        </childnode>
+        <childnode refid="9733" relation="include">
+        </childnode>
+      </node>
+      <node id="9730">
+        <label>cmath</label>
+      </node>
+      <node id="9718">
+        <label>stdexcept</label>
+      </node>
+      <node id="9759">
+        <label>functortraits.hxx</label>
+        <link refid="functortraits_8hxx_source"/>
+        <childnode refid="9746" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+      </node>
+      <node id="9732">
+        <label>iteratortags.hxx</label>
+        <link refid="iteratortags_8hxx_source"/>
+        <childnode refid="9733" relation="include">
+        </childnode>
+      </node>
+      <node id="9721">
+        <label>string</label>
+      </node>
+      <node id="9763">
+        <label>copyimage.hxx</label>
+        <link refid="copyimage_8hxx_source"/>
+        <childnode refid="9722" relation="include">
+        </childnode>
+      </node>
+      <node id="9756">
+        <label>basicimageview.hxx</label>
+        <link refid="basicimageview_8hxx_source"/>
+        <childnode refid="9757" relation="include">
+        </childnode>
+        <childnode refid="9758" relation="include">
+        </childnode>
+      </node>
+      <node id="9734">
+        <label>iteratortraits.hxx</label>
+        <link refid="iteratortraits_8hxx_source"/>
+        <childnode refid="9735" relation="include">
+        </childnode>
+        <childnode refid="9740" relation="include">
+        </childnode>
+      </node>
+      <node id="9737">
+        <label>cfloat</label>
+      </node>
+      <node id="9722">
+        <label>utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9727" relation="include">
+        </childnode>
+        <childnode refid="9729" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9721" relation="include">
+        </childnode>
+        <childnode refid="9720" relation="include">
+        </childnode>
+      </node>
+      <node id="9717">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="9714">
+        <label>vigra/wigner-matrix.hxx</label>
+        <link refid="wigner-matrix.hxx"/>
+        <childnode refid="9715" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9747" relation="include">
+        </childnode>
+        <childnode refid="9750" relation="include">
+        </childnode>
+        <childnode refid="9753" relation="include">
+        </childnode>
+        <childnode refid="9768" relation="include">
+        </childnode>
+        <childnode refid="9769" relation="include">
+        </childnode>
+      </node>
+      <node id="9764">
+        <label>transformimage.hxx</label>
+        <link refid="transformimage_8hxx_source"/>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9734" relation="include">
+        </childnode>
+        <childnode refid="9754" relation="include">
+        </childnode>
+        <childnode refid="9759" relation="include">
+        </childnode>
+        <childnode refid="9765" relation="include">
+        </childnode>
+      </node>
+      <node id="9727">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="9728" relation="include">
+        </childnode>
+      </node>
+      <node id="9753">
+        <label>tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="9730" relation="include">
+        </childnode>
+        <childnode refid="9743" relation="include">
+        </childnode>
+        <childnode refid="9731" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9748" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9729" relation="include">
+        </childnode>
+      </node>
+      <node id="9761">
+        <label>sys/types.h</label>
+      </node>
+      <node id="9765">
+        <label>inspectimage.hxx</label>
+        <link refid="inspectimage_8hxx_source"/>
+        <childnode refid="9766" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9734" relation="include">
+        </childnode>
+        <childnode refid="9759" relation="include">
+        </childnode>
+        <childnode refid="9754" relation="include">
+        </childnode>
+        <childnode refid="9745" relation="include">
+        </childnode>
+      </node>
+      <node id="9742">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="9730" relation="include">
+        </childnode>
+        <childnode refid="9743" relation="include">
+        </childnode>
+        <childnode refid="9715" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9727" relation="include">
+        </childnode>
+        <childnode refid="9738" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9744" relation="include">
+        </childnode>
+      </node>
+      <node id="9716">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="9717" relation="include">
+        </childnode>
+        <childnode refid="9718" relation="include">
+        </childnode>
+      </node>
+      <node id="9736">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="9724" relation="include">
+        </childnode>
+        <childnode refid="9725" relation="include">
+        </childnode>
+        <childnode refid="9737" relation="include">
+        </childnode>
+        <childnode refid="9715" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9738" relation="include">
+        </childnode>
+        <childnode refid="9739" relation="include">
+        </childnode>
+      </node>
+      <node id="9766">
+        <label>vector</label>
+      </node>
+      <node id="9757">
+        <label>imageiterator.hxx</label>
+        <link refid="imageiterator_8hxx_source"/>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9735" relation="include">
+        </childnode>
+        <childnode refid="9734" relation="include">
+        </childnode>
+        <childnode refid="9723" relation="include">
+        </childnode>
+      </node>
+      <node id="9741">
+        <label>iteratoradapter.hxx</label>
+        <link refid="iteratoradapter_8hxx_source"/>
+      </node>
+      <node id="9740">
+        <label>imageiteratoradapter.hxx</label>
+        <link refid="imageiteratoradapter_8hxx_source"/>
+        <childnode refid="9733" relation="include">
+        </childnode>
+      </node>
+      <node id="9728">
+        <label>utility</label>
+      </node>
+      <node id="9720">
+        <label>sstream</label>
+      </node>
+      <node id="9754">
+        <label>rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="9730" relation="include">
+        </childnode>
+        <childnode refid="9743" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9735" relation="include">
+        </childnode>
+        <childnode refid="9753" relation="include">
+        </childnode>
+        <childnode refid="9755" relation="include">
+        </childnode>
+      </node>
+      <node id="9729">
+        <label>diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="9730" relation="include">
+        </childnode>
+        <childnode refid="9731" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9732" relation="include">
+        </childnode>
+        <childnode refid="9734" relation="include">
+        </childnode>
+        <childnode refid="9741" relation="include">
+        </childnode>
+        <childnode refid="9727" relation="include">
+        </childnode>
+      </node>
+      <node id="9719">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="9718" relation="include">
+        </childnode>
+        <childnode refid="9720" relation="include">
+        </childnode>
+        <childnode refid="9721" relation="include">
+        </childnode>
+        <childnode refid="9716" relation="include">
+        </childnode>
+      </node>
+      <node id="9755">
+        <label>static_assert.hxx</label>
+        <link refid="static__assert_8hxx_source"/>
+      </node>
+      <node id="9747">
+        <label>array_vector.hxx</label>
+        <link refid="array__vector_8hxx_source"/>
+        <childnode refid="9719" relation="include">
+        </childnode>
+        <childnode refid="9748" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9749" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+        <childnode refid="9731" relation="include">
+        </childnode>
+      </node>
+      <node id="9731">
+        <label>iosfwd</label>
+      </node>
+      <node id="9743">
+        <label>cstdlib</label>
+      </node>
+      <node id="9760">
+        <label>multi_iterator.hxx</label>
+        <link refid="multi__iterator_8hxx_source"/>
+        <childnode refid="9761" relation="include">
+        </childnode>
+        <childnode refid="9753" relation="include">
+        </childnode>
+        <childnode refid="9732" relation="include">
+        </childnode>
+      </node>
+      <node id="9724">
+        <label>climits</label>
+      </node>
+      <node id="9723">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="9716" relation="include">
+        </childnode>
+        <childnode refid="9724" relation="include">
+        </childnode>
+        <childnode refid="9725" relation="include">
+        </childnode>
+        <childnode refid="9726" relation="include">
+        </childnode>
+      </node>
+      <node id="9767">
+        <label>combineimages.hxx</label>
+        <link refid="combineimages_8hxx_source"/>
+        <childnode refid="9722" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9759" relation="include">
+        </childnode>
+        <childnode refid="9730" relation="include">
+        </childnode>
+      </node>
+      <node id="9715">
+        <label>complex</label>
+      </node>
+      <node id="9750">
+        <label>matrix.hxx</label>
+        <link refid="matrix_8hxx_source"/>
+        <childnode refid="9730" relation="include">
+        </childnode>
+        <childnode refid="9731" relation="include">
+        </childnode>
+        <childnode refid="9751" relation="include">
+        </childnode>
+        <childnode refid="9752" relation="include">
+        </childnode>
+        <childnode refid="9742" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9762" relation="include">
+        </childnode>
+      </node>
+      <node id="9726">
+        <label>algorithm</label>
+      </node>
+      <node id="9748">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="9723" relation="include">
+        </childnode>
+      </node>
+      <node id="9735">
+        <label>accessor.hxx</label>
+        <link refid="accessor_8hxx_source"/>
+        <childnode refid="9723" relation="include">
+        </childnode>
+        <childnode refid="9736" relation="include">
+        </childnode>
+        <childnode refid="9727" relation="include">
+        </childnode>
+      </node>
+      <node id="9749">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classvigra_1_1WignerMatrix" prot="public">vigra::WignerMatrix</innerclass>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>2009-2010<sp/>by<sp/>Ullrich<sp/>Koethe<sp/>and<sp/>Janis<sp/>Fehr<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_WIGNER_MATRIX_HXX</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_WIGNER_MATRIX_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;complex&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;config.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;error.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;utilities.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;mathutil.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;array_vector.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;matrix.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tinyvector.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;quaternion.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;clebsch-gordan.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>\class<sp/>WignerMatrix<sp/></highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>\brief<sp/>computation<sp/>of<sp/>Wigner<sp/>D<sp/>matrix<sp/>+<sp/>rotation<sp/>functions<sp/></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in<sp/>SH,VH<sp/>and<sp/>R³</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>All<sp/>rotations<sp/>in<sp/>Euler<sp/>zyz&apos;<sp/>convention<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>WARNING:<sp/>not<sp/>thread<sp/>safe!<sp/>use<sp/>a<sp/>new<sp/>instance<sp/>of<sp/>WignerMatrix</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>for<sp/>each<sp/>thread!!!</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real&gt;</highlight></codeline>
+<codeline lineno="63" refid="classvigra_1_1WignerMatrix" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classvigra_1_1WignerMatrix" kindref="compound" tooltip="computation of Wigner D matrix + rotation functions in SH,VH and R³">WignerMatrix</ref></highlight></codeline>
+<codeline lineno="64"><highlight class="normal">{<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>FIXME:<sp/>should<sp/>we<sp/>rather<sp/>use<sp/>FFTWComplex?</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::complex&lt;Real&gt;<sp/>Complex;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector&lt;ArrayVector&lt;ArrayVector&lt;Complex&gt;</ref><sp/>&gt;<sp/>&gt;<sp/><ref refid="classvigra_1_1ArrayVector" kindref="compound">NestedArray</ref>;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/>constructor</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>l_max<sp/><sp/><sp/><sp/>maximum<sp/>expansion<sp/>band<sp/>(used<sp/>to<sp/>pre-compute<sp/></highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>the<sp/>D<sp/>matrix)</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1WignerMatrix_1a553568cc8e563a77157d0aca8dcd5527" kindref="member" tooltip="constructor">WignerMatrix</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l_max);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/>Compute<sp/>D<sp/>with<sp/>fixed<sp/>theta<sp/>=<sp/>pi/2,<sp/>phi=0,<sp/>psi=0.</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>band<sp/>expansion<sp/>band</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>FIXME:<sp/>compute_D(l,<sp/>0.0,<sp/>M_PI<sp/>/<sp/>2.0,<sp/>0.0)<sp/>creates<sp/>the<sp/>transposed<sp/>matrix!</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" kindref="member" tooltip="Compute D with fixed theta = pi/2, phi=0, psi=0.">compute_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>band);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/>Compute<sp/>D<sp/>for<sp/>arbitrary<sp/>rotations.</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>l<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>expansion<sp/>band</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>phi<sp/><sp/>rotation<sp/>angle<sp/><sp/></highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>theta<sp/><sp/><sp/><sp/>rotation<sp/>angle</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>psi<sp/><sp/>rotation<sp/>angle</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" kindref="member" tooltip="Compute D with fixed theta = pi/2, phi=0, psi=0.">compute_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/>Real<sp/>phi,<sp/>Real<sp/>theta,<sp/>Real<sp/>psi);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/><sp/>Get<sp/>the<sp/>(n,m)<sp/>entry<sp/>of<sp/>D.</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="99"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>l<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>expansion<sp/>band</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>n<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>m<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103" refid="classvigra_1_1WignerMatrix_1ac61f9d6ea8bf722588f7981f64865dd0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/><ref refid="classvigra_1_1WignerMatrix_1ac61f9d6ea8bf722588f7981f64865dd0" kindref="member" tooltip="Get the (n,m) entry of D.">get_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="104"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(l&gt;0)</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>message<sp/>=<sp/>std::string(</highlight><highlight class="stringliteral">&quot;WignerMatrix::get_D():<sp/>index<sp/>out<sp/>of<sp/>bounds:<sp/>l=&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>message<sp/>&lt;&lt;<sp/>l<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>l_max=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>D.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>m=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>m<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>n=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>n<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra_precondition(l<sp/>&lt;<sp/>D.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>&amp;&amp;<sp/>m+l<sp/>&lt;=<sp/>2*l+1<sp/>&amp;&amp;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>n+l<sp/>&lt;=<sp/>2*l+1<sp/>&amp;&amp;<sp/>m+l<sp/>&gt;=<sp/>0<sp/>&amp;&amp;<sp/>n+l<sp/>&gt;=<sp/>0,</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>message.c_str());</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>D[l](n+l,<sp/>m+l);</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>Complex(Real(1.0));</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/>Return<sp/>the<sp/>rotation<sp/>matrix<sp/>D<sp/>for<sp/>the<sp/>lth<sp/>band.</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>l<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>expansion<sp/>band</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125" refid="classvigra_1_1WignerMatrix_1aabc6d54954d0c27b53753017bffb0536" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Matrix&lt;Complex&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/><ref refid="classvigra_1_1WignerMatrix_1ac61f9d6ea8bf722588f7981f64865dd0" kindref="member" tooltip="Get the (n,m) entry of D.">get_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="126"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>message<sp/>=<sp/>std::string(</highlight><highlight class="stringliteral">&quot;WignerMatrix::get_D():<sp/>index<sp/>out<sp/>of<sp/>bounds:<sp/>l=&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>message<sp/>&lt;&lt;<sp/>l<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>l_max=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>l_max<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra_precondition(l<sp/>&gt;<sp/>0<sp/>&amp;&amp;<sp/>l<sp/>&lt;=<sp/>l_max,<sp/>message.c_str());</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>D[l];</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/*!<sp/>\brief<sp/>Rotate<sp/>in<sp/>PH.</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>PH<sp/><sp/><sp/><sp/><sp/><sp/><sp/>input<sp/>PH<sp/>expansion<sp/></highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>phi<sp/><sp/><sp/><sp/><sp/><sp/>rotation<sp/>angle</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>theta<sp/><sp/><sp/><sp/>rotation<sp/>angle</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\param<sp/>psi<sp/><sp/><sp/><sp/><sp/><sp/>rotation<sp/>angle</highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>\retval<sp/>PHresult<sp/>PH<sp/>expansion<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1WignerMatrix_1a887891708f22c1874930a5f6a8adac8e" kindref="member" tooltip="Rotate in PH.">rotatePH</ref>(NestedArray<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>PH,<sp/>Real<sp/>phi,<sp/>Real<sp/>theta,<sp/>Real<sp/>psi,</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NestedArray<sp/>&amp;<sp/>PHresult);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>FIXME:<sp/>is<sp/>function<sp/>is<sp/>not<sp/>called<sp/>(and<sp/>cannot<sp/>be<sp/>called<sp/>from<sp/>outside<sp/>the<sp/>class)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">TinyVector&lt;double,3&gt;</ref><sp/></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/>rot(<ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">TinyVector&lt;double,3&gt;</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>vec,<sp/><ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">TinyVector&lt;double,3&gt;</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>axis,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angle)</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion&lt;double&gt;</ref><sp/>Q;</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Q<sp/>qr<sp/>=<sp/>Q::createRotation(angle,<sp/>axis),</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>qv(0.0,<sp/>vec);</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(qr<sp/>*<sp/>qv<sp/>*<sp/><ref refid="group__FFTWComplexOperators_1gae7a58f4547192b979f7f8cd565bdf45b" kindref="member" tooltip="complex conjugate">conj</ref>(qr)).v();</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l_max;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>cg1cnt;</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;double&gt;<sp/>CGcoeff;</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;Matrix&lt;Complex&gt;<sp/>&gt;<sp/>D;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real&gt;</highlight></codeline>
+<codeline lineno="165" refid="classvigra_1_1WignerMatrix_1a553568cc8e563a77157d0aca8dcd5527" refkind="member"><highlight class="normal"><ref refid="classvigra_1_1WignerMatrix_1a553568cc8e563a77157d0aca8dcd5527" kindref="member" tooltip="constructor">WignerMatrix&lt;Real&gt;::WignerMatrix</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>band)</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">:<sp/>l_max(0),</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/>cg1cnt(0)</highlight></codeline>
+<codeline lineno="168"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//precompute<sp/>clebschGordan<sp/>coeffs</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l<sp/>=<sp/>2;<sp/>l<sp/>&lt;=<sp/>band+1;<sp/>l++)</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m<sp/>=<sp/>-l;<sp/>m<sp/>&lt;=<sp/>l<sp/>;<sp/>m++)</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n<sp/>=<sp/>-l;<sp/>n<sp/>&lt;=<sp/>l<sp/>;<sp/>n++)</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m2<sp/>=<sp/>-1;<sp/>m2<sp/>&lt;=<sp/>1;<sp/>m2++)</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n2<sp/>=<sp/>-1;<sp/>n2<sp/>&lt;=<sp/>1;<sp/>n2++)</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m1<sp/>=<sp/>m-m2;</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n1<sp/>=<sp/>n-n2;</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(m1<sp/>&gt;<sp/>-l<sp/>&amp;&amp;<sp/>m1<sp/>&lt;<sp/>l<sp/>&amp;&amp;<sp/>n1<sp/>&gt;<sp/>-l<sp/>&amp;&amp;<sp/>n1<sp/>&lt;<sp/>l)</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CGcoeff.push_back((clebschGordan(l-1,m1,1,m2,l,m))*(clebschGordan(l-1,n1,1,n2,l,n)));</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="191"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real&gt;</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195" refid="classvigra_1_1WignerMatrix_1ad75211db4bb11eb4fe8ce84879d61688" refkind="member"><highlight class="normal"><ref refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" kindref="member" tooltip="Compute D with fixed theta = pi/2, phi=0, psi=0.">WignerMatrix&lt;Real&gt;::compute_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/>Real<sp/>phi,<sp/>Real<sp/>theta,<sp/>Real<sp/>psi)</highlight></codeline>
+<codeline lineno="196"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>s<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga9db90484f9146df72b800bab7fecdd4b" kindref="member">std::sin</ref>(theta);</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga05727ffc201ac332c0e4158a2267c08c" kindref="member">std::cos</ref>(theta);</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>i(0.0,<sp/>1.0);</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>eiphi<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(i*phi);</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>emiphi<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(-i*phi);</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>eipsi<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(i*psi);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>emipsi<sp/>=<sp/><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">std::exp</ref>(-i*psi);</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(D.size()<sp/>&lt;<sp/>(std::size_t)(l+1))<sp/></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D.resize(l+1);</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1].reshape(<ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">MultiArrayShape&lt;2&gt;::type</ref>(3,3));</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](0,0)<sp/>=<sp/>emipsi<sp/>*<sp/>Complex(Real(0.5*(1.0+c)))<sp/>*<sp/>emiphi;</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](0,1)<sp/>=<sp/>Complex(Real(-s/M_SQRT2))<sp/>*<sp/>emiphi;</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](0,2)<sp/>=<sp/>eipsi<sp/>*<sp/>Complex(Real(0.5*(1.0-c)))<sp/>*<sp/>emiphi;</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](1,0)<sp/>=<sp/>emipsi<sp/>*<sp/>Complex(Real(s/M_SQRT2));</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](1,1)<sp/>=<sp/>Complex(Real(c));</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](1,2)<sp/>=<sp/>eipsi<sp/>*<sp/>Complex(Real(-s/M_SQRT2));</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](2,0)<sp/>=<sp/>emipsi<sp/>*<sp/>Complex(Real(0.5*(1.0-c)))<sp/>*<sp/>eiphi;<sp/></highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](2,1)<sp/>=<sp/>Complex(Real(s/M_SQRT2))<sp/>*<sp/>eiphi;</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/>D[1](2,2)<sp/>=<sp/>eipsi<sp/>*<sp/>Complex(Real(0.5*(1.0+c)))<sp/>*<sp/>eiphi;</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/>l_max<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/>cg1cnt<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(l<sp/>&gt;<sp/>1)</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>compute_D(<sp/>l);</highlight></codeline>
+<codeline lineno="224"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real&gt;</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229" refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" refkind="member"><highlight class="normal"><ref refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" kindref="member" tooltip="Compute D with fixed theta = pi/2, phi=0, psi=0.">WignerMatrix&lt;Real&gt;::compute_D</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l)</highlight></codeline>
+<codeline lineno="230"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(D.size()<sp/>&lt;<sp/>(std::size_t)(l+1)<sp/>)<sp/></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D.resize(l+1);</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>l_max<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(l==1)</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//precompute<sp/>D0<sp/>=1<sp/>and<sp/>D1<sp/>=<sp/>(90<sp/>degree<sp/>rot)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>FIXME:<sp/>signs<sp/>are<sp/>inconsistent<sp/>with<sp/>above<sp/>explicit<sp/>formula<sp/>for<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theta<sp/>=<sp/>pi/2,<sp/>phi=0,<sp/>psi=0<sp/>(sine<sp/>terms<sp/>should<sp/>be<sp/>negated)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1].reshape(<ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">MultiArrayShape&lt;2&gt;::type</ref>(3,3));</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](0,0)<sp/>=<sp/>Real(0.5);</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](0,1)<sp/>=<sp/>Real(0.5*M_SQRT2);</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](0,2)<sp/>=<sp/>Real(0.5);</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](1,0)<sp/>=<sp/>Real(-0.5*M_SQRT2);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](1,1)<sp/>=<sp/>Real(0.0);</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](1,2)<sp/>=<sp/>Real(0.5*M_SQRT2);</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](2,0)<sp/>=<sp/>Real(0.5);</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](2,1)<sp/>=<sp/>Real(-0.5*M_SQRT2);</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[1](2,2)<sp/>=<sp/>Real(0.5);</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>l_max<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cg1cnt<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//compute<sp/>D2-Dl_max<sp/>recursive</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(l&gt;l_max+1)</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>compute_D(l-1);</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[l].reshape(<ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">MultiArrayShape&lt;2&gt;::type</ref>(2*l+1,2*l+1));</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[l].init(Real(0.0));<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m<sp/>=<sp/>-l;<sp/>m<sp/>&lt;=<sp/>l<sp/>;<sp/>m++)</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n<sp/>=<sp/>-l;<sp/>n<sp/>&lt;=<sp/>l<sp/>;<sp/>n++)</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m2<sp/>=<sp/>-1;<sp/>m2<sp/>&lt;=<sp/>1;<sp/>m2++)</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n2<sp/>=<sp/>-1;<sp/>n2<sp/>&lt;=<sp/>1;<sp/>n2++)</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m1<sp/>=<sp/>m-m2;</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n1<sp/>=<sp/>n-n2;</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>((m1<sp/>&gt;<sp/>-l)<sp/>&amp;&amp;<sp/>(m1<sp/>&lt;<sp/>l)<sp/>&amp;&amp;<sp/>(n1<sp/>&gt;<sp/>-l)<sp/>&amp;&amp;<sp/>(n1<sp/>&lt;<sp/>l))</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>D[l](m+l,n+l)<sp/>+=<sp/>D[1](m2+1,n2+1)<sp/>*<sp/>D[l-1](m1+l-1,n1+l-1)<sp/>*<sp/>Real(CGcoeff[cg1cnt++]);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>l_max<sp/>=<sp/>l;</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="287"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Real&gt;</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="291" refid="classvigra_1_1WignerMatrix_1a887891708f22c1874930a5f6a8adac8e" refkind="member"><highlight class="normal"><ref refid="classvigra_1_1WignerMatrix_1a887891708f22c1874930a5f6a8adac8e" kindref="member" tooltip="Rotate in PH.">WignerMatrix&lt;Real&gt;::rotatePH</ref>(<ref refid="classvigra_1_1ArrayVector" kindref="compound">NestedArray</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>PH,<sp/>Real<sp/>phi,<sp/>Real<sp/>theta,<sp/>Real<sp/>psi,</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ArrayVector" kindref="compound">NestedArray</ref><sp/>&amp;<sp/>PHresult)</highlight></codeline>
+<codeline lineno="293"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>band<sp/>=<sp/>PH[1].<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()-1;</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/><sp/><sp/>compute_D(band,<sp/>phi,<sp/>theta,<sp/>psi);</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"></highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/>PHresult.resize(PH.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>());</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"></highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=1;<sp/>n&lt;=band;<sp/>n++)</highlight></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PHresult[n].resize(band+1);</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l=0;<sp/>l&lt;=band;<sp/>l++)</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PHresult[n][l].resize(2*band+1);</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=-l;<sp/>m&lt;=l;<sp/>m++)</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Complex<sp/>tmp<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>h=-l;<sp/>h&lt;=l;<sp/>h++)</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tmp<sp/>+=<sp/>get_D(l,h,m)<sp/>*<sp/>PH[n][l][h+l];</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"></highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PHresult[n][l][m+l]<sp/>=<sp/>tmp;</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="317"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="318"><highlight class="normal"></highlight></codeline>
+<codeline lineno="319"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"></highlight></codeline>
+<codeline lineno="321"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_WIGNER_MATRIX_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx"/>
+  </compounddef>
+</doxygen>

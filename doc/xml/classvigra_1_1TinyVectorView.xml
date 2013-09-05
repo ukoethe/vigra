@@ -1,0 +1,409 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1TinyVectorView" kind="class" prot="public">
+    <compoundname>vigra::TinyVectorView</compoundname>
+    <basecompoundref refid="classvigra_1_1TinyVectorBase" prot="public" virt="non-virtual">TinyVectorBase&lt; T, SIZE, T *, TinyVectorView&lt; T, SIZE &gt; &gt;</basecompoundref>
+    <includes refid="tinyvector_8hxx" local="no">vigra/tinyvector.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>SIZE</declname>
+        <defname>SIZE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1ab898509e750e6e340636665fbd8a345c" prot="private" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T, SIZE, T *, <ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref>&lt; T, SIZE &gt; &gt;</type>
+        <definition>typedef TinyVectorBase&lt;T, SIZE, T *, TinyVectorView&lt;T, SIZE&gt; &gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="961" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="961" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a323cab639110ebb21a0deafe1cc2e315" prot="private" static="no">
+        <type>BaseType::Loop</type>
+        <definition>typedef BaseType::Loop Loop</definition>
+        <argsstring></argsstring>
+        <name>Loop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="962" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="962" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a759c70a07ad662807722c03a28099898" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a8d3921909325ec56e10da00c0d6b1f08" kindref="member">BaseType::const_iterator</ref></type>
+        <definition>typedef BaseType::const_iterator const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="972" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="972" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1abcf1535411d96307d41df2c089aadc26" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ab652b7cfcfeac13226e0ee07931da4d4" kindref="member">BaseType::const_pointer</ref></type>
+        <definition>typedef BaseType::const_pointer const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="970" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="970" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a4bc49d740bad1cb75776bcfac2c40f26" kindref="member">BaseType::const_reference</ref></type>
+        <definition>typedef BaseType::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="968" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="968" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1aa67da613c17b4ded61f92de19f1961cc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ad319fc54a93a2c7058c70e40428ed2e2" kindref="member">BaseType::difference_type</ref></type>
+        <definition>typedef BaseType::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="974" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="974" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1aad33c76f1f18b2e752d92c1c03b20f73" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a4b0424da8c99197075d119ba0959bf1e" kindref="member">BaseType::iterator</ref></type>
+        <definition>typedef BaseType::iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="971" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="971" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1ace8fc2dc3b3eea8b1a370233f548095c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a3aaf2f56b74ba07badf36ce76715e460" kindref="member">BaseType::NormType</ref></type>
+        <definition>typedef BaseType::NormType NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="977" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="977" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1abf6e21ead96acfe1ce6770f74a6685fc" kindref="member">BaseType::pointer</ref></type>
+        <definition>typedef BaseType::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="969" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="969" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a6553cf5e426582b760da93d2f1b7636d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a5cc9035ae36e93a575d4fe8e1dbfe55d" kindref="member">BaseType::reference</ref></type>
+        <definition>typedef BaseType::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="967" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="967" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a7e685ff180a0c5fc980bfb154b3bac30" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1add69d58b47c0e2e51b5c1cdad6d51fd8" kindref="member">BaseType::scalar_multiplier</ref></type>
+        <definition>typedef BaseType::scalar_multiplier scalar_multiplier</definition>
+        <argsstring></argsstring>
+        <name>scalar_multiplier</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="975" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="975" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1ad9f995eefce4da7a28a1bd801c168e0c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ada51e68d31936547d3729c82daf6b7c6" kindref="member">BaseType::size_type</ref></type>
+        <definition>typedef BaseType::size_type size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="973" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="973" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a5b05058c5a4a4de31068b031f7be7f1b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" kindref="member">BaseType::SquaredNormType</ref></type>
+        <definition>typedef BaseType::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="976" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="976" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorView_1a15eabd051d5bcdcce478c0a509946fca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">BaseType::value_type</ref></type>
+        <definition>typedef BaseType::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="966" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="966" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1aff537979e1d83bb68ba4ba8121a01846" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> &amp;</type>
+        <definition>TinyVectorView&amp; operator=</definition>
+        <argsstring>(TinyVectorView const &amp;r)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy the data (not the pointer) of the rhs. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1016" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1015" bodyend="1019"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1a3fb032ce7bb07efa7714198f54802d2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class DATA</type>
+          </param>
+          <param>
+            <type>class DERIVED</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> &amp;</type>
+        <definition>TinyVectorView&amp; operator=</definition>
+        <argsstring>(TinyVectorBase&lt; U, SIZE, DATA, DERIVED &gt; const &amp;r)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; U, SIZE, DATA, DERIVED &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy the data of the rhs with cast. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1025" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1024" bodyend="1028"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1abf5b62d7084dd6978e47f0f9de3e1526" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TinyVectorView</definition>
+        <argsstring>()</argsstring>
+        <name>TinyVectorView</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default constructor (pointer to wrapped data is NULL). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="984" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="982" bodyend="986"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1a6809da7e5284ec51b53b4112becb5b1e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TinyVectorView</definition>
+        <argsstring>(const_pointer data)</argsstring>
+        <name>TinyVectorView</name>
+        <param>
+          <type>const_pointer</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct view for given data array </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="992" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="990" bodyend="994"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1af0ea6dc567fef128699615ded73ddf0b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TinyVectorView</definition>
+        <argsstring>(TinyVectorView const &amp;other)</argsstring>
+        <name>TinyVectorView</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor (shallow copy). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1000" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="998" bodyend="1002"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorView_1a87a08c6957c1107fc61c0f6f3ceb2bf2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DATA</type>
+          </param>
+          <param>
+            <type>class DERIVED</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TinyVectorView</definition>
+        <argsstring>(TinyVectorBase&lt; T, SIZE, DATA, DERIVED &gt; const &amp;other)</argsstring>
+        <name>TinyVectorView</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T, SIZE, DATA, DERIVED &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct view from other <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1009" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1007" bodyend="1011"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Wrapper for fixed size vectors. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class wraps an array of size SIZE of the specified VALUETYPE. Thus, the array can be accessed with an interface similar to that of std::vector (except that there are no functions that change the size of a <ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref>). The <ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> does <emphasis>not</emphasis> assume ownership of the given memory.</para><para><ref refid="group__TinyVectorOperators" kindref="compound">Arithmetic operations</ref> on TinyVectorViews are defined as component-wise applications of these operations. Addition and subtraction of two TinyVectorViews (+=, -=, +, -, unary -), multiplication and division of an TinyVectorViews with a double, and NumericTraits/PromoteTraits are defined, so that <ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref> fulfills the requirements of <ref refid="AlgebraicConcepts_1LinearAlgebraConcept" kindref="member">Linear Algebra</ref>.</para><para>VIGRA algorithms typically use <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> to access TinyVectorViews as a whole, or specific components of them.</para><para><bold>See also:</bold> <itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">vigra::TinyVectorBase</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref> </para></listitem>
+<listitem>
+<para><ref refid="TinyVectorTraits" kindref="compound">Numeric and Promote Traits of TinyVector</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__TinyVectorOperators" kindref="compound">Functions for TinyVector</ref> </para></listitem>
+</itemizedlist>
+</para><para><bold>#include</bold> &lt;<ref refid="tinyvector_8hxx_source" kindref="compound">vigra/tinyvector.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2584">
+        <label>TinyVectorView&lt; T, SIZE &gt;</label>
+        <link refid="classvigra_1_1TinyVectorView"/>
+        <childnode refid="2585" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2585">
+        <label>TinyVectorBase&lt; T, SIZE, T *, TinyVectorView&lt; T, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2586">
+        <label>TinyVectorView&lt; T, SIZE &gt;</label>
+        <link refid="classvigra_1_1TinyVectorView"/>
+        <childnode refid="2587" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2587">
+        <label>TinyVectorBase&lt; T, SIZE, T *, TinyVectorView&lt; T, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="960" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="958" bodyend="1029"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TinyVectorView_1ab898509e750e6e340636665fbd8a345c" prot="private" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a759c70a07ad662807722c03a28099898" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1abcf1535411d96307d41df2c089aadc26" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a36e4d11a00a3572c87bf7e913e9b5ca1" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a64ea5854d043d6a5ae6987e997ee39fb" prot="protected" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>data_</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1aa67da613c17b4ded61f92de19f1961cc" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>end</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>end</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5cdf4fd70a8962218c77deb30edce0b5" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad8e08b8eaa8d5765d11de7344a018613" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1aad33c76f1f18b2e752d92c1c03b20f73" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a323cab639110ebb21a0deafe1cc2e315" prot="private" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>Loop</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a0626973e733c59d2dcf29679b6542db3" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>maximum</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ac5b93cc371537a7772a60cc0d3be43f8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>minimum</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1ace8fc2dc3b3eea8b1a370233f548095c" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>NormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa88a2ee7578dac50baf55ab6ec2532e5" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a79a2f305963885081f260ab8354bb3e2" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a9bde39ba39082812af1ec50d7dbe8436" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5b918c0cb3d061b9ceb9968ad0bb0e5c" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a2b5024ff0b4ffe93430cf14e39584929" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a050b22df740bf19289a2ef06d33fdab1" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1aff537979e1d83bb68ba4ba8121a01846" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a3fb032ce7bb07efa7714198f54802d2d" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa2454492558f0f1b146ed554017ca033" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a3b782fefbfb41b6f90a060a292839975" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a6553cf5e426582b760da93d2f1b7636d" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>reference</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a7e685ff180a0c5fc980bfb154b3bac30" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>scalar_multiplier</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>size</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1ad9f995eefce4da7a28a1bd801c168e0c" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a5b05058c5a4a4de31068b031f7be7f1b" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a84627a72058502328269676b81780f89ad4a8f9f8c603d29a20ca6f9c056dd4da" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>static_size</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a355d5e31ff587c46c78e44be3db7da83" prot="protected" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>TinyVectorBase</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1abf5b62d7084dd6978e47f0f9de3e1526" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>TinyVectorView</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a6809da7e5284ec51b53b4112becb5b1e" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>TinyVectorView</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1af0ea6dc567fef128699615ded73ddf0b" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>TinyVectorView</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a87a08c6957c1107fc61c0f6f3ceb2bf2" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>TinyVectorView</name></member>
+      <member refid="classvigra_1_1TinyVectorView_1a15eabd051d5bcdcce478c0a509946fca" prot="public" virt="non-virtual"><scope>vigra::TinyVectorView</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

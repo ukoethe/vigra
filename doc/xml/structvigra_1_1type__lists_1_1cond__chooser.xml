@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__chooser" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_chooser</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">cond_chooser_plain</basecompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1bit__cond__chooser" prot="public" virt="non-virtual">bit_cond_chooser</derivedcompoundref>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__chooser_1_1exec__op" prot="public">vigra::type_lists::cond_chooser::exec_op</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1373" bodyend="1377"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1a28631af393217920fb7683a088860ebd" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser</scope><name>is_set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1a888bad01e357c8d239fff8040bd15b48" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser</scope><name>set</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

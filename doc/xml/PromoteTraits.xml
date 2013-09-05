@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="PromoteTraits" kind="page">
+    <compoundname>PromoteTraits</compoundname>
+    <title>template&lt;&gt; struct PromoteTraits&lt;ArithmeticType1, ArithmeticType2&gt;</title>
+    <detaileddescription>
+<para>Binary traits for promotion of arithmetic objects.</para><para><bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>This traits class is used to determine the appropriate result type of arithmetic expressions which depend of two arguments. Consider the following function:</para><para><programlisting><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal">T<sp/><ref refid="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" kindref="member" tooltip="element-wise minimum">min</ref>(T<sp/>t1,<sp/>T<sp/>t2)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(t1<sp/>&lt;<sp/>t2)<sp/>?<sp/>t1<sp/>:<sp/>t2;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This template is only applicable if both arguments have the same type. However, sometimes we may want to use the function in cases where the argument types differ. Then we can deduce the appropriate return type by using <computeroutput>PromoteTraits</computeroutput>:</para><para><programlisting><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>vigra::PromoteTraits&lt;T1,<sp/>T2&gt;::Promote</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" kindref="member" tooltip="element-wise minimum">min</ref>(T1<sp/>t1,<sp/>T2<sp/>t2)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(t1<sp/>&lt;<sp/>t2)<sp/>?<sp/>vigra::PromoteTraits&lt;T1,<sp/>T2&gt;::toPromote(t1)<sp/>:<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra::PromoteTraits&lt;T1,<sp/>T2&gt;::toPromote(t2);</highlight></codeline>
+<codeline><highlight class="normal">}<sp/><sp/><sp/><sp/></highlight></codeline>
+</programlisting></para><para>In addition, the traits class provide static functions to cast the arguments to the promote type. For example, if <computeroutput>T1</computeroutput> were <computeroutput>int</computeroutput> and <computeroutput>T2</computeroutput> were <computeroutput>float</computeroutput>, the <computeroutput>Promote</computeroutput> type would be <computeroutput>float</computeroutput>. The following members are defined in <bold> <computeroutput>PromoteTraits&lt;ArithmeticType1, ArithmeticType2&gt;</computeroutput></bold>:</para><para><table rows="2" cols="2"><row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... Promote;</computeroutput></bold> </para></entry><entry thead="no"><para>promote type  </para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>static Promote toPromote(ArithmeticType1 v);</computeroutput></bold></para><para><bold> <computeroutput>static Promote toPromote(ArithmeticType2 v);</computeroutput></bold> </para></entry><entry thead="no"><para>convert to <computeroutput>Promote</computeroutput> type  </para></entry></row>
+</table>
+</para><para>PromoteTraits for the built-in types are defined in <bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

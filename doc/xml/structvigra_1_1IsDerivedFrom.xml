@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IsDerivedFrom" kind="struct" prot="public">
+    <compoundname>vigra::IsDerivedFrom</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class DERIVED</type>
+      </param>
+      <param>
+        <type>class BASE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1IsDerivedFrom_1ac36f475ca5b446f4fde4c9b90bec77c8" prot="public" static="no">
+        <name>@12</name>
+        <enumvalue id="structvigra_1_1IsDerivedFrom_1ac36f475ca5b446f4fde4c9b90bec77c8a730cb5310614d92e239dd7c7c1e9a60d" prot="public">
+          <name>resultSize</name>
+          <initializer> sizeof(*testIsDerivedFrom((DERIVED const *)0))</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="400" bodyend="400"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsDerivedFrom_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char falseResult[1]</definition>
+        <argsstring>[1]</argsstring>
+        <name>falseResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="394" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="394" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsDerivedFrom_1acd66fa198a375c48c22b7a99ad57d5e7" prot="public" static="no">
+        <type>type</type>
+        <definition>typedef type result</definition>
+        <argsstring></argsstring>
+        <name>result</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="408" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsDerivedFrom_1abda572a18508e06ee0e9af4f446f1786" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char trueResult[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>trueResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="395" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsDerivedFrom_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" static="no">
+        <type>IfBool&lt; value, VigraTrueType, VigraFalseType &gt;::type</type>
+        <definition>typedef IfBool&lt;value, VigraTrueType, VigraFalseType&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="405" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1IsDerivedFrom_1a31c1ed186c8f3cece1ea5cdc46746f94" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool boolResult</definition>
+        <argsstring></argsstring>
+        <name>boolResult</name>
+        <initializer> value</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="407" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="407" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1IsDerivedFrom_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> (resultSize == 2)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="402" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="402" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1IsDerivedFrom_1acd2e3bdc45d98dc47fc46da2a2f976c9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>falseResult *</type>
+        <definition>static falseResult* testIsDerivedFrom</definition>
+        <argsstring>(...)</argsstring>
+        <name>testIsDerivedFrom</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="397"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1IsDerivedFrom_1a8d543c3e7e24ba590acc33ecef41af63" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>trueResult *</type>
+        <definition>static trueResult* testIsDerivedFrom</definition>
+        <argsstring>(BASE const *)</argsstring>
+        <name>testIsDerivedFrom</name>
+        <param>
+          <type>BASE const *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="398"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="393" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="392" bodyend="409"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1IsDerivedFrom_1a31c1ed186c8f3cece1ea5cdc46746f94" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>boolResult</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>falseResult</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1acd66fa198a375c48c22b7a99ad57d5e7" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>result</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1ac36f475ca5b446f4fde4c9b90bec77c8a730cb5310614d92e239dd7c7c1e9a60d" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>resultSize</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1acd2e3bdc45d98dc47fc46da2a2f976c9" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>testIsDerivedFrom</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1a8d543c3e7e24ba590acc33ecef41af63" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>testIsDerivedFrom</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1abda572a18508e06ee0e9af4f446f1786" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>trueResult</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>type</name></member>
+      <member refid="structvigra_1_1IsDerivedFrom_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::IsDerivedFrom</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classtype__lists_1_1uses__template_1_1template_01follows_3_01CoordMoment2_00_01CoordMoment2_01_4" kind="class" prot="public">
+    <compoundname>type_lists::uses_template::template follows&lt; CoordMoment2, CoordMoment2 &gt;</compoundname>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1gen__mean__acc" prot="public" virt="non-virtual">gen_mean_acc&lt; T, detail::accumulable_coord_access, CoordMean, CoordMoment2, CoordMoment2 &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="377"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1360 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1linalg_1_1detail" kind="namespace">
+    <compoundname>vigra::linalg::detail</compoundname>
+    <innerclass refid="structvigra_1_1linalg_1_1detail_1_1LarsData" prot="public">vigra::linalg::detail::LarsData</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1ae533f3ebb8e51757fcd539e53d6200b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::applyHouseholderColumnReflections</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;householder, MultiArrayView&lt; 2, T, C2 &gt; &amp;res)</argsstring>
+        <name>applyHouseholderColumnReflections</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>householder</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="590" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="589" bodyend="602"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a3ac0aac8a95946f6064eedf079fc3adb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::cdiv</definition>
+        <argsstring>(T xr, T xi, T yr, T yi, T &amp;cdivr, T &amp;cdivi)</argsstring>
+        <name>cdiv</name>
+        <param>
+          <type>T</type>
+          <declname>xr</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>xi</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>yr</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>yi</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>cdivr</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>cdivi</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="457" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="456" bodyend="473"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a602597c2525aa0961f46f4cb07c89f5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class T3</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::columnStatistics2PassImpl</definition>
+        <argsstring>(MultiArrayView&lt; 2, T1, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T2, C2 &gt; &amp;mean, MultiArrayView&lt; 2, T3, C3 &gt; &amp;sumOfSquaredDifferences)</argsstring>
+        <name>columnStatistics2PassImpl</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C2 &gt; &amp;</type>
+          <declname>mean</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T3, C3 &gt; &amp;</type>
+          <declname>sumOfSquaredDifferences</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="2352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="2350" bodyend="2372"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1ae4c975eac00ed2ae9471ee0e045a8e6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class T3</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::columnStatisticsImpl</definition>
+        <argsstring>(MultiArrayView&lt; 2, T1, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T2, C2 &gt; &amp;mean, MultiArrayView&lt; 2, T3, C3 &gt; &amp;sumOfSquaredDifferences)</argsstring>
+        <name>columnStatisticsImpl</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C2 &gt; &amp;</type>
+          <declname>mean</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T3, C3 &gt; &amp;</type>
+          <declname>sumOfSquaredDifferences</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="2326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="2324" bodyend="2346"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1afee6e15a3dcfc7c3c12c097e56d4ea0e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::linalg::detail::determinantByLUDecomposition</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a)</argsstring>
+        <name>determinantByLUDecomposition</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="57" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="56" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a1b6ed74365e8e7790da58f1ce343f285" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::linalg::detail::givensCoefficients</definition>
+        <argsstring>(T a, T b, T &amp;c, T &amp;s)</argsstring>
+        <name>givensCoefficients</name>
+        <param>
+          <type>T</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="99" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a5abf7c2134d984a4fbc8cae1776dbc19" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::givensReflectionMatrix</definition>
+        <argsstring>(T a, T b, Matrix&lt; T &gt; &amp;g)</argsstring>
+        <name>givensReflectionMatrix</name>
+        <param>
+          <type>T</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt; &amp;</type>
+          <declname>g</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="141" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1adddd9c2613493d3a4c0babc80f7468e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::givensRotationMatrix</definition>
+        <argsstring>(T a, T b, Matrix&lt; T &gt; &amp;gTranspose)</argsstring>
+        <name>givensRotationMatrix</name>
+        <param>
+          <type>T</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T &gt; &amp;</type>
+          <declname>gTranspose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="127" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a5131e66df27ab3241070450074252ea1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::hessenbergQrDecomposition</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;H, MultiArrayView&lt; 2, T, C2 &gt; &amp;V, MultiArrayView&lt; 2, T, C3 &gt; &amp;de)</argsstring>
+        <name>hessenbergQrDecomposition</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>H</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>V</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>de</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="512" bodyend="985"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a0bbeaba2e5217d7e17d278e3d9e97c89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int vigra::linalg::detail::hessenbergQrDecompositionHelper</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C &gt; &amp;H, int n, int l, double eps, T &amp;p, T &amp;q, T &amp;r, T &amp;s, T &amp;w, T &amp;x, T &amp;y, T &amp;z)</argsstring>
+        <name>hessenbergQrDecompositionHelper</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt; &amp;</type>
+          <declname>H</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>eps</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>q</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="478" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="476" bodyend="505"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a01771165c8c5caef4c376c47a7147504" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::householderVector</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;v, MultiArrayView&lt; 2, T, C2 &gt; &amp;u, U &amp;vnorm)</argsstring>
+        <name>householderVector</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>u</declname>
+        </param>
+        <param>
+          <type>U &amp;</type>
+          <declname>vnorm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="277" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="276" bodyend="295"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1af62e419a8b436f7bbb466ebdca1a6894" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::housholderTridiagonalization</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;a, MultiArrayView&lt; 2, T, C2 &gt; &amp;b)</argsstring>
+        <name>housholderTridiagonalization</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="60" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="59" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a32bf8196f44441585632abf7753f1209" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class SNType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::incrementalMaxSingularValueApproximation</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;newColumn, MultiArrayView&lt; 2, T, C2 &gt; &amp;z, SNType &amp;v)</argsstring>
+        <name>incrementalMaxSingularValueApproximation</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>newColumn</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>SNType &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="355" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="353" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a3e63afea3d1f2f8db0c059a67fb99330" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class SNType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::incrementalMinSingularValueApproximation</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;newColumn, MultiArrayView&lt; 2, T, C2 &gt; &amp;z, SNType &amp;v, double tolerance)</argsstring>
+        <name>incrementalMinSingularValueApproximation</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>newColumn</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>SNType &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>tolerance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="375" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="373" bodyend="401"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a49534765c49994d787689895c552d885" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Permutation</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::inverseRowPermutation</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;permuted, MultiArrayView&lt; 2, T, C2 &gt; &amp;res, Permutation const &amp;permutation)</argsstring>
+        <name>inverseRowPermutation</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>permuted</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>Permutation const &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="580" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1acdcb5a53bc9fde7f20ccedf0aee5eb04" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Array1</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::detail::leastAngleRegressionImpl</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;A, MultiArrayView&lt; 2, T, C2 &gt; const &amp;b, Array1 &amp;activeSets, Array2 *lasso_solutions, Array2 *lsq_solutions, LeastAngleRegressionOptions const &amp;options)</argsstring>
+        <name>leastAngleRegressionImpl</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Array1 &amp;</type>
+          <declname>activeSets</declname>
+        </param>
+        <param>
+          <type>Array2 *</type>
+          <declname>lasso_solutions</declname>
+        </param>
+        <param>
+          <type>Array2 *</type>
+          <declname>lsq_solutions</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="703" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="700" bodyend="732"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1ad7cc6b06b4ff3ff3018b274baa651dba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Array1</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+          <param>
+            <type>class Array3</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::detail::leastAngleRegressionMainLoop</definition>
+        <argsstring>(LarsData&lt; T, C1, C2 &gt; &amp;d, Array1 &amp;activeSets, Array2 *lars_solutions, Array3 *lsq_solutions, LeastAngleRegressionOptions const &amp;options)</argsstring>
+        <name>leastAngleRegressionMainLoop</name>
+        <param>
+          <type>LarsData&lt; T, C1, C2 &gt; &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>Array1 &amp;</type>
+          <declname>activeSets</declname>
+        </param>
+        <param>
+          <type>Array2 *</type>
+          <declname>lars_solutions</declname>
+        </param>
+        <param>
+          <type>Array3 *</type>
+          <declname>lsq_solutions</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1linalg_1_1LeastAngleRegressionOptions" kindref="compound">LeastAngleRegressionOptions</ref> const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" line="496" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/regression.hxx" bodystart="492" bodyend="696"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1aa6d1765390c816d3ace107319c8cb8bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::nonsymmetricHessenbergReduction</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;H, MultiArrayView&lt; 2, T, C2 &gt; &amp;V)</argsstring>
+        <name>nonsymmetricHessenbergReduction</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>H</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>V</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="342" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="341" bodyend="450"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a65dedacb0f3b9af8a1054257d68736f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class C4</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::prepareDataImpl</definition>
+        <argsstring>(const MultiArrayView&lt; 2, T, C1 &gt; &amp;A, MultiArrayView&lt; 2, T, C2 &gt; &amp;res, MultiArrayView&lt; 2, T, C3 &gt; &amp;offset, MultiArrayView&lt; 2, T, C4 &gt; &amp;scaling, DataPreparationGoals goals)</argsstring>
+        <name>prepareDataImpl</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C4 &gt; &amp;</type>
+          <declname>scaling</declname>
+        </param>
+        <param>
+          <type>DataPreparationGoals</type>
+          <declname>goals</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="2720" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="2717" bodyend="2807"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a16738dbec1c57f3f3e9880acd4702ac9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrColumnHouseholderStep</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs)</argsstring>
+        <name>qrColumnHouseholderStep</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="334" bodyend="338"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a7791ca364c6f0b2d7b7ed6b0dbba180d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrGivensStepImpl</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayView&lt; 2, T, C1 &gt; r, MultiArrayView&lt; 2, T, C2 &gt; rhs)</argsstring>
+        <name>qrGivensStepImpl</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="154" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1afadb7f78b7b5ffdfffef4b070f9655f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrHouseholderStepImpl</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, MultiArrayView&lt; 2, T, C3 &gt; &amp;householderMatrix)</argsstring>
+        <name>qrHouseholderStepImpl</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>householderMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="302" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="300" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1adf7a03d48f430763919ab8c7780eadb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrRowHouseholderStep</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;householderMatrix)</argsstring>
+        <name>qrRowHouseholderStep</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>householderMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="342" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a430b60a918b9cad3975cc943d1951aed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::detail::qrTransformToLowerTriangular</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, MultiArrayView&lt; 2, T, C3 &gt; &amp;householderMatrix, double epsilon=0.0)</argsstring>
+        <name>qrTransformToLowerTriangular</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>householderMatrix</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="536" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1acf5e5f5657cbbe3973688f32f25b9644" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrTransformToLowerTriangular</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;householder, double epsilon=0.0)</argsstring>
+        <name>qrTransformToLowerTriangular</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>householder</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="571" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="569" bodyend="576"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a52dcda3ba8455e3faabd40fe35d21733" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::detail::qrTransformToTriangularImpl</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, MultiArrayView&lt; 2, T, C3 &gt; &amp;householder, ArrayVector&lt; MultiArrayIndex &gt; &amp;permutation, double epsilon)</argsstring>
+        <name>qrTransformToTriangularImpl</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>householder</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref> &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="406" bodyend="522"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a42bc8c0ab1542cd6ac26d1a487fe79dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned int</type>
+        <definition>unsigned int vigra::linalg::detail::qrTransformToUpperTriangular</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, ArrayVector&lt; MultiArrayIndex &gt; &amp;permutation, double epsilon=0.0)</argsstring>
+        <name>qrTransformToUpperTriangular</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref> &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="526" bodyend="531"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1aa0aee82d3ca62ebd1d05af7be6ab39e1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::qrTransformToUpperTriangular</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, double epsilon=0.0)</argsstring>
+        <name>qrTransformToUpperTriangular</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="557" bodyend="564"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1ac1f0d515daf65ba2eb6b738afc0394e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::symmetricEigensystem2x2</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;a, MultiArrayView&lt; 2, T, C2 &gt; &amp;ew, MultiArrayView&lt; 2, T, C3 &gt; &amp;ev)</argsstring>
+        <name>symmetricEigensystem2x2</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>ew</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C3 &gt; &amp;</type>
+          <declname>ev</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="1033" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="1031" bodyend="1087"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1ac181ea04e27c72393e5fb808ff2ef853" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linalg::detail::tridiagonalMatrixEigensystem</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; &amp;de, MultiArrayView&lt; 2, T, C2 &gt; &amp;z)</argsstring>
+        <name>tridiagonalMatrixEigensystem</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>de</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" bodystart="203" bodyend="336"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a4cda06d8ded85e00d200d7b222197ba1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class T3</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::updateCovarianceMatrix</definition>
+        <argsstring>(MultiArrayView&lt; 2, T1, C1 &gt; const &amp;features, U &amp;count, MultiArrayView&lt; 2, T2, C2 &gt; &amp;mean, MultiArrayView&lt; 2, T3, C3 &gt; &amp;covariance)</argsstring>
+        <name>updateCovarianceMatrix</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T1, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>U &amp;</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C2 &gt; &amp;</type>
+          <declname>mean</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T3, C3 &gt; &amp;</type>
+          <declname>covariance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="2582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="2580" bodyend="2622"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1afd0c9fbb80aeef8a97603fee2ba93cd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Permutation</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::upperTriangularCyclicShiftColumns</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayIndex j, MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, Permutation &amp;permutation)</argsstring>
+        <name>upperTriangularCyclicShiftColumns</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>j</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type>Permutation &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="182" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1linalg_1_1detail_1a9ed68fca8f1af60e7c1dc340ddb7d79b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Permutation</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linalg::detail::upperTriangularSwapColumns</definition>
+        <argsstring>(MultiArrayIndex i, MultiArrayIndex j, MultiArrayView&lt; 2, T, C1 &gt; &amp;r, MultiArrayView&lt; 2, T, C2 &gt; &amp;rhs, Permutation &amp;permutation)</argsstring>
+        <name>upperTriangularSwapColumns</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>j</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C1 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type>Permutation &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" line="229" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_solve.hxx" bodystart="227" bodyend="272"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/eigensystem.hxx" line="53"/>
+  </compounddef>
+</doxygen>

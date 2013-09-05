@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1UnaryAnalyserTag" kind="struct" prot="public">
+    <compoundname>vigra::UnaryAnalyserTag</compoundname>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1accu__context__base" prot="public" virt="non-virtual">accu_context_base&lt; T, L &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1accu__context__base" prot="public" virt="non-virtual">accu_context_base&lt; T, L, type_lists::bit_cond_tuple &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1accu__context__base" prot="public" virt="non-virtual">accu_context_base&lt; T, L, type_lists::cond_virtual_tuple&lt; SelectedAccumulators, T, detail::v_feature_dispatch &gt;::template type &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1detail_1_1accu__context__base" prot="public" virt="non-virtual">accu_context_base&lt; T, L, TUPLE &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1UnaryReduceFunctorTag" prot="public" virt="non-virtual">UnaryReduceFunctorTag</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="49" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="49" bodyend="49"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

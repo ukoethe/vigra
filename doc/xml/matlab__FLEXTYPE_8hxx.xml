@@ -1,0 +1,699 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="matlab__FLEXTYPE_8hxx" kind="file">
+    <compoundname>matlab_FLEXTYPE.hxx</compoundname>
+    <includes local="no">string</includes>
+    <includedby refid="matlab_8hxx" local="yes">vigra/matlab.hxx</includedby>
+    <incdepgraph>
+      <node id="4284">
+        <label>string</label>
+      </node>
+      <node id="4283">
+        <label>vigra/matlab_FLEXTYPE.hxx</label>
+        <link refid="matlab_FLEXTYPE.hxx"/>
+        <childnode refid="4284" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="4285">
+        <label>vigra/matlab_FLEXTYPE.hxx</label>
+        <link refid="matlab_FLEXTYPE.hxx"/>
+        <childnode refid="4286" relation="include">
+        </childnode>
+      </node>
+      <node id="4286">
+        <label>vigra/matlab.hxx</label>
+        <link refid="matlab_8hxx_source"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a22701d5b7644a4a04a6f189946e34f1e" prot="public" static="no">
+        <name>ALLOW_D</name>
+        <initializer>case mxDOUBLE_CLASS:\
+            vigraMain&lt;double&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="230" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="228" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a92526cfd7986f591f9285379c1ebd9b5" prot="public" static="no">
+        <name>ALLOW_F</name>
+        <initializer>case mxSINGLE_CLASS:\
+            vigraMain&lt;float&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1ab3c89da7f384a130ad6e39c12f26b732" prot="public" static="no">
+        <name>ALLOW_FD</name>
+        <initializer>case mxDOUBLE_CLASS:\
+            vigraMain&lt;double&gt;(outputs, inputs);    break;\
+        case mxSINGLE_CLASS:\
+            vigraMain&lt;float&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a0bfe0a2af2866d9820b2d6fd2b911414" prot="public" static="no">
+        <name>ALLOW_INT</name>
+        <initializer>case mxINT8_CLASS:\
+            vigraMain&lt;Int8&gt;(outputs, inputs);     break;\
+        case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);    break;\
+        case mxINT32_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);    break;\
+        case mxINT64_CLASS:\
+            vigraMain&lt;Int64&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a2436c0986b49e2c7b9222191fa2ce863" prot="public" static="no">
+        <name>ALLOW_INT_16</name>
+        <initializer>case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a648c40f8a0d8801b50bddeeb2aabc785" prot="public" static="no">
+        <name>ALLOW_INT_16_32</name>
+        <initializer>case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);     break;\
+        case mxINT32_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a575c7b4d40feb670ed90f2fff9b476fb" prot="public" static="no">
+        <name>ALLOW_INT_16_64</name>
+        <initializer>case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);    break;\
+        case mxINT32_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);    break;\
+        case mxINT64_CLASS:\
+            vigraMain&lt;Int64&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a7483cea9bc6c1f7353bc8cdcd804fd3b" prot="public" static="no">
+        <name>ALLOW_INT_32</name>
+        <initializer>case mxINT32_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="176" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1ae0b5eeffbfe68cde989c2551908a6001" prot="public" static="no">
+        <name>ALLOW_INT_32_64</name>
+        <initializer>case mxINT16_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);     break;\
+        case mxINT32_CLASS:\
+            vigraMain&lt;Int64&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="198" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a2476410a3df237c0283bd69252695be7" prot="public" static="no">
+        <name>ALLOW_INT_64</name>
+        <initializer>case mxINT64_CLASS:\
+            vigraMain&lt;Int64&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1ad83196ae0d8998c35f1a69a004c8e560" prot="public" static="no">
+        <name>ALLOW_INT_8</name>
+        <initializer>case mxINT8_CLASS:\
+            vigraMain&lt;Int8&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="168" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1aa7275d9de7effb4235b7004957954493" prot="public" static="no">
+        <name>ALLOW_INT_8_16</name>
+        <initializer>case mxINT8_CLASS:\
+            vigraMain&lt;Int8&gt;(outputs, inputs);     break;\
+        case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="186" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="182" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1af02c4feb17d400cd222f86dcb8627da8" prot="public" static="no">
+        <name>ALLOW_INT_8_32</name>
+        <initializer>case mxINT8_CLASS:\
+            vigraMain&lt;Int8&gt;(outputs, inputs);     break;\
+        case mxINT16_CLASS:\
+            vigraMain&lt;Int16&gt;(outputs, inputs);    break;\
+        case mxINT32_CLASS:\
+            vigraMain&lt;Int32&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="206" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="200" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a58ae8c6f34f79efd44c74e1da1a9f801" prot="public" static="no">
+        <name>ALLOW_INT_8_64</name>
+        <initializer>ALLOW_INT;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1ae41e91c61e3b8bd8d9f22fdc8dbd0605" prot="public" static="no">
+        <name>ALLOW_UINT</name>
+        <initializer>case mxUINT8_CLASS:\
+            vigraMain&lt;UInt8&gt;(outputs, inputs);     break;\
+        case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);    break;\
+        case mxUINT32_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);    break;\
+        case mxUINT64_CLASS:\
+            vigraMain&lt;UInt64&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a25432a6cd9eecc7dc381c4bde462c67c" prot="public" static="no">
+        <name>ALLOW_UINT_16</name>
+        <initializer>case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a4c4d0e41652fae83b71033f02fcdb5b9" prot="public" static="no">
+        <name>ALLOW_UINT_16_32</name>
+        <initializer>case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);     break;\
+        case mxUINT32_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="123" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a203d8506a26ae8940b46c6e20c9f6bee" prot="public" static="no">
+        <name>ALLOW_UINT_16_64</name>
+        <initializer>case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);    break;\
+        case mxUINT32_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);    break;\
+        case mxUINT64_CLASS:\
+            vigraMain&lt;UInt64&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a42d48e11d72c9f4ce8da360566dc9c79" prot="public" static="no">
+        <name>ALLOW_UINT_32</name>
+        <initializer>case mxUINT32_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="111" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a9fbed7b930bfb19df4956ccb6718f1f8" prot="public" static="no">
+        <name>ALLOW_UINT_32_64</name>
+        <initializer>case mxUINT16_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);     break;\
+        case mxUINT32_CLASS:\
+            vigraMain&lt;UInt64&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1aab0e036f8f5200997ea235f6baffd03d" prot="public" static="no">
+        <name>ALLOW_UINT_64</name>
+        <initializer>case mxUINT64_CLASS:\
+            vigraMain&lt;UInt64&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a1a626f2f9fa24cb9ef4b41998f14c424" prot="public" static="no">
+        <name>ALLOW_UINT_8</name>
+        <initializer>case mxUINT8_CLASS:\
+            vigraMain&lt;UInt8&gt;(outputs, inputs);     break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a24ed1133ad7235a2c350c3df6df2d20c" prot="public" static="no">
+        <name>ALLOW_UINT_8_16</name>
+        <initializer>case mxUINT8_CLASS:\
+            vigraMain&lt;UInt8&gt;(outputs, inputs);     break;\
+        case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a930796d8263b52780a084bda45558815" prot="public" static="no">
+        <name>ALLOW_UINT_8_32</name>
+        <initializer>case mxUINT8_CLASS:\
+            vigraMain&lt;UInt8&gt;(outputs, inputs);     break;\
+        case mxUINT16_CLASS:\
+            vigraMain&lt;UInt16&gt;(outputs, inputs);    break;\
+        case mxUINT32_CLASS:\
+            vigraMain&lt;UInt32&gt;(outputs, inputs);    break;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a648d8a572944ef12567224a5d0cbeba6" prot="public" static="no">
+        <name>ALLOW_UINT_8_64</name>
+        <initializer>ALLOW_UINT;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a6be5f29003f12ad0128124b93cd07d1a" prot="public" static="no">
+        <name>DEFAULT_ERROR</name>
+        <initializer>default:\
+    std::string msg = &quot;Invalid Inputtype for data element &apos;&quot; + name_str + &quot;&apos; - see documentation for supported Types&quot;;\
+    mexErrMsgTxt(msg.c_str());\</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a007b9add96a831edf0bfc1ad98337fb1" prot="public" static="no">
+        <name>FLEX_TYPE</name>
+        <param><defname>inClass</defname></param>
+        <param><defname>pos</defname></param>
+        <param><defname>name</defname></param>
+        <initializer>std::string name_str(#name);\
+    if ((1##pos##1) != 0 &amp;&amp; ((pos &lt; inputs.size()-1) || pos == (inputs.size()-1) &amp;&amp; !inputs.options_.isValid()))\
+    {\
+        inClass = mxGetClassID(inputs[pos]);\
+    }\
+    else\
+    {\
+        if(!inputs.options_.isValid())\
+            mexErrMsgTxt(&quot;Input at (Position: pos, Name in Struct: name) not set&quot;);\
+        inClass = mxGetClassID(inputs.options_[#name]);\
+    }\</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="57" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1aad055be30f119fb52ed1360acd9ffb33" prot="public" static="no">
+        <name>FLEXIBLE_TYPE_END</name>
+        <initializer>default:\
+    std::string msg = &quot;Invalid Inputtype for data element &quot; + name_str + &quot; - see documentation for supported Types&quot;;\
+    mexErrMsgTxt(msg.c_str());\
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a687ae1fd5058cbb65eb65cda2c2e8646" prot="public" static="no">
+        <name>FLEXIBLE_TYPE_START</name>
+        <param><defname>pos</defname></param>
+        <param><defname>name</defname></param>
+        <initializer>mxClassID inClass;\
+    std::string name_str(#name);\
+    if ((1##pos##1) != 0 &amp;&amp; ((pos &lt; inputs.size()-1) || pos == (inputs.size()-1) &amp;&amp; !inputs.options_.isValid()))\
+    {\
+        inClass = mxGetClassID(inputs[pos]);\
+    }\
+    else\
+    {\
+        if(!inputs.options_.isValid())\
+            mexErrMsgTxt(&quot;Input at (Position: pos, Name in Struct: name) not set&quot;);\
+        inClass = mxGetClassID(inputs.options_[#name]);\
+    }\
+    switch(inClass){\</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="matlab__FLEXTYPE_8hxx_1a2fe9d8186655888c99cd2b8cadc0a0ad" prot="public" static="no">
+        <name>NOFLEXIBLETYPE</name>
+        <initializer>vigraMain(outputs, inputs);</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" line="42" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>2009<sp/>by<sp/>Rahul<sp/>Nair<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>MATLAB_FLEXTYPE</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>MATLAB_FLEXTYPE</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NOFLEXIBLETYPE<sp/>vigraMain(outputs,<sp/>inputs);</highlight></codeline>
+<codeline lineno="43"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FLEX_TYPE(inClass,<sp/>pos,<sp/>name)\</highlight></codeline>
+<codeline lineno="46"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>std::string<sp/>name_str(#name);\</highlight></codeline>
+<codeline lineno="47"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>if<sp/>((1##pos##1)<sp/>!=<sp/>0<sp/>&amp;&amp;<sp/>((pos<sp/>&lt;<sp/>inputs.size()-1)<sp/>||<sp/>pos<sp/>==<sp/>(inputs.size()-1)<sp/>&amp;&amp;<sp/>!inputs.options_.isValid()))\</highlight></codeline>
+<codeline lineno="48"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{\</highlight></codeline>
+<codeline lineno="49"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inClass<sp/>=<sp/>mxGetClassID(inputs[pos]);\</highlight></codeline>
+<codeline lineno="50"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}\</highlight></codeline>
+<codeline lineno="51"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>else\</highlight></codeline>
+<codeline lineno="52"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{\</highlight></codeline>
+<codeline lineno="53"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if(!inputs.options_.isValid())\</highlight></codeline>
+<codeline lineno="54"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mexErrMsgTxt(&quot;Input<sp/>at<sp/>(Position:<sp/>pos,<sp/>Name<sp/>in<sp/>Struct:<sp/>name)<sp/>not<sp/>set&quot;);\</highlight></codeline>
+<codeline lineno="55"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inClass<sp/>=<sp/>mxGetClassID(inputs.options_[#name]);\</highlight></codeline>
+<codeline lineno="56"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}\</highlight></codeline>
+<codeline lineno="57"><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="58"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>DEFAULT_ERROR\</highlight></codeline>
+<codeline lineno="59"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>default:\</highlight></codeline>
+<codeline lineno="60"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>std::string<sp/>msg<sp/>=<sp/>&quot;Invalid<sp/>Inputtype<sp/>for<sp/>data<sp/>element<sp/>&apos;&quot;<sp/>+<sp/>name_str<sp/>+<sp/>&quot;&apos;<sp/>-<sp/>see<sp/>documentation<sp/>for<sp/>supported<sp/>Types&quot;;\</highlight></codeline>
+<codeline lineno="61"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>mexErrMsgTxt(msg.c_str());\</highlight></codeline>
+<codeline lineno="62"><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="63"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FLEXIBLE_TYPE_START(pos,<sp/>name)\</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>mxClassID<sp/>inClass;\</highlight></codeline>
+<codeline lineno="66"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>std::string<sp/>name_str(#name);\</highlight></codeline>
+<codeline lineno="67"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>if<sp/>((1##pos##1)<sp/>!=<sp/>0<sp/>&amp;&amp;<sp/>((pos<sp/>&lt;<sp/>inputs.size()-1)<sp/>||<sp/>pos<sp/>==<sp/>(inputs.size()-1)<sp/>&amp;&amp;<sp/>!inputs.options_.isValid()))\</highlight></codeline>
+<codeline lineno="68"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{\</highlight></codeline>
+<codeline lineno="69"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inClass<sp/>=<sp/>mxGetClassID(inputs[pos]);\</highlight></codeline>
+<codeline lineno="70"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}\</highlight></codeline>
+<codeline lineno="71"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>else\</highlight></codeline>
+<codeline lineno="72"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{\</highlight></codeline>
+<codeline lineno="73"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if(!inputs.options_.isValid())\</highlight></codeline>
+<codeline lineno="74"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mexErrMsgTxt(&quot;Input<sp/>at<sp/>(Position:<sp/>pos,<sp/>Name<sp/>in<sp/>Struct:<sp/>name)<sp/>not<sp/>set&quot;);\</highlight></codeline>
+<codeline lineno="75"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inClass<sp/>=<sp/>mxGetClassID(inputs.options_[#name]);\</highlight></codeline>
+<codeline lineno="76"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}\</highlight></codeline>
+<codeline lineno="77"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>switch(inClass){\</highlight></codeline>
+<codeline lineno="78"><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="79"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FLEXIBLE_TYPE_END\</highlight></codeline>
+<codeline lineno="82"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>default:\</highlight></codeline>
+<codeline lineno="83"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>std::string<sp/>msg<sp/>=<sp/>&quot;Invalid<sp/>Inputtype<sp/>for<sp/>data<sp/>element<sp/>&quot;<sp/>+<sp/>name_str<sp/>+<sp/>&quot;<sp/>-<sp/>see<sp/>documentation<sp/>for<sp/>supported<sp/>Types&quot;;\</highlight></codeline>
+<codeline lineno="84"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>mexErrMsgTxt(msg.c_str());\</highlight></codeline>
+<codeline lineno="85"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="86"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="comment">/*UINT*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT\</highlight></codeline>
+<codeline lineno="91"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT8_CLASS:\</highlight></codeline>
+<codeline lineno="92"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="93"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="94"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="95"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="96"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="97"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT64_CLASS:\</highlight></codeline>
+<codeline lineno="98"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="99"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_8\</highlight></codeline>
+<codeline lineno="102"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT8_CLASS:\</highlight></codeline>
+<codeline lineno="103"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="104"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_16\</highlight></codeline>
+<codeline lineno="106"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="107"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="108"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_32\</highlight></codeline>
+<codeline lineno="110"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="111"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="112"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_64\</highlight></codeline>
+<codeline lineno="114"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT64_CLASS:\</highlight></codeline>
+<codeline lineno="115"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="116"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_8_16\</highlight></codeline>
+<codeline lineno="118"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT8_CLASS:\</highlight></codeline>
+<codeline lineno="119"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="120"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="121"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="122"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_16_32\</highlight></codeline>
+<codeline lineno="124"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="125"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="126"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="127"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="128"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_32_64\</highlight></codeline>
+<codeline lineno="130"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="131"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="132"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="133"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="134"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_8_32\</highlight></codeline>
+<codeline lineno="136"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT8_CLASS:\</highlight></codeline>
+<codeline lineno="137"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="138"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="139"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="140"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="141"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="142"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_16_64\</highlight></codeline>
+<codeline lineno="144"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT16_CLASS:\</highlight></codeline>
+<codeline lineno="145"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="146"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT32_CLASS:\</highlight></codeline>
+<codeline lineno="147"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="148"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxUINT64_CLASS:\</highlight></codeline>
+<codeline lineno="149"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;UInt64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="150"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="comment">/*INT*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT\</highlight></codeline>
+<codeline lineno="154"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT8_CLASS:\</highlight></codeline>
+<codeline lineno="155"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="156"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="157"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="158"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="159"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="160"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT64_CLASS:\</highlight></codeline>
+<codeline lineno="161"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="162"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_8_64<sp/>ALLOW_INT;</highlight></codeline>
+<codeline lineno="164"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_UINT_8_64<sp/>ALLOW_UINT;</highlight></codeline>
+<codeline lineno="165"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_8\</highlight></codeline>
+<codeline lineno="167"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT8_CLASS:\</highlight></codeline>
+<codeline lineno="168"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="169"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_16\</highlight></codeline>
+<codeline lineno="171"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="172"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="173"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_32\</highlight></codeline>
+<codeline lineno="175"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="176"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="177"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_64\</highlight></codeline>
+<codeline lineno="179"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT64_CLASS:\</highlight></codeline>
+<codeline lineno="180"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="181"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_8_16\</highlight></codeline>
+<codeline lineno="183"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT8_CLASS:\</highlight></codeline>
+<codeline lineno="184"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="185"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="186"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="187"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_16_32\</highlight></codeline>
+<codeline lineno="189"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="190"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="191"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="192"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="193"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_32_64\</highlight></codeline>
+<codeline lineno="195"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="196"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="197"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="198"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="199"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="200"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_8_32\</highlight></codeline>
+<codeline lineno="201"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT8_CLASS:\</highlight></codeline>
+<codeline lineno="202"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int8&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="203"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="204"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="205"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="206"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="207"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_INT_16_64\</highlight></codeline>
+<codeline lineno="209"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT16_CLASS:\</highlight></codeline>
+<codeline lineno="210"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int16&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="211"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT32_CLASS:\</highlight></codeline>
+<codeline lineno="212"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int32&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="213"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxINT64_CLASS:\</highlight></codeline>
+<codeline lineno="214"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;Int64&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="215"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight><highlight class="comment">/*Float<sp/>double*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_FD\</highlight></codeline>
+<codeline lineno="219"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxDOUBLE_CLASS:\</highlight></codeline>
+<codeline lineno="220"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;double&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;\</highlight></codeline>
+<codeline lineno="221"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxSINGLE_CLASS:\</highlight></codeline>
+<codeline lineno="222"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;float&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="223"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_F\</highlight></codeline>
+<codeline lineno="225"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxSINGLE_CLASS:\</highlight></codeline>
+<codeline lineno="226"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;float&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="227"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ALLOW_D\</highlight></codeline>
+<codeline lineno="229"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>case<sp/>mxDOUBLE_CLASS:\</highlight></codeline>
+<codeline lineno="230"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigraMain&lt;double&gt;(outputs,<sp/>inputs);<sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline lineno="231"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab_FLEXTYPE.hxx"/>
+  </compounddef>
+</doxygen>

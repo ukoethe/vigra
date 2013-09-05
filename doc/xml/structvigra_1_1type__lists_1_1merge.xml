@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1merge" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::merge</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>X</declname>
+        <defname>X</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>L</declname>
+        <defname>L</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1merge_1a757c333fe74bdb4110af181948d76a02" prot="public" static="no">
+        <type>L::first</type>
+        <definition>typedef L::first first</definition>
+        <argsstring></argsstring>
+        <name>first</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="310" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1merge_1ad92c43285eb0e05c2ce6b9c1903e4d3b" prot="public" static="no">
+        <type>merge&lt; typename IfBool&lt; contains&lt; first, X &gt;::value, X, cons&lt; first, X &gt; &gt;::type, typename L::rest &gt;::type</type>
+        <definition>typedef merge&lt; typename IfBool&lt;contains&lt;first, X&gt;::value, X, cons&lt;first, X&gt; &gt;::type, typename L::rest &gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="318" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="318" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="309" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="308" bodyend="319"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1merge_1a757c333fe74bdb4110af181948d76a02" prot="public" virt="non-virtual"><scope>vigra::type_lists::merge</scope><name>first</name></member>
+      <member refid="structvigra_1_1type__lists_1_1merge_1ad92c43285eb0e05c2ce6b9c1903e4d3b" prot="public" virt="non-virtual"><scope>vigra::type_lists::merge</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

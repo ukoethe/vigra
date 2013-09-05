@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Int__type__not__supported__on__this__platform" kind="class" prot="public">
+    <compoundname>vigra::Int_type_not_supported_on_this_platform</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sized_int.hxx" bodystart="93" bodyend="93"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

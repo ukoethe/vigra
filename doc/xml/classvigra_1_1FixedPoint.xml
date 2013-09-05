@@ -1,0 +1,504 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FixedPoint" kind="class" prot="public">
+    <compoundname>vigra::FixedPoint</compoundname>
+    <includes refid="fixedpoint_8hxx" local="no">vigra/fixedpoint.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>IntBits</declname>
+        <defname>IntBits</defname>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>FractionalBits</declname>
+        <defname>FractionalBits</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06c" prot="public" static="no">
+        <name>@4</name>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cadd849d8f9788d07d06be460587a68de8" prot="public">
+          <name>INT_BITS</name>
+          <initializer> IntBits</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca42763900a414462d8102b98ca090d973" prot="public">
+          <name>FRACTIONAL_BITS</name>
+          <initializer> FractionalBits</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cab8113400ff6f1e3dbc3bfc6585a9f92e" prot="public">
+          <name>TOTAL_BITS</name>
+          <initializer> IntBits + FractionalBits</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cad7e097bda6d981de2520f49fe74c25b7" prot="public">
+          <name>MAX</name>
+          <initializer> (int)(((unsigned)1 &lt;&lt; TOTAL_BITS) - 1)</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca7a725f13af144bdef532d0389ba75e0d" prot="public">
+          <name>ONE</name>
+          <initializer> 1 &lt;&lt; FractionalBits</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca0f158b49b046f1f9064f6bf2777cf9a0" prot="public">
+          <name>ONE_HALF</name>
+          <initializer> ONE &gt;&gt; 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca2f2b9b80abb73c1dc77c278d43600dcf" prot="public">
+          <name>FRACTIONAL_MASK</name>
+          <initializer> ONE - 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cac6b2c2117f7c8974ff1dcc03755106a8" prot="public">
+          <name>INT_MASK</name>
+          <initializer> MAX ^ FRACTIONAL_MASK</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="220" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="220" bodyend="229"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1FixedPoint_1a0abe115cd82fbeef4c05d9be3de53197" prot="public" static="no" mutable="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>Int32 value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="231" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="231" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a02e3601002ca473bfc733a48ea451e0e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>()</argsstring>
+        <name>FixedPoint</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="233" bodyend="236"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a2dedc2ba1aaf5d814edcb785bcb30512" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>(int v)</argsstring>
+        <name>FixedPoint</name>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from an int (fractional part will become zero). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="240" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1af28ba894273246081fe3b1756bf4d17e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>(int v, FixedPointNoShift)</argsstring>
+        <name>FixedPoint</name>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>FixedPointNoShift</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from an int by a bitwise copy. This is normally only used internally. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="248" bodyend="252"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a92327b1f1aff062d9f1ecf4b94f85139" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>(double rhs)</argsstring>
+        <name>FixedPoint</name>
+        <param>
+          <type>double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from an double and round the fractional part to <computeroutput>FractionalBits</computeroutput> accuracy. A PreconditionViolation exception is raised when the integer part is too small to represent the number. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="260" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="258" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a87245f63852407d1b2b4fb0e67fa2ecb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>(const FixedPoint &amp;other)</argsstring>
+        <name>FixedPoint</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="268" bodyend="270"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1aec7846eb94b6d9667b69bac95fff8af9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>Int2</declname>
+            <defname>Int2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>Frac2</declname>
+            <defname>Frac2</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FixedPoint</definition>
+        <argsstring>(const FixedPoint&lt; Int2, Frac2 &gt; &amp;other)</argsstring>
+        <name>FixedPoint</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; Int2, Frac2 &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with different layout. It rounds as appropriate and raises a compile-time error when the target type has too few integer bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="276" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a5531f2343976aa682285d0498e3cf85f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>Int2</declname>
+            <defname>Int2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>Frac2</declname>
+            <defname>Frac2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator*=</definition>
+        <argsstring>(const FixedPoint&lt; Int2, Frac2 &gt; &amp;other)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; Int2, Frac2 &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Multiply-assignment from a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with different layout. It rounds as appropriate and raises a compile-time error when the target type has too few integer bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="394" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="393" bodyend="398"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1ad13bc83c2ee2b6e7d9a0d19a21f73ffc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-increment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="336" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="335" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a05f89e2c3f195ba0dc6add2b7e5fdeb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref></type>
+        <definition>FixedPoint operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Post-increment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="343" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1abaa9ee2b73ffcf28dd6412b9438bfc56" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>Int2</declname>
+            <defname>Int2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>Frac2</declname>
+            <defname>Frac2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator+=</definition>
+        <argsstring>(const FixedPoint&lt; Int2, Frac2 &gt; &amp;other)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; Int2, Frac2 &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add-assignment from a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with different layout. It rounds as appropriate and raises a compile-time error when the target type has too few integer bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="371" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a172c92646a2b5d605d9fd5b283ecc947" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref></type>
+        <definition>FixedPoint operator-</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Negation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="328" bodyend="331"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a6eca67b2f959f6cb1704c3d22819f724" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-decrement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="352" bodyend="356"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1acfae10c6d098ede53d3fab0d2df0e9bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref></type>
+        <definition>FixedPoint operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Post-decrement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="360" bodyend="365"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1aa644a73b95a07aaf0f7c154a8a2e6058" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>Int2</declname>
+            <defname>Int2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>Frac2</declname>
+            <defname>Frac2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator-=</definition>
+        <argsstring>(const FixedPoint&lt; Int2, Frac2 &gt; &amp;other)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; Int2, Frac2 &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtract-assignment from a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with different layout. It rounds as appropriate and raises a compile-time error when the target type has too few integer bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="382" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1aa5d0123db2c7f75cb7348f3108244ccf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator=</definition>
+        <argsstring>(int rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>int</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment from int. The fractional part will become zero. A PreconditionViolation exception is raised when the integer part is too small to represent the number. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="287" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1aae8e6366846f2b297e5738c3880d2f48" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator=</definition>
+        <argsstring>(double rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>double</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment form double. The fractional part is rounded, and a PreconditionViolation exception is raised when the integer part is too small to represent the number. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="300" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="299" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a07deca5c46c75501384259bee8882b33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator=</definition>
+        <argsstring>(const FixedPoint &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="309" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FixedPoint_1a8e50166da807887f9310afa03e949c53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>Int2</declname>
+            <defname>Int2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>Frac2</declname>
+            <defname>Frac2</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> &amp;</type>
+        <definition>FixedPoint&amp; operator=</definition>
+        <argsstring>(const FixedPoint&lt; Int2, Frac2 &gt; &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; Int2, Frac2 &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment from a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with different layout. It rounds as appropriate and raises a compile-time error when the target type has too few integer bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="320" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="319" bodyend="324"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Template for fixed point arithmetic.</para><para>Fixed point arithmetic is used when computations with fractional accuracy must be made at the highest speed possible (e.g. in the inner loop of a volume rendering routine). The speed-up relative to floating point arithmetic can be dramatic, especially when one can avoid conversions between integer and floating point numbers (these are very expensive because integer and floating point arithmetic resides in different pipelines).</para><para>The template wraps an <computeroutput>int</computeroutput> and uses <computeroutput>IntBits</computeroutput> to represent the integral part of a number, and <computeroutput>FractionalBits</computeroutput> for the fractional part, where <computeroutput>IntBits + FractionalBits &lt; 32</computeroutput>. (The 32rd bit is reserved because <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> is a signed type). These numbers will be automatically allocated in an intelligent way in the result of an arithmetic operation. For example, when two fixed point numbers are multiplied, the required number of integer bits in the result is the sum of the number of integer bits of the arguments, but only when so many bits are available. This is figured out by means of FixedPointTraits, and a compile-time error is raised when no suitable representation can be found. The idea is that the right thing happens automatically as often as possible.</para><para><computeroutput><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref></computeroutput> implements the required interface of an <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref> and the required numeric and promotion traits. In addition, it supports functions <computeroutput>add</computeroutput>, <computeroutput>sub</computeroutput>, and <computeroutput>mul</computeroutput>, where a particular layout of the result can be enforced.</para><para><computeroutput>unsigned char, signed char, unsigned short, signed short, int</computeroutput> can be transformed into a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> with appropriate layout by means of the factory function <computeroutput>fixedPoint()</computeroutput>.</para><para><bold>See also:</bold> <itemizedlist>
+<listitem>
+<para><ref refid="group__FixedPointOperations" kindref="compound">Functions for FixedPoint</ref> </para></listitem>
+<listitem>
+<para><ref refid="FixedPointTraits" kindref="compound">Numeric and Promote Traits of FixedPoint</ref> </para></listitem>
+</itemizedlist>
+</para><para><bold>#include</bold> &lt;<ref refid="fixedpoint_8hxx_source" kindref="compound">vigra/fixedpoint.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="217" bodyend="399"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FixedPoint_1a02e3601002ca473bfc733a48ea451e0e" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a2dedc2ba1aaf5d814edcb785bcb30512" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1af28ba894273246081fe3b1756bf4d17e" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a92327b1f1aff062d9f1ecf4b94f85139" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a87245f63852407d1b2b4fb0e67fa2ecb" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1aec7846eb94b6d9667b69bac95fff8af9" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FixedPoint</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca42763900a414462d8102b98ca090d973" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FRACTIONAL_BITS</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca2f2b9b80abb73c1dc77c278d43600dcf" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>FRACTIONAL_MASK</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cadd849d8f9788d07d06be460587a68de8" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>INT_BITS</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cac6b2c2117f7c8974ff1dcc03755106a8" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>INT_MASK</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cad7e097bda6d981de2520f49fe74c25b7" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>MAX</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca7a725f13af144bdef532d0389ba75e0d" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>ONE</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06ca0f158b49b046f1f9064f6bf2777cf9a0" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>ONE_HALF</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a5531f2343976aa682285d0498e3cf85f" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1ad13bc83c2ee2b6e7d9a0d19a21f73ffc" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a05f89e2c3f195ba0dc6add2b7e5fdeb5" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1FixedPoint_1abaa9ee2b73ffcf28dd6412b9438bfc56" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a172c92646a2b5d605d9fd5b283ecc947" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a6eca67b2f959f6cb1704c3d22819f724" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1FixedPoint_1acfae10c6d098ede53d3fab0d2df0e9bf" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1FixedPoint_1aa644a73b95a07aaf0f7c154a8a2e6058" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1aa5d0123db2c7f75cb7348f3108244ccf" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1aae8e6366846f2b297e5738c3880d2f48" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a07deca5c46c75501384259bee8882b33" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a8e50166da807887f9310afa03e949c53" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FixedPoint_1adc29c2ff13d900c2f185ee95427fb06cab8113400ff6f1e3dbc3bfc6585a9f92e" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>TOTAL_BITS</name></member>
+      <member refid="classvigra_1_1FixedPoint_1a0abe115cd82fbeef4c05d9be3de53197" prot="public" virt="non-virtual"><scope>vigra::FixedPoint</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

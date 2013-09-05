@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ReduceFunctor" kind="class" prot="public">
+    <compoundname>vigra::ReduceFunctor</compoundname>
+    <includes refid="inspectimage_8hxx" local="no">vigra/inspectimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>FUNCTOR</declname>
+        <defname>FUNCTOR</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>VALUETYPE</declname>
+        <defname>VALUETYPE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ReduceFunctor_1a6d55e4278792f01590981c60ec0a1313" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type when used as a unary inspector. (This is not strictly correct since the argument type is actually a template parameter.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1740" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1740" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ReduceFunctor_1a227d9f9e0d316b5771e73c3734157fc0" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE first_argument_type</definition>
+        <argsstring></argsstring>
+        <name>first_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s first argument type when used as a binary inspector. (This is not strictly correct since the argument type is actually a template parameter.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1747" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1747" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ReduceFunctor_1ae791128ea87b5ec289170ed2b2566c8c" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1758" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1758" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ReduceFunctor_1a3925db7eedea86589c36e0029e46bb04" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE second_argument_type</definition>
+        <argsstring></argsstring>
+        <name>second_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s second argument type when used as a binary inspector. (This is not strictly correct since the argument type is actually a template parameter.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1754" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1754" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ReduceFunctor_1a20d79b353907644760f176c4b7acb180" prot="private" static="no" mutable="no">
+        <type>VALUETYPE</type>
+        <definition>VALUETYPE accumulator_</definition>
+        <argsstring></argsstring>
+        <name>accumulator_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1732" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1732" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ReduceFunctor_1a2065e2beb7c911f7a2586703d5d44d4f" prot="private" static="no" mutable="no">
+        <type>FUNCTOR</type>
+        <definition>FUNCTOR f_</definition>
+        <argsstring></argsstring>
+        <name>f_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1731" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1731" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ReduceFunctor_1abff4f77419fd4d55651c7fcfc2bc78c5" prot="private" static="no" mutable="no">
+        <type>VALUETYPE</type>
+        <definition>VALUETYPE start_</definition>
+        <argsstring></argsstring>
+        <name>start_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1732" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1732" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ReduceFunctor_1a6805651eb753b34dec1d15bab6a3ca6d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(T const &amp;v)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use binary functor to connect given value with the accumulator. The accumulator is used as the first argument, the value <emphasis>v</emphasis> as the second. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1780" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1779" bodyend="1782"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ReduceFunctor_1ad923401447609a95a9e79686188936af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(T1 const &amp;v1, T2 const &amp;v2)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>T1 const &amp;</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>T2 const &amp;</type>
+          <declname>v2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use ternary functor to connect given values with accumulator. The accumulator is used as the first argument, the values <emphasis>v1</emphasis> ans <emphasis>v2</emphasis> as the second and third. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1790" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1789" bodyend="1792"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ReduceFunctor_1a8fee9646b825fab0c0b3b5a24595b26d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ReduceFunctor_1ae791128ea87b5ec289170ed2b2566c8c" kindref="member">result_type</ref> const &amp;</type>
+        <definition>result_type const&amp; operator()</definition>
+        <argsstring>() const </argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return current value </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1797" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1796" bodyend="1797"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ReduceFunctor_1ad0050856787414ea2a7d7532c92b0ac5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ReduceFunctor</definition>
+        <argsstring>(FUNCTOR const &amp;f, VALUETYPE const &amp;initial)</argsstring>
+        <name>ReduceFunctor</name>
+        <param>
+          <type>FUNCTOR const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>initial</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>create with the given functor and initial value <emphasis>initial</emphasis> for the accumulator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1767" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1763" bodyend="1767"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ReduceFunctor_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Reset accumulator to the initial value. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1772" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1771" bodyend="1772"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Apply a functor to reduce the dimensionality of an array. </para>    </briefdescription>
+    <detaileddescription>
+<para>This functor can be used to emulate the <computeroutput>reduce</computeroutput> standard function of functional programming using <computeroutput>std::for_each()</computeroutput> or <computeroutput><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member">inspectImage()</ref></computeroutput> and similar functions. This functor is initialized with a functor encoding the expression to be applied, and an accumulator storing the current state of the reduction. For each element of the array, the embedded functor is called with the accumulator and the current element(s) of the array. The result of the reduction is available by calling <computeroutput>reduceFunctor()</computeroutput>.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryAnalyser</computeroutput>, <computeroutput>FunctorTraits::isBinaryAnalyser</computeroutput> and <computeroutput>FunctorTraits::isInitializer</computeroutput> are true (<computeroutput>VigraTrueType</computeroutput>)</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="inspectimage_8hxx_source" kindref="compound">vigra/inspectimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img;</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>the<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>functor<sp/>to<sp/>sum<sp/>the<sp/>elements<sp/>of<sp/>the<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ReduceFunctor" kindref="compound" tooltip="Apply a functor to reduce the dimensionality of an array.">vigra::ReduceFunctor&lt;std::plus&lt;int&gt;</ref>,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;<sp/>sumElements(std::plus&lt;int&gt;,<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">vigra::inspectImage</ref>(srcImageRange(img),<sp/>sumElements);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;The<sp/>sum<sp/>of<sp/>the<sp/>elements<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>sumElements()<sp/>&lt;&lt;<sp/>endl;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">FUNCTOR<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal">VALUETYPE<sp/>accumulator,<sp/>current1,<sp/>current2;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">f(accumulator,<sp/>current1);<sp/></highlight><highlight class="comment">//<sp/>for<sp/>inspectImage()</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">f(accumulator,<sp/>current1,<sp/>current2);<sp/></highlight><highlight class="comment">//<sp/>for<sp/>inspectTwoImages()</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1730" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1729" bodyend="1798"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ReduceFunctor_1a20d79b353907644760f176c4b7acb180" prot="private" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>accumulator_</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a6d55e4278792f01590981c60ec0a1313" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a2065e2beb7c911f7a2586703d5d44d4f" prot="private" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>f_</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a227d9f9e0d316b5771e73c3734157fc0" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>first_argument_type</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a6805651eb753b34dec1d15bab6a3ca6d" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1ad923401447609a95a9e79686188936af" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a8fee9646b825fab0c0b3b5a24595b26d" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1ad0050856787414ea2a7d7532c92b0ac5" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>ReduceFunctor</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>reset</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1ae791128ea87b5ec289170ed2b2566c8c" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1a3925db7eedea86589c36e0029e46bb04" prot="public" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>second_argument_type</name></member>
+      <member refid="classvigra_1_1ReduceFunctor_1abff4f77419fd4d55651c7fcfc2bc78c5" prot="private" virt="non-virtual"><scope>vigra::ReduceFunctor</scope><name>start_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

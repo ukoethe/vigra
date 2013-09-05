@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1CorrectStatus" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::CorrectStatus</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1CorrectStatus_1a0c22074f63be6edcb4ca84ccfcf22263" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Nde</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(Nde &amp;cur, int level, Nde parent, bool infm)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Nde &amp;</type>
+          <declname>cur</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>level</declname>
+        </param>
+        <param>
+          <type>Nde</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>infm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="1002" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="1001" bodyend="1006"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>corrects the status fields of a linkage Clustering (<ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> Visitor)</para><para>such that status(currentNode) = min(status(parent), status(currentNode)) <simplesect kind="see"><para><ref refid="namespacevigra_1_1rf_1_1algorithms_1a975ff04eb92e74fe4f3847b520c4da15" kindref="member">cluster_permutation_importance()</ref> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="998" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="997" bodyend="1007"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1CorrectStatus_1a0c22074f63be6edcb4ca84ccfcf22263" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::CorrectStatus</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

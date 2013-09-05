@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1_1reassign__op" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_virtual_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;::reassign_op</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class V</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1_1reassign__op_1a7b010112748912b98f54bac0ff21b6e1" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(crtp_type &amp;tuple)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>crtp_type &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1552" bodyend="1555"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1550" bodyend="1556"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1_1reassign__op_1a7b010112748912b98f54bac0ff21b6e1" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;::reassign_op</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

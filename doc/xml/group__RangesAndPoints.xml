@@ -1,0 +1,563 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RangesAndPoints" kind="group">
+    <compoundname>RangesAndPoints</compoundname>
+    <title>Ranges and Points</title>
+    <innerclass refid="classvigra_1_1Box" prot="public">vigra::Box</innerclass>
+    <innerclass refid="classvigra_1_1Diff2D" prot="public">vigra::Diff2D</innerclass>
+    <innerclass refid="classvigra_1_1Dist2D" prot="public">vigra::Dist2D</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01Diff2D_01_4" prot="public">vigra::IteratorTraits&lt; Diff2D &gt;</innerclass>
+    <innerclass refid="structvigra_1_1MeshGridAccessor" prot="public">vigra::MeshGridAccessor</innerclass>
+    <innerclass refid="classvigra_1_1Point2D" prot="public">vigra::Point2D</innerclass>
+    <innerclass refid="classvigra_1_1Rect2D" prot="public">vigra::Rect2D</innerclass>
+    <innerclass refid="classvigra_1_1Size2D" prot="public">vigra::Size2D</innerclass>
+    <innerclass refid="classvigra_1_1TinyVector" prot="public">vigra::TinyVector</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__RangesAndPoints_1ga2441f43ea6a2a7234ad2f440501914e8" prot="public" static="no">
+        <type>TinyVector&lt; Diff2D::MoveX, 2 &gt;</type>
+        <definition>typedef TinyVector&lt;Diff2D::MoveX, 2&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the value_type of a mesh grid is a 2D vector </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__RangesAndPoints_1gae808cc0b904cf1dc0a5f79477b85ea8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>triple&lt; Diff2D, Diff2D, MeshGridAccessor &gt;</type>
+        <definition>triple&lt;Diff2D, Diff2D, MeshGridAccessor&gt; vigra::meshGrid</definition>
+        <argsstring>(Diff2D upperLeft, Diff2D lowerRight)</argsstring>
+        <name>meshGrid</name>
+        <param>
+          <type>Diff2D</type>
+          <declname>upperLeft</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>lowerRight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a mesh grid for the specified rectangle.</para><para>The mesh grid concept is adapted from MATLAB. It is a two banded image (i.e. with 2D vector pixel type) whose first band contains the x-coordinates of the current pixel, and whose second band contains the y-coordinates. If <emphasis>upperLeft</emphasis> is not the point (0,0), the mesh grid is translated relative to the pixel indices.</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="normal">triple&lt;Diff2D,<sp/>Diff2D,<sp/>MeshGridAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RangesAndPoints_1gae808cc0b904cf1dc0a5f79477b85ea8b" kindref="member">meshGrid</ref>(Diff2D<sp/>upperLeft,<sp/>Diff2D<sp/>lowerRight);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">triple&lt;Diff2D,<sp/>Diff2D,<sp/>MeshGridAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RangesAndPoints_1gae808cc0b904cf1dc0a5f79477b85ea8b" kindref="member">meshGrid</ref>(Rect2D<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>r);</highlight></codeline>
+</programlisting></para><para><bold>Usage:</bold></para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;vigra/meshgrid.hxx&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>image<sp/>whose<sp/>values<sp/>are<sp/>equal<sp/>to<sp/>each<sp/>pixel&apos;s<sp/>distance<sp/>from<sp/>the<sp/>image<sp/>center</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>width<sp/>=<sp/>5,<sp/>height<sp/>=<sp/>7;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xc<sp/>=<sp/>width/2,<sp/>yc<sp/>=<sp/>height/2;<sp/></highlight><highlight class="comment">//<sp/>the<sp/>image<sp/>center</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>dist(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal">Point2D<sp/>upperLeft(-xc,<sp/>-yc);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">vigra::functor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">transformImage</ref>(<ref refid="group__RangesAndPoints_1gae808cc0b904cf1dc0a5f79477b85ea8b" kindref="member">meshGrid</ref>(upperLeft,<sp/>upperLeft+dist.size()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(dist),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member" tooltip="norm (= magnitude)">norm</ref>(Arg1()));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" line="120" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" bodystart="119" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga0d40702ec55e64f2d82597cb482c33c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>triple&lt; Diff2D, Diff2D, MeshGridAccessor &gt;</type>
+        <definition>triple&lt;Diff2D, Diff2D, MeshGridAccessor&gt; vigra::meshGrid</definition>
+        <argsstring>(Rect2D const &amp;r)</argsstring>
+        <name>meshGrid</name>
+        <param>
+          <type>Rect2D const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" bodystart="126" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gae9de5fbb33af2eb53b4253158f26f501" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>value_type</type>
+        <definition>value_type operator()</definition>
+        <argsstring>(ITERATOR const &amp;i) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the current data item </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" bodystart="67" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga8dd87b019eb9ddb6c1ce2aff88ec67d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>value_type</type>
+        <definition>value_type operator()</definition>
+        <argsstring>(ITERATOR const &amp;i, DIFFERENCE const &amp;diff) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the data item at an offset (can be 1D or 2D or higher order difference). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/meshgrid.hxx" bodystart="75" bodyend="78"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gad3b33b99a9985f048f480754adae6569" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator*</definition>
+        <argsstring>(Point2D l, double r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Point2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="766" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="765" bodyend="769"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga14fffad23d9cfba50e5efda73c161baa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator*</definition>
+        <argsstring>(double l, Point2D r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Point2D</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="772" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="771" bodyend="775"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga1ad6a255fabe588027fc804d77435122" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator*</definition>
+        <argsstring>(Size2D l, double r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Size2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="778" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="777" bodyend="781"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gac6c36e7a57851d16038eb14af6d33c43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator*</definition>
+        <argsstring>(double l, Size2D r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Size2D</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="784" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="783" bodyend="787"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga78da0e1482d182a8c1569932fcd408e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator*</definition>
+        <argsstring>(Point2D l, int r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Point2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="802" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="801" bodyend="805"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga2c1abe4e87bbc35be8f31c3388a986e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator*</definition>
+        <argsstring>(int l, Point2D r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Point2D</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="808" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="807" bodyend="811"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga3a4e91a163c4e5bb2fd8a8c5c7440808" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator*</definition>
+        <argsstring>(Size2D l, int r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Size2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="814" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="813" bodyend="817"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gac945061de902faae72ff67ac5e4746bb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator*</definition>
+        <argsstring>(int l, Size2D r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Size2D</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="820" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="819" bodyend="823"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gaae0d5ddc9e1bb121fcd46339a797795d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Diff2D</type>
+        <definition>Diff2D vigra::operator+</definition>
+        <argsstring>(Diff2D const &amp;a, Diff2D const &amp;b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create vector by adding specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="740" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="739" bodyend="742"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gace64ef530856786069247a7c00ce8fad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator+</definition>
+        <argsstring>(Size2D const &amp;a, Diff2D const &amp;b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Size2D const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create size by adding specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="747" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="746" bodyend="749"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga4430863eae6524da4517e5b502273a3d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator+</definition>
+        <argsstring>(Point2D const &amp;a, Diff2D const &amp;b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Point2D const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create point by adding specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="754" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="753" bodyend="756"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gae44be824bacf379602984eefe2d14675" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator+</definition>
+        <argsstring>(Size2D const &amp;s, Point2D const &amp;p)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Size2D const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>Point2D const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add size and point </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="761" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="760" bodyend="763"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga8bc0dbe52072019f3c87980a96db2ddd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Diff2D</type>
+        <definition>Diff2D vigra::operator-</definition>
+        <argsstring>(Diff2D const &amp;a, Diff2D const &amp;b)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create vector by subtracting specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="712" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="711" bodyend="714"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga6d96485f9b1640e73f9407fd32408552" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator-</definition>
+        <argsstring>(Size2D const &amp;s, Diff2D const &amp;offset)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Size2D const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create size by subtracting specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="719" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="718" bodyend="721"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1gafafe8f38862e3f3dc310a2e0d30ee515" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator-</definition>
+        <argsstring>(Point2D const &amp;s, Diff2D const &amp;offset)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Point2D const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>Diff2D const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate size of rect between two points. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="726" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="725" bodyend="728"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga16d6d97fb37e5f351eb9726d8c9a2e73" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator-</definition>
+        <argsstring>(Point2D const &amp;s, Point2D const &amp;p)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Point2D const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>Point2D const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The difference of two points is a size </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="733" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="732" bodyend="735"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga1c689862fc8ad806338e04418a5631af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator/</definition>
+        <argsstring>(Point2D l, double r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Point2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="790" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="789" bodyend="793"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga1a9f8926ee46e99a2b35539ab2db2119" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator/</definition>
+        <argsstring>(Size2D l, double r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Size2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="796" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="795" bodyend="799"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga3d535c6c4a34485050ae5ccbb8614041" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Point2D</type>
+        <definition>Point2D vigra::operator/</definition>
+        <argsstring>(Point2D l, int r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Point2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="826" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="825" bodyend="829"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RangesAndPoints_1ga6ea784903096574c3e6b624ced93938f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Size2D</type>
+        <definition>Size2D vigra::operator/</definition>
+        <argsstring>(Size2D l, int r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Size2D</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="832" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="831" bodyend="835"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Specify 2-D and N-D positions, extents, and boxes. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

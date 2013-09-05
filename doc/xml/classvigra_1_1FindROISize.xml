@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FindROISize" kind="class" prot="public">
+    <compoundname>vigra::FindROISize</compoundname>
+    <includes refid="inspectimage_8hxx" local="no">vigra/inspectimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>VALUETYPE</declname>
+        <defname>VALUETYPE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FindROISize_1a6d55e4278792f01590981c60ec0a1313" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1373" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FindROISize_1ad3ae359ebef83ead2aa53e14dcdfb7de" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>typedef unsigned int result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1377" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FindROISize_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000036"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use argument_type and result_type </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1381" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1381" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1FindROISize_1a45645fe9212aa13dd60fd2220a155892" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1FindROISize_1ad3ae359ebef83ead2aa53e14dcdfb7de" kindref="member">result_type</ref></type>
+        <definition>result_type count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the current counter </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1426" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1426" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1aa73a2dd48062214a05d88cf261914c5f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FindROISize</definition>
+        <argsstring>()</argsstring>
+        <name>FindROISize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init counter to 0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1385" bodyend="1387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1a66d851c6a329133702d6cd1e41901c43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(argument_type const &amp;)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1FindROISize_1a6d55e4278792f01590981c60ec0a1313" kindref="member">argument_type</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>update counter </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1399" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1398" bodyend="1401"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1a3611568390db60a6b592467581d58324" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FindROISize_1ad3ae359ebef83ead2aa53e14dcdfb7de" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>() const </argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return current size </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1406" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1405" bodyend="1408"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1a3c3bc092ddbbf9d2d92a29aef7fef2d1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(FindROISize const &amp;o)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1FindROISize" kindref="compound">FindROISize</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>merge two statistics </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1420" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1419" bodyend="1422"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>(re-)init ROI size with 0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1391" bodyend="1394"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FindROISize_1a7e0490881d1a0a08d62d276071bc7cc7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FindROISize_1ad3ae359ebef83ead2aa53e14dcdfb7de" kindref="member">result_type</ref></type>
+        <definition>result_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return current size </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1413" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1412" bodyend="1415"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Calculate the size of an ROI in an image. </para>    </briefdescription>
+    <detaileddescription>
+<para>This Functor is often used in conjunction with <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">ArrayOfRegionStatistics</ref> to find the sizes of all regions in a labeled image.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryAnalyser</computeroutput> and <computeroutput>FunctorTraits::isInitializer</computeroutput> are true (<computeroutput>VigraTrueType</computeroutput>)</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="inspectimage_8hxx_source" kindref="compound">vigra/inspectimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img,<sp/>mask;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FindROISize" kindref="compound" tooltip="Calculate the size of an ROI in an image.">vigra::FindROISize&lt;vigra::BImage::PixelType&gt;</ref><sp/>roisize;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" kindref="member" tooltip="Apply read-only functor to every pixel in the ROI.">vigra::inspectImageIf</ref>(srcImageRange(img),<sp/>srcImage(mask),<sp/>roisize);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Size<sp/>of<sp/>ROI:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>roisize.<ref refid="classvigra_1_1FindROISize_1a45645fe9212aa13dd60fd2220a155892" kindref="member">count</ref>;</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1368" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1367" bodyend="1428"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FindROISize_1a6d55e4278792f01590981c60ec0a1313" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1FindROISize_1a45645fe9212aa13dd60fd2220a155892" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>count</name></member>
+      <member refid="classvigra_1_1FindROISize_1aa73a2dd48062214a05d88cf261914c5f" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>FindROISize</name></member>
+      <member refid="classvigra_1_1FindROISize_1a66d851c6a329133702d6cd1e41901c43" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FindROISize_1a3611568390db60a6b592467581d58324" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FindROISize_1a3c3bc092ddbbf9d2d92a29aef7fef2d1" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FindROISize_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>reset</name></member>
+      <member refid="classvigra_1_1FindROISize_1ad3ae359ebef83ead2aa53e14dcdfb7de" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1FindROISize_1a7e0490881d1a0a08d62d276071bc7cc7" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>size</name></member>
+      <member refid="classvigra_1_1FindROISize_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" virt="non-virtual"><scope>vigra::FindROISize</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

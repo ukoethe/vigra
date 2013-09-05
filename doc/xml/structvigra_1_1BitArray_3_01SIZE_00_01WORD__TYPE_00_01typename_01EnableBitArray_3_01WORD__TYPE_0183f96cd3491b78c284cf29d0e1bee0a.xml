@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_0183f96cd3491b78c284cf29d0e1bee0a" kind="struct" prot="protected">
+    <compoundname>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::exclusive_or_assign</compoundname>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_0183f96cd3491b78c284cf29d0e1bee0a_1ae5ba2b68727f582a76f843cb6d883a1a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void assign</definition>
+        <argsstring>(WORD_TYPE &amp;a, WORD_TYPE b)</argsstring>
+        <name>assign</name>
+        <param>
+          <type>WORD_TYPE &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>WORD_TYPE</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="243" bodyend="243"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="241" bodyend="244"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_0183f96cd3491b78c284cf29d0e1bee0a_1ae5ba2b68727f582a76f843cb6d883a1a" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::exclusive_or_assign</scope><name>assign</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

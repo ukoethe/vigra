@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="installation_8dxx" kind="file">
+    <compoundname>installation.dxx</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>Installation<sp/>Installation</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"></highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/><sp/><sp/><sp/>VIGRA<sp/>can<sp/>be<sp/>downloaded<sp/>from<sp/>&lt;a<sp/>href=&quot;http://hci.iwr.uni-heidelberg.de/vigra/&quot;&gt;http://hci.iwr.uni-heidelberg.de/vigra/&lt;/a&gt;.<sp/>It<sp/>should<sp/>work<sp/>with<sp/>any<sp/>standard<sp/>conforming<sp/>C++<sp/>compiler<sp/>on<sp/>both<sp/>32-bit<sp/>and<sp/>64-bit<sp/>machines.</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/><sp/><sp/>VIGRA<sp/>is<sp/>mainly<sp/>a<sp/>header<sp/>library,<sp/>i.e.<sp/>much<sp/>of<sp/>its<sp/>functionality<sp/>can<sp/>be<sp/>accessed<sp/>by<sp/>simply<sp/>copying<sp/>the<sp/>include<sp/>files<sp/>to<sp/>a<sp/>convenient<sp/>location.<sp/>A<sp/>more<sp/>involved<sp/>build<sp/>process<sp/>is<sp/>necessary<sp/>for<sp/>image<sp/>file<sp/>import<sp/>and<sp/>export,<sp/>for<sp/>the<sp/>VIGRA<sp/>Python<sp/>bindings,<sp/>and<sp/>for<sp/>the<sp/>test<sp/>suite<sp/>and<sp/>examples.<sp/>VIGRA<sp/>can<sp/>take<sp/>advantage<sp/>of<sp/>the<sp/>following<sp/>external<sp/>software<sp/>packages:</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;ul&gt;</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://www.ijg.org/&quot;&gt;libjpeg&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;http://www.libtiff.org/&quot;&gt;libtiff&lt;/a&gt;,</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;http://www.libpng.org/&quot;&gt;libpng&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;http://www.openexr.com/&quot;&gt;OpenEXR&lt;/a&gt;<sp/></highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>for<sp/>reading<sp/>and<sp/>writing<sp/>JPEG,<sp/>TIFF,<sp/>PNG,<sp/>and<sp/>EXR<sp/>images<sp/>respectively.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://www.hdfgroup.org/HDF5/&quot;&gt;HDF5&lt;/a&gt;<sp/>for<sp/>reading<sp/>and<sp/>writing<sp/>HDF5<sp/>files<sp/>(storage<sp/>of<sp/>MultiArray<sp/>and<sp/>RandomForest).</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://www.fftw.org/&quot;&gt;libfftw&lt;/a&gt;<sp/>for<sp/>fast<sp/>Fourier<sp/>transforms.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://www.doxygen.org/&quot;&gt;doxygen&lt;/a&gt;<sp/>and<sp/>&lt;a<sp/>href=&quot;http://www.python.org/&quot;&gt;Python&lt;/a&gt;<sp/>to<sp/>generate<sp/>C++<sp/>documentation.</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://www.python.org/&quot;&gt;Python&lt;/a&gt;,<sp/>&lt;a<sp/>href=&quot;http://www.boost.org/&quot;&gt;boost_python&lt;/a&gt;,<sp/>and<sp/>&lt;a<sp/>href=&quot;http://numpy.scipy.org/&quot;&gt;numpy&lt;/a&gt;<sp/>to<sp/>compile<sp/>and<sp/>run<sp/>vigranumpy<sp/>(the<sp/>VIGRA<sp/>Python<sp/>bindings).</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://sphinx.pocoo.org/&quot;&gt;sphinx&lt;/a&gt;<sp/>to<sp/>generate<sp/>vigranumpy<sp/>documentation.</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>&lt;a<sp/>href=&quot;http://readthedocs.org/docs/nose/en/latest/&quot;&gt;nosetests&lt;/a&gt;<sp/>to<sp/>execute<sp/>the<sp/>vigranumpy<sp/>test<sp/>suite.</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/><sp/><sp/>These<sp/>dependencies<sp/>are<sp/>optional<sp/>-<sp/>the<sp/>functionality<sp/>will<sp/>simply<sp/>be<sp/>unavailable<sp/>if<sp/>the<sp/>libraries<sp/>cannot<sp/>be<sp/>found.</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/><sp/><sp/>VIGRA<sp/>installation<sp/>is<sp/>based<sp/>on<sp/>&lt;a<sp/>href=&quot;http://www.cmake.org/&quot;&gt;cmake&lt;/a&gt;<sp/>which<sp/>has<sp/>to<sp/>be<sp/>installed<sp/>on<sp/>your<sp/>machine.<sp/>In<sp/>order<sp/>to<sp/>configure<sp/>the<sp/>build<sp/>and<sp/>installation<sp/>process,<sp/>execute<sp/>the<sp/>following<sp/>on<sp/>the<sp/>command<sp/>line:</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"></highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>mkdir<sp/>\&lt;vigra_build_path\&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>cd<sp/>\&lt;vigra_build_path\&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>cmake<sp/>[options]<sp/>\&lt;vigra_source_path\&gt;</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>make<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>build<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>make<sp/>check<sp/><sp/><sp/><sp/>#<sp/>compile<sp/>and<sp/>run<sp/>tests<sp/>(optional,<sp/>Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>make<sp/>doc<sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>generate<sp/>documentation<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>make<sp/>install<sp/><sp/>#<sp/>install<sp/>(Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/>&gt;<sp/>make<sp/>examples<sp/>#<sp/>build<sp/>examples<sp/>(optional,<sp/>Linux/Unix<sp/>and<sp/>MinGW<sp/>only)</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/>If<sp/>you<sp/>use<sp/>Microsoft<sp/>Visual<sp/>C++,<sp/>you<sp/>just<sp/>execute<sp/>&lt;tt&gt;cmake&lt;/tt&gt;<sp/>(not<sp/>&lt;tt&gt;make&lt;/tt&gt;)<sp/>or<sp/>&lt;tt&gt;cmake-gui&lt;/tt&gt;<sp/>with<sp/>the<sp/>appropriate<sp/>generator<sp/>which<sp/>creates<sp/>a<sp/>solution<sp/>file<sp/>&apos;&amp;lt;vigra_build_path&amp;gt;/vigra.sln&apos;.<sp/>This<sp/>file<sp/>must<sp/>be<sp/>opened<sp/>in<sp/>Visual<sp/>Studio,<sp/>and<sp/>the<sp/>projects<sp/>&apos;ALL_BUILD&apos;,<sp/>&apos;check&apos;,<sp/>&apos;doc&apos;,<sp/>&apos;INSTALL&apos;,<sp/>and<sp/>&apos;examples&apos;<sp/>should<sp/>be<sp/>generated.<sp/>&lt;b&gt;Important<sp/>note&lt;/b&gt;:<sp/>If<sp/>you<sp/>include<sp/>&lt;b&gt;&quot;windows.h&quot;&lt;/b&gt;<sp/>in<sp/>your<sp/>projects:<sp/>there<sp/>are<sp/>some<sp/>name<sp/>clashes<sp/>with<sp/>VIGRA<sp/>--<sp/>always<sp/>include<sp/>&lt;b&gt;&quot;vigra/windows.h&quot;&lt;/b&gt;<sp/>instead.</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/>cmake<sp/>[options]<sp/>customize<sp/>installation<sp/>directories<sp/>and<sp/>guide<sp/>cmake<sp/>in<sp/>its<sp/>search<sp/>for<sp/>the<sp/>VIGRA<sp/>dependencies.<sp/>On<sp/>a<sp/>Linux<sp/>system,<sp/>it<sp/>is<sp/>often<sp/>possible<sp/>to<sp/>configure<sp/>without<sp/>any<sp/>options.<sp/>The<sp/>most<sp/>commonly<sp/>used<sp/>options<sp/>are:</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DL&gt;</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DCMAKE_INSTALL_PREFIX=&amp;lt;path&amp;gt;</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>where<sp/>to<sp/>install<sp/>VIGRA<sp/>(binaries<sp/>will<sp/>be<sp/>installed<sp/>in<sp/>&amp;lt;path&amp;gt;/bin,<sp/>libraries<sp/>in<sp/></highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;lt;path&amp;gt;/lib,<sp/>headers<sp/>in<sp/>&amp;lt;path&amp;gt;/include/vigra,<sp/>and<sp/>documentation<sp/>in<sp/></highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&amp;lt;path&amp;gt;/doc/vigra<sp/>and<sp/>&amp;lt;path&amp;gt;/doc/vigranumpy,<sp/>default<sp/>is<sp/>platform<sp/>dependent)</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DDEPENDENCY_SEARCH_PREFIX=&amp;lt;path1&amp;gt;[;&amp;lt;path2&amp;gt;...]</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>where<sp/>to<sp/>look<sp/>for<sp/>VIGRA<sp/>dependencies<sp/>(for<sp/>every<sp/>given<sp/>path,<sp/>cmake<sp/>will<sp/>search<sp/>for<sp/></highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>libraries<sp/>in<sp/>&amp;lt;path&amp;gt;/lib<sp/>and<sp/>for<sp/>headers<sp/>in<sp/>&amp;lt;path&amp;gt;/include)</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DDOCDIR=&amp;lt;path&amp;gt;</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>where<sp/>to<sp/>generate<sp/>VIGRA<sp/>documentation<sp/>(default:<sp/>&amp;lt;vigra_source_path&amp;gt;/doc).</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Note<sp/>that<sp/>this<sp/>is<sp/>not<sp/>the<sp/>documentation<sp/>install<sp/>directory<sp/>(the<sp/>latter<sp/>can<sp/>be<sp/>changed</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>by<sp/>-DDOCINSTALL=...<sp/>and<sp/>defaults<sp/>to<sp/>$CMAKE_INSTALL_PREFIX/doc).</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DWITH_VIGRANUMPY=1</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>build<sp/>VIGRA<sp/>Python<sp/>bindings<sp/>(default:<sp/>1).<sp/>Pass<sp/>-DWITH_VIGRANUMPY=0<sp/>to<sp/>suppress<sp/></highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigranumpy.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DWITH_HDF5=1</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>build<sp/>VIGRA<sp/>with<sp/>HDF5<sp/>support<sp/>(default:<sp/>1).<sp/>Pass<sp/>-DDWITH_HDF5=0<sp/>to<sp/>compile<sp/>without<sp/>HDF5.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;DT&gt;<sp/>-DLIB_SUFFIX=64</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;DD&gt;<sp/>define<sp/>suffix<sp/>of<sp/>lib<sp/>directory<sp/>name<sp/>(default:<sp/>empty<sp/>string,<sp/>i.e.<sp/>no<sp/>suffix).<sp/>Use<sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-DLIB_SUFFIX=64<sp/>when<sp/>you<sp/>want<sp/>to<sp/>install<sp/>libraries<sp/>in<sp/>$CMAKE_INSTALL_PREFIX/lib64.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;/DL&gt;</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"></highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/>More<sp/>fine-grained<sp/>customization<sp/>(e.g.<sp/>specification<sp/>of<sp/>explicit<sp/>paths<sp/>for<sp/>all<sp/>dependencies,<sp/>customization<sp/>of<sp/>compiler<sp/>flags)<sp/>is<sp/>possible<sp/>by<sp/>editing<sp/>the<sp/>file<sp/>&amp;lt;vigra_build_path&amp;gt;/CMakeCache.txt.<sp/>This<sp/>is<sp/>best<sp/>done<sp/>by<sp/>means<sp/>of<sp/>the<sp/>interactive<sp/>programs<sp/>&lt;b&gt;ccmake&lt;/b&gt;<sp/>or<sp/>&lt;b&gt;cmake-gui&lt;/b&gt;.<sp/>Consult<sp/>the<sp/>&lt;a<sp/>href=&quot;http://www.cmake.org/cmake/help/documentation.html&quot;&gt;cmake<sp/>documentation&lt;/a&gt;<sp/>for<sp/>more<sp/>detailed<sp/>help.</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"></highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/><sp/><sp/>For<sp/>using<sp/>VIGRA<sp/>in<sp/>another<sp/>CMake-built<sp/>project,<sp/>you<sp/>can<sp/>use<sp/>the<sp/>CMake<sp/>command<sp/>FIND_PACKAGE(Vigra),<sp/>which<sp/>will<sp/>set<sp/>the<sp/>CMake<sp/>variables<sp/>${Vigra_INCLUDE_DIRS}<sp/>with<sp/>the<sp/>correct<sp/>include<sp/>path,<sp/>and<sp/>import<sp/>the<sp/>binary<sp/>targets<sp/>(currently<sp/>vigraimpex)<sp/>to<sp/>link<sp/>against<sp/>(e.g.,<sp/>TARGET_LINK_LIBRARIES(targetname<sp/>vigraimpex)).<sp/>For<sp/>this<sp/>mechanism<sp/>to<sp/>work,<sp/>CMake<sp/>reads<sp/>a<sp/>config<sp/>file<sp/>VigraConfig.cmake,<sp/>which<sp/>is<sp/>installed<sp/>along<sp/>with<sp/>the<sp/>library<sp/>in<sp/>CMAKE_INSTALL_PREFIX/lib/vigra.<sp/>Alternatively,<sp/>you<sp/>can<sp/>point<sp/>CMake<sp/>(cache<sp/>entry<sp/>Vigra_DIR)<sp/>to<sp/>VIGRA&apos;s<sp/>build<sp/>directory,<sp/>where<sp/>a<sp/>corresponding<sp/>VigraConfig.cmake<sp/>resides<sp/>for<sp/>using<sp/>the<sp/>build<sp/>version<sp/>directly<sp/>without<sp/>installation.</highlight></codeline>
+<codeline lineno="64"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/docsrc/installation.dxx"/>
+  </compounddef>
+</doxygen>

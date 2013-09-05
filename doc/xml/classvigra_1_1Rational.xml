@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Rational" kind="class" prot="public">
+    <compoundname>vigra::Rational</compoundname>
+    <includes refid="rational_8hxx" local="no">vigra/rational.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>IntType</declname>
+        <defname>IntType</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" prot="public" static="no">
+        <type>If&lt; typename TypeTraits&lt; IntType &gt;::isBuiltinType, IntType, IntType const &amp; &gt;::type</type>
+        <definition>typedef If&lt;typename TypeTraits&lt;IntType&gt;::isBuiltinType, IntType, IntType const &amp;&gt;::type param_type</definition>
+        <argsstring></argsstring>
+        <name>param_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Determine whether arguments should be passed as <computeroutput>IntType</computeroutput> or <computeroutput>IntType const &amp;</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Rational_1abb048c37fd66bc0f7f6b520b9bfc8771" prot="public" static="no">
+        <type>IntType</type>
+        <definition>typedef IntType value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The type of numerator and denominator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="198" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Rational_1acc4f2afb3c7450be6b308c58cce3ca62" prot="private" static="no" mutable="no">
+        <type>IntType</type>
+        <definition>IntType den</definition>
+        <argsstring></argsstring>
+        <name>den</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="379" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="379" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Rational_1ab6c9383b768c68b96160f66e770ae286" prot="private" static="no" mutable="no">
+        <type>IntType</type>
+        <definition>IntType num</definition>
+        <argsstring></argsstring>
+        <name>num</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="378" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Rational_1af1fd6d940ed3b587f2aecfecd113f2fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; assign</definition>
+        <argsstring>(param_type n, param_type d, bool doNormalize=true)</argsstring>
+        <name>assign</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>doNormalize</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment from <computeroutput>IntType</computeroutput> pair. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="391" bodyend="398"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1afe733e9216a2802d9705a50b70fc51c7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+        <definition>param_type denominator</definition>
+        <argsstring>() const </argsstring>
+        <name>denominator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access denominator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="273" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a933038143f002ac7e1b885b0043ff534" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool is_inf</definition>
+        <argsstring>() const </argsstring>
+        <name>is_inf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether we have positive or negative infinity. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="359" bodyend="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a002f500c34790f953f2b2a98e10ff92e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool is_ninf</definition>
+        <argsstring>() const </argsstring>
+        <name>is_ninf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether we have negative infinity. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="351" bodyend="355"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ab6ba23781a4e39fcf512348562c27374" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool is_pinf</definition>
+        <argsstring>() const </argsstring>
+        <name>is_pinf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether we have positive infinity. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="343" bodyend="347"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1aa2b4ad1193eb20a7ba1ef8235b9ba043" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+        <definition>param_type numerator</definition>
+        <argsstring>() const </argsstring>
+        <name>numerator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access numerator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="269" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="269" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!</definition>
+        <argsstring>() const </argsstring>
+        <name>operator!</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check for zero by calling <computeroutput>!numerator()</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="339" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="339" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ad78f26f7ee49c917688b3df3802a519e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator*=</definition>
+        <argsstring>(const Rational &amp;r)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Multiply-assignment from <computeroutput><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="486" bodyend="517"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ae02a5f3196e9f0484d4078fa64b068a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator*=</definition>
+        <argsstring>(param_type i)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Multiply-assignment from <computeroutput>IntType</computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="315" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="581" bodyend="604"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ae3996b4c1b328cd4b97e94eead0d520a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-increment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="325" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="639" bodyend="644"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1aa1f81e90baf268ac29c0368f06cce1ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></type>
+        <definition>Rational operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Post-increment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="332" bodyend="332"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ad4cea6beb1ce868aa9afd5217ebca782" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator+=</definition>
+        <argsstring>(const Rational &amp;r)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add-assignment from <computeroutput><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="402" bodyend="449"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1adde9eb389ef2be4c33cc1a7b2fbb883f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator+=</definition>
+        <argsstring>(param_type i)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add-assignment from <computeroutput>IntType</computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="565" bodyend="569"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ab72be46aa0524dd489df981953459e66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pre-decrement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="647" bodyend="652"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ad9e36dc55a0f4041883484cfdf41e028" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></type>
+        <definition>Rational operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Post-decrement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="335" bodyend="335"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1af29dbd66c631f1ccad752eb56a613d1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator-=</definition>
+        <argsstring>(const Rational &amp;r)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtract-assignment from <computeroutput><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="285" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="452" bodyend="483"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a4da0e74674f083c49fd187a93aba194f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator-=</definition>
+        <argsstring>(param_type i)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtract-assignment from <computeroutput>IntType</computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="309" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="573" bodyend="577"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a7fc72d1aa3e20f60a02c51a46133e39a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator/=</definition>
+        <argsstring>(const Rational &amp;r)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Divide-assignment from <computeroutput><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="297" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="520" bodyend="560"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a7f8f03a6e027258843a190d5e18f7d5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&lt; IntType &gt; &amp; operator/=</definition>
+        <argsstring>(param_type i)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Divide-assignment from <computeroutput>IntType</computeroutput></para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="608" bodyend="635"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a3bf305dad4c0932127dbdfd7f0a444aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref> &amp;</type>
+        <definition>Rational&amp; operator=</definition>
+        <argsstring>(param_type n)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment from <computeroutput>IntType</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="261" bodyend="261"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ae0a33e796fe904111569461516de04e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rational</definition>
+        <argsstring>()</argsstring>
+        <name>Rational</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default constructor: creates zero (<computeroutput>0/1</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="208" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ade893e284e9ad9d3133551d11fabebcd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>Rational</definition>
+        <argsstring>(Rational&lt; U &gt; const &amp;r)</argsstring>
+        <name>Rational</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; U &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="219" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="216" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a1b64024cf030cc41bfe252a4af7d4cfc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rational</definition>
+        <argsstring>(param_type n)</argsstring>
+        <name>Rational</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer constructor: creates <computeroutput>n/1</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="223" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a172193f724cc8d146cf8bfe7044580d6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rational</definition>
+        <argsstring>(param_type n, param_type d, bool doNormalize=true)</argsstring>
+        <name>Rational</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" kindref="member">param_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>doNormalize</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ratio constructor: creates <computeroutput>n/d</computeroutput>.</para><para>The ratio will be normalized unless <computeroutput>doNormalize = false</computeroutput>. Since the internal representation is assumed to be normalized, <computeroutput>doNormalize = false</computeroutput> must only be used as an optimization if <computeroutput>n</computeroutput> and <computeroutput>d</computeroutput> are known to be already normalized (i.e. have 1 as their greatest common divisor). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="236" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1a431b2616e49d7b95ab78ac2ff9c32036" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Rational</definition>
+        <argsstring>(double v, double epsilon=1e-4)</argsstring>
+        <name>Rational</name>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>epsilon</declname>
+          <defval>1e-4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct as an approximation of a real number.</para><para>The maximal allowed relative error is given by <computeroutput>epsilon</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="253" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="248" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Rational_1ac79e9fb8002282a5f3651fe0b2a6b2a9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int sign</definition>
+        <argsstring>() const </argsstring>
+        <name>sign</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check the sign.</para><para>Gives 1 if the number is positive, -1 if negative, and 0 otherwise. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="370" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="369" bodyend="373"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1Rational_1acd0de676568888d848beb97dcc53ae47" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void normalize</definition>
+        <argsstring>()</argsstring>
+        <name>normalize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="656" bodyend="688"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Template for rational numbers.</para><para>This template can make use of arbitrary integer types, including user-defined (e.g. infinite precision) ones. Note, however, that overflow in either the numerator or denominator is not detected during calculations <ndash/> the standard behavior of the integer type (e.g. wrap around) applies.</para><para>The class can represent and handle positive and negative infinity resulting from division by zero. Indeterminate expressions such as 0/0 are signaled by a <computeroutput>bad_rational</computeroutput> exception which is derived from <computeroutput>std::domain_error</computeroutput>.</para><para><computeroutput><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref></computeroutput> implements the required interface of an <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref> and the required <ref refid="RationalTraits" kindref="compound">numeric and</ref>promotion traits". All arithmetic and comparison operators, as well as the relevant algebraic functions are supported .</para><para><bold>See also:</bold> <itemizedlist>
+<listitem>
+<para><ref refid="RationalTraits" kindref="compound">Numeric and Promote Traits of Rational</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__RationalOperations" kindref="compound">Functions for Rational</ref> </para></listitem>
+</itemizedlist>
+</para><para><bold>#include</bold> &lt;<ref refid="rational_8hxx_source" kindref="compound">vigra/rational.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="193" bodyend="386"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Rational_1af1fd6d940ed3b587f2aecfecd113f2fd" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>assign</name></member>
+      <member refid="classvigra_1_1Rational_1acc4f2afb3c7450be6b308c58cce3ca62" prot="private" virt="non-virtual"><scope>vigra::Rational</scope><name>den</name></member>
+      <member refid="classvigra_1_1Rational_1afe733e9216a2802d9705a50b70fc51c7" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>denominator</name></member>
+      <member refid="classvigra_1_1Rational_1a933038143f002ac7e1b885b0043ff534" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>is_inf</name></member>
+      <member refid="classvigra_1_1Rational_1a002f500c34790f953f2b2a98e10ff92e" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>is_ninf</name></member>
+      <member refid="classvigra_1_1Rational_1ab6ba23781a4e39fcf512348562c27374" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>is_pinf</name></member>
+      <member refid="classvigra_1_1Rational_1acd0de676568888d848beb97dcc53ae47" prot="private" virt="non-virtual"><scope>vigra::Rational</scope><name>normalize</name></member>
+      <member refid="classvigra_1_1Rational_1ab6c9383b768c68b96160f66e770ae286" prot="private" virt="non-virtual"><scope>vigra::Rational</scope><name>num</name></member>
+      <member refid="classvigra_1_1Rational_1aa2b4ad1193eb20a7ba1ef8235b9ba043" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>numerator</name></member>
+      <member refid="classvigra_1_1Rational_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator!</name></member>
+      <member refid="classvigra_1_1Rational_1ad78f26f7ee49c917688b3df3802a519e" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Rational_1ae02a5f3196e9f0484d4078fa64b068a2" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Rational_1ae3996b4c1b328cd4b97e94eead0d520a" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1Rational_1aa1f81e90baf268ac29c0368f06cce1ae" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1Rational_1ad4cea6beb1ce868aa9afd5217ebca782" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Rational_1adde9eb389ef2be4c33cc1a7b2fbb883f" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Rational_1ab72be46aa0524dd489df981953459e66" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1Rational_1ad9e36dc55a0f4041883484cfdf41e028" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1Rational_1af29dbd66c631f1ccad752eb56a613d1a" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1Rational_1a4da0e74674f083c49fd187a93aba194f" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1Rational_1a7fc72d1aa3e20f60a02c51a46133e39a" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Rational_1a7f8f03a6e027258843a190d5e18f7d5b" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Rational_1a3bf305dad4c0932127dbdfd7f0a444aa" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Rational_1ab0f80695931bc23b79357590b8207aaf" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>param_type</name></member>
+      <member refid="classvigra_1_1Rational_1ae0a33e796fe904111569461516de04e9" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>Rational</name></member>
+      <member refid="classvigra_1_1Rational_1ade893e284e9ad9d3133551d11fabebcd" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>Rational</name></member>
+      <member refid="classvigra_1_1Rational_1a1b64024cf030cc41bfe252a4af7d4cfc" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>Rational</name></member>
+      <member refid="classvigra_1_1Rational_1a172193f724cc8d146cf8bfe7044580d6" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>Rational</name></member>
+      <member refid="classvigra_1_1Rational_1a431b2616e49d7b95ab78ac2ff9c32036" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>Rational</name></member>
+      <member refid="classvigra_1_1Rational_1ac79e9fb8002282a5f3651fe0b2a6b2a9" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>sign</name></member>
+      <member refid="classvigra_1_1Rational_1abb048c37fd66bc0f7f6b520b9bfc8771" prot="public" virt="non-virtual"><scope>vigra::Rational</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

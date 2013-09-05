@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1SparseArray" kind="class" prot="public">
+    <compoundname>vigra::matlab::SparseArray</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1SparseArray_1ac2891f9784ff312808ee9710ab46a86c" prot="private" static="no" mutable="no">
+        <type>std::map&lt; <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; int, 2 &gt;, T, ShapeCmp &gt;</type>
+        <definition>std::map&lt;TinyVector&lt;int,2&gt;, T,ShapeCmp&gt; data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1145" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1SparseArray_1a9f59b34b1f25fe00023291b678246bcc" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int length</definition>
+        <argsstring></argsstring>
+        <name>length</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1SparseArray_1a2474a5474cbff19523a51eb1de01cda4" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1146" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1SparseArray_1a3558519d7401897ea728afc306858602" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void assign</definition>
+        <argsstring>(int i=1, int j=1)</argsstring>
+        <name>assign</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+          <defval>1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>j</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1149" bodyend="1152"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1SparseArray_1ad860e58a68d2e47598e35fe23df25359" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class indexType</type>
+          </param>
+        </templateparamlist>
+        <type>const T</type>
+        <definition>const T get</definition>
+        <argsstring>(indexType i_, indexType j_)</argsstring>
+        <name>get</name>
+        <param>
+          <type>indexType</type>
+          <declname>i_</declname>
+        </param>
+        <param>
+          <type>indexType</type>
+          <declname>j_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1171" bodyend="1177"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1SparseArray_1aec368fcdbebf3bb93e71a4ca50609684" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void mapToMxArray</definition>
+        <argsstring>(mxArray *&amp;in)</argsstring>
+        <name>mapToMxArray</name>
+        <param>
+          <type>mxArray *&amp;</type>
+          <declname>in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1180" bodyend="1209"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1SparseArray_1a640280163ae901087aceaff5f0635bba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class indexType</type>
+          </param>
+        </templateparamlist>
+        <type>T &amp;</type>
+        <definition>T&amp; operator()</definition>
+        <argsstring>(indexType i_, indexType j_)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>indexType</type>
+          <declname>i_</declname>
+        </param>
+        <param>
+          <type>indexType</type>
+          <declname>j_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1161" bodyend="1168"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1SparseArray_1ab9030804153f0eff1113fa34efbefac5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SparseArray</definition>
+        <argsstring>(int i=1, int j=1)</argsstring>
+        <name>SparseArray</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+          <defval>1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>j</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1153" bodyend="1156"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="1143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="1142" bodyend="1211"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1a3558519d7401897ea728afc306858602" prot="public" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>assign</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1ac2891f9784ff312808ee9710ab46a86c" prot="private" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>data</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1ad860e58a68d2e47598e35fe23df25359" prot="public" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>get</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1a9f59b34b1f25fe00023291b678246bcc" prot="private" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>length</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1aec368fcdbebf3bb93e71a4ca50609684" prot="public" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>mapToMxArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1a640280163ae901087aceaff5f0635bba" prot="public" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1ab9030804153f0eff1113fa34efbefac5" prot="public" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>SparseArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1SparseArray_1a2474a5474cbff19523a51eb1de01cda4" prot="private" virt="non-virtual"><scope>vigra::matlab::SparseArray</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

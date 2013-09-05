@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index" kind="struct" prot="protected">
+    <compoundname>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_index</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>pos</declname>
+        <defname>pos</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1a434347e586e7236843e1c636781de00c" prot="public" static="yes" mutable="no">
+        <type>const WORD_TYPE</type>
+        <definition>const WORD_TYPE bit_mask</definition>
+        <argsstring></argsstring>
+        <name>bit_mask</name>
+        <initializer> WORD_TYPE(1) &lt;&lt; bit_pos</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="45" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1abc5afdf3c1c767f84db8f481d7b572f0" prot="public" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned bit_pos</definition>
+        <argsstring></argsstring>
+        <name>bit_pos</name>
+        <initializer> pos % word_len</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="44" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1a1007600d05b1b387156c0716f6318458" prot="public" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned word_pos</definition>
+        <argsstring></argsstring>
+        <name>word_pos</name>
+        <initializer> pos / word_len</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="43" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="42" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="41" bodyend="46"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1a434347e586e7236843e1c636781de00c" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_index</scope><name>bit_mask</name></member>
+      <member refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1abc5afdf3c1c767f84db8f481d7b572f0" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_index</scope><name>bit_pos</name></member>
+      <member refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index_1a1007600d05b1b387156c0716f6318458" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_index</scope><name>word_pos</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

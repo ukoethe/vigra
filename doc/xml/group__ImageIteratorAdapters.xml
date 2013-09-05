@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__ImageIteratorAdapters" kind="group">
+    <compoundname>ImageIteratorAdapters</compoundname>
+    <title>Image Iterator Adapters</title>
+    <innerclass refid="classvigra_1_1ColumnIterator" prot="public">vigra::ColumnIterator</innerclass>
+    <innerclass refid="classvigra_1_1CrackContourCirculator" prot="public">vigra::CrackContourCirculator</innerclass>
+    <innerclass refid="classvigra_1_1LineIterator" prot="public">vigra::LineIterator</innerclass>
+    <innerclass refid="classvigra_1_1NeighborhoodCirculator" prot="public">vigra::NeighborhoodCirculator</innerclass>
+    <innerclass refid="classvigra_1_1RestrictedNeighborhoodCirculator" prot="public">vigra::RestrictedNeighborhoodCirculator</innerclass>
+    <innerclass refid="classvigra_1_1RowIterator" prot="public">vigra::RowIterator</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Iterate over rows, columns, neighborhoods, contours, and other image subsets </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

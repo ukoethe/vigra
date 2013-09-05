@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1LocalMinmaxOptions" kind="class" prot="public">
+    <compoundname>vigra::LocalMinmaxOptions</compoundname>
+    <includes refid="localminmax_8hxx" local="no">vigra/localminmax.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1ae4c99a7a2eb3a20c750dd4a976d374e8" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool allow_at_border</definition>
+        <argsstring></argsstring>
+        <name>allow_at_border</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="609" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1a5e712590c0eef21447120877464b7396" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool allow_plateaus</definition>
+        <argsstring></argsstring>
+        <name>allow_plateaus</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="609" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1a61b5eb682c5095353e18dca62cfe6d43" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double marker</definition>
+        <argsstring></argsstring>
+        <name>marker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="607" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="607" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1a561d3a2f122b26afbf7cc43e49a13b15" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int neigh</definition>
+        <argsstring></argsstring>
+        <name>neigh</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="608" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="608" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1a30eac9d8cda6db090f869ccf184f2e33" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double thresh</definition>
+        <argsstring></argsstring>
+        <name>thresh</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="607" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="607" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1LocalMinmaxOptions_1a86aeb9c9c3cded149e5ebcee4cc687fa" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool use_threshold</definition>
+        <argsstring></argsstring>
+        <name>use_threshold</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="609" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1aabc4a3a4e620d1be3b76e841f5fa4c52" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> &amp;</type>
+        <definition>LocalMinmaxOptions&amp; allowAtBorder</definition>
+        <argsstring>(bool f=true)</argsstring>
+        <name>allowAtBorder</name>
+        <param>
+          <type>bool</type>
+          <declname>f</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Detect extrema at the image border. </para>        </briefdescription>
+        <detaileddescription>
+<para>Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="670" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="669" bodyend="673"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1a20aac0b1074b4d78f771c85da0a5eb8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> &amp;</type>
+        <definition>LocalMinmaxOptions&amp; allowPlateaus</definition>
+        <argsstring>(bool f=true)</argsstring>
+        <name>allowPlateaus</name>
+        <param>
+          <type>bool</type>
+          <declname>f</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Allow extremal plateaus. </para>        </briefdescription>
+        <detaileddescription>
+<para>That is regions of constant gray value whose neighbors are all higher (minima) or lower than the value of the region.</para><para>Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="683" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="682" bodyend="686"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1a60373f74514b0c9ae035664fd07a12f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>LocalMinmaxOptions</definition>
+        <argsstring>()</argsstring>
+        <name>LocalMinmaxOptions</name>
+        <briefdescription>
+<para>Construct default options object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Defaults are: marker value &apos;1&apos;, no threshold, indirect neighborhood, don&apos;t allow extrema at border and extremal plateaus. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="623" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="616" bodyend="623"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1ad862abff0c2679654dec01f502cc45d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> &amp;</type>
+        <definition>LocalMinmaxOptions&amp; markWith</definition>
+        <argsstring>(double m)</argsstring>
+        <name>markWith</name>
+        <param>
+          <type>double</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+<para>Mark extrema in the destination image with the given value. </para>        </briefdescription>
+        <detaileddescription>
+<para>Default: 1 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="646" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="645" bodyend="649"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1a51bacce604df0a2c98128a389d7638c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> &amp;</type>
+        <definition>LocalMinmaxOptions&amp; neighborhood</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>neighborhood</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Use the given neighborhood. </para>        </briefdescription>
+        <detaileddescription>
+<para>The value &apos;0&apos; indicates direct neighborhood (i.e. 4-neighborhood in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), the value &apos;1&apos; indicates indirect neighborhood (i.e. 8-neighborhood in 2D, 26-neighborhood in 3D, 3<superscript>N</superscript>-1 neighborhood in N-D). The specific number of neighbors for the desired dimension can also be used.</para><para>Default: 1 (indirect neighborhood) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="636" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="635" bodyend="639"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1LocalMinmaxOptions_1a52b83f56c2fc42203822921bee8ec2fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> &amp;</type>
+        <definition>LocalMinmaxOptions&amp; threshold</definition>
+        <argsstring>(double t)</argsstring>
+        <name>threshold</name>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classvigra_1_1Threshold" kindref="compound">Threshold</ref> the extrema. </para>        </briefdescription>
+        <detaileddescription>
+<para>Discard minima whose gray value is not below the threshold. and maxima whose gray level is not above the threshold.</para><para>Default: don&apos;t threshold (i.e. return all extrema) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="659" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="658" bodyend="663"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options object for <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> and <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="localminmax_8hxx_source" kindref="compound">vigra/localminmax.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>minima(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>src</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>4-neighborhood,<sp/>allow<sp/>minima<sp/>at<sp/>the<sp/>image<sp/>border,<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>and<sp/>discard<sp/>those<sp/>where<sp/>the<sp/>gray<sp/>value<sp/>is<sp/>not<sp/>below<sp/>5</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(srcImageRange(src),<sp/>destImage(minima),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().<ref refid="classvigra_1_1LocalMinmaxOptions_1a51bacce604df0a2c98128a389d7638c9" kindref="member" tooltip="Use the given neighborhood.">neighborhood</ref>(4).<ref refid="classvigra_1_1LocalMinmaxOptions_1aabc4a3a4e620d1be3b76e841f5fa4c52" kindref="member" tooltip="Detect extrema at the image border.">allowAtBorder</ref>().<ref refid="classvigra_1_1LocalMinmaxOptions_1a52b83f56c2fc42203822921bee8ec2fc" kindref="member" tooltip="Threshold the extrema.">threshold</ref>(5));</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="605" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="604" bodyend="687"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1ae4c99a7a2eb3a20c750dd4a976d374e8" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>allow_at_border</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a5e712590c0eef21447120877464b7396" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>allow_plateaus</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1aabc4a3a4e620d1be3b76e841f5fa4c52" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>allowAtBorder</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a20aac0b1074b4d78f771c85da0a5eb8b" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>allowPlateaus</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a60373f74514b0c9ae035664fd07a12f8" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>LocalMinmaxOptions</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a61b5eb682c5095353e18dca62cfe6d43" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>marker</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1ad862abff0c2679654dec01f502cc45d5" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>markWith</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a561d3a2f122b26afbf7cc43e49a13b15" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>neigh</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a51bacce604df0a2c98128a389d7638c9" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>neighborhood</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a30eac9d8cda6db090f869ccf184f2e33" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>thresh</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a52b83f56c2fc42203822921bee8ec2fc" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>threshold</name></member>
+      <member refid="classvigra_1_1LocalMinmaxOptions_1a86aeb9c9c3cded149e5ebcee4cc687fa" prot="public" virt="non-virtual"><scope>vigra::LocalMinmaxOptions</scope><name>use_threshold</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

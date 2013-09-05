@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="PointOperators" kind="page">
+    <compoundname>PointOperators</compoundname>
+    <title>Point Operators</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="group__InitAlgo" kindref="compound">Algorithms to Initialize Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>init images or image borders </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__InspectAlgo" kindref="compound">Algorithms to Inspect Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>Apply read-only functor to every pixel</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__InspectFunctor" kindref="compound">Functors To Inspect Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>Functors which report image statistics</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__CopyAlgo" kindref="compound">Algorithms to Copy Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>Copy images or regions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__TransformAlgo" kindref="compound">Algorithms to Transform Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>apply functor to calculate a pixelwise transformation of one image</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__TransformFunctor" kindref="compound">Functors to Transform Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>frequently used unary transformation functors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__CombineAlgo" kindref="compound">Algorithms to Combine Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>apply functor to calculate a pixelwise transformation from several image</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__CombineFunctor" kindref="compound">Functors to Combine Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>frequently used binary transformations functors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiPointoperators" kindref="compound">Point operators for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/> <emphasis>Point operators on multi-dimensional arrays</emphasis> </para></listitem>
+</itemizedlist>
+</para><para><bold>#include</bold> &lt;<ref refid="stdimagefunctions_8hxx_source" kindref="compound">vigra/stdimagefunctions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>see also: <ref refid="FunctorExpressions" kindref="compound">Automatic Functor Creation</ref> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

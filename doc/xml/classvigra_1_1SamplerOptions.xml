@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SamplerOptions" kind="class" prot="public">
+    <compoundname>vigra::SamplerOptions</compoundname>
+    <includes refid="sampling_8hxx" local="no">vigra/sampling.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SamplerOptions_1aa9bd7d22f3a68aabd0713499070e9314" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double sample_proportion</definition>
+        <argsstring></argsstring>
+        <name>sample_proportion</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="70" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SamplerOptions_1a310c36ea013742cda976746fbd383e2d" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int sample_size</definition>
+        <argsstring></argsstring>
+        <name>sample_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="71" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SamplerOptions_1ab12fc16de8ed6983eae3b68413134435" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool sample_with_replacement</definition>
+        <argsstring></argsstring>
+        <name>sample_with_replacement</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SamplerOptions_1abee43c50eb4d8503a35c065a62544121" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool stratified_sampling</definition>
+        <argsstring></argsstring>
+        <name>stratified_sampling</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1a1c46734a912f60a8d28672c28e473580" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> &amp;</type>
+        <definition>SamplerOptions&amp; sampleProportion</definition>
+        <argsstring>(double proportion)</argsstring>
+        <name>sampleProportion</name>
+        <param>
+          <type>double</type>
+          <declname>proportion</declname>
+        </param>
+        <briefdescription>
+<para>Determine the number of samples to draw as a proportion of the total number. That is, we draw <computeroutput>count = totalCount * proportion</computeroutput> samples. This option is overridden when an absolute count is specified by <ref refid="classvigra_1_1SamplerOptions_1a851a757874c19a2e2ac7d918216c973e" kindref="member">sampleSize()</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>If stratifiedSampling is true, the count is equally distributed across all strata (e.g. <computeroutput>totalCount * proportion / strataCount</computeroutput> samples are taken from each stratum).</para><para><linebreak/>
+ Default: 1.0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="126" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1a6498d5e435b49f8cc806ff8c3c53bf79" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SamplerOptions</definition>
+        <argsstring>()</argsstring>
+        <name>SamplerOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="75" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1a851a757874c19a2e2ac7d918216c973e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> &amp;</type>
+        <definition>SamplerOptions&amp; sampleSize</definition>
+        <argsstring>(unsigned int size)</argsstring>
+        <name>sampleSize</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Draw the given number of samples. If stratifiedSampling is true, the <emphasis>size</emphasis> is equally distributed across all strata (e.g. <computeroutput>size / strataCount</computeroutput> samples are taken from each stratum, subject to rounding). </para>        </briefdescription>
+        <detaileddescription>
+<para><linebreak/>
+ Default: 0 (i.e. determine the count by means of <ref refid="classvigra_1_1SamplerOptions_1a1c46734a912f60a8d28672c28e473580" kindref="member">sampleProportion()</ref>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="109" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1a849f4fbf15f9555862fd54dc2ffd178c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> &amp;</type>
+        <definition>SamplerOptions&amp; stratified</definition>
+        <argsstring>(bool in=true)</argsstring>
+        <name>stratified</name>
+        <param>
+          <type>bool</type>
+          <declname>in</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Draw equally many samples from each &quot;stratum&quot;. A stratum is a group of like entities, e.g. pixels belonging to the same object class. This is useful to create balanced samples when the class probabilities are very unbalanced (e.g. when there are many background and few foreground pixels). Stratified sampling thus avoids that a trained classifier is biased towards the majority class. </para>        </briefdescription>
+        <detaileddescription>
+<para><linebreak/>
+ Default (if you don&apos;t call this function): false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="145" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="144" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1aeda2861af920abfb59a5db4fee568a8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> &amp;</type>
+        <definition>SamplerOptions&amp; withoutReplacement</definition>
+        <argsstring>(bool in=true)</argsstring>
+        <name>withoutReplacement</name>
+        <param>
+          <type>bool</type>
+          <declname>in</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Sample from training population without replacement. </para>        </briefdescription>
+        <detaileddescription>
+<para><linebreak/>
+ Default (if you don&apos;t call this function): false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="96" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SamplerOptions_1a71724571dc7a52e5be40aefb51230397" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> &amp;</type>
+        <definition>SamplerOptions&amp; withReplacement</definition>
+        <argsstring>(bool in=true)</argsstring>
+        <name>withReplacement</name>
+        <param>
+          <type>bool</type>
+          <declname>in</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Sample from training population with replacement. </para>        </briefdescription>
+        <detaileddescription>
+<para><linebreak/>
+ Default: true </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="86" bodyend="90"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options object for the <ref refid="classvigra_1_1Sampler" kindref="compound">Sampler</ref> class. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold>usage:</bold></para><para><programlisting><codeline><highlight class="normal">SamplerOptions<sp/>opt<sp/>=<sp/><sp/>SamplerOptions()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.withReplacement()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.sampleProportion(0.5);</highlight></codeline>
+</programlisting></para><para>Note that the return value of all methods is <computeroutput>*this</computeroutput> which makes concatenating of options as above possible. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="66" bodyend="149"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SamplerOptions_1aa9bd7d22f3a68aabd0713499070e9314" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>sample_proportion</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a310c36ea013742cda976746fbd383e2d" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>sample_size</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1ab12fc16de8ed6983eae3b68413134435" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>sample_with_replacement</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a1c46734a912f60a8d28672c28e473580" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>sampleProportion</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a6498d5e435b49f8cc806ff8c3c53bf79" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>SamplerOptions</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a851a757874c19a2e2ac7d918216c973e" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>sampleSize</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a849f4fbf15f9555862fd54dc2ffd178c" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>stratified</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1abee43c50eb4d8503a35c065a62544121" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>stratified_sampling</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1aeda2861af920abfb59a5db4fee568a8e" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>withoutReplacement</name></member>
+      <member refid="classvigra_1_1SamplerOptions_1a71724571dc7a52e5be40aefb51230397" prot="public" virt="non-virtual"><scope>vigra::SamplerOptions</scope><name>withReplacement</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

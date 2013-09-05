@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1virtual__tuple" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::virtual_tuple</compoundname>
+    <innerclass refid="structvigra_1_1type__lists_1_1virtual__tuple_1_1type" prot="public">vigra::type_lists::virtual_tuple::type</innerclass>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class, class &gt; class</type>
+        <declname>ACXTT</declname>
+        <defname>ACXTT</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class Z</type>
+        <defval>simple_member_dispatch</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1862" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1861" bodyend="1866"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

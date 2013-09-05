@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Unsupervised__Decomposition" kind="group">
+    <compoundname>Unsupervised_Decomposition</compoundname>
+    <title>Unsupervised Decomposition</title>
+    <innerclass refid="classvigra_1_1PLSAOptions" prot="public">vigra::PLSAOptions</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__Unsupervised__Decomposition_1ga7aff6f8e1ad85add65d226bcd899e07b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pLSA</definition>
+        <argsstring>(...)</argsstring>
+        <name>pLSA</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Decompose a matrix according to the pLSA algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements the pLSA algorithm (probabilistic latent semantic analysis) proposed in</para><para>T. Hofmann: <ulink url="http://www.cs.brown.edu/people/th/papers/Hofmann-UAI99.pdf"><emphasis>&quot;Probabilistic Latent Semantic Analysis&quot;</emphasis></ulink>, in: UAI&apos;99, Proc. 15th Conf. on Uncertainty in Artificial Intelligence, pp. 289-296, Morgan Kaufmann, 1999</para><para><itemizedlist>
+<listitem><para>features must be a matrix with shape <computeroutput>(numFeatures * numSamples)</computeroutput>, which is decomposed into the matrices </para></listitem>
+<listitem><para>fz with shape <computeroutput>(numFeatures * numComponents)</computeroutput> and </para></listitem>
+<listitem><para>zv with shape <computeroutput>(numComponents * numSamples)</computeroutput></para></listitem>
+</itemizedlist>
+such that <formula id="121">\[ \mathrm{features} \approx \mathrm{fz} * \mathrm{zv} \]</formula> (this formula applies when pLSA is called with <computeroutput>PLSAOptions.normalizedComponentWeights(false)</computeroutput>. Otherwise, you must normalize the features by calling <computeroutput><ref refid="group__LinearAlgebraFunctions_1ga9570361590f341c6a3699b1d2074c3de" kindref="member">linalg::prepareColumns</ref><nonbreakablespace/>(features, features, UnitSum)</computeroutput> to make the formula hold).</para><para>The shape parameter <computeroutput>numComponents</computeroutput> determines the complexity of the decomposition model and therefore the approximation quality. Intuitively, features are a set of words, and the samples a set of documents. The entries of the <computeroutput>features</computeroutput> matrix denote the relative frequency of the words in each document. The components represents a (presumably small) set of topics. The matrix <computeroutput>fz</computeroutput> encodes the relative frequency of words in the different topics, and the matrix <computeroutput>zv</computeroutput> encodes to what extend each topic explains the content of each document.</para><para>The option object determines the iteration termination conditions and the output normalization. In addition, you may pass a random number generator to <ref refid="group__Unsupervised__Decomposition_1ga7aff6f8e1ad85add65d226bcd899e07b" kindref="member">pLSA()</ref> which is used to create the initial solution.</para><para><bold>Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="unsupervised__decomposition_8hxx_source" kindref="compound">vigra/unsupervised_decomposition.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>U,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Random&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Unsupervised__Decomposition_1ga7aff6f8e1ad85add65d226bcd899e07b" kindref="member" tooltip="Decompose a matrix according to the pLSA algorithm.">pLSA</ref>(MultiArrayView&lt;2,<sp/>U,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>features,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C2&gt;<sp/>&amp;<sp/>fz,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C3&gt;<sp/>&amp;<sp/>zv,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Random<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>random,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PLSAOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>PLSAOptions());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>U,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Unsupervised__Decomposition_1ga7aff6f8e1ad85add65d226bcd899e07b" kindref="member" tooltip="Decompose a matrix according to the pLSA algorithm.">pLSA</ref>(MultiArrayView&lt;2,<sp/>U,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>features,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C2&gt;<sp/>&amp;<sp/>fz,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C3&gt;<sp/>&amp;<sp/>zv,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PLSAOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>PLSAOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>Usage:</bold> <programlisting><codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>words(numWords,<sp/>numDocuments);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>the<sp/>input<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numTopics<sp/>=<sp/>3;</highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>fz(numWords,<sp/>numTopics),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>zv(numTopics,<sp/>numDocuments);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Unsupervised__Decomposition_1ga7aff6f8e1ad85add65d226bcd899e07b" kindref="member" tooltip="Decompose a matrix according to the pLSA algorithm.">pLSA</ref>(words,<sp/>fz,<sp/>zv,<sp/>PLSAOptions().normalizedComponentWeights(</highlight><highlight class="keyword">false</highlight><highlight class="normal">));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>model<sp/>=<sp/>fz*zv;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>meanSquaredError<sp/>=<sp/>(words<sp/>-<sp/>model).<ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member" tooltip="squared norm (= squared magnitude)">squaredNorm</ref>()<sp/>/<sp/>numDocuments;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" line="288"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Unsupervised__Decomposition_1gaee5098960129c7daff8f36907b0e3c5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+          <param>
+            <type>class Random</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pLSA</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U, C2 &gt; fz, MultiArrayView&lt; 2, U, C3 &gt; zv, Random const &amp;random, PLSAOptions const &amp;options=PLSAOptions())</argsstring>
+        <name>pLSA</name>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C2 &gt;</type>
+          <declname>fz</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C3 &gt;</type>
+          <declname>zv</declname>
+        </param>
+        <param>
+          <type>Random const &amp;</type>
+          <declname>random</declname>
+        </param>
+        <param>
+          <type>PLSAOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>PLSAOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" line="298" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" bodystart="293" bodyend="365"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Unsupervised__Decomposition_1ga747608b70ceefb138eb2f832b0425eeb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pLSA</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U, C2 &gt; &amp;fz, MultiArrayView&lt; 2, U, C3 &gt; &amp;zv, PLSAOptions const &amp;options=PLSAOptions())</argsstring>
+        <name>pLSA</name>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C2 &gt; &amp;</type>
+          <declname>fz</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, U, C3 &gt; &amp;</type>
+          <declname>zv</declname>
+        </param>
+        <param>
+          <type>PLSAOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>PLSAOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" line="373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" bodystart="369" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Unsupervised__Decomposition_1ga03b34ec75f31e6ea3b2dc541f31204fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class C3</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::principleComponents</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C1 &gt; const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; fz, MultiArrayView&lt; 2, T, C3 &gt; zv)</argsstring>
+        <name>principleComponents</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C2 &gt;</type>
+          <declname>fz</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, T, C3 &gt;</type>
+          <declname>zv</declname>
+        </param>
+        <briefdescription>
+<para>Decompose a matrix according to the PCA algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements the PCA algorithm (principle component analysis).</para><para><itemizedlist>
+<listitem><para>features must be a matrix with shape <computeroutput>(numFeatures * numSamples)</computeroutput>, which is decomposed into the matrices </para></listitem>
+<listitem><para>fz with shape <computeroutput>(numFeatures * numComponents)</computeroutput> and </para></listitem>
+<listitem><para>zv with shape <computeroutput>(numComponents * numSamples)</computeroutput></para></listitem>
+</itemizedlist>
+such that <formula id="121">\[ \mathrm{features} \approx \mathrm{fz} * \mathrm{zv} \]</formula> (this formula requires that the features have been centered around the mean by <computeroutput><ref refid="group__LinearAlgebraFunctions_1ga5fe2473988371a491bcee05be079d535" kindref="member">linalg::prepareRows</ref><nonbreakablespace/>(features, features, ZeroMean)</computeroutput>).</para><para>The shape parameter <computeroutput>numComponents</computeroutput> determines the complexity of the decomposition model and therefore the approximation quality (if <computeroutput>numComponents == numFeatures</computeroutput>, the representation becomes exact). Intuitively, <computeroutput>fz</computeroutput> is a projection matrix from the reduced space into the original space, and <computeroutput>zv</computeroutput> is the reduced representation of the data, using just <computeroutput>numComponents</computeroutput> features.</para><para><bold>Declaration:</bold></para><para><bold>#include</bold> &lt;<ref refid="unsupervised__decomposition_8hxx_source" kindref="compound">vigra/unsupervised_decomposition.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>U,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C3&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Unsupervised__Decomposition_1ga03b34ec75f31e6ea3b2dc541f31204fe" kindref="member" tooltip="Decompose a matrix according to the PCA algorithm.">principleComponents</ref>(MultiArrayView&lt;2,<sp/>U,<sp/>C1&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>features,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C2&gt;<sp/>fz,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>U,<sp/>C3&gt;<sp/>zv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>Usage:</bold> <programlisting><codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>data(numFeatures,<sp/>numSamples);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>the<sp/>input<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numComponents<sp/>=<sp/>3;</highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>fz(numFeatures,<sp/>numComponents),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>zv(numComponents,<sp/>numSamples);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>center<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LinearAlgebraFunctions_1ga5fe2473988371a491bcee05be079d535" kindref="member">prepareRows</ref>(data,<sp/>data,<sp/>ZeroMean);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>compute<sp/>the<sp/>reduced<sp/>representation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__Unsupervised__Decomposition_1ga03b34ec75f31e6ea3b2dc541f31204fe" kindref="member" tooltip="Decompose a matrix according to the PCA algorithm.">principleComponents</ref>(data,<sp/>fz,<sp/>zv);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Matrix&lt;double&gt;<sp/>model<sp/>=<sp/>fz*zv;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>meanSquaredError<sp/>=<sp/><ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member" tooltip="squared norm (= squared magnitude)">squaredNorm</ref>(data<sp/>-<sp/>model)<sp/>/<sp/>numSamples;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/unsupervised_decomposition.hxx" bodystart="120" bodyend="146"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Unsupervised matrix decomposition methods. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

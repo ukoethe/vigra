@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ImageAnalysis" kind="page">
+    <compoundname>ImageAnalysis</compoundname>
+    <title>Image Analysis</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="group__InspectAlgo" kindref="compound">Algorithms to Inspect Images</ref> and <ref refid="group__InspectFunctor" kindref="compound">Functors To Inspect Images</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Statistical analysis of images and regions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Threshold" kindref="compound">vigra::Threshold</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Good old thresholding</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Labeling" kindref="compound">Connected Components Labeling</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Connected components labeling using 4 or 8 connectivity </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__LocalMinMax" kindref="compound">Local Minima and Maxima</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Including extremal plateaus larger than 1 pixel</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__DistanceTransform" kindref="compound">Distance Transform</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Distance transform using Euclidean, Manhattan, or chessboard metrics </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__TensorImaging" kindref="compound">Tensor Image Processing</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Tensor image analysis</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__EdgeDetection" kindref="compound">Edge Detection</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Edge detectors based on first and second derivatives</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__CornerDetection" kindref="compound">Corner Detection</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Measure the &apos;cornerness&apos; at each pixel </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__SymmetryDetection" kindref="compound">Symmetry Detection</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Measure the local symmetry at each pixel </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__SeededRegionGrowing" kindref="compound">Region Segmentation Algorithms</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Region growing, watersheds, and voronoi tesselation</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

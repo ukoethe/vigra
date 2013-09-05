@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01Rational_3_01T_01_4_00_01Rational_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; Rational&lt; T &gt;, Rational&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01Rational_3_01T_01_4_00_01Rational_3_01T_01_4_01_4_1adf783a49df0bd109ab46ec2a8a3167b8" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; typename PromoteTraits&lt; T, T &gt;::<ref refid="classvigra_1_1Rational" kindref="compound">Promote</ref> &gt;</type>
+        <definition>typedef Rational&lt;typename PromoteTraits&lt;T, T&gt;::Promote&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="782" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="782" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1PromoteTraits_3_01Rational_3_01T_01_4_00_01Rational_3_01T_01_4_01_4_1af992ef02826aa4b4f5be213b533311ae" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Promote</ref></type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(Rational&lt; T &gt; const &amp;v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; T &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="783" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="783" bodyend="783"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="781" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="780" bodyend="784"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01Rational_3_01T_01_4_00_01Rational_3_01T_01_4_01_4_1adf783a49df0bd109ab46ec2a8a3167b8" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; Rational&lt; T &gt;, Rational&lt; T &gt; &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1PromoteTraits_3_01Rational_3_01T_01_4_00_01Rational_3_01T_01_4_01_4_1af992ef02826aa4b4f5be213b533311ae" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; Rational&lt; T &gt;, Rational&lt; T &gt; &gt;</scope><name>toPromote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

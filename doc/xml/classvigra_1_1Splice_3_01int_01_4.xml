@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Splice_3_01int_01_4" kind="class" prot="public">
+    <compoundname>vigra::Splice&lt; int &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Splice_3_01int_01_4_1a9babed449558edff6d3c7329f8e54579" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int begin_</definition>
+        <argsstring></argsstring>
+        <name>begin_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="63" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Splice_3_01int_01_4_1a5478cfdbcad19ca56506c20f7bad089f" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int end_</definition>
+        <argsstring></argsstring>
+        <name>end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="65" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Splice_3_01int_01_4_1aab1563a131a3aeaaed2557de5c732b6f" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int interval_</definition>
+        <argsstring></argsstring>
+        <name>interval_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="64" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Splice_3_01int_01_4_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="66" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Splice_3_01int_01_4_1a6aebb65f71f3a3faf2442c3299799195" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int operator[]</definition>
+        <argsstring>(int index)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="82" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Splice_3_01int_01_4_1af4b57d21919c42d55af03391f91a1c08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int size</definition>
+        <argsstring>()</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="88" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Splice_3_01int_01_4_1ac16a50b503dcbe824760588ead843176" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Splice</definition>
+        <argsstring>(int begin, int end)</argsstring>
+        <name>Splice</name>
+        <param>
+          <type>int</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="68" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Splice_3_01int_01_4_1a692f7df203f0824fed2c4e6d45205f66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Splice</definition>
+        <argsstring>(int begin, int interval, int end)</argsstring>
+        <name>Splice</name>
+        <param>
+          <type>int</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>interval</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="75" bodyend="80"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="61" bodyend="92"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1a9babed449558edff6d3c7329f8e54579" prot="private" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>begin_</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1a5478cfdbcad19ca56506c20f7bad089f" prot="private" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>end_</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1aab1563a131a3aeaaed2557de5c732b6f" prot="private" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>interval_</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1a6aebb65f71f3a3faf2442c3299799195" prot="public" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1af4b57d21919c42d55af03391f91a1c08" prot="public" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>size</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>size_</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1ac16a50b503dcbe824760588ead843176" prot="public" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>Splice</name></member>
+      <member refid="classvigra_1_1Splice_3_01int_01_4_1a692f7df203f0824fed2c4e6d45205f66" prot="public" virt="non-virtual"><scope>vigra::Splice&lt; int &gt;</scope><name>Splice</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

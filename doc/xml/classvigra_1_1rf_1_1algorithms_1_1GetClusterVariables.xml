@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::GetClusterVariables</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a750b5d744c39a06bfb13e6eb010e35d0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int index</definition>
+        <argsstring></argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="971" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="971" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a661fa07470e6a839b55a320f4362d5b9" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, int &gt;</type>
+        <definition>MultiArrayView&lt;2, int&gt; variables</definition>
+        <argsstring></argsstring>
+        <name>variables</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>NumberOfClusters x NumberOfVariables <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> containing in each row the variable belonging to a cluster </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="970" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="970" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1af554e74dd4a3fb1d94f9d9b5af3feb5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GetClusterVariables</definition>
+        <argsstring>(MultiArrayView&lt; 2, int &gt; vars)</argsstring>
+        <name>GetClusterVariables</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, int &gt;</type>
+          <declname>vars</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="974" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="972" bodyend="974"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Node</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(Node &amp;node)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Node &amp;</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="985" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="984" bodyend="990"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Convert ClusteringTree into a list (<ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> visitor) </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="754">
+        <label>GetClusterVariables</label>
+        <link refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables"/>
+        <childnode refid="755" relation="usage">
+          <edgelabel>variables</edgelabel>
+        </childnode>
+      </node>
+      <node id="755">
+        <label>MultiArrayView&lt; 2, int &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="756" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="756">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="965" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="964" bodyend="991"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1af554e74dd4a3fb1d94f9d9b5af3feb5d" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::GetClusterVariables</scope><name>GetClusterVariables</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a750b5d744c39a06bfb13e6eb010e35d0" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::GetClusterVariables</scope><name>index</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::GetClusterVariables</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables_1a661fa07470e6a839b55a320f4362d5b9" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::GetClusterVariables</scope><name>variables</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

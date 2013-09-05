@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1inspectMultiArray__binder" kind="struct" prot="public">
+    <compoundname>vigra::inspectMultiArray_binder</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Iterator</type>
+      </param>
+      <param>
+        <type>class Shape</type>
+      </param>
+      <param>
+        <type>class Accessor</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1inspectMultiArray__binder_1a928c5ad9c5ee4cb10446a62f5fc74ac7" prot="public" static="no" mutable="no">
+        <type>Accessor</type>
+        <definition>Accessor a</definition>
+        <argsstring></argsstring>
+        <name>a</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1518" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectMultiArray__binder_1a0c977d22245e77883895dba84b83b50b" prot="public" static="no" mutable="no">
+        <type>Iterator</type>
+        <definition>Iterator s</definition>
+        <argsstring></argsstring>
+        <name>s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1516" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectMultiArray__binder_1a1179ed6ca1123db428c685adf521fd5f" prot="public" static="no" mutable="no">
+        <type>const Shape &amp;</type>
+        <definition>const Shape&amp; shape</definition>
+        <argsstring></argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1517" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1inspectMultiArray__binder_1abbb51f84315a29df790cb4b8fed0ac20" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>inspectMultiArray_binder</definition>
+        <argsstring>(Iterator s_, const Shape &amp;shape_, Accessor a_)</argsstring>
+        <name>inspectMultiArray_binder</name>
+        <param>
+          <type>Iterator</type>
+          <declname>s_</declname>
+        </param>
+        <param>
+          <type>const Shape &amp;</type>
+          <declname>shape_</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1519" bodyend="1520"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1inspectMultiArray__binder_1af942b5d6570488a702efd7722d1d96df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(Functor &amp;f)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1522" bodyend="1525"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" line="1515" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_pointoperators.hxx" bodystart="1514" bodyend="1526"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1inspectMultiArray__binder_1a928c5ad9c5ee4cb10446a62f5fc74ac7" prot="public" virt="non-virtual"><scope>vigra::inspectMultiArray_binder</scope><name>a</name></member>
+      <member refid="structvigra_1_1inspectMultiArray__binder_1abbb51f84315a29df790cb4b8fed0ac20" prot="public" virt="non-virtual"><scope>vigra::inspectMultiArray_binder</scope><name>inspectMultiArray_binder</name></member>
+      <member refid="structvigra_1_1inspectMultiArray__binder_1af942b5d6570488a702efd7722d1d96df" prot="public" virt="non-virtual"><scope>vigra::inspectMultiArray_binder</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1inspectMultiArray__binder_1a0c977d22245e77883895dba84b83b50b" prot="public" virt="non-virtual"><scope>vigra::inspectMultiArray_binder</scope><name>s</name></member>
+      <member refid="structvigra_1_1inspectMultiArray__binder_1a1179ed6ca1123db428c685adf521fd5f" prot="public" virt="non-virtual"><scope>vigra::inspectMultiArray_binder</scope><name>shape</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

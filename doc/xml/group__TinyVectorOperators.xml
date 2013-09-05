@@ -1,0 +1,1123 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__TinyVectorOperators" kind="group">
+    <compoundname>TinyVectorOperators</compoundname>
+    <title>Functions for TinyVector</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga739deb1c35a7b178dfd7b7e2402dff08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::abs</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise absolute value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1538" bodyend="1544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga4e0bd0391f6a2d5e9347c2daa7a8d05e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::ceil</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>ceil</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply <ref refid="group__FixedPointOperations_1ga14fe7b9ffa21e091c6ff4ede68717c30" kindref="member">ceil()</ref> function to each vector component. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1551" bodyend="1557"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga170cec3becfca7bd00faa56db0e811f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; typename PromoteTraits&lt; V1, V2 &gt;::Promote, 3 &gt;</type>
+        <definition>TinyVector&lt;typename PromoteTraits&lt;V1, V2&gt;::Promote, 3&gt; vigra::cross</definition>
+        <argsstring>(TinyVectorBase&lt; V1, 3, D1, D2 &gt; const &amp;r1, TinyVectorBase&lt; V2, 3, D3, D4 &gt; const &amp;r2)</argsstring>
+        <name>cross</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, 3, D1, D2 &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, 3, D3, D4 &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>cross product </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1589" bodyend="1597"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gad3c7573bdce62caf4167e7c797e5b0fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; typename NumericTraits&lt; V &gt;::Promote, SIZE &gt;</type>
+        <definition>TinyVector&lt;typename NumericTraits&lt;V&gt;::Promote, SIZE&gt; vigra::cumprod</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>cumprod</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>cumulative product of the vector&apos;s elements </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1650" bodyend="1656"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga66c60fc6c941a7461281dae96e15a378" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; typename NumericTraits&lt; V &gt;::Promote, SIZE &gt;</type>
+        <definition>TinyVector&lt;typename NumericTraits&lt;V&gt;::Promote, SIZE&gt; vigra::cumsum</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>cumsum</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>cumulative sum of the vector&apos;s elements </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1627" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1626" bodyend="1632"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga7f6e870704c4feed9cb10b4e6a88f537" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::div</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l, V v)</argsstring>
+        <name>div</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>V</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise scalar division without type promotion </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1512" bodyend="1518"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga5daa9ccf920ad84e68f5eb0d2df5be53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; V1, V2 &gt;::Promote</type>
+        <definition>PromoteTraits&lt;V1, V2&gt;::Promote vigra::dot</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>dot</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>dot product </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1605" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1603" bodyend="1608"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gae9236ef4cc1620991693a0ed032042f0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::floor</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>floor</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply <ref refid="group__FixedPointOperations_1gaf8fe85520fc0bc2d77ec8e6cf26f3c5d" kindref="member">floor()</ref> function to each vector component. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1564" bodyend="1570"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; typename PromoteTraits&lt; V1, V2 &gt;::Promote, SIZE &gt;</type>
+        <definition>TinyVector&lt;typename PromoteTraits&lt;V1, V2&gt;::Promote, SIZE&gt; vigra::max</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>max</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>element-wise maximum </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1687" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1685" bodyend="1693"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga79c34e138b3cea6683b4ffae03deaf1d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>V const &amp;</type>
+        <definition>V const&amp; vigra::max</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>max</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>maximum element </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1700" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1699" bodyend="1702"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; typename PromoteTraits&lt; V1, V2 &gt;::Promote, SIZE &gt;</type>
+        <definition>TinyVector&lt;typename PromoteTraits&lt;V1, V2&gt;::Promote, SIZE&gt; vigra::min</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>min</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>element-wise minimum </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1664" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1662" bodyend="1670"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gad64049e837827b5ee36a30be305bf459" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>V const &amp;</type>
+        <definition>V const&amp; vigra::min</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>min</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>minimum element </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1677" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1676" bodyend="1679"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gae697cc76c952868b590f677c4e9f5087" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1062" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1060" bodyend="1065"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga1831eb2cff2b875b02a852a45132ccfe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; TinyVector&lt; V1, SIZE &gt;, TinyVector&lt; V2, SIZE &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;TinyVector&lt;V1, SIZE&gt;, TinyVector&lt;V2, SIZE&gt; &gt;::Promote vigra::operator*</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1467" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1465" bodyend="1469"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga8e3fd2ac6dc4d55ec2725743ec69a9b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; TinyVector&lt; V, SIZE &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;TinyVector&lt;V, SIZE&gt; &gt;::RealPromote vigra::operator*</definition>
+        <argsstring>(double v, TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise left scalar multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1486" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1485" bodyend="1488"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gaba145924900b8d5cc36c8ba6e404a036" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; TinyVector&lt; V, SIZE &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;TinyVector&lt;V, SIZE&gt; &gt;::RealPromote vigra::operator*</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l, double v)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise right scalar multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1494" bodyend="1497"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga74f6096f6858b0a6c41d22d5e653a2ba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; TinyVector&lt; V1, SIZE &gt;, TinyVector&lt; V2, SIZE &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;TinyVector&lt;V1, SIZE&gt;, TinyVector&lt;V2, SIZE&gt; &gt;::Promote vigra::operator+</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise addition </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1447" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1445" bodyend="1449"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gaba242b4501a425ad4499e0a24f76c502" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; TinyVector&lt; V1, SIZE &gt;, TinyVector&lt; V2, SIZE &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;TinyVector&lt;V1, SIZE&gt;, TinyVector&lt;V2, SIZE&gt; &gt;::Promote vigra::operator-</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise subtraction </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1457" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1455" bodyend="1459"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gae825420f3495f62f52712f8d3d0cd68e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::operator-</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Unary negation (construct <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> with negative values) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1527" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1526" bodyend="1532"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga3fc9256d555f34a0668c51221601379b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; TinyVector&lt; V1, SIZE &gt;, TinyVector&lt; V2, SIZE &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;TinyVector&lt;V1, SIZE&gt;, TinyVector&lt;V2, SIZE&gt; &gt;::Promote vigra::operator/</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1477" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1475" bodyend="1479"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga2aa838f98ff3d77c35d48976b59c1f47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; TinyVector&lt; V, SIZE &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;TinyVector&lt;V, SIZE&gt; &gt;::RealPromote vigra::operator/</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l, double v)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise scalar division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1503" bodyend="1506"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gaab9f59f79fcac91811fe216014d6721a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise lexicographical comparison </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1072" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1070" bodyend="1075"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gabadf6d027d9060e22c4f1042f682febe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class DATA</type>
+          </param>
+          <param>
+            <type>class DERIVED</type>
+          </param>
+        </templateparamlist>
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; vigra::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;out, TinyVectorBase&lt; V1, SIZE, DATA, DERIVED &gt; const &amp;l)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, DATA, DERIVED &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>stream output </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1087" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1086" bodyend="1094"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga523b7e8e929b8d7b2adc9997ab320511" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>class D3</type>
+          </param>
+          <param>
+            <type>class D4</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;l, TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>TinyVectorBase&lt; V2, SIZE, D3, D4 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1053" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1051" bodyend="1055"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gaa49e08e69b54385f9434ffe32a32f299" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; V &gt;::Promote</type>
+        <definition>NumericTraits&lt;V&gt;::Promote vigra::prod</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>prod</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>product of the vector&apos;s elements </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1639" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1638" bodyend="1644"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga5e7ad02cda9d7d9be09a5be092ebb520" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;</type>
+        <definition>TinyVector&lt;V, SIZE&gt; vigra::sqrt</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>sqrt</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply <ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member">sqrt()</ref> function to each vector component. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1578" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1577" bodyend="1583"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga435a208ecc16dacbb7e8c20f4c6a530d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt;::SquaredNormType</type>
+        <definition>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt;::SquaredNormType squaredNorm</definition>
+        <argsstring>(TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;t)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>TinyVectorBase&lt; V1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>squared norm </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1708" bodyend="1711"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1gabe11a15981a8e3a4e9715ea8de51f5fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+        </templateparamlist>
+        <type>TinyVector&lt; V, SIZE &gt;::SquaredNormType</type>
+        <definition>TinyVector&lt;V, SIZE&gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(TinyVector&lt; V, SIZE &gt; const &amp;t)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>TinyVector&lt; V, SIZE &gt; const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+<para>squared norm </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1718" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1717" bodyend="1720"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TinyVectorOperators_1ga202143b556e7388b4895f457317eb086" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; V &gt;::Promote</type>
+        <definition>NumericTraits&lt;V&gt;::Promote vigra::sum</definition>
+        <argsstring>(TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;l)</argsstring>
+        <name>sum</name>
+        <param>
+          <type>TinyVectorBase&lt; V, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>sum of the vector&apos;s elements </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1615" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1614" bodyend="1620"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Implement basic arithmetic and equality for <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>These functions fulfill the requirements of a Linear Space (vector space). Return types are determined according to <ref refid="TinyVectorTraits" kindref="compound">Numeric and Promote Traits of TinyVector</ref>.</para><para><bold>#include</bold> &lt;<ref refid="tinyvector_8hxx_source" kindref="compound">vigra/tinyvector.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

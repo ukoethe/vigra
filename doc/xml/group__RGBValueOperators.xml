@@ -1,0 +1,963 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RGBValueOperators" kind="group">
+    <compoundname>RGBValueOperators</compoundname>
+    <title>Functions for RGBValue</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__RGBValueOperators_1ga7edfb83a987112c5626583965c8c51d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX</declname>
+            <defname>RIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX</declname>
+            <defname>GIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX</declname>
+            <defname>BIDX</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; T, RIDX, GIDX, BIDX &gt;</type>
+        <definition>RGBValue&lt;T, RIDX, GIDX, BIDX&gt; vigra::abs</definition>
+        <argsstring>(RGBValue&lt; T, RIDX, GIDX, BIDX &gt; const &amp;v)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>RGBValue&lt; T, RIDX, GIDX, BIDX &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise absolute value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="765" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="764" bodyend="767"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gaa1736289df97804e23bcb42dcc077d5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX</declname>
+            <defname>RIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX</declname>
+            <defname>GIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX</declname>
+            <defname>BIDX</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt;</type>
+        <definition>RGBValue&lt;V, RIDX, GIDX, BIDX&gt; vigra::ceil</definition>
+        <argsstring>(RGBValue&lt; V, RIDX, GIDX, BIDX &gt; const &amp;r)</argsstring>
+        <name>ceil</name>
+        <param>
+          <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply <ref refid="group__FixedPointOperations_1ga14fe7b9ffa21e091c6ff4ede68717c30" kindref="member">ceil()</ref> function to each RGB component. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="908" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="907" bodyend="912"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga63c949faa1c424c07a7c3907f061b5f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; RGBValue&lt; V1, R, G, B &gt;, RGBValue&lt; V2, R, G, B &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;RGBValue&lt;V1, R, G, B&gt;, RGBValue&lt;V2, R, G, B&gt; &gt;::Promote vigra::cross</definition>
+        <argsstring>(RGBValue&lt; V1, R, G, B &gt; const &amp;r1, RGBValue&lt; V2, R, G, B &gt; const &amp;r2)</argsstring>
+        <name>cross</name>
+        <param>
+          <type>RGBValue&lt; V1, R, G, B &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, R, G, B &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>cross product </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="879" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="877" bodyend="887"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gaabe9d910ba7a54cbf606254a81e409e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; V1, V2 &gt;::Promote</type>
+        <definition>PromoteTraits&lt;V1, V2&gt;::Promote vigra::dot</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;r1, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r2)</argsstring>
+        <name>dot</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>dot product </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="896" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="894" bodyend="898"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gad41a8c5b0474ab55a79ab3e44a3db7ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX</declname>
+            <defname>RIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX</declname>
+            <defname>GIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX</declname>
+            <defname>BIDX</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt;</type>
+        <definition>RGBValue&lt;V, RIDX, GIDX, BIDX&gt; vigra::floor</definition>
+        <argsstring>(RGBValue&lt; V, RIDX, GIDX, BIDX &gt; const &amp;r)</argsstring>
+        <name>floor</name>
+        <param>
+          <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Apply <ref refid="group__FixedPointOperations_1gaf8fe85520fc0bc2d77ec8e6cf26f3c5d" kindref="member">floor()</ref> function to each RGB component. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="922" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="921" bodyend="926"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga92ee5bb83f2c0f62df5f69c3cc1b109a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="383" bodyend="389"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga052cd0fea0574ab6ffdd0ec3e66ae64b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; RGBValue&lt; V1, R, G, B &gt;, RGBValue&lt; V2, R, G, B &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;RGBValue&lt;V1, R, G, B&gt;, RGBValue&lt;V2, R, G, B&gt; &gt;::Promote vigra::operator*</definition>
+        <argsstring>(RGBValue&lt; V1, R, G, B &gt; const &amp;r1, RGBValue&lt; V2, R, G, B &gt; const &amp;r2)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>RGBValue&lt; V1, R, G, B &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, R, G, B &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>component-wise multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="808" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="806" bodyend="815"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gad7e796faf19e900659765bdb3d10f7d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; RGBValue&lt; V, R, G, B &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;RGBValue&lt;V, R, G, B&gt; &gt;::RealPromote vigra::operator*</definition>
+        <argsstring>(double v, RGBValue&lt; V, R, G, B &gt; const &amp;r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V, R, G, B &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise left scalar multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="822" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="821" bodyend="828"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga0684221edd4f4d178ed2e5f9711e0e61" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; RGBValue&lt; V, R, G, B &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;RGBValue&lt;V, R, G, B&gt; &gt;::RealPromote vigra::operator*</definition>
+        <argsstring>(RGBValue&lt; V, R, G, B &gt; const &amp;r, double v)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>RGBValue&lt; V, R, G, B &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise right scalar multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="835" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="834" bodyend="841"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga7c6785fdcadae251e827601225613afe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+        <definition>RGBValue&lt;V1, RIDX1, GIDX1, BIDX1&gt;&amp; vigra::operator*=</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise multiply-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="713" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="711" bodyend="718"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gac938fde349795c7905c06b521a42d0b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX</declname>
+            <defname>RIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX</declname>
+            <defname>GIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX</declname>
+            <defname>BIDX</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;</type>
+        <definition>RGBValue&lt;V, RIDX, GIDX, BIDX&gt;&amp; vigra::operator*=</definition>
+        <argsstring>(RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;l, double r)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise scalar multiply-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="725" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="724" bodyend="730"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gadcec7639c72d2f24ab78add2ae643a8c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; RGBValue&lt; V1, R, G, B &gt;, RGBValue&lt; V2, R, G, B &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;RGBValue&lt;V1, R, G, B&gt;, RGBValue&lt;V2, R, G, B&gt; &gt;::Promote vigra::operator+</definition>
+        <argsstring>(RGBValue&lt; V1, R, G, B &gt; const &amp;r1, RGBValue&lt; V2, R, G, B &gt; const &amp;r2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>RGBValue&lt; V1, R, G, B &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, R, G, B &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>component-wise addition </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="776" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="774" bodyend="783"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga0eeb1363c0564a367c21e7b5c9846571" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+        <definition>RGBValue&lt;V1, RIDX1, GIDX1, BIDX1&gt;&amp; vigra::operator+=</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise add-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="683" bodyend="690"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gabf4d9e322064d3c423f2380067805b02" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; RGBValue&lt; V1, R, G, B &gt;, RGBValue&lt; V2, R, G, B &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;RGBValue&lt;V1, R, G, B&gt;, RGBValue&lt;V2, R, G, B&gt; &gt;::Promote vigra::operator-</definition>
+        <argsstring>(RGBValue&lt; V1, R, G, B &gt; const &amp;r1, RGBValue&lt; V2, R, G, B &gt; const &amp;r2)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>RGBValue&lt; V1, R, G, B &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, R, G, B &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>component-wise subtraction </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="792" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="790" bodyend="799"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga69690a95db5749c31fdd17799464da3f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+        <definition>RGBValue&lt;V1, RIDX1, GIDX1, BIDX1&gt;&amp; vigra::operator-=</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise subtract-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="699" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="697" bodyend="704"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga021b148acc7fccbe8c1ad956f7f4db3b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; RGBValue&lt; V1, R, G, B &gt;, RGBValue&lt; V2, R, G, B &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;RGBValue&lt;V1, R, G, B&gt;, RGBValue&lt;V2, R, G, B&gt; &gt;::Promote vigra::operator/</definition>
+        <argsstring>(RGBValue&lt; V1, R, G, B &gt; const &amp;r1, RGBValue&lt; V2, R, G, B &gt; const &amp;r2)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>RGBValue&lt; V1, R, G, B &gt; const &amp;</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, R, G, B &gt; const &amp;</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+<para>component-wise division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="850" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="848" bodyend="857"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga6ae01e7b38ae1d9f38b7578d6c52649d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>R</declname>
+            <defname>R</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>G</declname>
+            <defname>G</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>B</declname>
+            <defname>B</defname>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; RGBValue&lt; V, R, G, B &gt; &gt;::RealPromote</type>
+        <definition>NumericTraits&lt;RGBValue&lt;V, R, G, B&gt; &gt;::RealPromote vigra::operator/</definition>
+        <argsstring>(RGBValue&lt; V, R, G, B &gt; const &amp;r, double v)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>RGBValue&lt; V, R, G, B &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>component-wise scalar division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="864" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="863" bodyend="870"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gac2deee25274085a804100cff8b71d73f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+        <definition>RGBValue&lt;V1, RIDX1, GIDX1, BIDX1&gt;&amp; vigra::operator/=</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise divide-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="739" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="737" bodyend="744"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1gadb4aeae9b7a88182917fd395e929cbef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX</declname>
+            <defname>RIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX</declname>
+            <defname>GIDX</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX</declname>
+            <defname>BIDX</defname>
+          </param>
+        </templateparamlist>
+        <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;</type>
+        <definition>RGBValue&lt;V, RIDX, GIDX, BIDX&gt;&amp; vigra::operator/=</definition>
+        <argsstring>(RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;l, double r)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>RGBValue&lt; V, RIDX, GIDX, BIDX &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>componentwise scalar divide-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="751" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="750" bodyend="756"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RGBValueOperators_1ga840a1ef63a492fc281007880df2c10e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V1</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX1</declname>
+            <defname>RIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX1</declname>
+            <defname>GIDX1</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX1</declname>
+            <defname>BIDX1</defname>
+          </param>
+          <param>
+            <type>class V2</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>RIDX2</declname>
+            <defname>RIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>GIDX2</declname>
+            <defname>GIDX2</defname>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>BIDX2</declname>
+            <defname>BIDX2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;l, RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>RGBValue&lt; V1, RIDX1, GIDX1, BIDX1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RGBValue&lt; V2, RIDX2, GIDX2, BIDX2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>component-wise equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="370" bodyend="376"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Implement basic arithmetic and equality for <ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>These functions fulfill the requirements of a Linear Algebra. Return types are determined according to <ref refid="RGBValueTraits" kindref="compound">Numeric and Promote Traits of RGBValue</ref>.</para><para><bold>#include</bold> &lt;<ref refid="rgbvalue_8hxx_source" kindref="compound">vigra/rgbvalue.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

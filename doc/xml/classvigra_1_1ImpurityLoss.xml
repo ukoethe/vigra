@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ImpurityLoss" kind="class" prot="public">
+    <compoundname>vigra::ImpurityLoss</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class DataSource</type>
+      </param>
+      <param>
+        <type>class Impurity</type>
+        <defval><ref refid="classvigra_1_1GiniCriterion" kindref="compound">GiniCriterion</ref></defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImpurityLoss_1a19758d89911b95e05360b0ea7d51a1a9" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const</type>
+        <definition>ArrayVector&lt;double&gt; const class_weights_</definition>
+        <argsstring></argsstring>
+        <name>class_weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="482" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="482" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImpurityLoss_1ab11af0c37f2ab0ef7c2c995238b85ffd" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; counts_</definition>
+        <argsstring></argsstring>
+        <name>counts_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="481" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImpurityLoss_1a08cb41089f87933def746c9041dbd977" prot="private" static="no" mutable="no">
+        <type>Impurity</type>
+        <definition>Impurity impurity_</definition>
+        <argsstring></argsstring>
+        <name>impurity_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="484" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="484" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImpurityLoss_1ae37c58a5ed278fb26fe56eed8a487869" prot="private" static="no" mutable="no">
+        <type>DataSource const &amp;</type>
+        <definition>DataSource const&amp; labels_</definition>
+        <argsstring></argsstring>
+        <name>labels_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="480" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImpurityLoss_1a6d6e7f34aa9202b839fadaf549a456f4" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double total_counts_</definition>
+        <argsstring></argsstring>
+        <name>total_counts_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="483" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="483" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1af3e77548903d1947345fd2a9a93d88f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double decrement</definition>
+        <argsstring>(Iter const &amp;begin, Iter const &amp;end)</argsstring>
+        <name>decrement</name>
+        <param>
+          <type>Iter const &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter const &amp;</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="539" bodyend="547"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1a802fa0a9ec74ba0d62eb5b7a3b1ec4f3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Counts</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double decrement_histogram</definition>
+        <argsstring>(Counts const &amp;counts)</argsstring>
+        <name>decrement_histogram</name>
+        <param>
+          <type>Counts const &amp;</type>
+          <declname>counts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="516" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1ab57e8dcac46120adc7657d6c2b6fae8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ImpurityLoss</definition>
+        <argsstring>(DataSource const &amp;labels, ProblemSpec&lt; T &gt; const &amp;ext_)</argsstring>
+        <name>ImpurityLoss</name>
+        <param>
+          <type>DataSource const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="489" bodyend="495"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1a7c88e7b651c732504147e4472b900b2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double increment</definition>
+        <argsstring>(Iter begin, Iter end)</argsstring>
+        <name>increment</name>
+        <param>
+          <type>Iter</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="529" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="528" bodyend="536"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1a69ffe9145edc0aafef8b05aadb6cb7fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Counts</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double increment_histogram</definition>
+        <argsstring>(Counts const &amp;counts)</argsstring>
+        <name>increment_histogram</name>
+        <param>
+          <type>Counts const &amp;</type>
+          <declname>counts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="505" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="504" bodyend="513"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1ab7cbec6ee9f67c50bc065f3314abcce9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+          <param>
+            <type>class Resp_t</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double init</definition>
+        <argsstring>(Iter begin, Iter end, Resp_t resp)</argsstring>
+        <name>init</name>
+        <param>
+          <type>Iter</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Resp_t</type>
+          <declname>resp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="550" bodyend="556"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="497" bodyend="501"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImpurityLoss_1a07152566f5fce054813ccd74e97563e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt;double&gt; const&amp; response</definition>
+        <argsstring>()</argsstring>
+        <name>response</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="558" bodyend="561"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="478" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="477" bodyend="562"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImpurityLoss_1a19758d89911b95e05360b0ea7d51a1a9" prot="private" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>class_weights_</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1ab11af0c37f2ab0ef7c2c995238b85ffd" prot="private" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>counts_</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1af3e77548903d1947345fd2a9a93d88f4" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>decrement</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a802fa0a9ec74ba0d62eb5b7a3b1ec4f3" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>decrement_histogram</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a08cb41089f87933def746c9041dbd977" prot="private" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>impurity_</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1ab57e8dcac46120adc7657d6c2b6fae8e" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>ImpurityLoss</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a7c88e7b651c732504147e4472b900b2a" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>increment</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a69ffe9145edc0aafef8b05aadb6cb7fb" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>increment_histogram</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1ab7cbec6ee9f67c50bc065f3314abcce9" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>init</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1ae37c58a5ed278fb26fe56eed8a487869" prot="private" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>labels_</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>reset</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a07152566f5fce054813ccd74e97563e7" prot="public" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>response</name></member>
+      <member refid="classvigra_1_1ImpurityLoss_1a6d6e7f34aa9202b839fadaf549a456f4" prot="private" virt="non-virtual"><scope>vigra::ImpurityLoss</scope><name>total_counts_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

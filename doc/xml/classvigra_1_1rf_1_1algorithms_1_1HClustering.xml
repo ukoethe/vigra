@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1HClustering" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::HClustering</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="641" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="641" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a5feef3b962f9340eb50247a0b8312305" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int begin_addr</definition>
+        <argsstring></argsstring>
+        <name>begin_addr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="644" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="644" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a34a7779727772b459e15dae6be56f6a0" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; parameters_</definition>
+        <argsstring></argsstring>
+        <name>parameters_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="643" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="643" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a53172d55271f863cc76778be1bfbd0e5" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; int &gt;</type>
+        <definition>ArrayVector&lt;int&gt; topology_</definition>
+        <argsstring></argsstring>
+        <name>topology_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="642" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="642" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a7fff9006806ef28fc2d310e44b37280c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void breadth_first_traversal</definition>
+        <argsstring>(Functor &amp;tester)</argsstring>
+        <name>breadth_first_traversal</name>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>tester</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform breadth first traversal of hierarchical cluster tree </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="680" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="679" bodyend="708"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a6fa522a2d95784ad08c96b62375e6053" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void cluster</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C &gt; distance)</argsstring>
+        <name>cluster</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt;</type>
+          <declname>distance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>save to HDF5 - defunct - has to be updated to new HDF5 interfacePerform single linkage clustering <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>distance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>distance matrix used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para>CorrelationVisitor </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="734" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="733" bodyend="841"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a22a12eae2a6d05e74d1f4e7da1dab35f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double dist_func</definition>
+        <argsstring>(double a, double b)</argsstring>
+        <name>dist_func</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="648" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="647" bodyend="650"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a35e6c5740e64f4cdf0c8c31c949c80ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void iterate</definition>
+        <argsstring>(Functor &amp;tester)</argsstring>
+        <name>iterate</name>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>tester</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Visit each node with a Functor in creation order (should be depth first) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="657" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="656" bodyend="674"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Hierarchical Clustering class. Performs single linkage clustering <programlisting><codeline><highlight class="normal"><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>distance<sp/>=<sp/>get_distance_matrix();</highlight></codeline>
+<codeline><highlight class="normal">linkage.cluster(distance);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Draw<sp/>clustering<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Draw&lt;double,<sp/>int&gt;<sp/>draw(features,<sp/>labels,<sp/></highlight><highlight class="stringliteral">&quot;linkagetree.graph&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">linkage.breadth_first_traversal(draw);</highlight></codeline>
+</programlisting> <simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor" kindref="compound">ClusterImportanceVisitor</ref></para></simplesect>
+once the clustering has taken place. Information queries can be made using the <ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a7fff9006806ef28fc2d310e44b37280c" kindref="member">breadth_first_traversal()</ref> method and <ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a35e6c5740e64f4cdf0c8c31c949c80ec" kindref="member">iterate()</ref> method </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="800">
+        <label>HClustering</label>
+        <link refid="classvigra_1_1rf_1_1algorithms_1_1HClustering"/>
+        <childnode refid="801" relation="usage">
+          <edgelabel>topology_</edgelabel>
+        </childnode>
+        <childnode refid="803" relation="usage">
+          <edgelabel>parameters_</edgelabel>
+        </childnode>
+      </node>
+      <node id="801">
+        <label>ArrayVector&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="802" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="803">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="804" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="802">
+        <label>ArrayVectorView&lt; int &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="804">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="639" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="638" bodyend="843"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a5feef3b962f9340eb50247a0b8312305" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>begin_addr</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a7fff9006806ef28fc2d310e44b37280c" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>breadth_first_traversal</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a6fa522a2d95784ad08c96b62375e6053" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>cluster</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a22a12eae2a6d05e74d1f4e7da1dab35f" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>dist_func</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a35e6c5740e64f4cdf0c8c31c949c80ec" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>iterate</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a34a7779727772b459e15dae6be56f6a0" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>parameters_</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a606073e25407c2ef974c7aa4c25d2edd" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>Shp</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1HClustering_1a53172d55271f863cc76778be1bfbd0e5" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::HClustering</scope><name>topology_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

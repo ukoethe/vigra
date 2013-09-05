@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1NoiseNormalizationOptions" kind="class" prot="public">
+    <compoundname>vigra::NoiseNormalizationOptions</compoundname>
+    <includes refid="noise__normalization_8hxx" local="no">vigra/noise_normalization.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1a306e6b4a59bee29bcfe64d0454042fe6" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double averaging_quantile</definition>
+        <argsstring></argsstring>
+        <name>averaging_quantile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1adf24333e88bee8277639061b8769f09c" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int cluster_count</definition>
+        <argsstring></argsstring>
+        <name>cluster_count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1ae90f20210fb8eae2f39d32d6f1b1536c" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double noise_estimation_quantile</definition>
+        <argsstring></argsstring>
+        <name>noise_estimation_quantile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1a36aff4b7ab24b3899a18494a5962ce2c" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double noise_variance_initial_guess</definition>
+        <argsstring></argsstring>
+        <name>noise_variance_initial_guess</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1ab5ec6dc26cd92b36375fb0de4e61cf94" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool use_gradient</definition>
+        <argsstring></argsstring>
+        <name>use_gradient</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="182" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1NoiseNormalizationOptions_1a29398ca6c1ddb2d6ef3464f5973344f3" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int window_radius</definition>
+        <argsstring></argsstring>
+        <name>window_radius</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1aed553a35ca9067a3ce2d2d1a3b1ad83e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; averagingQuantile</definition>
+        <argsstring>(double quantile)</argsstring>
+        <name>averagingQuantile</name>
+        <param>
+          <type>double</type>
+          <declname>quantile</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the quantile for cluster averaging. After clustering, the cluster center (i.e. average noise variance as a function of the average intensity in the cluster) is computed using only the cluster members whose estimated variance is below <emphasis>quantile</emphasis> times the maximum variance in the cluster.<linebreak/>
+ Default: 0.8<linebreak/>
+ Precondition: 0 &lt; <emphasis>quantile</emphasis> &lt;= 1.0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="145" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1abf893b18535a68accb96f05679d7bf16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; clusterCount</definition>
+        <argsstring>(unsigned int c)</argsstring>
+        <name>clusterCount</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the number of clusters for non-parametric noise normalization. The intensity/variance pairs found are grouped into clusters before the noise normalization transform is computed.<linebreak/>
+ Default: 10 clusters </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="130" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1ad6cab712054a03d8357ea7a53858582d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; noiseEstimationQuantile</definition>
+        <argsstring>(double quantile)</argsstring>
+        <name>noiseEstimationQuantile</name>
+        <param>
+          <type>double</type>
+          <declname>quantile</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the operating range of the robust noise estimator. Intensity changes that are larger than <emphasis>quantile</emphasis> times the current estimate of the noise variance are ignored by the robust noise estimator.<linebreak/>
+ Default: 1.5<linebreak/>
+ Precondition: 0 &lt; <emphasis>quantile</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="159" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1a83e6d7f5077b8079f3bcaa4c1b54080a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NoiseNormalizationOptions</definition>
+        <argsstring>()</argsstring>
+        <name>NoiseNormalizationOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize all options with default values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="93" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1aeb4e4a076204d53ab9c98e5e8adf2d4f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; noiseVarianceInitialGuess</definition>
+        <argsstring>(double guess)</argsstring>
+        <name>noiseVarianceInitialGuess</name>
+        <param>
+          <type>double</type>
+          <declname>guess</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the initial estimate of the noise variance. Robust noise variance estimation is an iterative procedure starting at the given value.<linebreak/>
+ Default: 10.0<linebreak/>
+ Precondition: 0 &lt; <emphasis>guess</emphasis> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="172" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1a99dbc1658f745ef346ffe3acc9878c71" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; useGradient</definition>
+        <argsstring>(bool r)</argsstring>
+        <name>useGradient</name>
+        <param>
+          <type>bool</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Select the noise estimation algorithm.</para><para>If <emphasis>r</emphasis> is <computeroutput>true</computeroutput>, use the gradient-based noise estimator according to F<umlaut char="o"/>rstner (default). Otherwise, use an algorithm that uses the intensity values directly. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="107" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NoiseNormalizationOptions_1ac18ade17f4999ffc10f0651d8ae80999" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref> &amp;</type>
+        <definition>NoiseNormalizationOptions&amp; windowRadius</definition>
+        <argsstring>(unsigned int r)</argsstring>
+        <name>windowRadius</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the window radius for a single noise estimate. Every window of the given size gives raise to one intensity/variance pair.<linebreak/>
+ Default: 6 pixels </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="118" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="117" bodyend="123"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Pass options to one of the noise normalization functions. </para>    </briefdescription>
+    <detaileddescription>
+<para><computeroutput><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">NoiseNormalizationOptions</ref></computeroutput> is an argument object that holds various optional parameters used by the noise normalization functions. If a parameter is not explicitly set, a suitable default will be used.</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::noiseVarianceEstimation(srcImageRange(src),<sp/>result,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().<ref refid="classvigra_1_1NoiseNormalizationOptions_1ac18ade17f4999ffc10f0651d8ae80999" kindref="member">windowRadius</ref>(9).<ref refid="classvigra_1_1NoiseNormalizationOptions_1aeb4e4a076204d53ab9c98e5e8adf2d4f" kindref="member">noiseVarianceInitialGuess</ref>(25.0));</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="87" bodyend="183"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1a306e6b4a59bee29bcfe64d0454042fe6" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>averaging_quantile</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1aed553a35ca9067a3ce2d2d1a3b1ad83e" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>averagingQuantile</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1adf24333e88bee8277639061b8769f09c" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>cluster_count</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1abf893b18535a68accb96f05679d7bf16" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>clusterCount</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1ae90f20210fb8eae2f39d32d6f1b1536c" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>noise_estimation_quantile</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1a36aff4b7ab24b3899a18494a5962ce2c" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>noise_variance_initial_guess</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1ad6cab712054a03d8357ea7a53858582d" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>noiseEstimationQuantile</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1a83e6d7f5077b8079f3bcaa4c1b54080a" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>NoiseNormalizationOptions</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1aeb4e4a076204d53ab9c98e5e8adf2d4f" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>noiseVarianceInitialGuess</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1ab5ec6dc26cd92b36375fb0de4e61cf94" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>use_gradient</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1a99dbc1658f745ef346ffe3acc9878c71" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>useGradient</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1a29398ca6c1ddb2d6ef3464f5973344f3" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>window_radius</name></member>
+      <member refid="classvigra_1_1NoiseNormalizationOptions_1ac18ade17f4999ffc10f0651d8ae80999" prot="public" virt="non-virtual"><scope>vigra::NoiseNormalizationOptions</scope><name>windowRadius</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

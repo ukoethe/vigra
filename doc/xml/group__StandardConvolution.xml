@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__StandardConvolution" kind="group">
+    <compoundname>StandardConvolution</compoundname>
+    <title>Two-dimensional convolution functions</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__StandardConvolution_1ga031f42b01ed7a18b19a91c4742cdd02d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImage</definition>
+        <argsstring>(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc, DestIterator dest_ul, DestAccessor dest_acc, KernelIterator ki, KernelAccessor ak, Diff2D kul, Diff2D klr, BorderTreatmentMode border)</argsstring>
+        <name>convolveImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_ul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ki</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ak</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>kul</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>klr</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+<para>Performs a 2 dimensional convolution of the source image using the given kernel. </para>        </briefdescription>
+        <detaileddescription>
+<para>The KernelIterator must point to the center of the kernel, and the kernel&apos;s size is given by its upper left (x and y of distance &lt;= 0) and lower right (distance &gt;= 0) corners. The image must always be larger than the kernel. At those positions where the kernel does not completely fit into the image, the specified <ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmentMode</ref> is applied. You can choice between following BorderTreatmentModes: <itemizedlist>
+<listitem>
+<para>BORDER_TREATMENT_CLIP </para></listitem>
+<listitem>
+<para>BORDER_TREATMENT_AVOID </para></listitem>
+<listitem>
+<para>BORDER_TREATMENT_WRAP </para></listitem>
+<listitem>
+<para>BORDER_TREATMENT_REFLECT </para></listitem>
+<listitem>
+<para>BORDER_TREATMENT_REPEAT </para></listitem>
+</itemizedlist>
+<linebreak/>
+ The images&apos;s pixel type (SrcAccessor::value_type) must be a linear space over the kernel&apos;s value_type (KernelAccessor::value_type), i.e. addition of source values, multiplication with kernel values, and NumericTraits must be defined. The kernel&apos;s value_type must be an algebraic field, i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">convolveImage</ref>(SrcIterator<sp/>src_ul,<sp/>SrcIterator<sp/>src_lr,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_ul,<sp/>DestAccessor<sp/>dest_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ki,<sp/>KernelAccessor<sp/>ak,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Diff2D<sp/>kul,<sp/>Diff2D<sp/>klr,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">convolveImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,<sp/>Diff2D,<sp/>Diff2D,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BorderTreatmentMode&gt;<sp/>kernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="stdconvolution_8hxx_source" kindref="compound">vigra/stdconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>horizontal<sp/>Sobel<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::Kernel2D&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>sobel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sobel.initExplicitly(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=<sp/><sp/></highlight><highlight class="comment">//<sp/>upper<sp/>left<sp/>and<sp/>lower<sp/>right</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.125,<sp/>0.0,<sp/>-0.125,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.25,<sp/><sp/>0.0,<sp/>-0.25,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.125,<sp/>0.0,<sp/>-0.125;</highlight></codeline>
+<codeline><highlight class="normal">sobel.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">vigra::convolveImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>kernel2d(sobel));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>src_ul,<sp/>src_lr;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>dest_ul;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>ik;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">KernelAccessor<sp/>kernel_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(src_ul);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>kernel_accessor(ik)<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>-=<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/>dest_ul);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;KernelAccessor::value_type&gt;::RealPromote<sp/>k<sp/>=<sp/>kernel_accessor(ik);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">k<sp/>+=<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>-=<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>/<sp/>k;</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">kul.x<sp/>&lt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">kul.y<sp/>&lt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">klr.x<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">klr.y<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">src_lr.x<sp/>-<sp/>src_ul.x<sp/>&gt;=<sp/>klr.x<sp/>+<sp/>kul.x<sp/>+<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lr.y<sp/>-<sp/>src_ul.y<sp/>&gt;=<sp/>klr.y<sp/>+<sp/>kul.y<sp/>+<sp/>1</highlight></codeline>
+</programlisting></para><para>If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be != 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="186" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="182" bodyend="381"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1gacf300accbef9b9e0bacec53e1c1b2997" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt; kernel)</argsstring>
+        <name>convolveImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="387" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1gaa1698618c44d0d5d5e0559212519b562" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImageWithMask</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveImageWithMask</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Deprecated name of 2-dimensional normalized convolution, i.e. convolution with a mask image. </para>        </briefdescription>
+        <detaileddescription>
+<para>See <ref refid="group__StandardConvolution_1ga69ac94967f6044203ebb85d84cc51b84" kindref="member">normalizedConvolveImage()</ref> for documentation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__StandardConvolution_1gaa1698618c44d0d5d5e0559212519b562" kindref="member" tooltip="Deprecated name of 2-dimensional normalized convolution, i.e. convolution with a mask image...">convolveImageWithMask</ref>(SrcIterator<sp/>src_ul,<sp/>SrcIterator<sp/>src_lr,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/><ref refid="group__FixedPointOperations_1ga71573012351636ef982341cf3eb1d669" kindref="member" tooltip="multiplication with enforced result type.">mul</ref>,<sp/>MaskAccessor<sp/>am,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_ul,<sp/>DestAccessor<sp/>dest_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ki,<sp/>KernelAccessor<sp/>ak,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Diff2D<sp/>kul,<sp/>Diff2D<sp/>klr,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__StandardConvolution_1gaa1698618c44d0d5d5e0559212519b562" kindref="member" tooltip="Deprecated name of 2-dimensional normalized convolution, i.e. convolution with a mask image...">convolveImageWithMask</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,<sp/>Diff2D,<sp/>Diff2D,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BorderTreatmentMode&gt;<sp/>kernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="723"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1ga3d18e364059fcce6957e8d37c6f55e9c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImageWithMask</definition>
+        <argsstring>(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc, MaskIterator mul, MaskAccessor am, DestIterator dest_ul, DestAccessor dest_acc, KernelIterator ki, KernelAccessor ak, Diff2D kul, Diff2D klr, BorderTreatmentMode border)</argsstring>
+        <name>convolveImageWithMask</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>mul</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>am</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_ul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ki</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ak</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>kul</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>klr</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="735" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="730" bodyend="740"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1ga8926836852a2c5cb9be532207c4c50ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImageWithMask</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt; kernel)</argsstring>
+        <name>convolveImageWithMask</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="753" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="747" bodyend="759"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1ga69ac94967f6044203ebb85d84cc51b84" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::normalizedConvolveImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>normalizedConvolveImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 2-dimensional normalized convolution, i.e. convolution with a mask image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This functions computes <ulink url="http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/PIRODDI1/NormConv/NormConv.html">normalized convolution</ulink> as defined in Knutsson, H. and Westin, C-F.: <emphasis>Normalized and differential convolution: Methods for Interpolation and Filtering of incomplete and uncertain data</emphasis>. Proc. of the IEEE Conf. on Computer Vision and Pattern Recognition, 1993, 515-523.</para><para>The mask image must be binary and encodes which pixels of the original image are valid. It is used as follows: Only pixel under the mask are used in the calculations. Whenever a part of the kernel lies outside the mask, it is ignored, and the kernel is renormalized to its original norm (analogous to the CLIP <ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmentMode</ref>). Thus, a useful convolution result is computed whenever <emphasis>at least one valid pixel is within the current window</emphasis> Thus, destination pixels not under the mask still receive a value if they are <emphasis>near</emphasis> the mask. Therefore, this algorithm is useful as an interpolator of sparse input data. If you are only interested in the destination values under the mask, you can perform a subsequent <ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member">copyImageIf()</ref>.</para><para>The KernelIterator must point to the center of the kernel, and the kernel&apos;s size is given by its upper left (x and y of distance &lt;= 0) and lower right (distance &gt;= 0) corners. The image must always be larger than the kernel. At those positions where the kernel does not completely fit into the image, the specified <ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmentMode</ref> is applied. Only BORDER_TREATMENT_CLIP and BORDER_TREATMENT_AVOID are currently supported.</para><para>The images&apos;s pixel type (SrcAccessor::value_type) must be a linear space over the kernel&apos;s value_type (KernelAccessor::value_type), i.e. addition of source values, multiplication with kernel values, and NumericTraits must be defined. The kernel&apos;s value_type must be an algebraic field, i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__StandardConvolution_1ga69ac94967f6044203ebb85d84cc51b84" kindref="member" tooltip="Performs a 2-dimensional normalized convolution, i.e. convolution with a mask image.">normalizedConvolveImage</ref>(SrcIterator<sp/>src_ul,<sp/>SrcIterator<sp/>src_lr,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskIterator<sp/><ref refid="group__FixedPointOperations_1ga71573012351636ef982341cf3eb1d669" kindref="member" tooltip="multiplication with enforced result type.">mul</ref>,<sp/>MaskAccessor<sp/>am,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_ul,<sp/>DestAccessor<sp/>dest_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ki,<sp/>KernelAccessor<sp/>ak,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Diff2D<sp/>kul,<sp/>Diff2D<sp/>klr,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__StandardConvolution_1ga69ac94967f6044203ebb85d84cc51b84" kindref="member" tooltip="Performs a 2-dimensional normalized convolution, i.e. convolution with a mask image.">normalizedConvolveImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,<sp/>Diff2D,<sp/>Diff2D,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BorderTreatmentMode&gt;<sp/>kernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="stdconvolution_8hxx_source" kindref="compound">vigra/stdconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">vigra::CImage<sp/>mask(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>3x3<sp/>binomial<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::Kernel2D&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>binom;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">binom.initExplicitly(Diff2D(-1,-1),<sp/>Diff2D(1,1))<sp/>=<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>upper<sp/>left<sp/>and<sp/>lower<sp/>right</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0625,<sp/>0.125,<sp/>0.0625,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.125,<sp/><sp/>0.25,<sp/><sp/>0.125,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.0625,<sp/>0.125,<sp/>0.0625;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardConvolution_1ga69ac94967f6044203ebb85d84cc51b84" kindref="member" tooltip="Performs a 2-dimensional normalized convolution, i.e. convolution with a mask image.">vigra::normalizedConvolveImage</ref>(srcImageRange(src),<sp/>maskImage(mask),<sp/>destImage(dest),<sp/>kernel2d(binom));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>src_ul,<sp/>src_lr;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/><ref refid="group__FixedPointOperations_1ga71573012351636ef982341cf3eb1d669" kindref="member" tooltip="multiplication with enforced result type.">mul</ref>;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>dest_ul;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>ik;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">KernelAccessor<sp/>kernel_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(src_ul);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>kernel_accessor(ik)<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>-=<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask_accessor(mul))<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/>dest_ul);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;KernelAccessor::value_type&gt;::RealPromote<sp/>k<sp/>=<sp/>kernel_accessor(ik);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">k<sp/>+=<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>-=<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>/<sp/>k;</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">kul.x<sp/>&lt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">kul.y<sp/>&lt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">klr.x<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">klr.y<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">src_lr.x<sp/>-<sp/>src_ul.x<sp/>&gt;=<sp/>klr.x<sp/>+<sp/>kul.x<sp/>+<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lr.y<sp/>-<sp/>src_ul.y<sp/>&gt;=<sp/>klr.y<sp/>+<sp/>kul.y<sp/>+<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">border<sp/>==<sp/>BORDER_TREATMENT_CLIP<sp/>||<sp/>border<sp/>==<sp/>BORDER_TREATMENT_AVOID</highlight></codeline>
+</programlisting></para><para>Sum of kernel elements must be != 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="539"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1gaae216a84a023946bc80034bfc89eb99b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::normalizedConvolveImage</definition>
+        <argsstring>(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc, MaskIterator mul, MaskAccessor am, DestIterator dest_ul, DestAccessor dest_acc, KernelIterator ki, KernelAccessor ak, Diff2D kul, Diff2D klr, BorderTreatmentMode border)</argsstring>
+        <name>normalizedConvolveImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>mul</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>am</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_ul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ki</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ak</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>kul</declname>
+        </param>
+        <param>
+          <type>Diff2D</type>
+          <declname>klr</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="546" bodyend="663"/>
+      </memberdef>
+      <memberdef kind="function" id="group__StandardConvolution_1ga72d3bbb06e7cecaef32cfccc8661f1db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::normalizedConvolveImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; MaskIterator, MaskAccessor &gt; mask, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt; kernel)</argsstring>
+        <name>normalizedConvolveImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, Diff2D, Diff2D, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="677" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="671" bodyend="683"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Perform 2D non-separable convolution, with and without ROI mask.</para><para>These generic convolution functions implement the standard 2D convolution operation for images that fit into the required interface. Arbitrary ROI&apos;s are supported by the mask version of the algorithm. The functions need a suitable 2D kernel to operate. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

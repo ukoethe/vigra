@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1linalg_1_1PointWise" kind="class" prot="public">
+    <compoundname>vigra::linalg::PointWise</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1linalg_1_1PointWise_1a98ea6df4a09ddf82526e585b1d26c2f3" prot="public" static="no" mutable="no">
+        <type>T const &amp;</type>
+        <definition>T const&amp; t</definition>
+        <argsstring></argsstring>
+        <name>t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="1521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="1521" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1PointWise_1a45fded3834e0c18eb83abdb116f0974d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>PointWise</definition>
+        <argsstring>(T const &amp;it)</argsstring>
+        <name>PointWise</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>it</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="1525" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="1523" bodyend="1525"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="1519" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="1518" bodyend="1526"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1linalg_1_1PointWise_1a45fded3834e0c18eb83abdb116f0974d" prot="public" virt="non-virtual"><scope>vigra::linalg::PointWise</scope><name>PointWise</name></member>
+      <member refid="classvigra_1_1linalg_1_1PointWise_1a98ea6df4a09ddf82526e585b1d26c2f3" prot="public" virt="non-virtual"><scope>vigra::linalg::PointWise</scope><name>t</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

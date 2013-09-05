@@ -1,0 +1,3048 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__LocalMinMax" kind="group">
+    <compoundname>LocalMinMax</compoundname>
+    <title>Local Minima and Maxima</title>
+    <innerclass refid="classvigra_1_1LocalMinmaxOptions" prot="public">vigra::LocalMinmaxOptions</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(...)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local maximal regions in an image or volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note: the function is not yet implemented for arbitrary dimensional arrays, but see <ref refid="group__LocalMinMax_1ga0db91012c965e9950ae09ab25ec2c786" kindref="member">extendedLocalMaxima3D()</ref> for 3D.</para><para>This function finds regions of uniform pixel value whose neighboring regions are all have smaller values (maximal plateaus of arbitrary size). By default, the pixels in a plateau have exactly identical values. By passing an <computeroutput>EqualityFunctor</computeroutput> with tolerance, one can allow for plateaus that are not quite constant (this is often necessary with float pixel values). Pass <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">vigra::EightNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">vigra::FourNeighborCode</ref> to determine the neighborhood where pixel values are compared.</para><para>Maximal regions are marked in the destination image with the given marker value (default is 1), all other destination pixels remain unchanged. <computeroutput>SrcAccessor::value_type</computeroutput> must be equality-comparable and less-comparable. A pixel or region touching the image border will never be marked as maximum or maximal plateau. Use <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref> with the appropriate options if you need that functionality. Likewise if you want to apply a threshold onl the fly. In fact, all functionality except for &apos;equality with tolerance&apos; can be accessed via that function in a more readable way, so <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref> should be preferred. The function uses accessors.</para><para><bold> Declarations:</bold></para><para>use 3-dimensional arrays: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member" tooltip="Find local maximal regions in an image or volume.">extendedLocalMaxima</ref>(MultiArrayView&lt;3,<sp/>T1,<sp/>C1&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;3,<sp/>T2,<sp/>C2&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+</programlisting></para><para>pass image iterators explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor<sp/>=<sp/>std::equal_to&lt;typename<sp/>SrcAssessor::value_type&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member" tooltip="Find local maximal regions in an image or volume.">extendedLocalMaxima</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal<sp/>=<sp/>EqualityFunctor())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor<sp/>=<sp/>std::equal_to&lt;typename<sp/>SrcAssessor::value_type&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member" tooltip="Find local maximal regions in an image or volume.">extendedLocalMaxima</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal<sp/>=<sp/>EqualityFunctor())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/localminmax.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>optional:<sp/>define<sp/>an<sp/>equality<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">EqualWithToleranceFunctor</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>EqualWithToleranceFunctor(T<sp/>tolerance)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>t(tolerance)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(T<sp/>l,<sp/>T<sp/>r)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__FFTWComplexOperators_1ga6f4ef274842b6153923f02a6cd264576" kindref="member" tooltip="absolute value (= magnitude)">vigra::abs</ref>(l-r)<sp/>&lt;=<sp/>t;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>t;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>maxima(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>destiniation<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">maxima.init(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member" tooltip="Find local maximal regions in an image or volume.">vigra::extendedLocalMaxima</ref>(srcImageRange(src),<sp/>destImage(maxima));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allow<sp/>plateaus<sp/>with<sp/>tolerance</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">maxima.init(0);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member" tooltip="Find local maximal regions in an image or volume.">vigra::extendedLocalMaxima</ref>(srcImageRange(src),<sp/>destImage(maxima),<sp/>1.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualWithToleranceFunctor&lt;unsigned<sp/>char&gt;(1));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u);</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>&lt;<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>marker;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(marker,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1828"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaa640eb5a722c2649a44a289839479372" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1838" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1834" bodyend="1845"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga6932a6e719a1b1984c04fe7c561faea4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1855" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1851" bodyend="1860"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab76cb5fdb7832d765a2d9b1b677e5bb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1868" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1865" bodyend="1873"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga748e339eeedaf61aa14d7826a9dea2af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1880" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1878" bodyend="1883"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaee6d16c0ce84768f0a0bf173acf6c88d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1893" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1889" bodyend="1896"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab5e289720078c813ac1de9c470e4bd35" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1905" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1902" bodyend="1908"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga4b05bd84bfcdb57e6e7705c7b49d0975" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1916" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1913" bodyend="1919"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga422b175865e5e1fb970d69a1d59dc05f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>extendedLocalMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1926" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1924" bodyend="1929"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga0db91012c965e9950ae09ab25ec2c786" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>extendedLocalMaxima3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local maximal regions in 3D multi array. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function finds regions of uniform pixel value whose neighboring regions are all have smaller values (maximal plateaus of arbitrary size). By default, the pixels in a plateau have exactly identical values. By passing an <computeroutput>EqualityFunctor</computeroutput> with tolerance, one can allow for plateaus that are not quite constant (this is often necessary with float pixel values). Pass the neighborhood where pixel values are compared. See <ref refid="group__LocalMinMax_1gacf065fa5d3b1f0e8b2b6eedc742e117a" kindref="member">extendedLocalMaxima()</ref> for more details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1948"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga9f88e06aa2d9db34f72569295d5eba2c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMaxima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1959" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1954" bodyend="1965"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga032545c11830318ebb30c862f935fe65" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMaxima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1974" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1970" bodyend="1980"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga4cc6fe1010954dc727673d8373f568eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da)</argsstring>
+        <name>extendedLocalMaxima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1987" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1985" bodyend="1991"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga5cd7861ccfa40d0ae9cdce05dc87ba6e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMaxima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMaxima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="2000" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1996" bodyend="2004"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(...)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local minimal regions in an image or volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note: the function is not yet implemented for arbitrary dimensional arrays, but see <ref refid="group__LocalMinMax_1gad1280b5f8335ebdadbb45a1b8cf8e8f5" kindref="member">extendedLocalMinima3D()</ref> for 3D.</para><para>This function finds regions of uniform pixel value whose neighboring regions are all have smaller values (minimal plateaus of arbitrary size). By default, the pixels in a plateau have exactly identical values. By passing an <computeroutput>EqualityFunctor</computeroutput> with tolerance, one can allow for plateaus that are not quite constant (this is often necessary with float pixel values). Pass <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">vigra::EightNeighborCode</ref> or <ref refid="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" kindref="member">vigra::FourNeighborCode</ref> to determine the neighborhood where pixel values are compared.</para><para>Minimal regions are marked in the destination image with the given marker value (default is 1), all other destination pixels remain unchanged. <computeroutput>SrcAccessor::value_type</computeroutput> must be equality-comparable and less-comparable. A pixel or region touching the image border will never be marked as minimum or minimal plateau. Use <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> with the appropriate options if you need that functionality. Likewise if you want to apply a threshold onl the fly. In fact, all functionality except for &apos;equality with tolerance&apos; can be accessed via that function in a more readable way, so <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> should be preferred. The function uses accessors.</para><para><bold> Declarations:</bold></para><para>use 3-dimensional arrays: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member" tooltip="Find local minimal regions in an image or volume.">extendedLocalMinima</ref>(MultiArrayView&lt;3,<sp/>T1,<sp/>C1&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;3,<sp/>T2,<sp/>C2&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+</programlisting></para><para>pass image iterators explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor<sp/>=<sp/>std::equal_to&lt;typename<sp/>SrcAssessor::value_type&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member" tooltip="Find local minimal regions in an image or volume.">extendedLocalMinima</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal<sp/>=<sp/>EqualityFunctor());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestValue<sp/>=<sp/>DestAccessor::value_type,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">EqualityFunctor<sp/>=<sp/>std::equal_to&lt;typename<sp/>SrcAssessor::value_type&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member" tooltip="Find local minimal regions in an image or volume.">extendedLocalMinima</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestValue<sp/>marker<sp/>=<sp/>NumericTraits&lt;DestValue&gt;::one(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Neighborhood<sp/>neighborhood<sp/>=<sp/><ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualityFunctor<sp/>equal<sp/>=<sp/>EqualityFunctor());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/localminmax.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>optional:<sp/>define<sp/>an<sp/>equality<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">EqualWithToleranceFunctor</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>EqualWithToleranceFunctor(T<sp/>tolerance)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>t(tolerance)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(T<sp/>l,<sp/>T<sp/>r)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__FFTWComplexOperators_1ga6f4ef274842b6153923f02a6cd264576" kindref="member" tooltip="absolute value (= magnitude)">vigra::abs</ref>(l-r)<sp/>&lt;=<sp/>t;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>T<sp/>t;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>minima(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>destiniation<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">minima.init(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member" tooltip="Find local minimal regions in an image or volume.">vigra::extendedLocalMinima</ref>(srcImageRange(src),<sp/>destImage(minima));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allow<sp/>plateaus<sp/>with<sp/>tolerance</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">minima.init(0);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member" tooltip="Find local minimal regions in an image or volume.">vigra::extendedLocalMinima</ref>(srcImageRange(src),<sp/>destImage(minima),<sp/>1.0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>EqualWithToleranceFunctor&lt;unsigned<sp/>char&gt;(1));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">EqualityFunctor<sp/>equal;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>==<sp/>u</highlight></codeline>
+<codeline><highlight class="normal">equal(u,<sp/>u);</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>&lt;<sp/>u</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">DestValue<sp/>marker;</highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(marker,<sp/>dest_upperleft);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1511"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga88bc494ce0581ba2e1820f8c619235be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1517" bodyend="1528"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaf22bbc94709737589f17b25526678848" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1534" bodyend="1543"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga2ff68e459fd6dd2dc8b77d3be1da7f8a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1548" bodyend="1556"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga2a4d88cfdeadec9822d63c8505258309" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1561" bodyend="1566"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gae464628034ec0d5378f4d5b3b36fdd24" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1572" bodyend="1579"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga9fe522ad6b8350543ab48f06b0e792a6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1588" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1585" bodyend="1591"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga3dbde0839aeab75032096e8b326b5f1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1599" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1596" bodyend="1602"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab99f0c4e95ddb9fb7a28e2a4824ac4af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>extendedLocalMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1607" bodyend="1612"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gad1280b5f8335ebdadbb45a1b8cf8e8f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>extendedLocalMinima3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local minimal regions in a volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function finds regions of uniform pixel value whose neighboring regions are all have smaller values (minimal plateaus of arbitrary size). By default, the pixels in a plateau have exactly identical values. By passing an <computeroutput>EqualityFunctor</computeroutput> with tolerance, one can allow for plateaus that are not quite constant (this is often necessary with float pixel values). Pass the neighborhood where pixel values are compared. See <ref refid="group__LocalMinMax_1ga5d85854a266cf6f5d4bff98b34e123fb" kindref="member">extendedLocalMinima()</ref> for more details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1633"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga0679f1d87aa375d274bc5b417b43e31e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+          <param>
+            <type>class EqualityFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood, EqualityFunctor equal)</argsstring>
+        <name>extendedLocalMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <param>
+          <type>EqualityFunctor</type>
+          <declname>equal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1644" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1639" bodyend="1650"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga72f642e2bc0f8321b7c384aa65e49c1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1659" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1655" bodyend="1664"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab3ecdc698e80c415b9daac7a4aacf430" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da)</argsstring>
+        <name>extendedLocalMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1669" bodyend="1675"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaae07449e4ad46351a9b378572225779d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Neighborhood</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::extendedLocalMinima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, typename DestAccessor::value_type marker, Neighborhood neighborhood)</argsstring>
+        <name>extendedLocalMinima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>typename DestAccessor::value_type</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>Neighborhood</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1684" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1680" bodyend="1688"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(...)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local maxima in an image or multi-dimensional array. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note: the function is not yet implemented for arbitrary dimensional arrays, but see <ref refid="group__LocalMinMax_1gaf7d58b90367742c7d20d9b47b82129b6" kindref="member">localMaxima3D()</ref> for 3D.</para><para>By default, maxima are defined as points which are not at the array border and whose value is higher than the value of all indirect neighbors (i.e. 8-neighbors in 2D, 26-neighbors in 3D, 3<superscript>N</superscript>-1 neighbors in N-D). The detected points will be marked with the default value 1 in the destination array.</para><para>The defaults can be overridden in various ways by providing <ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> : you can switch to the direct neighborhood (i.e. 4-neighborhood in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), allow maxima at the border, discard maxima where the function value is not above a given threshold, allow extended maxima (i.e. maxima that form maximal plateaus rather than isolated pixels <ndash/> note that this option is only supported for 2D images), and change the marker in the destination image. See usage examples below for details.</para><para>There are also variants of the <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref> function where parameters are passed explicitly rather than via an option object. These versions of the function are deprecated, but will be kept for compatibility.</para><para><bold> Declarations:</bold></para><para>use arbitrary-dimensional arrays: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">localMaxima</ref>(MultiArrayView&lt;N,<sp/>T1,<sp/>C1&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>T2,<sp/>C2&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>pass image iterators explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">localMaxima</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">localMaxima</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/localminmax.hxx\&gt;&lt;br&gt;
+&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/multi_localminmax.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>3D<sp/>examples<sp/>using<sp/>MultiArray</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">vigra::MultiArrayShape&lt;3&gt;::type</ref><sp/>shape(w,h,d);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3, unsigned char&gt;</ref><sp/>src(shape),<sp/>maxima(shape);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>src</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>parameterisation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">vigra::localMaxima</ref>(src,<sp/>maxima);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">maxima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>6-neighborhood<sp/>and<sp/>allow<sp/>maxima<sp/>at<sp/>the<sp/>image<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">vigra::localMaxima</ref>(src,<sp/>maxima,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().neighborhood(6).allowAtBorder());</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="comment">//<sp/>2D<sp/>examples<sp/>using<sp/>BasicImage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>maxima(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>src</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>parameterisation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">vigra::localMaxima</ref>(srcImageRange(src),<sp/>destImage(maxima));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">maxima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>4-neighborhood<sp/>and<sp/>allow<sp/>maxima<sp/>at<sp/>the<sp/>image<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">vigra::localMaxima</ref>(srcImageRange(src),<sp/>destImage(maxima),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().neighborhood(4).allowAtBorder());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">maxima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allow<sp/>extended<sp/>maxima<sp/>(maximal<sp/>plateaus)<sp/>and<sp/>use<sp/>value<sp/>&apos;255&apos;<sp/>as<sp/>a<sp/>marker</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member" tooltip="Find local maxima in an image or multi-dimensional array.">vigra::localMaxima</ref>(srcImageRange(src),<sp/>destImage(maxima),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().allowPlateaus().markWith(255));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>&lt;<sp/>u</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1162"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gae8a3dc58c45830fceabe14c5051ba77a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, LocalMinmaxOptions const &amp;options=LocalMinmaxOptions())</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>LocalMinmaxOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LocalMinmaxOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1167" bodyend="1211"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga2eadb569aa186f9f7bb246caf7701260" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, FourNeighborCode neighborhood)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>FourNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1220" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1217" bodyend="1224"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaa850be470b92a86f4bb7ef68a250b542" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, EightNeighborCode neighborhood)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>EightNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1233" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1230" bodyend="1237"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaae76ab5a39548a2077bdb4b14725f9f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1245" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1242" bodyend="1247"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga9ae5b1f83926777ca9dedece9c1a8726" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, FourNeighborCode neighborhood)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>FourNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1253" bodyend="1259"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga7fb25eaffe13bc4d24146088015c08a6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, EightNeighborCode neighborhood)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>EightNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1265" bodyend="1271"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaf55f26515dcd693bcc84c96983f45ce9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker)</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1276" bodyend="1282"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaacc5028dbd4f56c5afaf8da0663fc0c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, LocalMinmaxOptions const &amp;options=LocalMinmaxOptions())</argsstring>
+        <name>localMaxima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>LocalMinmaxOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LocalMinmaxOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1287" bodyend="1293"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaf7d58b90367742c7d20d9b47b82129b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local maxima in a 3D multi array. </para>        </briefdescription>
+        <detaileddescription>
+<para>By default, maxima are defined as points which are not at the array border and whose value is higher than the value of all indirect neighbors. The detected points will be marked as specified. See <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref> for mor details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1310"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga464e3604ecdf0c4b07088d7c66d22959" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, NeighborCode3DSix neighborhood)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DSix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1319" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1315" bodyend="1323"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gae77715953532efdef8c9b6a617e10204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, NeighborCode3DTwentySix neighborhood)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DTwentySix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1328" bodyend="1336"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab4e61ba3c535b3e4ffe7ab5ae129705f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, NeighborCode3DTwentySix neighborhood)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DTwentySix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1345" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1341" bodyend="1348"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga6aa470f104fcc944a6ce87a82db1bc2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, std::pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>vigra::triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>std::pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1356" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1353" bodyend="1359"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga87b3fdcc8ecc5992db06719cca77fa50" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMaxima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, NeighborCode3DSix neighborhood)</argsstring>
+        <name>localMaxima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DSix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1368" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1364" bodyend="1371"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(...)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local minima in an image or multi-dimensional array. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note: the function is not yet implemented for arbitrary dimensional arrays, but see <ref refid="group__LocalMinMax_1gac845c0bf489cfea8b5caabb8ac827609" kindref="member">localMinima3D()</ref> for 3D.</para><para>By default, minima are defined as points which are not at the array border and whose value is lower than the value of all indirect neighbors (i.e. 8-neighbors in 2D, 26-neighbors in 3D, 3<superscript>N</superscript>-1 neighbors in N-D). The detected points will be marked with the default value 1 in the destination array.</para><para>The defaults can be overridden in various ways by providing <ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound">LocalMinmaxOptions</ref> : you can switch to the direct neighborhood (i.e. 4-neighborhood in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), allow minima at the border, discard minima where the function value is not below a given threshold, allow extended minima (i.e. minima that form minimal plateaus rather than isolated pixels <ndash/> note that this option is only supported for 2D images), and change the marker in the destination image. See usage examples below for details.</para><para>There are also variants of the <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> function where parameters are passed explicitly rather than via an option object. These versions of the function are deprecated, but will be kept for compatibility.</para><para><bold> Declarations:</bold></para><para>use arbitrary-dimensional arrays: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C1,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T2,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>C2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">localMinima</ref>(MultiArrayView&lt;N,<sp/>T1,<sp/>C1&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>T2,<sp/>C2&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>pass image iterators explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">localMinima</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">localMinima</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LocalMinmaxOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>LocalMinmaxOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="localminmax_8hxx_source" kindref="compound">vigra/localminmax.hxx</ref>&gt;<linebreak/>
+ <bold>#include</bold> &lt;<ref refid="multi__localminmax_8hxx_source" kindref="compound">vigra/multi_localminmax.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>3D<sp/>examples<sp/>using<sp/>MultiArray</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1TinyVector" kindref="compound" tooltip="Class for fixed size vectors.This class contains an array of size SIZE of the specified VALUETYPE...">vigra::MultiArrayShape&lt;3&gt;::type</ref><sp/>shape(w,h,d);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3, unsigned char&gt;</ref><sp/>src(shape),<sp/>minima(shape);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>src</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>parameterisation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(src,<sp/>minima);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">minima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>6-neighborhood<sp/>and<sp/>allow<sp/>minima<sp/>at<sp/>the<sp/>image<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(src,<sp/>minima,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().neighborhood(6).allowAtBorder());</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="comment">//<sp/>2D<sp/>examples<sp/>using<sp/>BasicImage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h),<sp/>minima(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>src</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>parameterisation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(srcImageRange(src),<sp/>destImage(minima));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">minima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>4-neighborhood<sp/>and<sp/>allow<sp/>minima<sp/>at<sp/>the<sp/>image<sp/>border</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(srcImageRange(src),<sp/>destImage(minima),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().neighborhood(4).allowAtBorder());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">minima<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allow<sp/>extended<sp/>minima<sp/>(minimal<sp/>plateaus)<sp/>and<sp/>use<sp/>value<sp/>&apos;255&apos;<sp/>as<sp/>a<sp/>marker</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member" tooltip="Find local minima in an image or multi-dimensional array.">vigra::localMinima</ref>(srcImageRange(src),<sp/>destImage(minima),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1LocalMinmaxOptions" kindref="compound" tooltip="Options object for localMinima() and localMaxima().">vigra::LocalMinmaxOptions</ref>().allowPlateaus().markWith(255));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor::value_type<sp/>u<sp/>=<sp/>src_accessor(src_upperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>&lt;<sp/>u</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="819"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga0ff95fc747898e6533a2e3867eb18a1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, LocalMinmaxOptions const &amp;options=LocalMinmaxOptions())</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>LocalMinmaxOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LocalMinmaxOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="827" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="824" bodyend="869"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gad8af3bdd30cf133ec7e068f332d86227" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, FourNeighborCode neighborhood)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>FourNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="878" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="875" bodyend="882"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga8a97c09e3116c736b969b86807135e1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, EightNeighborCode neighborhood)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>EightNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="891" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="888" bodyend="895"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gafa439ac695b3ae11a6ad99a1f7655e8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="903" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="900" bodyend="905"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga23a77e96a4f8060dc96fccc983a01ae0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, FourNeighborCode neighborhood)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>FourNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="914" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="911" bodyend="917"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga35763b727d3dbeda614f988f7880ce53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, EightNeighborCode neighborhood)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>EightNeighborCode</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="926" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="923" bodyend="929"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga8073a047fd2ef23fc5732372d6d5f992" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker)</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="937" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="934" bodyend="940"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gaaa12c77578d28d4bf2a4592256c36c13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, LocalMinmaxOptions const &amp;options=LocalMinmaxOptions())</argsstring>
+        <name>localMinima</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>LocalMinmaxOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>LocalMinmaxOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="948" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="945" bodyend="951"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gac845c0bf489cfea8b5caabb8ac827609" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(...)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Find local minima in a 3D multi array. </para>        </briefdescription>
+        <detaileddescription>
+<para>By default, minima are defined as points which are not at the array border and whose value is lower than the value of all indirect neighbors. The detected points will be marked. See <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> for more details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="969"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga048c2fe3d4bdd822ed9b37f6db9e1e73" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, NeighborCode3DTwentySix neighborhood)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DTwentySix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="978" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="974" bodyend="982"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1ga04f88ed2c89411351e13f40c24f762c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker, NeighborCode3DSix neighborhood)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DSix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="991" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="987" bodyend="995"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gabefa51b3faec17cf35bc42a26015a3db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(SrcIterator sul, SrcShape slr, SrcAccessor sa, DestIterator dul, DestAccessor da, DestValue marker)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcShape</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1003" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1000" bodyend="1005"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gad04ecd85b4194ef56c2695e87ded4992" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, NeighborCode3DSix neighborhood)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DSix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1014" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1010" bodyend="1017"/>
+      </memberdef>
+      <memberdef kind="function" id="group__LocalMinMax_1gab24f81299750118c48f44170b20fa350" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class DestValue</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::localMinima3D</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, DestValue marker, NeighborCode3DTwentySix neighborhood)</argsstring>
+        <name>localMinima3D</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>DestValue</type>
+          <declname>marker</declname>
+        </param>
+        <param>
+          <type>NeighborCode3DTwentySix</type>
+          <declname>neighborhood</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" line="1026" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/localminmax.hxx" bodystart="1022" bodyend="1029"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Detect local minima and maxima in a gray level image, including extremal plateaus larger than 1 pixel </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

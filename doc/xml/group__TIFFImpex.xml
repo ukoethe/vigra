@@ -1,0 +1,1209 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__TIFFImpex" kind="group">
+    <compoundname>TIFFImpex</compoundname>
+    <title>Import/export of the TIFF format</title>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01double_01_4" prot="public">vigra::CreateTiffImage&lt; double &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01float_01_4" prot="public">vigra::CreateTiffImage&lt; float &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01int_01_4" prot="public">vigra::CreateTiffImage&lt; int &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01RGBValue_3_01double_01_4_01_4" prot="public">vigra::CreateTiffImage&lt; RGBValue&lt; double &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01RGBValue_3_01float_01_4_01_4" prot="public">vigra::CreateTiffImage&lt; RGBValue&lt; float &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01RGBValue_3_01int_01_4_01_4" prot="public">vigra::CreateTiffImage&lt; RGBValue&lt; int &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01RGBValue_3_01short_01_4_01_4" prot="public">vigra::CreateTiffImage&lt; RGBValue&lt; short &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01RGBValue_3_01unsigned_01char_01_4_01_4" prot="public">vigra::CreateTiffImage&lt; RGBValue&lt; unsigned char &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01short_01_4" prot="public">vigra::CreateTiffImage&lt; short &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01unsigned_01char_01_4" prot="public">vigra::CreateTiffImage&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="structvigra_1_1CreateTiffImage_3_01unsigned_01short_01_4" prot="public">vigra::CreateTiffImage&lt; unsigned short &gt;</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__TIFFImpex_1gafd6809d24a8248315246768502b7224c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createBRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createBRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1577" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1575" bodyend="1619"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gafac308c8989cd9701b344fdcb6d1b2bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createBScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createBScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1166" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1164" bodyend="1203"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaa69451a29325f543171e3567b2602c31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createDRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createDRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1769" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1767" bodyend="1811"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gae7958c5c0f87058d571c6335c4c00193" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createDScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createDScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1381" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1379" bodyend="1418"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gacdbb471a42172f643562a3ce95ff7f61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createFRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createFRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1721" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1719" bodyend="1763"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga686baa15ffdb682807f8d3e3107c8a8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createFScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createFScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1336" bodyend="1375"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gae4515eb59eb9f989d92dd6b81dbb2ec6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createIRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createIRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1671" bodyend="1715"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaf9a34a370c269931e5e973eee47d8c3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createIScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createIScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1293" bodyend="1332"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga3eaac7e2a4200b63f2dcb31034a98f39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createRGBTiffImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>createRGBTiffImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Create a 3-band TiffImage from the given RGB image. </para>        </briefdescription>
+        <detaileddescription>
+<para>Type and size of the TiffImage are determined by the input image (may be one of unsigned char, int, float, or double). This function uses <ref refid="classvigra_1_1RGBAccessor" kindref="compound">RGBAccessor</ref> to read the data. A RGBImageIterator is an iterator that is associated with a <ref refid="classvigra_1_1RGBAccessor" kindref="compound">RGBAccessor</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga3eaac7e2a4200b63f2dcb31034a98f39" kindref="member" tooltip="Create a 3-band TiffImage from the given RGB image.">createRGBTiffImage</ref>(RGBImageIterator<sp/>upperleft,<sp/>RGBImageIterator<sp/>lowerright,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RGBAccessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga3eaac7e2a4200b63f2dcb31034a98f39" kindref="member" tooltip="Create a 3-band TiffImage from the given RGB image.">createRGBTiffImage</ref>(triple&lt;RGBImageIterator,<sp/>RGBImageIterator,<sp/>RGBAccessor&gt;<sp/>src)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>img(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen((</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;w&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1ga3eaac7e2a4200b63f2dcb31034a98f39" kindref="member" tooltip="Create a 3-band TiffImage from the given RGB image.">vigra::createRGBTiffImage</ref>(srcImageRange(img),<sp/>tiff);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>implicitly<sp/>writes<sp/>the<sp/>image<sp/>to<sp/>the<sp/>disk</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal">RGBAccessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">accessor.red(upperleft);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result<sp/>written<sp/>into<sp/>TiffImage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">accessor.green(upperleft);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result<sp/>written<sp/>into<sp/>TiffImage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">accessor.blue(upperleft);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result<sp/>written<sp/>into<sp/>TiffImage</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1555"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gab540db6c031a989878f787d9f9f5d4ea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1561" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1559" bodyend="1564"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gad18073c622383cb42ff2f384f3c07832" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createRGBTiffImage</definition>
+        <argsstring>(triple&lt; RGBImageIterator, RGBImageIterator, RGBAccessor &gt; src, TiffImage *tiff)</argsstring>
+        <name>createRGBTiffImage</name>
+        <param>
+          <type>triple&lt; RGBImageIterator, RGBImageIterator, RGBAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1569" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1568" bodyend="1571"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga5304acecf03804f7c0864fc5fe1e87bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createScalarTiffImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>createScalarTiffImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Create a single-band TiffImage from the given scalar image. </para>        </briefdescription>
+        <detaileddescription>
+<para>Type and size of the TiffImage are determined by the input image (may be one of unsigned char, short, int, float, or double). This function uses accessors to read the data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga5304acecf03804f7c0864fc5fe1e87bf" kindref="member" tooltip="Create a single-band TiffImage from the given scalar image.">createScalarTiffImage</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga5304acecf03804f7c0864fc5fe1e87bf" kindref="member" tooltip="Create a single-band TiffImage from the given scalar image.">createScalarTiffImage</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>src)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen((</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;w&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1ga5304acecf03804f7c0864fc5fe1e87bf" kindref="member" tooltip="Create a single-band TiffImage from the given scalar image.">vigra::createScalarTiffImage</ref>(srcImageRange(img),<sp/>tiff);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>implicitly<sp/>writes<sp/>the<sp/>image<sp/>to<sp/>the<sp/>disk</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">accessor(upperleft);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result<sp/>written<sp/>into<sp/>TiffImage</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1144"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga7ba845b924414ae62fb44152ad7fa772" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1148" bodyend="1153"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga4d006e0080b87f1c1ac8f30c7f43a0c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createScalarTiffImage</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; src, TiffImage *tiff)</argsstring>
+        <name>createScalarTiffImage</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1157" bodyend="1160"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga57926d8487c3e190e112e6f5cdc263bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createShortRGBTiffImage</definition>
+        <argsstring>(RGBImageIterator upperleft, RGBImageIterator lowerright, RGBAccessor a, TiffImage *tiff)</argsstring>
+        <name>createShortRGBTiffImage</name>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1623" bodyend="1667"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gac5abf6f514cdb2969b7c3df6c804486f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createShortScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createShortScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1209" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1207" bodyend="1246"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gae4dcba2a7ce002811d26440a6985a6f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createTiffImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>createTiffImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Create a TiffImage from the given iterator range. </para>        </briefdescription>
+        <detaileddescription>
+<para>Type and size of the TiffImage are determined by the input image. Currently, the function can create scalar images and RGB images of type unsigned char, short, int, float, and double. This function uses accessors to read the data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1gae4dcba2a7ce002811d26440a6985a6f2" kindref="member" tooltip="Create a TiffImage from the given iterator range.">createTiffImage</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TiffImage<sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1gae4dcba2a7ce002811d26440a6985a6f2" kindref="member" tooltip="Create a TiffImage from the given iterator range.">createTiffImage</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>src)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen((</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;w&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1gae4dcba2a7ce002811d26440a6985a6f2" kindref="member" tooltip="Create a TiffImage from the given iterator range.">vigra::createTiffImage</ref>(srcImageRange(img),<sp/>tiff);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>implicitly<sp/>writes<sp/>the<sp/>image<sp/>to<sp/>the<sp/>disk</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">accessor(upperleft);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>result<sp/>written<sp/>into<sp/>TiffImage</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1067"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gad1ff28d8bb1dba0442d0e3e887fe631a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1073" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1071" bodyend="1076"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga5a6299d41a8ad2a703e54c27e46d12a7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createTiffImage</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; src, TiffImage *tiff)</argsstring>
+        <name>createTiffImage</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1081" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1080" bodyend="1083"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaf369a8c6019f66a4615d0f7611aa190b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createUShortScalarTiffImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>createUShortScalarTiffImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1252" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1250" bodyend="1289"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaeab1bcb8f4a3e708b4a54a6e52cb43ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importTiffImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>importTiffImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convert given TiffImage into image specified by iterator range. </para>        </briefdescription>
+        <detaileddescription>
+<para>Accessors are used to write the data. This function calls <ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member">tiffToScalarImage()</ref> or <ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member">tiffToRGBImage()</ref>, depending on the accessor&apos;s value_type.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1gaeab1bcb8f4a3e708b4a54a6e52cb43ff" kindref="member" tooltip="Convert given TiffImage into image specified by iterator range.">importTiffImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>ImageIterator<sp/>iter,<sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1gaeab1bcb8f4a3e708b4a54a6e52cb43ff" kindref="member" tooltip="Convert given TiffImage into image specified by iterator range.">importTiffImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>pair&lt;ImageIterator,<sp/>Accessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">uint32<sp/>w,<sp/>h;</highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen(</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;r&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGEWIDTH,<sp/>&amp;w);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGELENGTH,<sp/>&amp;h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1gaeab1bcb8f4a3e708b4a54a6e52cb43ff" kindref="member" tooltip="Convert given TiffImage into image specified by iterator range.">vigra::importTiffImage</ref>(tiff,<sp/>destImage(img));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>see <ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member">tiffToScalarImage()</ref> and <ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member">tiffToRGBImage()</ref></para><para><bold> Preconditions:</bold></para><para>see <ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member">tiffToScalarImage()</ref> and <ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member">tiffToRGBImage()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="127"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gac5afe7a4fd237fb3db5e16da1347b3b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importTiffImage</definition>
+        <argsstring>(TiffImage *tiff, ImageIterator iter, Accessor a)</argsstring>
+        <name>importTiffImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="131" bodyend="137"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga10df041967e4a5e0c936f8f5379a9742" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importTiffImage</definition>
+        <argsstring>(TiffImage *tiff, pair&lt; ImageIterator, Accessor &gt; dest)</argsstring>
+        <name>importTiffImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator, Accessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaaeee3fba65c6c1a1ce89b633da987c70" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importTiffImage</definition>
+        <argsstring>(TiffImage *tiff, ImageIterator iter, Accessor a, VigraTrueType)</argsstring>
+        <name>importTiffImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="148" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga21666aaef6797a928dd64f2fbe0958dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importTiffImage</definition>
+        <argsstring>(TiffImage *tiff, ImageIterator iter, Accessor a, VigraFalseType)</argsstring>
+        <name>importTiffImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="155" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToRGBImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>tiffToRGBImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convert RGB (3-band or color-mapped) TiffImage to RGB image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function uses <ref refid="classvigra_1_1RGBAccessor" kindref="compound">RGBAccessor</ref> to write the data. A RGBImageIterator is an iterator which is associated with a <ref refid="classvigra_1_1RGBAccessor" kindref="compound">RGBAccessor</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member" tooltip="Convert RGB (3-band or color-mapped) TiffImage to RGB image.">tiffToRGBImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>RGBImageIterator<sp/>iter,<sp/>RGBAccessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>RGBAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member" tooltip="Convert RGB (3-band or color-mapped) TiffImage to RGB image.">tiffToRGBImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>pair&lt;RGBImageIterator,<sp/>RGBAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">uint32<sp/>w,<sp/>h;</highlight></codeline>
+<codeline><highlight class="normal">uint16<sp/>photometric</highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen(</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;r&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGEWIDTH,<sp/>&amp;w);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGELENGTH,<sp/>&amp;h);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff_,<sp/>TIFFTAG_PHOTOMETRIC,<sp/>&amp;photometric);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(photometric<sp/>!=<sp/>PHOTOMETRIC_RGB<sp/>&amp;&amp;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>photometric<sp/>!=<sp/>PHOTOMETRIC_PALETTE)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>not<sp/>an<sp/>RGB<sp/>image<sp/>-<sp/>handle<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>img(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1ga098bce6a0f789bae2b026745a55a9ef2" kindref="member" tooltip="Convert RGB (3-band or color-mapped) TiffImage to RGB image.">vigra::tiffToRGBImage</ref>(tiff,<sp/>destImage(img));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal">&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>char,<sp/>short,<sp/>long,<sp/>float,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;<sp/>rvalue,<sp/>gvalue,<sp/>bvalue;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">RGBAccessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">accessor.setRed(rvalue,<sp/>upperleft);</highlight></codeline>
+<codeline><highlight class="normal">accessor.setGreen(gvalue,<sp/>upperleft);</highlight></codeline>
+<codeline><highlight class="normal">accessor.setBlue(bvalue,<sp/>upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> must refer to a large enough image.</para><para><programlisting><codeline><highlight class="normal">uint16<sp/>sampleFormat,<sp/>samplesPerPixel,<sp/>bitsPerSample,<sp/>photometric;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_SAMPLEFORMAT,<sp/>&amp;sampleFormat);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_SAMPLESPERPIXEL,<sp/>&amp;samplesPerPixel);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_BITSPERSAMPLE,<sp/>&amp;bitsPerSample);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_PHOTOMETRIC,<sp/>&amp;photometric);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sampleFormat<sp/>!=<sp/>SAMPLEFORMAT_VOID</highlight></codeline>
+<codeline><highlight class="normal">samplesPerPixel<sp/>==<sp/>3<sp/></highlight><highlight class="comment">//<sp/>unless<sp/>photometric<sp/>==<sp/>PHOTOMETRIC_PALETTE</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">photometric<sp/>==<sp/>PHOTOMETRIC_RGB<sp/>||</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>photometric<sp/>==<sp/>PHOTOMETRIC_PALETTE</highlight></codeline>
+<codeline><highlight class="normal">bitsPerSample<sp/>==<sp/>1<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>8<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>16<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>32<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>64</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="612"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga3784655b7b046025cd88794bcc2f1154" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RGBImageIterator</type>
+          </param>
+          <param>
+            <type>class RGBAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToRGBImage</definition>
+        <argsstring>(TiffImage *tiff, RGBImageIterator iter, RGBAccessor a)</argsstring>
+        <name>tiffToRGBImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>RGBImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>RGBAccessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="617" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="616" bodyend="995"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga209bef0938a09ff6830bbfc75087e7c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class VectorComponentAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToRGBImage</definition>
+        <argsstring>(TiffImage *tiff, pair&lt; ImageIterator, VectorComponentAccessor &gt; dest)</argsstring>
+        <name>tiffToRGBImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator, VectorComponentAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1000" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="999" bodyend="1002"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToScalarImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>tiffToScalarImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convert single-band TiffImage to scalar image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function uses accessors to write the data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member" tooltip="Convert single-band TiffImage to scalar image.">tiffToScalarImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>ImageIterator<sp/>iter,<sp/>Accessor<sp/>a)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member" tooltip="Convert single-band TiffImage to scalar image.">tiffToScalarImage</ref>(TiffImage<sp/>*<sp/>tiff,<sp/>pair&lt;ImageIterator,<sp/>Accessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tiff_8hxx_source" kindref="compound">vigra/tiff.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">uint32<sp/>w,<sp/>h;</highlight></codeline>
+<codeline><highlight class="normal">uint16<sp/>photometric</highlight></codeline>
+<codeline><highlight class="normal">TiffImage<sp/>*<sp/>tiff<sp/>=<sp/>TIFFOpen(</highlight><highlight class="stringliteral">&quot;tiffimage.tiff&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;r&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGEWIDTH,<sp/>&amp;w);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_IMAGELENGTH,<sp/>&amp;h);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff_,<sp/>TIFFTAG_PHOTOMETRIC,<sp/>&amp;photometric);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(photometric<sp/>!=<sp/>PHOTOMETRIC_MINISWHITE<sp/>&amp;&amp;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>photometric<sp/>!=<sp/>PHOTOMETRIC_MINISBLACK)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>not<sp/>a<sp/>scalar<sp/>image<sp/>-<sp/>handle<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member" tooltip="Convert single-band TiffImage to scalar image.">vigra::tiffToScalarImage</ref>(tiff,<sp/>destImage(img));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TIFFClose(tiff);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal">&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>char,<sp/>short,<sp/>long,<sp/>float,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;<sp/>value;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">accessor.set(value,<sp/>upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> must refer to a large enough image.</para><para><programlisting><codeline><highlight class="normal">uint16<sp/>sampleFormat,<sp/>samplesPerPixel,<sp/>bitsPerSample,<sp/>photometric;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_SAMPLEFORMAT,<sp/>&amp;sampleFormat);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_SAMPLESPERPIXEL,<sp/>&amp;samplesPerPixel);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_BITSPERSAMPLE,<sp/>&amp;bitsPerSample);</highlight></codeline>
+<codeline><highlight class="normal">TIFFGetField(tiff,<sp/>TIFFTAG_PHOTOMETRIC,<sp/>&amp;photometric);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sampleFormat<sp/>!=<sp/>SAMPLEFORMAT_VOID</highlight></codeline>
+<codeline><highlight class="normal">samplesPerPixel<sp/>==<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">photometric<sp/>==<sp/>PHOTOMETRIC_MINISWHITE<sp/>||</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>photometric<sp/>==<sp/>PHOTOMETRIC_MINISBLACK</highlight></codeline>
+<codeline><highlight class="normal">bitsPerSample<sp/>==<sp/>1<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>8<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>16<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>32<sp/>||<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>bitsPerSample<sp/>==<sp/>64</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="251"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1gaa085ec5bf30ce225398ae4e2ef73b06c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToScalarImage</definition>
+        <argsstring>(TiffImage *tiff, ImageIterator iter, Accessor a)</argsstring>
+        <name>tiffToScalarImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="255" bodyend="508"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TIFFImpex_1ga9ef123d0555234872c597aeaafac2248" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tiffToScalarImage</definition>
+        <argsstring>(TiffImage *tiff, pair&lt; ImageIterator, Accessor &gt; dest)</argsstring>
+        <name>tiffToScalarImage</name>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator, Accessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="512" bodyend="515"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>TIFF conversion and file export/import.</para><para>Normally, you need not call the TIFF functions directly. They are available much more conveniently via <ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member">importImage()</ref> and <ref refid="group__VigraImpex_1gabd7976d498abce467cd17989176133e3" kindref="member">exportImage()</ref></para><para>TIFF (Tagged Image File Format) is a very versatile image format - one can store different pixel types (byte, integer, float, double) and color models (black and white, RGB, mapped RGB, other color systems). For more details and information on how to create a TIFF image, refer to the TIFF documentation at <ulink url="http://www.libtiff.org/">http://www.libtiff.org/</ulink> for details. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

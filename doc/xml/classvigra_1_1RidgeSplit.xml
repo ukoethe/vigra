@@ -1,0 +1,436 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RidgeSplit" kind="class" prot="public">
+    <compoundname>vigra::RidgeSplit</compoundname>
+    <basecompoundref refid="classvigra_1_1SplitBase" prot="public" virt="non-virtual">vigra::SplitBase&lt; Tag &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class ColumnDecisionFunctor</type>
+      </param>
+      <param>
+        <type>class Tag</type>
+        <defval>ClassificationTag</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RidgeSplit_1a24191dc0d46179bfc251332a5cf3f85a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1SplitBase" kindref="compound">SplitBase</ref>&lt; Tag &gt;</type>
+        <definition>typedef SplitBase&lt;Tag&gt; SB</definition>
+        <argsstring></argsstring>
+        <name>SB</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a2dd004ab6d0363faa69ad5982e890575" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int bestSplitIndex</definition>
+        <argsstring></argsstring>
+        <name>bestSplitIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a897aaa0837f4d2b3345b37bacc8a8e96" prot="public" static="no" mutable="no">
+        <type>ColumnDecisionFunctor</type>
+        <definition>ColumnDecisionFunctor bgfunc</definition>
+        <argsstring></argsstring>
+        <name>bgfunc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="79" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1acdea2b848c5c2c57e7a2bdd0afc4f290" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool m_bDoBestLambdaBasedOnGini</definition>
+        <argsstring></argsstring>
+        <name>m_bDoBestLambdaBasedOnGini</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a9b492d7407b3ff0fdb3cae8d481b5840" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool m_bDoScalingInTraining</definition>
+        <argsstring></argsstring>
+        <name>m_bDoScalingInTraining</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a62ed32d1eab79a97937852b727b01d2a" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; min_gini_</definition>
+        <argsstring></argsstring>
+        <name>min_gini_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1abdf423228efb5c233089bfed5ec55111" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; std::ptrdiff_t &gt;</type>
+        <definition>ArrayVector&lt;std::ptrdiff_t&gt; min_indices_</definition>
+        <argsstring></argsstring>
+        <name>min_indices_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a91c6cd74c96de4774e94441f7f6f5d0d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; min_thresholds_</definition>
+        <argsstring></argsstring>
+        <name>min_thresholds_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a87ec99ad0c5a0a9e1516d35355aa29ed" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double region_gini_</definition>
+        <argsstring></argsstring>
+        <name>region_gini_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="81" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RidgeSplit_1a497ab34e0fe0ea569b847ee90889a62d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref> &gt;</type>
+        <definition>ArrayVector&lt;Int32&gt; splitColumns</definition>
+        <argsstring></argsstring>
+        <name>splitColumns</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1a23b6468fe63e8392fb1c11efcb105ed0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int bestSplitColumn</definition>
+        <argsstring>() const </argsstring>
+        <name>bestSplitColumn</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="103" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1a5c5fb2983cbcb397087862d320ce333b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool &amp;</type>
+        <definition>bool&amp; doBestLambdaBasedOnGini</definition>
+        <argsstring>()</argsstring>
+        <name>doBestLambdaBasedOnGini</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="112" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="111" bodyend="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1a8e9e73161b005ef9d660a68626cca20e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool &amp;</type>
+        <definition>bool&amp; doScalingInTraining</definition>
+        <argsstring>()</argsstring>
+        <name>doScalingInTraining</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="109" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="108" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1af830941aa25aff7266d4560ead9b3f5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Region</type>
+          </param>
+          <param>
+            <type>class Random</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int findBestSplit</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, C &gt; features, MultiArrayView&lt; 2, T2, C2 &gt; multiClassLabels, Region &amp;region, ArrayVector&lt; Region &gt; &amp;childRegions, Random &amp;randint)</argsstring>
+        <name>findBestSplit</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C2 &gt;</type>
+          <declname>multiClassLabels</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>region</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; Region &gt; &amp;</type>
+          <declname>childRegions</declname>
+        </param>
+        <param>
+          <type>Random &amp;</type>
+          <declname>randint</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="130" bodyend="438"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1aaceb24d5923a835f8ae0159c2991c17f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double minGini</definition>
+        <argsstring>() const </argsstring>
+        <name>minGini</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="99" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="98" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1a4e2d3ef15b3931683ff4b05164f7d0d0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RidgeSplit</definition>
+        <argsstring>()</argsstring>
+        <name>RidgeSplit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="92" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RidgeSplit_1aa6696c3699fb21bfab6a3d6980104607" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_external_parameters</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;in)</argsstring>
+        <name>set_external_parameters</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>in</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="115" bodyend="126"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2238">
+        <label>SplitBase&lt; Tag &gt;</label>
+        <link refid="classvigra_1_1SplitBase"/>
+      </node>
+      <node id="2237">
+        <label>RidgeSplit&lt; ColumnDecisionFunctor, Tag &gt;</label>
+        <childnode refid="2238" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2240">
+        <label>SplitBase&lt; Tag &gt;</label>
+        <link refid="classvigra_1_1SplitBase"/>
+        <childnode refid="2241" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+        <childnode refid="2242" relation="usage">
+          <edgelabel>p_data</edgelabel>
+        </childnode>
+        <childnode refid="2246" relation="usage">
+          <edgelabel>t_data</edgelabel>
+        </childnode>
+        <childnode refid="2248" relation="usage">
+          <edgelabel>node_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2245">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2241">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="2242" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2244" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="2246">
+        <label>ArrayVector&lt; INT &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2247" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2252">
+        <label>ArrayVectorView&lt; Int32 &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2249">
+        <label>ArrayVector&lt; std::ptrdiff_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2250" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2248">
+        <label>NodeBase</label>
+        <link refid="classvigra_1_1NodeBase"/>
+      </node>
+      <node id="2251">
+        <label>ArrayVector&lt; Int32 &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2252" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2242">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2243" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2250">
+        <label>ArrayVectorView&lt; std::ptrdiff_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2247">
+        <label>ArrayVectorView&lt; INT &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2243">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2239">
+        <label>RidgeSplit&lt; ColumnDecisionFunctor, Tag &gt;</label>
+        <childnode refid="2240" relation="public-inheritance">
+        </childnode>
+        <childnode refid="2249" relation="usage">
+          <edgelabel>min_indices_</edgelabel>
+        </childnode>
+        <childnode refid="2242" relation="usage">
+          <edgelabel>min_gini_</edgelabel>
+          <edgelabel>min_thresholds_</edgelabel>
+        </childnode>
+        <childnode refid="2251" relation="usage">
+          <edgelabel>splitColumns</edgelabel>
+        </childnode>
+      </node>
+      <node id="2244">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2245" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_ridge_split.hxx" bodystart="71" bodyend="439"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RidgeSplit_1a23b6468fe63e8392fb1c11efcb105ed0" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>bestSplitColumn</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a2dd004ab6d0363faa69ad5982e890575" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>bestSplitIndex</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a897aaa0837f4d2b3345b37bacc8a8e96" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>bgfunc</name></member>
+      <member refid="classvigra_1_1SplitBase_1abe80b4802c46f42e826b7505fc1ed960" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>classCount</name></member>
+      <member refid="classvigra_1_1SplitBase_1a7267201b63af35fd5f6899f410a4d793" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>createNode</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a5c5fb2983cbcb397087862d320ce333b" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>doBestLambdaBasedOnGini</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a8e9e73161b005ef9d660a68626cca20e" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>doScalingInTraining</name></member>
+      <member refid="classvigra_1_1SplitBase_1a99db359c49053ebe05644db4810bba24" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1SplitBase_1ae3cc6608c2df55325108052f460cb4bc" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>featureCount</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1af830941aa25aff7266d4560ead9b3f5d" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>findBestSplit</name></member>
+      <member refid="classvigra_1_1SplitBase_1ab770d4160c2a1bbe3e7d570ebeebdfcc" prot="public" virt="non-virtual" ambiguityscope="vigra::SplitBase::"><scope>vigra::RidgeSplit</scope><name>findBestSplit</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1acdea2b848c5c2c57e7a2bdd0afc4f290" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>m_bDoBestLambdaBasedOnGini</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a9b492d7407b3ff0fdb3cae8d481b5840" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>m_bDoScalingInTraining</name></member>
+      <member refid="classvigra_1_1SplitBase_1abe23e7e0b73b5156c744ca0106756068" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>makeTerminalNode</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a62ed32d1eab79a97937852b727b01d2a" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>min_gini_</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1abdf423228efb5c233089bfed5ec55111" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>min_indices_</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a91c6cd74c96de4774e94441f7f6f5d0d" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>min_thresholds_</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1aaceb24d5923a835f8ae0159c2991c17f" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>minGini</name></member>
+      <member refid="classvigra_1_1SplitBase_1abd2a0363cd5aa7cde57783dae541369e" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>node_</name></member>
+      <member refid="classvigra_1_1SplitBase_1a6cdacf09cf8a94bc484d1bdc00534633" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>p_data</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a87ec99ad0c5a0a9e1516d35355aa29ed" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>region_gini_</name></member>
+      <member refid="classvigra_1_1SplitBase_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>reset</name></member>
+      <member refid="classvigra_1_1SplitBase_1a4754a6a3103304c241fa01a2febdf625" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>RF_Tag</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a4e2d3ef15b3931683ff4b05164f7d0d0" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>RidgeSplit</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a24191dc0d46179bfc251332a5cf3f85a" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>SB</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1aa6696c3699fb21bfab6a3d6980104607" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>set_external_parameters</name></member>
+      <member refid="classvigra_1_1RidgeSplit_1a497ab34e0fe0ea569b847ee90889a62d" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>splitColumns</name></member>
+      <member refid="classvigra_1_1SplitBase_1ae4e6c2145a29a421feaa6a8c6220840e" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>StackEntry_t</name></member>
+      <member refid="classvigra_1_1SplitBase_1a2659a684317be7881840b8944c93e0c9" prot="public" virt="non-virtual"><scope>vigra::RidgeSplit</scope><name>t_data</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

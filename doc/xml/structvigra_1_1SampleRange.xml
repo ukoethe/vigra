@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1SampleRange" kind="struct" prot="public">
+    <compoundname>vigra::SampleRange</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1SampleRange_1abce9f5dc9c83f2639b72024fdee5d388" prot="public" static="no" mutable="yes">
+        <type>int</type>
+        <definition>int end</definition>
+        <argsstring></argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="20" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1SampleRange_1aea9b9bb67208d588245b139c1d21d2c4" prot="public" static="no" mutable="yes">
+        <type>std::vector&lt; T &gt;</type>
+        <definition>std::vector&lt;T&gt; max_boundaries</definition>
+        <argsstring></argsstring>
+        <name>max_boundaries</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="21" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1SampleRange_1a13c2341bc2c2d30619e26502e714d8ae" prot="public" static="no" mutable="yes">
+        <type>std::vector&lt; T &gt;</type>
+        <definition>std::vector&lt;T&gt; min_boundaries</definition>
+        <argsstring></argsstring>
+        <name>min_boundaries</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="22" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1SampleRange_1a37722a150250e2a5a98e5e0d11e53449" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int start</definition>
+        <argsstring></argsstring>
+        <name>start</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="19" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1SampleRange_1ab889160149a4dd0d4e3e59e18be6fbdf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;</definition>
+        <argsstring>(const SampleRange &amp;o) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const SampleRange &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="25" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="24" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1SampleRange_1a0fb0f9bf54045c83474a779c81901391" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SampleRange</definition>
+        <argsstring>(int start, int end, int num_features)</argsstring>
+        <name>SampleRange</name>
+        <param>
+          <type>int</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_features</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="12" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="11" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="10" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="9" bodyend="28"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1SampleRange_1abce9f5dc9c83f2639b72024fdee5d388" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>end</name></member>
+      <member refid="structvigra_1_1SampleRange_1aea9b9bb67208d588245b139c1d21d2c4" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>max_boundaries</name></member>
+      <member refid="structvigra_1_1SampleRange_1a13c2341bc2c2d30619e26502e714d8ae" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>min_boundaries</name></member>
+      <member refid="structvigra_1_1SampleRange_1ab889160149a4dd0d4e3e59e18be6fbdf" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>operator&lt;</name></member>
+      <member refid="structvigra_1_1SampleRange_1a0fb0f9bf54045c83474a779c81901391" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>SampleRange</name></member>
+      <member refid="structvigra_1_1SampleRange_1a37722a150250e2a5a98e5e0d11e53449" prot="public" virt="non-virtual"><scope>vigra::SampleRange</scope><name>start</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

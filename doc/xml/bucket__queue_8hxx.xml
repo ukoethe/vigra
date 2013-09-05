@@ -1,0 +1,569 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="bucket__queue_8hxx" kind="file">
+    <compoundname>bucket_queue.hxx</compoundname>
+    <includes refid="config_8hxx" local="yes">config.hxx</includes>
+    <includes refid="error_8hxx" local="yes">error.hxx</includes>
+    <includes refid="array__vector_8hxx" local="yes">array_vector.hxx</includes>
+    <includes local="no">queue</includes>
+    <includedby refid="seededregiongrowing_8hxx" local="yes">vigra/seededregiongrowing.hxx</includedby>
+    <incdepgraph>
+      <node id="919">
+        <label>queue</label>
+      </node>
+      <node id="910">
+        <label>limits</label>
+      </node>
+      <node id="915">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="908" relation="include">
+        </childnode>
+        <childnode refid="910" relation="include">
+        </childnode>
+      </node>
+      <node id="916">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="899">
+        <label>vigra/bucket_queue.hxx</label>
+        <link refid="bucket_queue.hxx"/>
+        <childnode refid="900" relation="include">
+        </childnode>
+        <childnode refid="903" relation="include">
+        </childnode>
+        <childnode refid="906" relation="include">
+        </childnode>
+        <childnode refid="919" relation="include">
+        </childnode>
+      </node>
+      <node id="902">
+        <label>stdexcept</label>
+      </node>
+      <node id="905">
+        <label>string</label>
+      </node>
+      <node id="913">
+        <label>cfloat</label>
+      </node>
+      <node id="901">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="900">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="901" relation="include">
+        </childnode>
+        <childnode refid="902" relation="include">
+        </childnode>
+      </node>
+      <node id="912">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="909" relation="include">
+        </childnode>
+        <childnode refid="910" relation="include">
+        </childnode>
+        <childnode refid="913" relation="include">
+        </childnode>
+        <childnode refid="914" relation="include">
+        </childnode>
+        <childnode refid="908" relation="include">
+        </childnode>
+        <childnode refid="915" relation="include">
+        </childnode>
+        <childnode refid="916" relation="include">
+        </childnode>
+      </node>
+      <node id="904">
+        <label>sstream</label>
+      </node>
+      <node id="903">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="902" relation="include">
+        </childnode>
+        <childnode refid="904" relation="include">
+        </childnode>
+        <childnode refid="905" relation="include">
+        </childnode>
+        <childnode refid="900" relation="include">
+        </childnode>
+      </node>
+      <node id="906">
+        <label>array_vector.hxx</label>
+        <link refid="array__vector_8hxx_source"/>
+        <childnode refid="903" relation="include">
+        </childnode>
+        <childnode refid="907" relation="include">
+        </childnode>
+        <childnode refid="912" relation="include">
+        </childnode>
+        <childnode refid="917" relation="include">
+        </childnode>
+        <childnode refid="911" relation="include">
+        </childnode>
+        <childnode refid="918" relation="include">
+        </childnode>
+      </node>
+      <node id="918">
+        <label>iosfwd</label>
+      </node>
+      <node id="909">
+        <label>climits</label>
+      </node>
+      <node id="908">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="900" relation="include">
+        </childnode>
+        <childnode refid="909" relation="include">
+        </childnode>
+        <childnode refid="910" relation="include">
+        </childnode>
+        <childnode refid="911" relation="include">
+        </childnode>
+      </node>
+      <node id="914">
+        <label>complex</label>
+      </node>
+      <node id="911">
+        <label>algorithm</label>
+      </node>
+      <node id="907">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="908" relation="include">
+        </childnode>
+      </node>
+      <node id="917">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="920">
+        <label>vigra/bucket_queue.hxx</label>
+        <link refid="bucket_queue.hxx"/>
+        <childnode refid="921" relation="include">
+        </childnode>
+      </node>
+      <node id="923">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="921">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="922" relation="include">
+        </childnode>
+        <childnode refid="924" relation="include">
+        </childnode>
+      </node>
+      <node id="922">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="923" relation="include">
+        </childnode>
+      </node>
+      <node id="924">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="923" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classvigra_1_1BucketQueue" prot="public">vigra::BucketQueue</innerclass>
+    <innerclass refid="classvigra_1_1BucketQueue_3_01ValueType_00_01true_01_4" prot="public">vigra::BucketQueue&lt; ValueType, true &gt;</innerclass>
+    <innerclass refid="structvigra_1_1PriorityQueue_1_1Compare" prot="private">vigra::PriorityQueue::Compare</innerclass>
+    <innerclass refid="classvigra_1_1MappedBucketQueue" prot="public">vigra::MappedBucketQueue</innerclass>
+    <innerclass refid="classvigra_1_1PriorityQueue" prot="public">vigra::PriorityQueue</innerclass>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>2010-2011<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_BUCKET_QUEUE_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_BUCKET_QUEUE_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;config.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;error.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;array_vector.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;queue&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="47"><highlight class="comment">/**<sp/>\brief<sp/>Priority<sp/>queue<sp/>implemented<sp/>using<sp/>bucket<sp/>sort.</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"></highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/>This<sp/>template<sp/>implements<sp/>functionality<sp/>similar<sp/>to<sp/>&lt;tt&gt;&lt;a<sp/>href=&quot;http://www.sgi.com/tech/stl/priority_queue.html&quot;&gt;std::priority_queue&lt;/a&gt;&lt;/tt&gt;,</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/>but<sp/>uses<sp/>a<sp/>more<sp/>efficient<sp/>algorithm<sp/>based<sp/>on<sp/>bucket<sp/>sort.<sp/>It<sp/>can<sp/>be<sp/>used</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/>when<sp/>all<sp/>priorities<sp/>are<sp/>positive<sp/>integers<sp/>in<sp/>a<sp/>given<sp/>range<sp/>(typically,<sp/>0...255).</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/>By<sp/>default,<sp/>&lt;tt&gt;BucketQueue\&lt;ValueType\&gt;&lt;/tt&gt;<sp/>sorts<sp/>the<sp/>elements<sp/>in<sp/>descending<sp/>order,</highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/>i.e.<sp/>like<sp/>in<sp/>&lt;tt&gt;std::priority_queue&lt;/tt&gt;<sp/>the<sp/>largest<sp/>element<sp/>has<sp/>highest<sp/>priority.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/>An<sp/>ascending<sp/>queue<sp/>can<sp/>be<sp/>specified<sp/>as<sp/>&lt;tt&gt;BucketQueue\&lt;ValueType,<sp/>true\&gt;&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/>Elements<sp/>with<sp/>equal<sp/>priorities<sp/>are<sp/>returned<sp/>in<sp/>a<sp/>first-in<sp/>first-out<sp/>fashion.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>main<sp/>difference<sp/>to<sp/>&lt;tt&gt;std::priority_queue&lt;/tt&gt;<sp/>is<sp/>the<sp/>function<sp/>&lt;tt&gt;push&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/>which<sp/>explicitly<sp/>takes<sp/>the<sp/>priority<sp/>of<sp/>the<sp/>element<sp/>to<sp/>be<sp/>added<sp/>as<sp/>a<sp/>second<sp/>argument.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/>This<sp/>allows<sp/>optimization<sp/>of<sp/>&lt;tt&gt;ValueType&lt;/tt&gt;:<sp/>since<sp/>the<sp/>bucket<sp/>uniquely</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/>determines<sp/>an<sp/>element&apos;s<sp/>priority,<sp/>there<sp/>is<sp/>no<sp/>need<sp/>for<sp/>&lt;tt&gt;ValueType&lt;/tt&gt;<sp/>to</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/>store<sp/>redundant<sp/>priority<sp/>information.<sp/>If<sp/>compatibility<sp/>to<sp/>&lt;tt&gt;std::priority_queue&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/>is<sp/>more<sp/>important,<sp/>use<sp/>\ref<sp/>vigra::MappedBucketQueue.</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/bucket_queue.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="66"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>Ascending<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">&gt;<sp/><sp/></highlight><highlight class="comment">//<sp/>std::priority_queue<sp/>is<sp/>descending</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classvigra_1_1BucketQueue" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classvigra_1_1BucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort.">BucketQueue</ref></highlight></codeline>
+<codeline lineno="70"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector&lt;std::queue&lt;ValueType&gt;</ref><sp/>&gt;<sp/>buckets_;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>std::size_t<sp/>size_;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/>std::ptrdiff_t<sp/>top_;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>value_type;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>&amp;<sp/>reference;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>const_reference;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::size_t<sp/>size_type;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::ptrdiff_t<sp/>priority_type;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Create<sp/>bucket<sp/>queue<sp/>with<sp/>\arg<sp/>bucket_count<sp/>entries.</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Priorities<sp/>must<sp/>be<sp/>integers<sp/>in<sp/>the<sp/>range<sp/>&lt;tt&gt;[0,<sp/>...,<sp/>bucket_count-1]&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="classvigra_1_1BucketQueue_1a21c09d871bbd44d1e19d66558e21e579" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BucketQueue_1a21c09d871bbd44d1e19d66558e21e579" kindref="member" tooltip="Create bucket queue with.">BucketQueue</ref>(size_type<sp/>bucket_count<sp/>=<sp/>256)</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>buckets_(bucket_count),</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>size_(0),<sp/>top_(0)</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Number<sp/>of<sp/>elements<sp/>in<sp/>this<sp/>queue.</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93" refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>size_type<sp/><ref refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="94"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>size_;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Queue<sp/>contains<sp/>no<sp/>elements.</highlight></codeline>
+<codeline lineno="99"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Equivalent<sp/>to<sp/>&lt;tt&gt;size()<sp/>==<sp/>0&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="classvigra_1_1BucketQueue_1ac6e61de369e994009e36f344f99c15ad" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1ac6e61de369e994009e36f344f99c15ad" kindref="member" tooltip="Queue contains no elements. Equivalent to size() == 0.">empty</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="102"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()<sp/>==<sp/>0;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Maximum<sp/>index<sp/>(i.e.<sp/>priority)<sp/>allowed<sp/>in<sp/>this<sp/>queue.</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Equivalent<sp/>to<sp/>&lt;tt&gt;bucket_count<sp/>-<sp/>1&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109" refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" kindref="member" tooltip="Maximum index (i.e. priority) allowed in this queue. Equivalent to bucket_count - 1...">maxIndex</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="110"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(priority_type)buckets_.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>-<sp/>1;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Priority<sp/>of<sp/>the<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116" refid="classvigra_1_1BucketQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1BucketQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" kindref="member" tooltip="Priority of the current top element.">topPriority</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="117"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>top_;</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>The<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="classvigra_1_1BucketQueue_1a285f78e29505802b845caad75bbae16b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>const_reference<sp/><ref refid="classvigra_1_1BucketQueue_1a285f78e29505802b845caad75bbae16b" kindref="member" tooltip="The current top element.">top</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="124"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>buckets_[top_].<ref refid="classvigra_1_1ArrayVectorView_1a6a48363b4355f6f5b441637774f79a59" kindref="member">front</ref>();</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Remove<sp/>the<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="classvigra_1_1BucketQueue_1a312e7f6c761a199c1369fbe651e084f0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1a312e7f6c761a199c1369fbe651e084f0" kindref="member" tooltip="Remove the current top element.">pop</ref>()</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>--size_;</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>buckets_[top_].pop();</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(top_<sp/>&gt;<sp/>0<sp/>&amp;&amp;<sp/>buckets_[top_].<ref refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>--top_;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Insert<sp/>new<sp/>element<sp/>\arg<sp/>v<sp/>with<sp/>given<sp/>\arg<sp/>priority.</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="142" refid="classvigra_1_1BucketQueue_1adbae2382fe805ec8a0bdc6d9a451b443" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1adbae2382fe805ec8a0bdc6d9a451b443" kindref="member" tooltip="Insert new element.">push</ref>(value_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v,<sp/>priority_type<sp/>priority)</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++size_;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>buckets_[priority].push(v);</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(priority<sp/>&gt;<sp/>top_)</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>top_<sp/>=<sp/>priority;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="150"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ValueType&gt;<sp/></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">BucketQueue&lt;ValueType,<sp/>true&gt;<sp/></highlight><highlight class="comment">//<sp/>ascending<sp/>queue</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/>ArrayVector&lt;std::queue&lt;ValueType&gt;<sp/>&gt;<sp/>buckets_;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/>std::size_t<sp/>size_;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/>std::ptrdiff_t<sp/>top_;</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>value_type;</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>&amp;<sp/>reference;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>const_reference;</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::size_t<sp/>size_type;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::ptrdiff_t<sp/>priority_type;</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BucketQueue_1a21c09d871bbd44d1e19d66558e21e579" kindref="member" tooltip="Create bucket queue with.">BucketQueue</ref>(size_type<sp/>bucket_count<sp/>=<sp/>256)</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>buckets_(bucket_count),</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>size_(0),<sp/>top_((priority_type)bucket_count)</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/>size_type<sp/><ref refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="173"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>size_;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1ac6e61de369e994009e36f344f99c15ad" kindref="member" tooltip="Queue contains no elements. Equivalent to size() == 0.">empty</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="178"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()<sp/>==<sp/>0;</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" kindref="member" tooltip="Maximum index (i.e. priority) allowed in this queue. Equivalent to bucket_count - 1...">maxIndex</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="183"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(priority_type)buckets_.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>-<sp/>1;</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1BucketQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" kindref="member" tooltip="Priority of the current top element.">topPriority</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="188"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>top_;</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/>const_reference<sp/><ref refid="classvigra_1_1BucketQueue_1a285f78e29505802b845caad75bbae16b" kindref="member" tooltip="The current top element.">top</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="193"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>buckets_[top_].<ref refid="classvigra_1_1ArrayVectorView_1a6a48363b4355f6f5b441637774f79a59" kindref="member">front</ref>();</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1a312e7f6c761a199c1369fbe651e084f0" kindref="member" tooltip="Remove the current top element.">pop</ref>()</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>--size_;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>buckets_[top_].pop();</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(top_<sp/>&lt;<sp/>(priority_type)buckets_.<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>&amp;&amp;<sp/>buckets_[top_].<ref refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" kindref="member">size</ref>()<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++top_;</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue_1adbae2382fe805ec8a0bdc6d9a451b443" kindref="member" tooltip="Insert new element.">push</ref>(value_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v,<sp/>priority_type<sp/>priority)</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++size_;</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>buckets_[priority].push(v);</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(priority<sp/>&lt;<sp/>top_)</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>top_<sp/>=<sp/>priority;</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="215"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="217"><highlight class="comment">/**<sp/>\brief<sp/>Priority<sp/>queue<sp/>implemented<sp/>using<sp/>bucket<sp/>sort<sp/>(STL<sp/>compatible).</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"></highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/><sp/><sp/><sp/>This<sp/>template<sp/>is<sp/>compatible<sp/>to<sp/>&lt;tt&gt;&lt;a<sp/>href=&quot;http://www.sgi.com/tech/stl/priority_queue.html&quot;&gt;std::priority_queue&lt;/a&gt;&lt;/tt&gt;,</highlight></codeline>
+<codeline lineno="220"><highlight class="comment"><sp/><sp/><sp/><sp/>but<sp/>uses<sp/>a<sp/>more<sp/>efficient<sp/>algorithm<sp/>based<sp/>on<sp/>bucket<sp/>sort.<sp/>It<sp/>us<sp/>used</highlight></codeline>
+<codeline lineno="221"><highlight class="comment"><sp/><sp/><sp/><sp/>like<sp/>\ref<sp/>vigra::BucketQueue,<sp/>but<sp/>has<sp/>an<sp/>additional<sp/>&lt;tt&gt;PriorityFunctor&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="222"><highlight class="comment"><sp/><sp/><sp/><sp/>which<sp/>extracts<sp/>the<sp/>priority<sp/>value<sp/>of<sp/>an<sp/>element<sp/>of<sp/>type<sp/>&lt;tt&gt;ValueType&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"><sp/><sp/><sp/><sp/>Thus<sp/>functor<sp/>is<sp/>called<sp/>within<sp/>&lt;tt&gt;push&lt;/tt&gt;<sp/>so<sp/>that<sp/>it<sp/>does<sp/>not<sp/>need<sp/>an</highlight></codeline>
+<codeline lineno="224"><highlight class="comment"><sp/><sp/><sp/><sp/>extra<sp/>argument.</highlight></codeline>
+<codeline lineno="225"><highlight class="comment"></highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/bucket_queue.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="228"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">PriorityFunctor,<sp/></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>Ascending<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">&gt;<sp/></highlight></codeline>
+<codeline lineno="232" refid="classvigra_1_1MappedBucketQueue" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classvigra_1_1MappedBucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort (STL compatible).">MappedBucketQueue</ref></highlight></codeline>
+<codeline lineno="233"><highlight class="normal">:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort.">BucketQueue</ref>&lt;ValueType,<sp/>Ascending&gt;</highlight></codeline>
+<codeline lineno="234"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/>PriorityFunctor<sp/>get_priority_;</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort.">BucketQueue&lt;ValueType, Ascending&gt;</ref><sp/><ref refid="classvigra_1_1BucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort.">BaseType</ref>;</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BaseType::value_type<sp/>value_type;</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BaseType::reference<sp/>reference;</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BaseType::const_reference<sp/>const_reference;</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BaseType::size_type<sp/>size_type;</highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>BaseType::priority_type<sp/>priority_type;</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="246"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Create<sp/>a<sp/>queue<sp/>with<sp/>\arg<sp/>bucket_count<sp/>entries.</highlight></codeline>
+<codeline lineno="247"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Priorities<sp/>will<sp/>be<sp/>computed<sp/>by<sp/>the<sp/>&lt;tt&gt;PriorityFunctor&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="248"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>given<sp/>in<sp/>\arg<sp/>priority<sp/>(i.e.<sp/>&lt;tt&gt;priority(v)&lt;/tt&gt;<sp/>must<sp/>result<sp/>in<sp/>an<sp/>integer,</highlight></codeline>
+<codeline lineno="249"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>where<sp/>&lt;tt&gt;v&lt;/tt&gt;<sp/>is<sp/>an<sp/>instance<sp/>of<sp/>&lt;tt&gt;ValueType&lt;/tt&gt;).</highlight></codeline>
+<codeline lineno="250"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="251" refid="classvigra_1_1MappedBucketQueue_1a06ea65876f7f6ca682627b157c2c191d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1MappedBucketQueue_1a06ea65876f7f6ca682627b157c2c191d" kindref="member" tooltip="Create a queue with.">MappedBucketQueue</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>bucket_count<sp/>=<sp/>256,</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>PriorityFunctor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>priority<sp/>=<sp/>PriorityFunctor())</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/><ref refid="classvigra_1_1BucketQueue" kindref="compound" tooltip="Priority queue implemented using bucket sort.">BaseType</ref>(bucket_count),</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>get_priority_(priority)</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="257"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Insert<sp/>new<sp/>element<sp/>\arg<sp/>v.</highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Its<sp/>priority<sp/>is<sp/>calculated<sp/>by<sp/>&lt;tt&gt;priority(v)&lt;/tt&gt;,</highlight></codeline>
+<codeline lineno="259"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>where<sp/>&lt;tt&gt;priority&lt;/tt&gt;<sp/>is<sp/>an<sp/>instance<sp/>of<sp/>the<sp/></highlight></codeline>
+<codeline lineno="260"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;tt&gt;PriorityFunctor&lt;/tt&gt;<sp/>passed<sp/>in<sp/>the<sp/>constructor.</highlight></codeline>
+<codeline lineno="261"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>If<sp/>the<sp/>priority<sp/>is<sp/>outside<sp/>the<sp/>range<sp/>&lt;tt&gt;[0,<sp/>...,<sp/>bucket_count-1]&lt;/tt&gt;,</highlight></codeline>
+<codeline lineno="262"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>it<sp/>is<sp/>clamped<sp/>to<sp/>the<sp/>range<sp/>borders.</highlight></codeline>
+<codeline lineno="263"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="264" refid="classvigra_1_1MappedBucketQueue_1a545a00ccbe7317d45342ef2f72c16180" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MappedBucketQueue_1a545a00ccbe7317d45342ef2f72c16180" kindref="member" tooltip="Insert new element.">push</ref>(value_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v)</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>priority_type<sp/>index<sp/>=<sp/>get_priority_(v);</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>clamp<sp/>index<sp/>to<sp/>the<sp/>allowed<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(index<sp/>&gt;<sp/><ref refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" kindref="member" tooltip="Maximum index (i.e. priority) allowed in this queue. Equivalent to bucket_count - 1...">BaseType::maxIndex</ref>())</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>index<sp/>=<sp/><ref refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" kindref="member" tooltip="Maximum index (i.e. priority) allowed in this queue. Equivalent to bucket_count - 1...">BaseType::maxIndex</ref>();</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(index<sp/>&lt;<sp/>0)</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>index<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BucketQueue_1adbae2382fe805ec8a0bdc6d9a451b443" kindref="member" tooltip="Insert new element.">BaseType::push</ref>(v,<sp/>index);</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="276"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="278"><highlight class="comment">/**<sp/>\brief<sp/>Heap-based<sp/>priority<sp/>queue<sp/>compatible<sp/>to<sp/>BucketQueue.</highlight></codeline>
+<codeline lineno="279"><highlight class="comment"></highlight></codeline>
+<codeline lineno="280"><highlight class="comment"><sp/><sp/><sp/><sp/>This<sp/>template<sp/>is<sp/>compatible<sp/>to<sp/>\ref<sp/>vigra::BucketQueue,<sp/>but<sp/>except<sp/>arbitrary<sp/>priority</highlight></codeline>
+<codeline lineno="281"><highlight class="comment"><sp/><sp/><sp/><sp/>types.<sp/>Internally,<sp/>it<sp/>uses<sp/>a<sp/>&lt;tt&gt;std::priority_queue&lt;/tt&gt;,<sp/>but<sp/>implements<sp/>an<sp/></highlight></codeline>
+<codeline lineno="282"><highlight class="comment"><sp/><sp/><sp/><sp/>API<sp/>where<sp/>priorities<sp/>and<sp/>payload<sp/>data<sp/>are<sp/>separate,<sp/>like<sp/>in<sp/>\ref<sp/>vigra::BucketQueue.</highlight></codeline>
+<codeline lineno="283"><highlight class="comment"></highlight></codeline>
+<codeline lineno="284"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/bucket_queue.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="285"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="286"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ValueType,</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">PriorityType,</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>Ascending<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">&gt;<sp/><sp/></highlight><highlight class="comment">//<sp/>std::priority_queue<sp/>is<sp/>descending</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="290" refid="classvigra_1_1PriorityQueue" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classvigra_1_1PriorityQueue" kindref="compound" tooltip="Heap-based priority queue compatible to BucketQueue.">PriorityQueue</ref></highlight></codeline>
+<codeline lineno="291"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::pair&lt;ValueType,<sp/>PriorityType&gt;<sp/>ElementType;</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Compare</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>IfBool&lt;Ascending,<sp/>std::greater&lt;PriorityType&gt;,<sp/></highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::less&lt;PriorityType&gt;<sp/>&gt;::type<sp/>cmp;</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(ElementType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>l,<sp/>ElementType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>r)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="300"><highlight class="keyword"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>cmp(l.second,<sp/>r.second);</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::priority_queue&lt;ElementType,<sp/>std::vector&lt;ElementType&gt;,<sp/>Compare&gt;<sp/>Heap;</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/>Heap<sp/>heap_;</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>value_type;</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/>&amp;<sp/>reference;</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>ValueType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>const_reference;</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>Heap::size_type<sp/>size_type;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>PriorityType<sp/>priority_type;</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="317"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Create<sp/>empty<sp/>priority<sp/>queue.</highlight></codeline>
+<codeline lineno="318"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="319" refid="classvigra_1_1PriorityQueue_1abc81897aed19eefcf321dcb7e12b166d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1PriorityQueue_1abc81897aed19eefcf321dcb7e12b166d" kindref="member" tooltip="Create empty priority queue.">PriorityQueue</ref>()</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>heap_()</highlight></codeline>
+<codeline lineno="321"><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="323"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Number<sp/>of<sp/>elements<sp/>in<sp/>this<sp/>queue.</highlight></codeline>
+<codeline lineno="324"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="325" refid="classvigra_1_1PriorityQueue_1a503ab01f6c0142145d3434f6924714e7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>size_type<sp/><ref refid="classvigra_1_1PriorityQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="326"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>heap_.size();</highlight></codeline>
+<codeline lineno="328"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="329"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="330"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Queue<sp/>contains<sp/>no<sp/>elements.</highlight></codeline>
+<codeline lineno="331"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Equivalent<sp/>to<sp/>&lt;tt&gt;size()<sp/>==<sp/>0&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="332"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="333" refid="classvigra_1_1PriorityQueue_1ac6e61de369e994009e36f344f99c15ad" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1PriorityQueue_1ac6e61de369e994009e36f344f99c15ad" kindref="member" tooltip="Queue contains no elements. Equivalent to size() == 0.">empty</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="334"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="335"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1PriorityQueue_1a503ab01f6c0142145d3434f6924714e7" kindref="member" tooltip="Number of elements in this queue.">size</ref>()<sp/>==<sp/>0;</highlight></codeline>
+<codeline lineno="336"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="337"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="338"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Maximum<sp/>index<sp/>(i.e.<sp/>priority)<sp/>allowed<sp/>in<sp/>this<sp/>queue.</highlight></codeline>
+<codeline lineno="339"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Equivalent<sp/>to<sp/>&lt;tt&gt;bucket_count<sp/>-<sp/>1&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="340"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="341" refid="classvigra_1_1PriorityQueue_1ab89145e7939ab6935557a83950126b8f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1PriorityQueue_1ab89145e7939ab6935557a83950126b8f" kindref="member" tooltip="Maximum index (i.e. priority) allowed in this queue. Equivalent to bucket_count - 1...">maxIndex</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="342"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="343"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">NumericTraits&lt;priority_type&gt;::max</ref>();</highlight></codeline>
+<codeline lineno="344"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="345"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="346"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Priority<sp/>of<sp/>the<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="347"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="348" refid="classvigra_1_1PriorityQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>priority_type<sp/><ref refid="classvigra_1_1PriorityQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" kindref="member" tooltip="Priority of the current top element.">topPriority</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="349"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>heap_.top().second;</highlight></codeline>
+<codeline lineno="351"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="353"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>The<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="354"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="355" refid="classvigra_1_1PriorityQueue_1a285f78e29505802b845caad75bbae16b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>const_reference<sp/><ref refid="classvigra_1_1PriorityQueue_1a285f78e29505802b845caad75bbae16b" kindref="member" tooltip="The current top element.">top</ref>()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="356"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="358"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>heap_.top().first;</highlight></codeline>
+<codeline lineno="359"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="361"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Remove<sp/>the<sp/>current<sp/>top<sp/>element.</highlight></codeline>
+<codeline lineno="362"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="363" refid="classvigra_1_1PriorityQueue_1a312e7f6c761a199c1369fbe651e084f0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1PriorityQueue_1a312e7f6c761a199c1369fbe651e084f0" kindref="member" tooltip="Remove the current top element.">pop</ref>()</highlight></codeline>
+<codeline lineno="364"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="365"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>heap_.pop();</highlight></codeline>
+<codeline lineno="366"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="367"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="368"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**<sp/>\brief<sp/>Insert<sp/>new<sp/>element<sp/>\arg<sp/>v<sp/>with<sp/>given<sp/>\arg<sp/>priority.</highlight></codeline>
+<codeline lineno="369"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="370" refid="classvigra_1_1PriorityQueue_1adbae2382fe805ec8a0bdc6d9a451b443" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1PriorityQueue_1adbae2382fe805ec8a0bdc6d9a451b443" kindref="member" tooltip="Insert new element.">push</ref>(value_type<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>v,<sp/>priority_type<sp/>priority)</highlight></codeline>
+<codeline lineno="371"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="372"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>heap_.push(ElementType(v,<sp/>priority));</highlight></codeline>
+<codeline lineno="373"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="374"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="375"><highlight class="normal"></highlight></codeline>
+<codeline lineno="376"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="377"><highlight class="normal"></highlight></codeline>
+<codeline lineno="378"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_BUCKET_QUEUE_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor_1_1TreeOnlineInformation" kind="struct" prot="public">
+    <compoundname>vigra::rf::visitors::OnlineLearnVisitor::TreeOnlineInformation</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1ga83805c93249800cc98da8d38d998a43e" prot="public" static="no" mutable="no">
+        <type>std::map&lt; int, int &gt;</type>
+        <definition>std::map&lt;int,int&gt; exterior_to_index</definition>
+        <argsstring></argsstring>
+        <name>exterior_to_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="608" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="608" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga09314a374626f065d722d6487cd0f57a" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="classvigra_1_1ArrayVector" kindref="compound">IndexList</ref> &gt;</type>
+        <definition>std::vector&lt;IndexList&gt; index_lists</definition>
+        <argsstring></argsstring>
+        <name>index_lists</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="604" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="604" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaf39e8014777d31c558b5238cad1adbc0" prot="public" static="no" mutable="no">
+        <type>std::map&lt; int, int &gt;</type>
+        <definition>std::map&lt;int,int&gt; interior_to_index</definition>
+        <argsstring></argsstring>
+        <name>interior_to_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="606" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="606" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga56d7249fd8f04e339666482e81243992" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; MarginalDistribution &gt;</type>
+        <definition>std::vector&lt;MarginalDistribution&gt; mag_distributions</definition>
+        <argsstring></argsstring>
+        <name>mag_distributions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="603" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="603" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="602" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="601" bodyend="609"/>
+    <listofallmembers>
+      <member refid="group__MachineLearning_1ga83805c93249800cc98da8d38d998a43e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::TreeOnlineInformation</scope><name>exterior_to_index</name></member>
+      <member refid="group__MachineLearning_1ga09314a374626f065d722d6487cd0f57a" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::TreeOnlineInformation</scope><name>index_lists</name></member>
+      <member refid="group__MachineLearning_1gaf39e8014777d31c558b5238cad1adbc0" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::TreeOnlineInformation</scope><name>interior_to_index</name></member>
+      <member refid="group__MachineLearning_1ga56d7249fd8f04e339666482e81243992" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::TreeOnlineInformation</scope><name>mag_distributions</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__chooser_1_1exec__op" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_chooser::exec_op</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::type_lists::cond_op&lt; ZL, TEST &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class ZL</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1376" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1376" bodyend="1376"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1aea6399760718f72699a975c4f6f245d3" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>deep_leftover_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1abf8731895904f76edc1b1dc4a8c0a87f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>deep_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>exec</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a04e1cf6d2edd8fdb7cf099d6f5d4f8e7" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>first_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac6222d355faa01ab219c1173beb62e2d" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>iter_leftover_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1adbd16d5ecf149afcfef14b9580ea80cd" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>iter_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac6d26ec86505ca90567323acb7443194" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>iterate</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a3e6d35200c7b6fcdf7d5d240966c3942" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>next_rr_list</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac3cee2d7a30a1c0fcfbc4f55a5ff889a" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>recurse_deep</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1abcf01776e7edc860b933b2b3650a68bf" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser::exec_op</scope><name>rest_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1TypeTraits" kind="class" prot="public">
+    <compoundname>vigra::TypeTraits</compoundname>
+    <derivedcompoundref refid="classvigra_1_1TypeTraits_3_01T_01const_01_01_4" prot="public" virt="non-virtual">TypeTraits&lt; T const  &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1TypeTraits_1ac5154f7d03156c08918b5e36b7949323" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isBuiltinType</definition>
+        <argsstring></argsstring>
+        <name>isBuiltinType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TypeTraits_1ad54da832de3602ecd9b48abf608ed123" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isConst</definition>
+        <argsstring></argsstring>
+        <name>isConst</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="123" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TypeTraits_1a6960242cb5f4148543ea54aa71f05432" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isPOD</definition>
+        <argsstring></argsstring>
+        <name>isPOD</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="124" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="120" bodyend="126"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TypeTraits_1ac5154f7d03156c08918b5e36b7949323" prot="public" virt="non-virtual"><scope>vigra::TypeTraits</scope><name>isBuiltinType</name></member>
+      <member refid="classvigra_1_1TypeTraits_1ad54da832de3602ecd9b48abf608ed123" prot="public" virt="non-virtual"><scope>vigra::TypeTraits</scope><name>isConst</name></member>
+      <member refid="classvigra_1_1TypeTraits_1a6960242cb5f4148543ea54aa71f05432" prot="public" virt="non-virtual"><scope>vigra::TypeTraits</scope><name>isPOD</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

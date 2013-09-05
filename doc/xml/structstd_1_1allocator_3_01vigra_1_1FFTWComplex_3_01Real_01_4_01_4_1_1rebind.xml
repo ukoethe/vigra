@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structstd_1_1allocator_3_01vigra_1_1FFTWComplex_3_01Real_01_4_01_4_1_1rebind" kind="struct" prot="public">
+    <compoundname>std::allocator&lt; vigra::FFTWComplex&lt; Real &gt; &gt;::rebind</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Other</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structstd_1_1allocator_3_01vigra_1_1FFTWComplex_3_01Real_01_4_01_4_1_1rebind_1af4153f94c8a027c6b0314a405536b219" prot="public" static="no">
+        <type>allocator&lt; Other &gt;</type>
+        <definition>typedef allocator&lt;Other&gt; other</definition>
+        <argsstring></argsstring>
+        <name>other</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="757" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="757" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="756" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="755" bodyend="758"/>
+    <listofallmembers>
+      <member refid="structstd_1_1allocator_3_01vigra_1_1FFTWComplex_3_01Real_01_4_01_4_1_1rebind_1af4153f94c8a027c6b0314a405536b219" prot="public" virt="non-virtual"><scope>std::allocator&lt; vigra::FFTWComplex&lt; Real &gt; &gt;::rebind</scope><name>other</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

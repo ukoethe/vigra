@@ -1,0 +1,869 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FixedPointOperations" kind="group">
+    <compoundname>FixedPointOperations</compoundname>
+    <title>Functions for FixedPoint</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__FixedPointOperations_1gaba00245aebd1c55103070dcd45a77483" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+        <definition>FixedPoint&lt;IntBits, FracBits&gt; vigra::abs</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>absolute value. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="624" bodyend="627"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga95690fd14be4c66dbf3d3afbc852b15c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits3</declname>
+            <defname>FracBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::add</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r, FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;result)</argsstring>
+        <name>add</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>addition with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="561" bodyend="565"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga14fe7b9ffa21e091c6ff4ede68717c30" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int vigra::ceil</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>ceil</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding up. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="676" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="675" bodyend="678"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga876ce07d607656544570073d92bf14bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint&lt; 0, FracBits &gt;</type>
+        <definition>FixedPoint&lt;0, FracBits&gt; vigra::dual_frac</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>dual_frac</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>dual fractional part: <computeroutput>1 - frac(v)</computeroutput>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="659" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="658" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga4ab4a9ac3f89439366bbbcb41e1aed78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TARGET</type>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>TARGET</type>
+        <definition>TARGET vigra::fixed_point_cast</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>fixed_point_cast</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Convert a <ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref> to a built-in type. If the target is integral, the value is rounded.<linebreak/>
+ Usage: <programlisting><codeline><highlight class="normal">FixedPoint&lt;16,15&gt;<sp/>fp(...);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d<sp/>=<sp/><ref refid="group__FixedPointOperations_1ga4ab4a9ac3f89439366bbbcb41e1aed78" kindref="member">fixed_point_cast</ref>&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(fp);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="486" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gaf8fe85520fc0bc2d77ec8e6cf26f3c5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int vigra::floor</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>floor</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding down. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="668" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="667" bodyend="670"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gadc20c2a584e4c99a7333bbfac71fe202" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint&lt; 0, FracBits &gt;</type>
+        <definition>FixedPoint&lt;0, FracBits&gt; vigra::frac</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>frac</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>fractional part. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="650" bodyend="653"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga71573012351636ef982341cf3eb1d669" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits3</declname>
+            <defname>FracBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::mul</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r, FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;result)</argsstring>
+        <name>mul</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="607" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="605" bodyend="611"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga9ddeb69f0746e04e95bc94055e787156" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+        <definition>FixedPoint&lt;IntBits, FracBits&gt; vigra::norm</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; const &amp;v)</argsstring>
+        <name>norm</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>norm (same as abs). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="643" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="642" bodyend="645"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga9e4bf57b03373af7a703d55f339bae6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="503" bodyend="507"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga10a6b2f01e72815d91a4ddb93d087c05" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPointTraits&lt; FixedPoint&lt; IntBits1, FracBits1 &gt;, FixedPoint&lt; IntBits2, FracBits2 &gt; &gt;::MultipliesType</type>
+        <definition>FixedPointTraits&lt;FixedPoint&lt;IntBits1, FracBits1&gt;, FixedPoint&lt;IntBits2, FracBits2&gt; &gt;::MultipliesType vigra::operator*</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="593" bodyend="599"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga5118563b514d92b592eda37c2a3e7fa7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPointTraits&lt; FixedPoint&lt; IntBits1, FracBits1 &gt;, FixedPoint&lt; IntBits2, FracBits2 &gt; &gt;::PlusType</type>
+        <definition>FixedPointTraits&lt;FixedPoint&lt;IntBits1, FracBits1&gt;, FixedPoint&lt;IntBits2, FracBits2&gt; &gt;::PlusType vigra::operator+</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>addition with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="549" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gaa3204b9190ad43595261ccb307ed1d17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPointTraits&lt; FixedPoint&lt; IntBits1, FracBits1 &gt;, FixedPoint&lt; IntBits2, FracBits2 &gt; &gt;::MinusType</type>
+        <definition>FixedPointTraits&lt;FixedPoint&lt;IntBits1, FracBits1&gt;, FixedPoint&lt;IntBits2, FracBits2&gt; &gt;::MinusType vigra::operator-</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>subtraction with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="571" bodyend="577"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga59b7015d21fe02774a7663e6b663e3fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less than </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="512" bodyend="516"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga7a2707122ac37df0e799ee89ff743791" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;=</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less or equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="522" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="521" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga7959490c564db011ada37b265098ff1b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="494" bodyend="498"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gab8c9b89e1d7d338ca3243a0a6226a331" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="531" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="530" bodyend="534"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga9e66b07e0f99f4a0c73afe630d9ec9e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;=</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater or equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="539" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gaddcb15f9b13ee9ba98ee1e5b8e228544" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int vigra::round</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>round</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding to the nearest integer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="684" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="683" bodyend="686"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>SquareRootTraits&lt; FixedPoint&lt; IntBits, FracBits &gt; &gt;::SquareRootResult</type>
+        <definition>SquareRootTraits&lt;FixedPoint&lt;IntBits, FracBits&gt; &gt;::SquareRootResult vigra::sqrt</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>sqrt</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>square root. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="617" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="616" bodyend="619"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1ga0677c47f51a629befaf13be48958b16b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPointTraits&lt; FixedPoint&lt; IntBits, FracBits &gt;, FixedPoint&lt; IntBits, FracBits &gt; &gt;::MultipliesType</type>
+        <definition>FixedPointTraits&lt;FixedPoint&lt;IntBits, FracBits&gt;, FixedPoint&lt;IntBits, FracBits&gt; &gt;::MultipliesType vigra::squaredNorm</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>FixedPoint&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>squared norm (same as v*v). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="634" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="633" bodyend="636"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPointOperations_1gaa403dd4b5533c2e3000ade778bbf6f81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits1</declname>
+            <defname>FracBits1</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits2</declname>
+            <defname>FracBits2</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits3</declname>
+            <defname>FracBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::sub</definition>
+        <argsstring>(FixedPoint&lt; IntBits1, FracBits1 &gt; l, FixedPoint&lt; IntBits2, FracBits2 &gt; r, FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;result)</argsstring>
+        <name>sub</name>
+        <param>
+          <type>FixedPoint&lt; IntBits1, FracBits1 &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits2, FracBits2 &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint&lt; IntBits3, FracBits3 &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>subtraction with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="583" bodyend="587"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><bold>#include</bold> &lt;<ref refid="fixedpoint_8hxx_source" kindref="compound">vigra/fixedpoint.hxx</ref>&gt;<linebreak/>
+ </para>    </briefdescription>
+    <detaileddescription>
+<para>These functions fulfill the requirements of an <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref>.</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

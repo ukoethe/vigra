@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1TypeTraits_3_01T_01const_01_01_4" kind="class" prot="public">
+    <compoundname>vigra::TypeTraits&lt; T const  &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::TypeTraits&lt; T &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1TypeTraits_3_01T_01const_01_01_4_1afa1f20bb2f3b10e4b52e109767467973" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isConst</definition>
+        <argsstring></argsstring>
+        <name>isConst</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="131" bodyend="136"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TypeTraits_1ac5154f7d03156c08918b5e36b7949323" prot="public" virt="non-virtual"><scope>vigra::TypeTraits&lt; T const  &gt;</scope><name>isBuiltinType</name></member>
+      <member refid="classvigra_1_1TypeTraits_3_01T_01const_01_01_4_1afa1f20bb2f3b10e4b52e109767467973" prot="public" virt="non-virtual"><scope>vigra::TypeTraits&lt; T const  &gt;</scope><name>isConst</name></member>
+      <member refid="classvigra_1_1TypeTraits_1a6960242cb5f4148543ea54aa71f05432" prot="public" virt="non-virtual"><scope>vigra::TypeTraits&lt; T const  &gt;</scope><name>isPOD</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

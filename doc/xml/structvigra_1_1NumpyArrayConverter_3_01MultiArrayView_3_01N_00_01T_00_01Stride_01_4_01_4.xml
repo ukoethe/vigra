@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumpyArrayConverter&lt; MultiArrayView&lt; N, T, Stride &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::NumpyArrayConverter&lt; NumpyArray&lt; N, T, Stride &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class Stride</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a4c9479a2a34d96266bf1e901ac3ff559" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, Stride &gt;</type>
+        <definition>typedef MultiArrayView&lt;N, T, Stride&gt; ArrayType</definition>
+        <argsstring></argsstring>
+        <name>ArrayType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="130" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="130" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a4368142ab25e3534b6dd5b8415145b61" prot="public" static="no">
+        <type>NumpyArrayConverter&lt; <ref refid="classvigra_1_1NumpyArray" kindref="compound">NumpyArray</ref>&lt; N, T, Stride &gt; &gt;</type>
+        <definition>typedef NumpyArrayConverter&lt;NumpyArray&lt;N, T, Stride&gt; &gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a151f38bcdd403fd337abd1445c279680" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NumpyArrayConverter</definition>
+        <argsstring>()</argsstring>
+        <name>NumpyArrayConverter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="132" bodyend="137"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="126" bodyend="138"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a4c9479a2a34d96266bf1e901ac3ff559" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayConverter&lt; MultiArrayView&lt; N, T, Stride &gt; &gt;</scope><name>ArrayType</name></member>
+      <member refid="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a4368142ab25e3534b6dd5b8415145b61" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayConverter&lt; MultiArrayView&lt; N, T, Stride &gt; &gt;</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1NumpyArrayConverter_3_01MultiArrayView_3_01N_00_01T_00_01Stride_01_4_01_4_1a151f38bcdd403fd337abd1445c279680" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayConverter&lt; MultiArrayView&lt; N, T, Stride &gt; &gt;</scope><name>NumpyArrayConverter</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,368 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RandomNumberGenerator" kind="class" prot="public">
+    <compoundname>vigra::RandomNumberGenerator</compoundname>
+    <includes refid="random_8hxx" local="no">vigra/random.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>Engine</declname>
+        <defname>Engine</defname>
+        <defval>detail::RandomState&lt;detail::TT800&gt;</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RandomNumberGenerator_1a73928f8e92f69a0b63e6b6b4719d7383" prot="private" static="no" mutable="yes">
+        <type>double</type>
+        <definition>double normalCached_</definition>
+        <argsstring></argsstring>
+        <name>normalCached_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="338" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomNumberGenerator_1a1c46fd5734b362798ea60061e5b0bb13" prot="private" static="no" mutable="yes">
+        <type>bool</type>
+        <definition>bool normalCachedValid_</definition>
+        <argsstring></argsstring>
+        <name>normalCachedValid_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="339" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="339" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="group__RandomNumberGeneration_1ga4238039b57f46f7695bf6caad1ad8e16" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double normal</definition>
+        <argsstring>() const </argsstring>
+        <name>normal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a standard normal variate (<ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>) random number.</para><para>Mean is zero, standard deviation is 1.0. It uses the polar form of the Box-Muller transform. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="565" bodyend="590"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a5a6b73f8cd1321dca9dd6eaa53dd1aac" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double normal</definition>
+        <argsstring>(double mean, double stddev) const </argsstring>
+        <name>normal</name>
+        <param>
+          <type>double</type>
+          <declname>mean</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>stddev</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a normal variate (<ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>) random number with the given mean and standard deviation.</para><para>It uses the polar form of the Box-Muller transform. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="538" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a2d5c85f22a6dac9a571a664b0064f162" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+        <definition>UInt32 operator()</definition>
+        <argsstring>() const </argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed integer random number in [0, 2<superscript>32</superscript>).</para><para>That is, 0 &lt;= i &lt; 2<superscript>32</superscript>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="440" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="439" bodyend="442"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a2b2ae87ef18bbb082edd3a5c4943bbda" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomNumberGenerator</definition>
+        <argsstring>()</argsstring>
+        <name>RandomNumberGenerator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new random generator object with standard seed.</para><para>Due to standard seeding, the random numbers generated will always be the same. This is useful for debugging. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="348" bodyend="351"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1aa9e11ae7472a6f218662d5c9e9ccbcee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomNumberGenerator</definition>
+        <argsstring>(RandomSeedTag)</argsstring>
+        <name>RandomNumberGenerator</name>
+        <param>
+          <type>RandomSeedTag</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new random generator object with a random seed.</para><para>The seed is obtained from the machines current <computeroutput>clock()</computeroutput> and <computeroutput>time()</computeroutput> values.</para><para><bold>Usage:</bold> <programlisting><codeline><highlight class="normal">RandomNumberGenerator&lt;&gt;<sp/>rnd<sp/>=<sp/>RandomNumberGenerator&lt;&gt;(RandomSeed);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="366" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="363" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a8f41bce08d7b393a3d5c2124c388188d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomNumberGenerator</definition>
+        <argsstring>(UInt32 theSeed)</argsstring>
+        <name>RandomNumberGenerator</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>theSeed</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new random generator object from the given seed.</para><para>The same seed will always produce identical random sequences. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="374" bodyend="379"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a22457fc0793fd8ea90c4d09842e710d1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>RandomNumberGenerator</definition>
+        <argsstring>(Iterator init, UInt32 length)</argsstring>
+        <name>RandomNumberGenerator</name>
+        <param>
+          <type>Iterator</type>
+          <declname>init</declname>
+        </param>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new random generator object from the given seed sequence.</para><para>Longer seed sequences lead to better initialization in the sense that the generator&apos;s state space is covered much better than is possible with 32-bit seeds alone. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="387" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a7fe8fa521842f9385f87b7333b91c8e1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void seed</definition>
+        <argsstring>(RandomSeedTag)</argsstring>
+        <name>seed</name>
+        <param>
+          <type>RandomSeedTag</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Re-initialize the random generator object with a random seed.</para><para>The seed is obtained from the machines current <computeroutput>clock()</computeroutput> and <computeroutput>time()</computeroutput> values.</para><para><bold>Usage:</bold> <programlisting><codeline><highlight class="normal">RandomNumberGenerator&lt;&gt;<sp/>rnd<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">rnd.seed(RandomSeed);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="407" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1af6410f02a2ee4c5397d976d4ef6f7323" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void seed</definition>
+        <argsstring>(UInt32 theSeed)</argsstring>
+        <name>seed</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>theSeed</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Re-initialize the random generator object from the given seed.</para><para>The same seed will always produce identical random sequences. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="417" bodyend="421"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a5d6e93f421badb04239b48213e99bb13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void seed</definition>
+        <argsstring>(Iterator init, UInt32 length)</argsstring>
+        <name>seed</name>
+        <param>
+          <type>Iterator</type>
+          <declname>init</declname>
+        </param>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Re-initialize the random generator object from the given seed sequence.</para><para>Longer seed sequences lead to better initialization in the sense that the generator&apos;s state space is covered much better than is possible with 32-bit seeds alone. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="430" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="429" bodyend="433"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1abcae776081dbe7e27e01f5533de4fcf7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double uniform</definition>
+        <argsstring>() const </argsstring>
+        <name>uniform</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed double-precision random number in [0.0, 1.0].</para><para>That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <computeroutput><ref refid="classvigra_1_1RandomNumberGenerator_1af341db0e688d43b514372f088c3f7c8e" kindref="member">uniformInt()</ref></computeroutput> / (2<superscript>32</superscript> - 1), so it has effectively only 32 random bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="511" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="510" bodyend="513"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a81130eed53b4cafb0bd6e17327392e15" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double uniform</definition>
+        <argsstring>(double lower, double upper) const </argsstring>
+        <name>uniform</name>
+        <param>
+          <type>double</type>
+          <declname>lower</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>upper</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed double-precision random number in [lower, upper].</para><para>That is, <computeroutput>lower</computeroutput> &lt;= i &lt;= <computeroutput>upper</computeroutput>. This number is computed from <computeroutput><ref refid="classvigra_1_1RandomNumberGenerator_1abcae776081dbe7e27e01f5533de4fcf7" kindref="member">uniform()</ref></computeroutput>, so it has effectively only 32 random bits. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="520" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a5ad0de66fadf2384f84c1a086a1653a0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double uniform53</definition>
+        <argsstring>() const </argsstring>
+        <name>uniform53</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed double-precision random number in [0.0, 1.0).</para><para>That is, 0.0 &lt;= i &lt; 1.0. All 53-bit bits of the mantissa are random (two 32-bit integers are used to create this number). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="499" bodyend="503"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1af341db0e688d43b514372f088c3f7c8e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+        <definition>UInt32 uniformInt</definition>
+        <argsstring>() const </argsstring>
+        <name>uniformInt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed integer random number in [0, 2<superscript>32</superscript>).</para><para>That is, 0 &lt;= i &lt; 2<superscript>32</superscript>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="449" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="448" bodyend="451"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1ab24ca8620cde2e339f4385bef30d35d1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+        <definition>UInt32 uniformInt</definition>
+        <argsstring>(UInt32 beyond) const </argsstring>
+        <name>uniformInt</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>beyond</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a uniformly distributed integer random number in [0, <computeroutput>beyond</computeroutput>).</para><para>That is, 0 &lt;= i &lt; <computeroutput>beyond</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="477" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="476" bodyend="492"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1aba5014fff01eb865b7bc8768862086d4" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+        <definition>static UInt32 factorForUniformInt</definition>
+        <argsstring>(UInt32 range)</argsstring>
+        <name>factorForUniformInt</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>range</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="557" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="556" bodyend="561"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomNumberGenerator_1a7108ca62eed9d89c2c406c1e5029e4b8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RandomNumberGenerator" kindref="compound">RandomNumberGenerator</ref> &amp;</type>
+        <definition>static RandomNumberGenerator&amp; global</definition>
+        <argsstring>()</argsstring>
+        <name>global</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access the global (program-wide) instance of the present random number generator.</para><para>Normally, you will create a local generator by one of the constructor calls. But sometimes it is useful to have all program parts access the same generator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="550" bodyend="554"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Generic random number generator.</para><para>The actual generator is passed in the template argument <computeroutput>Engine</computeroutput>. Two generators are currently available: <itemizedlist>
+<listitem>
+<para><computeroutput>RandomMT19937</computeroutput>: The state-of-the-art <ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne Twister</ulink> with a state length of 2<superscript>19937</superscript> and very high statistical quality. </para></listitem>
+<listitem>
+<para><computeroutput>RandomTT800</computeroutput>: (default) The Tempered Twister, a simpler predecessor of the Mersenne Twister with period length 2<superscript>800</superscript>. </para></listitem>
+</itemizedlist>
+</para><para>Both generators have been designed by <ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/eindex.html">Makoto Matsumoto</ulink>.</para><para><bold>Traits defined:</bold></para><para><verbatim>FunctorTraits&lt;RandomNumberGenerator&lt;Engine&gt; &gt;::isInitializer </verbatim> is true (<computeroutput>VigraTrueType</computeroutput>). </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="337" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="335" bodyend="562"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RandomNumberGenerator_1aba5014fff01eb865b7bc8768862086d4" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>factorForUniformInt</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a7108ca62eed9d89c2c406c1e5029e4b8" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>global</name></member>
+      <member refid="group__RandomNumberGeneration_1ga4238039b57f46f7695bf6caad1ad8e16" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>normal</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a5a6b73f8cd1321dca9dd6eaa53dd1aac" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>normal</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a73928f8e92f69a0b63e6b6b4719d7383" prot="private" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>normalCached_</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a1c46fd5734b362798ea60061e5b0bb13" prot="private" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>normalCachedValid_</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a2d5c85f22a6dac9a571a664b0064f162" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a2b2ae87ef18bbb082edd3a5c4943bbda" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>RandomNumberGenerator</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1aa9e11ae7472a6f218662d5c9e9ccbcee" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>RandomNumberGenerator</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a8f41bce08d7b393a3d5c2124c388188d" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>RandomNumberGenerator</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a22457fc0793fd8ea90c4d09842e710d1" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>RandomNumberGenerator</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a7fe8fa521842f9385f87b7333b91c8e1" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>seed</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1af6410f02a2ee4c5397d976d4ef6f7323" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>seed</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a5d6e93f421badb04239b48213e99bb13" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>seed</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1abcae776081dbe7e27e01f5533de4fcf7" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>uniform</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a81130eed53b4cafb0bd6e17327392e15" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>uniform</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1a5ad0de66fadf2384f84c1a086a1653a0" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>uniform53</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1af341db0e688d43b514372f088c3f7c8e" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>uniformInt</name></member>
+      <member refid="classvigra_1_1RandomNumberGenerator_1ab24ca8620cde2e339f4385bef30d35d1" prot="public" virt="non-virtual"><scope>vigra::RandomNumberGenerator</scope><name>uniformInt</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

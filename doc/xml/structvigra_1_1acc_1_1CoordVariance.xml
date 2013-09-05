@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1acc_1_1CoordVariance" kind="struct" prot="public">
+    <compoundname>vigra::acc::CoordVariance</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">gen_variance_calc&lt; T, detail::accumulable_coord_access, CoordMoment2 &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="627" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="625" bodyend="627"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1implies__template_1aa822f73f2fb4312fb60d5797ced9e4ff" prot="public" virt="non-virtual"><scope>vigra::acc::CoordVariance</scope><name>implies_types</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

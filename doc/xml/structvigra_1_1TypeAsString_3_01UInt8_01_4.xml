@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1TypeAsString_3_01UInt8_01_4" kind="struct" prot="public">
+    <compoundname>vigra::TypeAsString&lt; UInt8 &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1TypeAsString_3_01UInt8_01_4_1a6e74c9c9b9d35b4ac357834801afd1df" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string result</definition>
+        <argsstring>()</argsstring>
+        <name>result</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="89" bodyend="89"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="87" bodyend="90"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1TypeAsString_3_01UInt8_01_4_1a6e74c9c9b9d35b4ac357834801afd1df" prot="public" virt="non-virtual"><scope>vigra::TypeAsString&lt; UInt8 &gt;</scope><name>result</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

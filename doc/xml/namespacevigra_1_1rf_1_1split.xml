@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1rf_1_1split" kind="namespace">
+    <compoundname>vigra::rf::split</compoundname>
+    <innerclass refid="classvigra_1_1rf_1_1split_1_1Median" prot="public">vigra::rf::split::Median</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn" prot="public">vigra::rf::split::RandomSplitOfColumn</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacevigra_1_1rf_1_1split_1a53da872837ded8ca161a8d3595aff4d6" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ThresholdSplit" kindref="compound">ThresholdSplit</ref>&lt; <ref refid="classvigra_1_1rf_1_1split_1_1Median" kindref="compound">Median</ref> &gt;</type>
+        <definition>typedef ThresholdSplit&lt;Median&gt; MedianSplit</definition>
+        <argsstring></argsstring>
+        <name>MedianSplit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1257" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1257" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacevigra_1_1rf_1_1split_1a5025ffc0f8b5b6ecbb5a9a162e753dde" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ThresholdSplit" kindref="compound">ThresholdSplit</ref>&lt; <ref refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn" kindref="compound">RandomSplitOfColumn</ref> &gt;</type>
+        <definition>typedef ThresholdSplit&lt;RandomSplitOfColumn&gt; RandomSplit</definition>
+        <argsstring></argsstring>
+        <name>RandomSplit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1374" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>This namespace contains additional Splitfunctors.</para><para>The Split functor classes are designed in a modular fashion because new split functors may share a lot of code with existing ones.</para><para><ref refid="classvigra_1_1ThresholdSplit" kindref="compound">ThresholdSplit</ref> implements the functionality needed for any split functor, that makes its decision via one dimensional axis-parallel cuts. The Template parameter defines how the split along one dimension is chosen.</para><para>The <ref refid="classvigra_1_1BestGiniOfColumn" kindref="compound">BestGiniOfColumn</ref> class chooses a split that minimizes one of the Loss functions supplied (<ref refid="classvigra_1_1GiniCriterion" kindref="compound">GiniCriterion</ref> for classification and LSQLoss for regression). <ref refid="classvigra_1_1rf_1_1split_1_1Median" kindref="compound">Median</ref> chooses the Split in a kD tree fashion.</para><para>Currently defined typedefs: <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><sp/>ThresholdSplit&lt;BestGiniOfColumn&lt;GiniCriterion&gt;<sp/>&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>GiniSplit;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><sp/>ThresholdSplit&lt;BestGiniOfColumn&lt;LSQLoss&gt;,<sp/>RegressionTag&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RegressionSplit;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><sp/>ThresholdSplit&lt;Median&gt;<sp/>MedianSplit;</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1157"/>
+  </compounddef>
+</doxygen>

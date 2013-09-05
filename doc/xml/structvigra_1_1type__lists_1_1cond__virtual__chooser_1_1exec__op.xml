@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1exec__op" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_virtual_chooser::exec_op</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1exec__op_1a7df636a4ebbc82331d95637580be0d2f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void call</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;)</argsstring>
+        <name>call</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1450" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1449" bodyend="1453"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1exec__op_1abc8998da6ca58c3daf5dd16cd9b3453c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1444" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1443" bodyend="1447"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1441" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1440" bodyend="1454"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1exec__op_1a7df636a4ebbc82331d95637580be0d2f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_chooser::exec_op</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__virtual__chooser_1_1exec__op_1abc8998da6ca58c3daf5dd16cd9b3453c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_virtual_chooser::exec_op</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

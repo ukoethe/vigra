@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__CombineFunctor" kind="group">
+    <compoundname>CombineFunctor</compoundname>
+    <title>Functors to Combine Images</title>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01MagnitudeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; MagnitudeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBGradientMagnitudeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBGradientMagnitudeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1MagnitudeFunctor" prot="public">vigra::MagnitudeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBGradientMagnitudeFunctor" prot="public">vigra::RGBGradientMagnitudeFunctor</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Common functors with several arguments </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

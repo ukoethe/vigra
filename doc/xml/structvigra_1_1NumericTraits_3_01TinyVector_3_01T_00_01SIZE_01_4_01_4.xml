@@ -1,0 +1,341 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>SIZE</declname>
+        <defname>SIZE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a8701699bbe342bb22979243ae188b669" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; typename NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1TinyVector" kindref="compound">ComplexPromote</ref>, SIZE &gt;</type>
+        <definition>typedef TinyVector&lt;typename NumericTraits&lt;T&gt;::ComplexPromote, SIZE&gt; ComplexPromote</definition>
+        <argsstring></argsstring>
+        <name>ComplexPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a6f400777082ea27fd6fd847e1740b3b5" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isComplex</definition>
+        <argsstring></argsstring>
+        <name>isComplex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9c67d1de97d5c0a3d1b183209ecce5e0" prot="public" static="no">
+        <type>NumericTraits&lt; T &gt;::isIntegral</type>
+        <definition>typedef NumericTraits&lt;T&gt;::isIntegral isIntegral</definition>
+        <argsstring></argsstring>
+        <name>isIntegral</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1160" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a702c46b01244e0b09557cc08f4bd9490" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isOrdered</definition>
+        <argsstring></argsstring>
+        <name>isOrdered</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1acc30342b3b463a1760202735e2e59c1b" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isScalar</definition>
+        <argsstring></argsstring>
+        <name>isScalar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1aa6c5b6b22001f66555cdcef7b28ee04e" prot="public" static="no">
+        <type>NumericTraits&lt; T &gt;::isSigned</type>
+        <definition>typedef NumericTraits&lt;T&gt;::isSigned isSigned</definition>
+        <argsstring></argsstring>
+        <name>isSigned</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1162" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9db8b01d46210fb09326c59f2305040e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; typename NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1TinyVector" kindref="compound">Promote</ref>, SIZE &gt;</type>
+        <definition>typedef TinyVector&lt;typename NumericTraits&lt;T&gt;::Promote, SIZE&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1155" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1abb3db390388b9dd5e9d4dc21b01eef1d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; typename NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1TinyVector" kindref="compound">RealPromote</ref>, SIZE &gt;</type>
+        <definition>typedef TinyVector&lt;typename NumericTraits&lt;T&gt;::RealPromote, SIZE&gt; RealPromote</definition>
+        <argsstring></argsstring>
+        <name>RealPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a6b60123cb51548902f9fb4733597ea79" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>typedef TinyVector&lt;T, SIZE&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1154" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a215e2850ed819f54851fa725fdc8842c" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T ValueType</definition>
+        <argsstring></argsstring>
+        <name>ValueType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1158" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1aa030704a93bbb1bb67d72cac68663da1" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; fromPromote</definition>
+        <argsstring>(TinyVectorBase&lt; typename NumericTraits&lt; T &gt;::Promote, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>fromPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; typename NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1TinyVector" kindref="compound">Promote</ref>, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1202" bodyend="1208"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a76437f343e9fefd2ef6250e74839e403" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; fromRealPromote</definition>
+        <argsstring>(TinyVectorBase&lt; typename NumericTraits&lt; T &gt;::RealPromote, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>fromRealPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; typename NumericTraits&lt; T &gt;::<ref refid="classvigra_1_1TinyVector" kindref="compound">RealPromote</ref>, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1212" bodyend="1218"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a304b516e47ccba09e8879337c54b64c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; max</definition>
+        <argsstring>()</argsstring>
+        <name>max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1183" bodyend="1186"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a363ee717246d86ecabced226c51cee24" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; min</definition>
+        <argsstring>()</argsstring>
+        <name>min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1179" bodyend="1182"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1adbd001000589c3751698355e0d66db2c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; nonZero</definition>
+        <argsstring>()</argsstring>
+        <name>nonZero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1174" bodyend="1177"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a8adc496c51c44e13a1b42c089b3614e1" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1170" bodyend="1173"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9df86bfb3c9541f4fcfd67a1f4212d15" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Promote</ref></type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(TinyVectorBase&lt; T, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1189" bodyend="1192"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a5d0ff2b5a05aa0cd79a5ee80bab5c99b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">RealPromote</ref></type>
+        <definition>static RealPromote toRealPromote</definition>
+        <argsstring>(TinyVectorBase&lt; T, SIZE, D1, D2 &gt; const &amp;v)</argsstring>
+        <name>toRealPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1196" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1195" bodyend="1198"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1add37e824afc8382b7655a3405a5e9c92" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt;</type>
+        <definition>static TinyVector&lt;T, SIZE&gt; zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1167" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1166" bodyend="1169"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="1153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="1152" bodyend="1219"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a8701699bbe342bb22979243ae188b669" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>ComplexPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1aa030704a93bbb1bb67d72cac68663da1" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>fromPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a76437f343e9fefd2ef6250e74839e403" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>fromRealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a6f400777082ea27fd6fd847e1740b3b5" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>isComplex</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9c67d1de97d5c0a3d1b183209ecce5e0" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>isIntegral</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a702c46b01244e0b09557cc08f4bd9490" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>isOrdered</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1acc30342b3b463a1760202735e2e59c1b" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>isScalar</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1aa6c5b6b22001f66555cdcef7b28ee04e" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>isSigned</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a304b516e47ccba09e8879337c54b64c7" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>max</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a363ee717246d86ecabced226c51cee24" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>min</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1adbd001000589c3751698355e0d66db2c" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>nonZero</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a8adc496c51c44e13a1b42c089b3614e1" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>one</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9db8b01d46210fb09326c59f2305040e" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1abb3db390388b9dd5e9d4dc21b01eef1d" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>RealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a9df86bfb3c9541f4fcfd67a1f4212d15" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>toPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a5d0ff2b5a05aa0cd79a5ee80bab5c99b" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>toRealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a6b60123cb51548902f9fb4733597ea79" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>Type</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1a215e2850ed819f54851fa725fdc8842c" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>ValueType</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1add37e824afc8382b7655a3405a5e9c92" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

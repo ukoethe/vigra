@@ -1,0 +1,564 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Sampler" kind="class" prot="public">
+    <compoundname>vigra::Sampler</compoundname>
+    <includes refid="sampling_8hxx" local="no">vigra/sampling.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Random</type>
+        <defval><ref refid="group__RandomNumberGeneration_1ga663aac0cefac046218349844e0567ac4" kindref="member">MersenneTwister</ref></defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1a7c961e20cade06a5cd094621b35f8e92" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" kindref="member">IndexType</ref> &gt;</type>
+        <definition>typedef ArrayVector&lt;IndexType&gt; IndexArrayType</definition>
+        <argsstring></argsstring>
+        <name>IndexArrayType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="242" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1a346dae786f30c2688fedc39918397460" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; <ref refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" kindref="member">IndexType</ref> &gt;</type>
+        <definition>typedef ArrayVectorView&lt;IndexType&gt; IndexArrayViewType</definition>
+        <argsstring></argsstring>
+        <name>IndexArrayViewType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Type of the array view object that is returned by <ref refid="classvigra_1_1Sampler_1a4dd6492d26201473904728117859a544" kindref="member">sampledIndices()</ref> and <ref refid="classvigra_1_1Sampler_1a75e82a037131304c9f3844a08b9fa616" kindref="member">oobIndices()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" prot="public" static="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>typedef Int32 IndexType</definition>
+        <argsstring></argsstring>
+        <name>IndexType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Internal type of the indices. Currently, 64-bit indices are not supported because this requires extension of the random number generator classes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="240" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="240" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1abab4c68ea4ab925898eaf289055f6be6" prot="private" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; bool &gt;</type>
+        <definition>typedef ArrayVector&lt;bool&gt; IsUsedArrayType</definition>
+        <argsstring></argsstring>
+        <name>IsUsedArrayType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="252" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="252" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1a02f4f5307287c38a95a5ff9df73d8421" prot="private" static="no">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; bool &gt;</type>
+        <definition>typedef ArrayVectorView&lt;bool&gt; IsUsedArrayViewType</definition>
+        <argsstring></argsstring>
+        <name>IsUsedArrayViewType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="253" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1a045188267149d03a3b0151e5c87d0222" prot="private" static="no">
+        <type>std::map&lt; <ref refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" kindref="member">IndexType</ref>, <ref refid="classvigra_1_1ArrayVector" kindref="compound">IndexArrayType</ref> &gt;</type>
+        <definition>typedef std::map&lt;IndexType, IndexArrayType&gt; StrataIndicesType</definition>
+        <argsstring></argsstring>
+        <name>StrataIndicesType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Sampler_1ada237276368e32f8a2b61c5d662379b4" prot="private" static="no">
+        <type>std::map&lt; <ref refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" kindref="member">IndexType</ref>, int &gt;</type>
+        <definition>typedef std::map&lt;IndexType, int&gt; StrataSizesType</definition>
+        <argsstring></argsstring>
+        <name>StrataSizesType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="251" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a61c0643c05e8f32cc23de83767db8626" prot="private" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int oobInvalid</definition>
+        <argsstring></argsstring>
+        <name>oobInvalid</name>
+        <initializer> -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a51859d611d33f21e30c2e707526ddcff" prot="private" static="no" mutable="yes">
+        <type>int</type>
+        <definition>int current_oob_count_</definition>
+        <argsstring></argsstring>
+        <name>current_oob_count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="258" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1aca29245a1715c414a029e9affbd70db7" prot="private" static="no" mutable="yes">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">IndexArrayType</ref></type>
+        <definition>IndexArrayType current_oob_sample_</definition>
+        <argsstring></argsstring>
+        <name>current_oob_sample_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a744fad884453f376331e0230637dfb2f" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">IndexArrayType</ref></type>
+        <definition>IndexArrayType current_sample_</definition>
+        <argsstring></argsstring>
+        <name>current_sample_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="261" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1ae4f7da5eb7563737fa0fbe4671d67277" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">IsUsedArrayType</ref></type>
+        <definition>IsUsedArrayType is_used_</definition>
+        <argsstring></argsstring>
+        <name>is_used_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a828896a0f6831444859dc5d9a0f43d95" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref></type>
+        <definition>SamplerOptions options_</definition>
+        <argsstring></argsstring>
+        <name>options_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="265" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a75d6c2b435da8ca185d273849a67f678" prot="private" static="no" mutable="no">
+        <type>Random const &amp;</type>
+        <definition>Random const&amp; random_</definition>
+        <argsstring></argsstring>
+        <name>random_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="264" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a2273bcbe02581e633c21f5223b44f58d" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sample_size_</definition>
+        <argsstring></argsstring>
+        <name>sample_size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="257" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a900f8aa5624894f99870b4987465c685" prot="private" static="no" mutable="no">
+        <type>StrataIndicesType</type>
+        <definition>StrataIndicesType strata_indices_</definition>
+        <argsstring></argsstring>
+        <name>strata_indices_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="259" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1a84d8a2793b8f0833354178ce33973ee2" prot="private" static="no" mutable="no">
+        <type>StrataSizesType</type>
+        <definition>StrataSizesType strata_sample_size_</definition>
+        <argsstring></argsstring>
+        <name>strata_sample_size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="260" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="260" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Sampler_1abf56cde79d3d4a62d3a47d9dfa0aef3d" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int total_count_</definition>
+        <argsstring></argsstring>
+        <name>total_count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="257" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a0d2c3108c270b7c7fae8c8ba4c06ea7e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initStrataCount</definition>
+        <argsstring>()</argsstring>
+        <name>initStrataCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="267" bodyend="287"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Sampler_1ababf8a48f4d5e3f27e69f603eed88ade" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">IsUsedArrayType</ref> const &amp;</type>
+        <definition>IsUsedArrayType const&amp; is_used</definition>
+        <argsstring>() const </argsstring>
+        <name>is_used</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="458" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="457" bodyend="460"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a75e82a037131304c9f3844a08b9fa616" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Sampler_1a346dae786f30c2688fedc39918397460" kindref="member">IndexArrayViewType</ref></type>
+        <definition>IndexArrayViewType oobIndices</definition>
+        <argsstring>() const </argsstring>
+        <name>oobIndices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return an array view containing the out-of-bag indices. (i.e. the indices that are not in the current sample) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="442" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="441" bodyend="456"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a6046319769ed4b411a27f8cfa0d76907" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" kindref="member">IndexType</ref></type>
+        <definition>IndexType operator[]</definition>
+        <argsstring>(int k) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the k-th index in the current sample. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="377" bodyend="380"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga50a2ce599e896bfb535e70a42003ed23" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void sample</definition>
+        <argsstring>()</argsstring>
+        <name>sample</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new sample. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="384" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="465" bodyend="503"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a4dd6492d26201473904728117859a544" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Sampler_1a346dae786f30c2688fedc39918397460" kindref="member">IndexArrayViewType</ref></type>
+        <definition>IndexArrayViewType sampledIndices</definition>
+        <argsstring>() const </argsstring>
+        <name>sampledIndices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return an array view containing the indices in the current sample. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="434" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="433" bodyend="436"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a109b4cad4503c1b156e94b0d7d69b665" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Sampler</definition>
+        <argsstring>(UInt32 totalCount, SamplerOptions const &amp;opt=SamplerOptions(), Random const &amp;rnd=Random(RandomSeed))</argsstring>
+        <name>Sampler</name>
+        <param>
+          <type><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member">UInt32</ref></type>
+          <declname>totalCount</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> const &amp;</type>
+          <declname>opt</declname>
+          <defval><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref>()</defval>
+        </param>
+        <param>
+          <type>Random const &amp;</type>
+          <declname>rnd</declname>
+          <defval>Random(RandomSeed)</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a sampler for <emphasis>totalCount</emphasis> data objects.</para><para>In each invocation of <computeroutput><ref refid="group__MachineLearning_1ga50a2ce599e896bfb535e70a42003ed23" kindref="member">sample()</ref></computeroutput> below, it will sample indices according to the options passed. If no options are given, <computeroutput>totalCount</computeroutput> indices will be drawn with replacement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="309" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="297" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a29da52d45d28422d892fad3663e3c564" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>Sampler</definition>
+        <argsstring>(Iterator strataBegin, Iterator strataEnd, SamplerOptions const &amp;opt=SamplerOptions(), Random const &amp;rnd=Random(RandomSeed))</argsstring>
+        <name>Sampler</name>
+        <param>
+          <type>Iterator</type>
+          <declname>strataBegin</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>strataEnd</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref> const &amp;</type>
+          <declname>opt</declname>
+          <defval><ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref>()</defval>
+        </param>
+        <param>
+          <type>Random const &amp;</type>
+          <declname>rnd</declname>
+          <defval>Random(RandomSeed)</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a sampler for stratified sampling.</para><para><computeroutput>strataBegin</computeroutput> and <computeroutput>strataEnd</computeroutput> must refer to a sequence which specifies for each sample the stratum it belongs to. The total number of data objects will be set to <computeroutput>strataEnd - strataBegin</computeroutput>. Equally many samples (subject to rounding) will be drawn from each stratum, unless the option object explicitly requests unstratified sampling, in which case the strata are ignored. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="336" bodyend="373"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a5662e24a3f111a63d910484acdb6453e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int sampleSize</definition>
+        <argsstring>() const </argsstring>
+        <name>sampleSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of data elements that have been sampled. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="396" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="395" bodyend="398"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Same as <ref refid="classvigra_1_1Sampler_1a5662e24a3f111a63d910484acdb6453e" kindref="member">sampleSize()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="403" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="402" bodyend="405"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a0070a84e45c87f74fa537ca7b72e349e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int strataCount</definition>
+        <argsstring>() const </argsstring>
+        <name>strataCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of strata to be used. Will be 1 if no strata are given. Will be ignored when <ref refid="classvigra_1_1Sampler_1a9e6dd687db89ea4a5124d5776adae556" kindref="member">stratifiedSampling()</ref> is false. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="412" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="411" bodyend="414"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a9e6dd687db89ea4a5124d5776adae556" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool stratifiedSampling</definition>
+        <argsstring>() const </argsstring>
+        <name>stratifiedSampling</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Whether to use stratified sampling. (If this is false, strata will be ignored even if present.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="420" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="419" bodyend="422"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1a111bc7cfb9998a225c4338e207fe25de" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int totalCount</definition>
+        <argsstring>() const </argsstring>
+        <name>totalCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The total number of data elements. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="389" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="388" bodyend="391"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Sampler_1aa02ea40ec99e200d9ce3489f735f0d3b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool withReplacement</definition>
+        <argsstring>() const </argsstring>
+        <name>withReplacement</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Whether sampling should be performed with replacement. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="426" bodyend="429"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Create random samples from a sequence of indices. </para>    </briefdescription>
+    <detaileddescription>
+<para>Selecting data items at random is a basic task of machine learning, for example in boostrapping, <ref refid="classvigra_1_1RandomForest" kindref="compound">RandomForest</ref> training, and cross validation. This class implements various ways to select random samples via their indices. Indices are assumed to be consecutive in the range <computeroutput>0 &lt;= index &lt; total_sample_count</computeroutput>.</para><para>The class always contains a current sample which can be accessed by the index operator or by the function <ref refid="classvigra_1_1Sampler_1a4dd6492d26201473904728117859a544" kindref="member">sampledIndices()</ref>. The indices that are not in the current sample (out-of-bag indices) can be accessed via the function <ref refid="classvigra_1_1Sampler_1a75e82a037131304c9f3844a08b9fa616" kindref="member">oobIndices()</ref>.</para><para>The sampling method (with/without replacement, stratified or not) and the number of samples to draw are determined by the option object <ref refid="classvigra_1_1SamplerOptions" kindref="compound">SamplerOptions</ref>.</para><para><bold>Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="sampling_8hxx_source" kindref="compound">vigra/sampling.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>Create a <ref refid="classvigra_1_1Sampler" kindref="compound">Sampler</ref> with default options, i.e. sample as many indices as there are data elements, with replacement. On average, the sample will contain <computeroutput>0.63*totalCount</computeroutput> distinct indices.</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>totalCount<sp/>=<sp/>10000;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>total<sp/>number<sp/>of<sp/>data<sp/>elements</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numberOfSamples<sp/>=<sp/>20;<sp/></highlight><highlight class="comment">//<sp/>repeat<sp/>experiment<sp/>20<sp/>times<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Sampler&lt;&gt;<sp/>sampler(totalCount);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;numberOfSamples;<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>process<sp/>current<sp/>sample</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;sampler.sampleSize();<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>currentIndex<sp/>=<sp/>sampler[i];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>processData(data[currentIndex]);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>next<sp/>sample</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>sampler.sample();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>Create a <ref refid="classvigra_1_1Sampler" kindref="compound">Sampler</ref> for stratified sampling, without replacement.</para><para><programlisting><codeline><highlight class="comment">//<sp/>prepare<sp/>the<sp/>strata<sp/>(i.e.<sp/>specify<sp/>which<sp/>stratum<sp/>each<sp/>element<sp/>belongs<sp/>to)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stratumSize1<sp/>=<sp/>2000,<sp/>stratumSize2<sp/>=<sp/>8000,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>totalCount<sp/>=<sp/>stratumSize1<sp/>+<sp/>stratumSize2;</highlight></codeline>
+<codeline><highlight class="normal">ArrayVerctor&lt;int&gt;<sp/>strata(totalCount);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;stratumSize1;<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>strata[i]<sp/>=<sp/>1;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=stratumSize1;<sp/>i&lt;stratumSize2;<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>strata[i]<sp/>=<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sampleSize<sp/>=<sp/>200;<sp/></highlight><highlight class="comment">//<sp/>i.e.<sp/>sample<sp/>100<sp/>elements<sp/>from<sp/>each<sp/>of<sp/>the<sp/>two<sp/>strata</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>numberOfSamples<sp/>=<sp/>20;<sp/></highlight><highlight class="comment">//<sp/>repeat<sp/>experiment<sp/>20<sp/>times<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Sampler&lt;&gt;<sp/>stratifiedSampler(strata.begin(),<sp/>strata.end(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SamplerOptions().withoutReplacement().stratified().sampleSize(sampleSize));</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>first<sp/>sample</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">sampler.sample();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;numberOfSamples;<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>process<sp/>current<sp/>sample</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;sampler.sampleSize();<sp/>++i)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>currentIndex<sp/>=<sp/>sampler[i];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>processData(data[currentIndex]);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>next<sp/>sample</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>sampler.sample();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/sampling.hxx" bodystart="233" bodyend="461"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Sampler_1a51859d611d33f21e30c2e707526ddcff" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>current_oob_count_</name></member>
+      <member refid="classvigra_1_1Sampler_1aca29245a1715c414a029e9affbd70db7" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>current_oob_sample_</name></member>
+      <member refid="classvigra_1_1Sampler_1a744fad884453f376331e0230637dfb2f" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>current_sample_</name></member>
+      <member refid="classvigra_1_1Sampler_1a7c961e20cade06a5cd094621b35f8e92" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>IndexArrayType</name></member>
+      <member refid="classvigra_1_1Sampler_1a346dae786f30c2688fedc39918397460" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>IndexArrayViewType</name></member>
+      <member refid="classvigra_1_1Sampler_1a40ba4794cdd5dd316be26e9ccaa2703c" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>IndexType</name></member>
+      <member refid="classvigra_1_1Sampler_1a0d2c3108c270b7c7fae8c8ba4c06ea7e" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>initStrataCount</name></member>
+      <member refid="classvigra_1_1Sampler_1ababf8a48f4d5e3f27e69f603eed88ade" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>is_used</name></member>
+      <member refid="classvigra_1_1Sampler_1ae4f7da5eb7563737fa0fbe4671d67277" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>is_used_</name></member>
+      <member refid="classvigra_1_1Sampler_1abab4c68ea4ab925898eaf289055f6be6" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>IsUsedArrayType</name></member>
+      <member refid="classvigra_1_1Sampler_1a02f4f5307287c38a95a5ff9df73d8421" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>IsUsedArrayViewType</name></member>
+      <member refid="classvigra_1_1Sampler_1a75e82a037131304c9f3844a08b9fa616" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>oobIndices</name></member>
+      <member refid="classvigra_1_1Sampler_1a61c0643c05e8f32cc23de83767db8626" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>oobInvalid</name></member>
+      <member refid="classvigra_1_1Sampler_1a6046319769ed4b411a27f8cfa0d76907" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Sampler_1a828896a0f6831444859dc5d9a0f43d95" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>options_</name></member>
+      <member refid="classvigra_1_1Sampler_1a75d6c2b435da8ca185d273849a67f678" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>random_</name></member>
+      <member refid="group__MachineLearning_1ga50a2ce599e896bfb535e70a42003ed23" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>sample</name></member>
+      <member refid="classvigra_1_1Sampler_1a2273bcbe02581e633c21f5223b44f58d" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>sample_size_</name></member>
+      <member refid="classvigra_1_1Sampler_1a4dd6492d26201473904728117859a544" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>sampledIndices</name></member>
+      <member refid="classvigra_1_1Sampler_1a109b4cad4503c1b156e94b0d7d69b665" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>Sampler</name></member>
+      <member refid="classvigra_1_1Sampler_1a29da52d45d28422d892fad3663e3c564" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>Sampler</name></member>
+      <member refid="classvigra_1_1Sampler_1a5662e24a3f111a63d910484acdb6453e" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>sampleSize</name></member>
+      <member refid="classvigra_1_1Sampler_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>size</name></member>
+      <member refid="classvigra_1_1Sampler_1a900f8aa5624894f99870b4987465c685" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>strata_indices_</name></member>
+      <member refid="classvigra_1_1Sampler_1a84d8a2793b8f0833354178ce33973ee2" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>strata_sample_size_</name></member>
+      <member refid="classvigra_1_1Sampler_1a0070a84e45c87f74fa537ca7b72e349e" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>strataCount</name></member>
+      <member refid="classvigra_1_1Sampler_1a045188267149d03a3b0151e5c87d0222" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>StrataIndicesType</name></member>
+      <member refid="classvigra_1_1Sampler_1ada237276368e32f8a2b61c5d662379b4" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>StrataSizesType</name></member>
+      <member refid="classvigra_1_1Sampler_1a9e6dd687db89ea4a5124d5776adae556" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>stratifiedSampling</name></member>
+      <member refid="classvigra_1_1Sampler_1abf56cde79d3d4a62d3a47d9dfa0aef3d" prot="private" virt="non-virtual"><scope>vigra::Sampler</scope><name>total_count_</name></member>
+      <member refid="classvigra_1_1Sampler_1a111bc7cfb9998a225c4338e207fe25de" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>totalCount</name></member>
+      <member refid="classvigra_1_1Sampler_1aa02ea40ec99e200d9ce3489f735f0d3b" prot="public" virt="non-virtual"><scope>vigra::Sampler</scope><name>withReplacement</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

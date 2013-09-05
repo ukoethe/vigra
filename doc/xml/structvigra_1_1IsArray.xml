@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IsArray" kind="struct" prot="public">
+    <compoundname>vigra::IsArray</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1IsArray_1a16af7b253440dadd46a80a4b9fddba4d" prot="public" static="no">
+        <name>@14</name>
+        <enumvalue id="structvigra_1_1IsArray_1a16af7b253440dadd46a80a4b9fddba4da730cb5310614d92e239dd7c7c1e9a60d" prot="public">
+          <name>resultSize</name>
+          <initializer> sizeof(*test((T*)0))</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="533" bodyend="533"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsArray_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char falseResult[1]</definition>
+        <argsstring>[1]</argsstring>
+        <name>falseResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="526" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsArray_1abda572a18508e06ee0e9af4f446f1786" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char trueResult[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>trueResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="527" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="527" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IsArray_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" static="no">
+        <type>IfBool&lt; value, VigraTrueType, VigraFalseType &gt;::type</type>
+        <definition>typedef IfBool&lt;value, VigraTrueType, VigraFalseType&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="538" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1IsArray_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> (resultSize == 2)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="535" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1IsArray_1a27486c507eae8eb686387bf9f785a96a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>falseResult *</type>
+        <definition>static falseResult* test</definition>
+        <argsstring>(...)</argsstring>
+        <name>test</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="529"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1IsArray_1aea9b2a9c6e4882ef04d00231fd8daee4" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>n</declname>
+            <defname>n</defname>
+          </param>
+        </templateparamlist>
+        <type>trueResult *</type>
+        <definition>static trueResult* test</definition>
+        <argsstring>(U(*)[n])</argsstring>
+        <name>test</name>
+        <param>
+          <type>U(*)</type>
+          <array>[n]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="531"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="525" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="524" bodyend="539"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1IsArray_1a08d1e010e5f2ca8b66f4fecd84ffd49e" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>falseResult</name></member>
+      <member refid="structvigra_1_1IsArray_1a16af7b253440dadd46a80a4b9fddba4da730cb5310614d92e239dd7c7c1e9a60d" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>resultSize</name></member>
+      <member refid="structvigra_1_1IsArray_1a27486c507eae8eb686387bf9f785a96a" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>test</name></member>
+      <member refid="structvigra_1_1IsArray_1aea9b2a9c6e4882ef04d00231fd8daee4" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>test</name></member>
+      <member refid="structvigra_1_1IsArray_1abda572a18508e06ee0e9af4f446f1786" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>trueResult</name></member>
+      <member refid="structvigra_1_1IsArray_1a8be5487f18bb96e17ebbb7ec831bab14" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>type</name></member>
+      <member refid="structvigra_1_1IsArray_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::IsArray</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

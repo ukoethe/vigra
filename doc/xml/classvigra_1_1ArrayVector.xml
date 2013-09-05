@@ -1,0 +1,997 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ArrayVector" kind="class" prot="public">
+    <compoundname>vigra::ArrayVector</compoundname>
+    <basecompoundref refid="classvigra_1_1ArrayVectorView" prot="public" virt="non-virtual">vigra::ArrayVectorView&lt; T &gt;</basecompoundref>
+    <includes refid="array__vector_8hxx" local="no">vigra/array_vector.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Alloc</declname>
+        <defname>Alloc</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="enum" id="classvigra_1_1ArrayVector_1a06fc87d81c62e9abb8790b6e5713c55b" prot="private" static="no">
+        <name>@0</name>
+        <enumvalue id="classvigra_1_1ArrayVector_1a06fc87d81c62e9abb8790b6e5713c55ba4c66541a188ffdcfc9adcb6f3d6dd90d" prot="private">
+          <name>minimumCapacity</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ArrayVector_1a06fc87d81c62e9abb8790b6e5713c55baad3e57503fe62bb2002bf9fadf9ab8f2" prot="private">
+          <name>resizeFactor</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="486" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="486" bodyend="486"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1ab73943c6a0f7a22ad0237107a9c23542" prot="private" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T, Alloc &gt;</type>
+        <definition>typedef ArrayVector&lt;T, Alloc&gt; this_type</definition>
+        <argsstring></argsstring>
+        <name>this_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="485" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1aadf38d094276c266c0e343ba1db3b9ea" prot="public" static="no">
+        <type>Alloc</type>
+        <definition>typedef Alloc allocator_type</definition>
+        <argsstring></argsstring>
+        <name>allocator_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="501" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="501" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1aa483940878145b2ff9e92ccdb9cf3fa8" prot="public" static="no">
+        <type>view_type::const_iterator</type>
+        <definition>typedef view_type::const_iterator const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="496" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="496" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a6ace1aa97c0128931a921479d2df41c2" prot="public" static="no">
+        <type>view_type::const_pointer</type>
+        <definition>typedef view_type::const_pointer const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="494" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="494" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a163353faff9e2af647551a93d2db5463" prot="public" static="no">
+        <type>view_type::const_reference</type>
+        <definition>typedef view_type::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="492" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1acf61c22c86d9d046e512dabb52197489" prot="public" static="no">
+        <type>view_type::const_reverse_iterator</type>
+        <definition>typedef view_type::const_reverse_iterator const_reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="500" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a7a3c9714bbd0b64760c377a88fd36c63" prot="public" static="no">
+        <type>view_type::difference_type</type>
+        <definition>typedef view_type::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a6a8ffa1c2eb8d394ca502402e4c60792" prot="public" static="no">
+        <type>view_type::iterator</type>
+        <definition>typedef view_type::iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="495" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a7c3b5f1ed08b27119127cb725966a945" prot="public" static="no">
+        <type>view_type::pointer</type>
+        <definition>typedef view_type::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="493" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="493" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a7ea9d2af939d562b74071b884d5e59b3" prot="public" static="no">
+        <type>view_type::reference</type>
+        <definition>typedef view_type::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="491" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="491" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a8e9f7f9d152f97f1a6b42240825f4782" prot="public" static="no">
+        <type>view_type::reverse_iterator</type>
+        <definition>typedef view_type::reverse_iterator reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1a49de2bda8c5700d3d386b176401e4a66" prot="public" static="no">
+        <type>view_type::size_type</type>
+        <definition>typedef view_type::size_type size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="497" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1adee9ba124f2423126f678c913667a229" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">view_type::value_type</ref></type>
+        <definition>typedef view_type::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="490" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ArrayVector_1ac34e489c300060ca46049fa4ee695f98" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; T &gt;</type>
+        <definition>typedef ArrayVectorView&lt;T&gt; view_type</definition>
+        <argsstring></argsstring>
+        <name>view_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="489" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="489" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ArrayVector_1a2ea4fe93a8c682a9a861328536cddf15" prot="private" static="no" mutable="no">
+        <type>Alloc</type>
+        <definition>Alloc alloc_</definition>
+        <argsstring></argsstring>
+        <name>alloc_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="638" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="638" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ArrayVector_1a6f4cfc1c9a0bcced192bfbd0b9932dca" prot="private" static="no" mutable="no">
+        <type>size_type</type>
+        <definition>size_type capacity_</definition>
+        <argsstring></argsstring>
+        <name>capacity_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="637" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="637" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1aac11e6d4c7f443b124a17e4a9966d2d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>()</argsstring>
+        <name>ArrayVector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="508" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="504" bodyend="510"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a3e6071f65f5770132385aa6c0344cb27" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(Alloc const &amp;alloc)</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="512" bodyend="518"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a8a4f4c73da1c8ac2ad3d1b70f0ec6bab" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(size_type size, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type>size_type</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="520" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a10db457ab6dd7b8f80f5f446816182bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(size_type size, value_type const &amp;initial, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type>size_type</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>initial</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="530" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="527" bodyend="532"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ad3f79232384f0caae8b15fc96938ec05" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(this_type const &amp;rhs)</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">this_type</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="535" bodyend="540"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1af9de0e5d9f4679486d9d5953c58c6f70" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(ArrayVectorView&lt; U &gt; const &amp;rhs, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; U &gt; const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="543" bodyend="548"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1af30ce12fbc6a6dd62f4f990e555cde2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(InputIterator i, InputIterator end)</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type>InputIterator</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="551" bodyend="554"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ac429fc41efc013f996fb85dd9092704b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ArrayVector</definition>
+        <argsstring>(InputIterator i, InputIterator end, Alloc const &amp;alloc)</argsstring>
+        <name>ArrayVector</name>
+        <param>
+          <type>InputIterator</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="557" bodyend="561"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ab009512ed674371bda87b4a4a3fc7305" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type capacity</definition>
+        <argsstring>() const </argsstring>
+        <name>capacity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="613" bodyend="616"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="600" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="671" bodyend="675"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ab94c0b3b7556f4ae69f0d7fb7c93a9e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::iterator erase</definition>
+        <argsstring>(iterator p)</argsstring>
+        <name>erase</name>
+        <param>
+          <type>iterator</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="596" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="789" bodyend="794"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ae7af82aac0aff350e80e3f9a6fa5ef4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::iterator erase</definition>
+        <argsstring>(iterator p, iterator q)</argsstring>
+        <name>erase</name>
+        <param>
+          <type>iterator</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>iterator</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="598" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="798" bodyend="805"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a4a898c1c2231a426fb732c66fdaf5a6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::iterator insert</definition>
+        <argsstring>(iterator p, value_type const &amp;v)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="589" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="679" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a7bee81387d7027d84db1b30e6af0d96f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::iterator insert</definition>
+        <argsstring>(iterator p, size_type n, value_type const &amp;v)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="699" bodyend="738"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a9a8db315f97185e48889dbd7c4c76882" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+        </templateparamlist>
+        <type>iterator</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::iterator insert</definition>
+        <argsstring>(iterator p, InputIterator i, InputIterator iend)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>iend</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="743" bodyend="785"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a57a988071033aca59e8130baa06385ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">this_type</ref> &amp;</type>
+        <definition>this_type&amp; operator=</definition>
+        <argsstring>(this_type const &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">this_type</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="564" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="563" bodyend="575"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a5848e91e7262b978ae2289cc54629330" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">this_type</ref> &amp;</type>
+        <definition>ArrayVector&lt; T, Alloc &gt; &amp; operator=</definition>
+        <argsstring>(ArrayVectorView&lt; U &gt; const &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <reimplements refid="classvigra_1_1ArrayVectorView_1a4b9aba5729d69218bcd106adf4fbb5fc">operator=</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; U &gt; const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy assignment. When the shapes of the two arrays match, the array contents (not the pointers) are copied. Otherwise, a <computeroutput>PreconditionViolation</computeroutput> exception is thrown. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="578" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="643" bodyend="653"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a058bda4957df6a97b1ea6c9fd783f672" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pop_back</definition>
+        <argsstring>()</argsstring>
+        <name>pop_back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="656" bodyend="660"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a76355332650af8c856f3a8f96e3f5992" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void push_back</definition>
+        <argsstring>(value_type const &amp;t)</argsstring>
+        <name>push_back</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="663" bodyend="668"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a5a68fd5dd70e7dbafa06f866f603f164" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reserve</definition>
+        <argsstring>(size_type new_capacity)</argsstring>
+        <name>reserve</name>
+        <param>
+          <type>size_type</type>
+          <declname>new_capacity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="602" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="809" bodyend="819"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a0754e2def4850bd8bf73f69b6f476973" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reserve</definition>
+        <argsstring>()</argsstring>
+        <name>reserve</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="604" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="823" bodyend="829"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ab2af3943feec5ad9b30b018a482a278b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resize</definition>
+        <argsstring>(size_type new_size, value_type const &amp;initial)</argsstring>
+        <name>resize</name>
+        <param>
+          <type>size_type</type>
+          <declname>new_size</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>initial</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="606" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="833" bodyend="841"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a4e3670a285a3642eaa07f66766cffa72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resize</definition>
+        <argsstring>(size_type new_size)</argsstring>
+        <name>resize</name>
+        <param>
+          <type>size_type</type>
+          <declname>new_size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="609" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="608" bodyend="611"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1accf0d7b5496638eebcd777de62feb9a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void swap</definition>
+        <argsstring>(this_type &amp;rhs)</argsstring>
+        <name>swap</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">this_type</ref> &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="868" bodyend="873"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ad0f5f598df2f552426fdfbf1ae4fe3f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~ArrayVector</definition>
+        <argsstring>()</argsstring>
+        <name>~ArrayVector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="581" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="580" bodyend="583"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1ada95223ff29fec00b0c47f6df4a79eec" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void deallocate</definition>
+        <argsstring>(pointer data, size_type size)</argsstring>
+        <name>deallocate</name>
+        <param>
+          <type>pointer</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="622" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="877" bodyend="884"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1af411335e36d82664645e5acb408c4e53" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initImpl</definition>
+        <argsstring>(size_type size, value_type const &amp;initial, VigraTrueType)</argsstring>
+        <name>initImpl</name>
+        <param>
+          <type>size_type</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref> const &amp;</type>
+          <declname>initial</declname>
+        </param>
+        <param>
+          <type>VigraTrueType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="626" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="845" bodyend="852"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1acedf2366894076c24fd426f04acbad9d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void initImpl</definition>
+        <argsstring>(Iter i, Iter end, VigraFalseType)</argsstring>
+        <name>initImpl</name>
+        <param>
+          <type>Iter</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>VigraFalseType</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="629" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="857" bodyend="864"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1aa339c88b7442d587cca2430eb5dc7944" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void initImpl</definition>
+        <argsstring>(Iter i, Iter end, Error_NumericTraits_not_specialized_for_this_case)</argsstring>
+        <name>initImpl</name>
+        <param>
+          <type>Iter</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Error_NumericTraits_not_specialized_for_this_case</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="633" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="632" bodyend="635"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ArrayVector_1a9b0725ec4cf8043eade47faf1ae77aac" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>pointer</type>
+        <definition>ArrayVector&lt; T, Alloc &gt;::pointer reserve_raw</definition>
+        <argsstring>(size_type capacity)</argsstring>
+        <name>reserve_raw</name>
+        <param>
+          <type>size_type</type>
+          <declname>capacity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="624" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="888" bodyend="896"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Replacement for <computeroutput>std::vector</computeroutput>.</para><para>This template implements the same functionality as <computeroutput>a href=&quot;http://www.sgi.com/tech/stl/Vector.html&quot;&gt;std::vector</computeroutput> (see there for detailed documentation). However, it gives two useful guarantees, that <computeroutput>std::vector</computeroutput> fails to provide:</para><para><itemizedlist>
+<listitem>
+<para>The memory is always allocated as one contiguous piece. </para></listitem>
+<listitem>
+<para>The iterator is always a <computeroutput>T *</computeroutput>  </para></listitem>
+</itemizedlist>
+</para><para>This means that memory managed by <computeroutput><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref></computeroutput> can be passed to algorithms that expect raw memory. This is especially important when legacy or C code has to be called, but it is also useful for certain optimizations.</para><para>Moreover, <computeroutput><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref></computeroutput> is derived from <computeroutput><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref></computeroutput> so that one can create views of the array (in particular, subarrays). This implies another important difference to <computeroutput>std::vector</computeroutput>: the indexing operator (<computeroutput><ref refid="classvigra_1_1ArrayVectorView_1aa2454492558f0f1b146ed554017ca033" kindref="member">ArrayVector::operator[]</ref></computeroutput>) takes <computeroutput>signed</computeroutput> indices. In this way, an <computeroutput><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref></computeroutput> can be used with negative indices:</para><para><programlisting><codeline><highlight class="normal">ArrayVector&lt;int&gt;<sp/><ref refid="classvigra_1_1ArrayVectorView_1a794bbc6c3888bcfe88fb961f527c3563" kindref="member">data</ref>(100);</highlight></codeline>
+<codeline><highlight class="normal">ArrayVectorView&lt;int&gt;<sp/>view<sp/>=<sp/><ref refid="classvigra_1_1ArrayVectorView_1a794bbc6c3888bcfe88fb961f527c3563" kindref="member">data</ref>.subarray(50,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">view[-50]<sp/>=<sp/>1;<sp/></highlight><highlight class="comment">//<sp/>valid<sp/>access</highlight></codeline>
+</programlisting></para><para>Refer to the documentation of <computeroutput>std::vector</computeroutput> for a detailed description of <computeroutput><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref></computeroutput> functionality.</para><para><bold>#include</bold> &lt;<ref refid="array__vector_8hxx_source" kindref="compound">vigra/array_vector.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="30">
+        <label>ArrayVector&lt; T, Alloc &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="31" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>ArrayVectorView&lt; T &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="32">
+        <label>ArrayVector&lt; T, Alloc &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="33" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="33">
+        <label>ArrayVectorView&lt; T &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" line="484" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/array_vector.hxx" bodystart="482" bodyend="639"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ArrayVector_1a2ea4fe93a8c682a9a861328536cddf15" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>alloc_</name></member>
+      <member refid="classvigra_1_1ArrayVector_1aadf38d094276c266c0e343ba1db3b9ea" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>allocator_type</name></member>
+      <member refid="classvigra_1_1ArrayVector_1aac11e6d4c7f443b124a17e4a9966d2d4" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a3e6071f65f5770132385aa6c0344cb27" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a8a4f4c73da1c8ac2ad3d1b70f0ec6bab" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a10db457ab6dd7b8f80f5f446816182bf" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ad3f79232384f0caae8b15fc96938ec05" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1af9de0e5d9f4679486d9d5953c58c6f70" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1af30ce12fbc6a6dd62f4f990e555cde2a" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ac429fc41efc013f996fb85dd9092704b" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVector</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a6f4d485a0df415fe662634557091ada2" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVectorView</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ae63a72e75eb5530708b213991e5f52ad" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVectorView</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1aeda1e3dc582270e2f3160b10accd60a6" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>ArrayVectorView</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>back</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>back</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ab009512ed674371bda87b4a4a3fc7305" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>capacity</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a6f4cfc1c9a0bcced192bfbd0b9932dca" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>capacity_</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>clear</name></member>
+      <member refid="classvigra_1_1ArrayVector_1aa483940878145b2ff9e92ccdb9cf3fa8" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a6ace1aa97c0128931a921479d2df41c2" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a163353faff9e2af647551a93d2db5463" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1ArrayVector_1acf61c22c86d9d046e512dabb52197489" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>const_reverse_iterator</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a22e41812caa34ddcf261a6854f4c7276" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>copy</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a17ea55c9d3a1bc768139f0d80ede9e7a" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>copy</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a782182bc322e14a29662d968c689729b" prot="protected" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>copyImpl</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a4a850548d9a7b2f280a40cc0c14667c1" prot="protected" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>copyImpl</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>data</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a36e4d11a00a3572c87bf7e913e9b5ca1" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>data</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a11803c9b3eb51b0a6ee20822c2b1582f" prot="protected" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>data_</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ada95223ff29fec00b0c47f6df4a79eec" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>deallocate</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a7a3c9714bbd0b64760c377a88fd36c63" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ac6e61de369e994009e36f344f99c15ad" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>empty</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>end</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>end</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ab94c0b3b7556f4ae69f0d7fb7c93a9e2" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>erase</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ae7af82aac0aff350e80e3f9a6fa5ef4f" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>erase</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a6a48363b4355f6f5b441637774f79a59" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>front</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a1b5b57596df7e42e35dcd646906cb438" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>front</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a7c4d444ab995dc9aebc150246770bbf5" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>init</name></member>
+      <member refid="classvigra_1_1ArrayVector_1af411335e36d82664645e5acb408c4e53" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>initImpl</name></member>
+      <member refid="classvigra_1_1ArrayVector_1acedf2366894076c24fd426f04acbad9d" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>initImpl</name></member>
+      <member refid="classvigra_1_1ArrayVector_1aa339c88b7442d587cca2430eb5dc7944" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>initImpl</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a4a898c1c2231a426fb732c66fdaf5a6a" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a7bee81387d7027d84db1b30e6af0d96f" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a9a8db315f97185e48889dbd7c4c76882" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1acc16a9ac0801c380fcfe1841566efb99" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>isInside</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a6a8ffa1c2eb8d394ca502402e4c60792" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a06fc87d81c62e9abb8790b6e5713c55ba4c66541a188ffdcfc9adcb6f3d6dd90d" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>minimumCapacity</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a069be9878098beb2362643efac6a2505" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a57a988071033aca59e8130baa06385ee" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a5848e91e7262b978ae2289cc54629330" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a13c9ed22aedc29c231cce99cafd28589" prot="public" virt="non-virtual" ambiguityscope="vigra::ArrayVectorView::"><scope>vigra::ArrayVector</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ab50acd33ce6372ba68a9ec2d0a46dc2f" prot="public" virt="non-virtual" ambiguityscope="vigra::ArrayVectorView::"><scope>vigra::ArrayVector</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a6184c70970833b70ee7deaf46563f100" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1aa2454492558f0f1b146ed554017ca033" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a3b782fefbfb41b6f90a060a292839975" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a7c3b5f1ed08b27119127cb725966a945" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a058bda4957df6a97b1ea6c9fd783f672" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>pop_back</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a76355332650af8c856f3a8f96e3f5992" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>push_back</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a04886aa70c34d66738e78bf70c675e66" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a7ea9d2af939d562b74071b884d5e59b3" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a68c599ddcbfddc65170de524ac165e44" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a5a68fd5dd70e7dbafa06f866f603f164" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>reserve</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a0754e2def4850bd8bf73f69b6f476973" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>reserve</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a9b0725ec4cf8043eade47faf1ae77aac" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>reserve_raw</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ab2af3943feec5ad9b30b018a482a278b" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a4e3670a285a3642eaa07f66766cffa72" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a06fc87d81c62e9abb8790b6e5713c55baad3e57503fe62bb2002bf9fadf9ab8f2" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>resizeFactor</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a8e9f7f9d152f97f1a6b42240825f4782" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>reverse_iterator</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>size</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a4f3592f75c4916a9a92255c165bd65d2" prot="protected" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>size_</name></member>
+      <member refid="classvigra_1_1ArrayVector_1a49de2bda8c5700d3d386b176401e4a66" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1aed17bfb11fdbac09a00c0c217047e30d" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>subarray</name></member>
+      <member refid="classvigra_1_1ArrayVector_1accf0d7b5496638eebcd777de62feb9a4" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>swap</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1ad5702bd49b194091b442f81355419b46" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>swapData</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a6feb3733405e5900f924abbef3533763" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>swapData</name></member>
+      <member refid="classvigra_1_1ArrayVectorView_1a46e758893150e6a24deeb1b63a59339b" prot="protected" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>swapDataImpl</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ab73943c6a0f7a22ad0237107a9c23542" prot="private" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>this_type</name></member>
+      <member refid="classvigra_1_1ArrayVector_1adee9ba124f2423126f678c913667a229" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ac34e489c300060ca46049fa4ee695f98" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>view_type</name></member>
+      <member refid="classvigra_1_1ArrayVector_1ad0f5f598df2f552426fdfbf1ae4fe3f4" prot="public" virt="non-virtual"><scope>vigra::ArrayVector</scope><name>~ArrayVector</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

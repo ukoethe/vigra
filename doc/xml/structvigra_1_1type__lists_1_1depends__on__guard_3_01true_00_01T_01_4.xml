@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1depends__on__guard_3_01true_00_01T_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::depends_on_guard&lt; true, T &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1depends__on__guard_3_01true_00_01T_01_4_1aa698b6bf84606065137caf60a2ab59a2" prot="public" static="no">
+        <type>list_guard&lt; typename T::depends_on &gt;::type</type>
+        <definition>typedef list_guard&lt;typename T::depends_on&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="585" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="584" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="583" bodyend="586"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1depends__on__guard_3_01true_00_01T_01_4_1aa698b6bf84606065137caf60a2ab59a2" prot="public" virt="non-virtual"><scope>vigra::type_lists::depends_on_guard&lt; true, T &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,762 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1linalg_1_1TemporaryMatrix" kind="class" prot="public">
+    <compoundname>vigra::linalg::TemporaryMatrix</compoundname>
+    <basecompoundref refid="classvigra_1_1linalg_1_1Matrix" prot="public" virt="non-virtual">vigra::linalg::Matrix&lt; T, ALLOC &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>ALLOC</declname>
+        <defname>ALLOC</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a0b9173c1def80842c39e2488cfb472f3" prot="private" static="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T, ALLOC &gt;</type>
+        <definition>typedef Matrix&lt;T, ALLOC&gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="541" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a30d821dffdb4334cd6aa5b1209a039e7" prot="public" static="no">
+        <type>ALLOC</type>
+        <definition>typedef ALLOC allocator_type</definition>
+        <argsstring></argsstring>
+        <name>allocator_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="553" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1abcf1535411d96307d41df2c089aadc26" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a6ace1aa97c0128931a921479d2df41c2" kindref="member">BaseType::const_pointer</ref></type>
+        <definition>typedef BaseType::const_pointer const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="548" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="548" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a163353faff9e2af647551a93d2db5463" kindref="member">BaseType::const_reference</ref></type>
+        <definition>typedef BaseType::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="550" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1aa67da613c17b4ded61f92de19f1961cc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a7a3c9714bbd0b64760c377a88fd36c63" kindref="member">BaseType::difference_type</ref></type>
+        <definition>typedef BaseType::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="551" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a322e5dc02ea3dc571514e6e7f07bd348" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a6ac789163dd290addb14a4330998df81" kindref="member">BaseType::difference_type_1</ref></type>
+        <definition>typedef BaseType::difference_type_1 difference_type_1</definition>
+        <argsstring></argsstring>
+        <name>difference_type_1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="552" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a6cc8d128df500ee05ee8eecaaff1cf16" prot="public" static="no">
+        <type><ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix</ref>&lt; T, ALLOC &gt;</type>
+        <definition>typedef Matrix&lt;T, ALLOC&gt; matrix_type</definition>
+        <argsstring></argsstring>
+        <name>matrix_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="543" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a7c3b5f1ed08b27119127cb725966a945" kindref="member">BaseType::pointer</ref></type>
+        <definition>typedef BaseType::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="547" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a6553cf5e426582b760da93d2f1b7636d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1a7ea9d2af939d562b74071b884d5e59b3" kindref="member">BaseType::reference</ref></type>
+        <definition>typedef BaseType::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="549" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="549" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a88db486033a8a86f3a4dc0d5436fff52" prot="public" static="no">
+        <type>TemporaryMatrix&lt; T, ALLOC &gt;</type>
+        <definition>typedef TemporaryMatrix&lt;T, ALLOC&gt; temp_type</definition>
+        <argsstring></argsstring>
+        <name>temp_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a15eabd051d5bcdcce478c0a509946fca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray_1adee9ba124f2423126f678c913667a229" kindref="member">BaseType::value_type</ref></type>
+        <definition>typedef BaseType::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="546" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a2ccbe038aca0b8ec7d2740afde658ac4" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, <ref refid="structvigra_1_1UnstridedArrayTag" kindref="compound">UnstridedArrayTag</ref> &gt;</type>
+        <definition>typedef MultiArrayView&lt;2, T, UnstridedArrayTag&gt; view_type</definition>
+        <argsstring></argsstring>
+        <name>view_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="545" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1af5750c08bff71a702af1be9c958edbc9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; init</definition>
+        <argsstring>(const U &amp;init)</argsstring>
+        <name>init</name>
+        <param>
+          <type>const U &amp;</type>
+          <declname>init</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="584" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="583" bodyend="587"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1ab21079f4fd22d16b5eaddfd202bf4d8d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator*=</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;other)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="605" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="604" bodyend="608"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a529d6056a5b0cc0bee865ac77449dd70" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator*=</definition>
+        <argsstring>(T other)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>T</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="630" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="629" bodyend="633"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a598e0fbcc032101333126d0978bf119f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator+=</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;other)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="590" bodyend="594"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a760fa719a40dee563dc71dce3f56091b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator+=</definition>
+        <argsstring>(T other)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>T</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="617" bodyend="621"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1acdc8d880c5be17fdbf3818e9a623ae6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator-=</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;other)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="598" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="597" bodyend="601"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a2f94e807ef5ad8c113669bc93786bd0c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator-=</definition>
+        <argsstring>(T other)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>T</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="624" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="623" bodyend="627"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1aeb419d8b7de6792fcd6639f161f92e8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator/=</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;other)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="612" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="611" bodyend="615"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1ad34bd39ed3fc67faf70e1b5ab5b3e075" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator/=</definition>
+        <argsstring>(T other)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>T</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="636" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="635" bodyend="639"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a178ad8253e56384a0059bf4eec75a388" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(difference_type const &amp;shape)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>difference_type const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="557" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="555" bodyend="557"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1afd31602cc3ca79a2052d36bcf8d13bb1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(difference_type const &amp;shape, const_reference init)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>difference_type const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>const_reference</type>
+          <declname>init</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="561" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="559" bodyend="561"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a8fc76914490314c3a374741ff6f2817b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(difference_type_1 rows, difference_type_1 columns)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>difference_type_1</type>
+          <declname>rows</declname>
+        </param>
+        <param>
+          <type>difference_type_1</type>
+          <declname>columns</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="563" bodyend="565"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a9f4db1f070e07d98bb45b662819d5cde" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(difference_type_1 rows, difference_type_1 columns, const_reference init)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>difference_type_1</type>
+          <declname>rows</declname>
+        </param>
+        <param>
+          <type>difference_type_1</type>
+          <declname>columns</declname>
+        </param>
+        <param>
+          <type>const_reference</type>
+          <declname>init</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="569" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="567" bodyend="569"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a2e7a4d6bd7798dff5c090d06782935e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(const MultiArrayView&lt; 2, U, C &gt; &amp;rhs)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="572" bodyend="574"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a52fd871c4ba8acc002007ca611f07c94" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TemporaryMatrix</definition>
+        <argsstring>(const TemporaryMatrix &amp;rhs)</argsstring>
+        <name>TemporaryMatrix</name>
+        <param>
+          <type>const TemporaryMatrix &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="578" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="576" bodyend="580"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1linalg_1_1TemporaryMatrix_1a0a8fa9f6f487fd5747387a4310908b6f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>TemporaryMatrix &amp;</type>
+        <definition>TemporaryMatrix&amp; operator=</definition>
+        <argsstring>(const TemporaryMatrix &amp;rhs)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const TemporaryMatrix &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="642"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2547">
+        <label>MultiArray&lt; 2, T, ALLOC &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="2548" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2546">
+        <label>Matrix&lt; T, ALLOC &gt;</label>
+        <link refid="classvigra_1_1linalg_1_1Matrix"/>
+        <childnode refid="2547" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2548">
+        <label>MultiArrayView&lt; N, T &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+      </node>
+      <node id="2545">
+        <label>TemporaryMatrix&lt; T, ALLOC &gt;</label>
+        <childnode refid="2546" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2551">
+        <label>MultiArray&lt; 2, T, ALLOC &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="2552" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2550">
+        <label>Matrix&lt; T, ALLOC &gt;</label>
+        <link refid="classvigra_1_1linalg_1_1Matrix"/>
+        <childnode refid="2551" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2552">
+        <label>MultiArrayView&lt; N, T &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="2553" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2553">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="2549">
+        <label>TemporaryMatrix&lt; T, ALLOC &gt;</label>
+        <childnode refid="2550" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matrix.hxx" bodystart="538" bodyend="643"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultiArrayView_1ad1ff5270f93b932185051401f1bdc351ad5e9f57920c8f3be820823a379d521ea" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>actual_dimension</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ad1ff5270f93b932185051401f1bdc351" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>ActualDimension</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a8df8a389781b95596f98ef919b00d5f0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>all</name></member>
+      <member refid="classvigra_1_1MultiArray_1aa257c44bfd4971977f439473047f9b0e" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>allocate</name></member>
+      <member refid="classvigra_1_1MultiArray_1a2b022f9fe0469b1dfb0c25e66437c1f2" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>allocate</name></member>
+      <member refid="classvigra_1_1MultiArray_1a9c5daa3d096a6a6663afc1f9b2f654ba" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>allocate</name></member>
+      <member refid="classvigra_1_1MultiArray_1a52b4b6af5ae26e76305a28d3274cdd15" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>allocator</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a30d821dffdb4334cd6aa5b1209a039e7" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>allocator_type</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a8be230fdd50e0ce842dd3b0a3012821b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>any</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acfc6e475db7e5d4f439c5940f4b18c6d" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>arraysOverlap</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1aa4c08bc293c9e26bc3a5888f9af8f05f" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>arraysOverlap</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a0b9173c1def80842c39e2488cfb472f3" prot="private" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1MultiArray_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>begin</name></member>
+      <member refid="classvigra_1_1MultiArray_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>begin</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a5620a71abd33556ab702350b31b123da" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bind</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a1e24fcdbd0c298cbbb07fe21368d5abc" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindAt</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a59031884a541eed08347b5b626ba5613" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindElementChannel</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a262f8f52cd526b497522b444a53aeb1c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindInner</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acf6b7dc4ce0db4457beed5f3d90b5e7e" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindInner</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acaca6e5790fa86120c4df40c3385d324" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindOuter</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a8ca5e1bbe796369b97ee1711671b9ca7" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>bindOuter</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ada10d77a4929689e467bf3478d5dc538" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>checkInnerStride</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a193cf45dcc77a4247554361ca1835330" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>checkInnerStride</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a7e66c99d303c4646660765a4043582a1" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>columnCount</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1af2bc1e864b6aae89fd89c33ec844fcbf" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>columnVector</name></member>
+      <member refid="classvigra_1_1MultiArray_1aab6e0e1e7dc8dda19dfa814ed6776833" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1abcf1535411d96307d41df2c089aadc26" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1MultiArray_1a6147584bb2ee1463a0ad29e120b4d12e" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>const_traverser</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a55d0184c5fbde73165533111441bb8ff" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>coordinateToScanOrderIndex</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a93b4cd51930b5c3f49081829c06a10da" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>copy</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a93cc8e36bc3893691f7c34f6f2b742ff" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>copy</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a84313f2a23b1242a0a0c556d6d97ba06" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>copyImpl</name></member>
+      <member refid="classvigra_1_1MultiArray_1ad1b9c440bd922da97c257db4f08006e0" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>copyOrReshape</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a9711a38a3b5f2d85c44505938499a0e2" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>data</name></member>
+      <member refid="classvigra_1_1MultiArray_1ad7dc8927f46c67fcc4efe8937629e866" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>deallocate</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a94fcd2d26ff25d3e428031416b75054d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>diagonal</name></member>
+      <member refid="classvigra_1_1MultiArray_1a607c140f0bd1f5cd4a4a482493afe93c" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>diff_zero_t</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1aa67da613c17b4ded61f92de19f1961cc" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a322e5dc02ea3dc571514e6e7f07bd348" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>difference_type_1</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a76f6c30e31c82e61b8b7e09ce3d8871d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>elementCount</name></member>
+      <member refid="classvigra_1_1MultiArray_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>end</name></member>
+      <member refid="classvigra_1_1MultiArray_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>end</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ab005801d6e252c3ae75ce9da36d1a600" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>expandElements</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a0effbd4cf91891700ac41e86defe4aa6" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>hasData</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1af5750c08bff71a702af1be9c958edbc9" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>init</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a70170072585722399abd07c46f168909" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>insertSingletonDimension</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acc16a9ac0801c380fcfe1841566efb99" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>isInside</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a237935ca17ac5ff126159558916aa2c0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>isSymmetric</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a3e1a9e07d9bc055f20a1b216370afd2f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>isUnstrided</name></member>
+      <member refid="classvigra_1_1MultiArray_1a35c955cacac6aacaa1e82874b1628865" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1MultiArray_1a2274deb28809e2e5a5571f525deeb1d0" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>m_alloc</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a799d2a6ed1ca851cc96ba81fb83488fb" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>m_ptr</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a6ecf2b971516c9ee114e74a1c3c376ba" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>m_shape</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ad05e71a51b6cc635d1f179b83707afe5" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>m_stride</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a3aede62f513da27e6f61ae7a972b4f96" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a27fb536a9062e72560efc821cbc64f15" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1ac4d7c3bd9ce3f0a87f817472c61cac8c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a2859e7779e164cbca56a7a0138d79257" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1aa7f76bae4ae1494d0c96250003f01502" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a87c92abb81aa20340748a2cf6def2e15" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a630f149aed9e68870c3a3013e2be9543" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a87d7115a76dbaac02868cb0f0a2b95b7" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a5e0e2f0a9fb4bc71c13ac4cef793490a" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a1835c7d2ba0f0d315b22638e711212b3" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a322c8aefe05fd2e3c586fcde6cba29c1" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>Matrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a6cc8d128df500ee05ee8eecaaff1cf16" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>matrix_type</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1ab78b1657c41feffa9fab6f66dedea11c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>mean</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a9f0d88f3720574aa67c171c82433e3b5" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>mean</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acd4c954a3c2fe5db856c4608f773eb45" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>meanVariance</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a6d8831009ea104ac1d9f36a2af5b0176" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>minmax</name></member>
+      <member refid="classvigra_1_1MultiArray_1a596f3b4b4084da422cb3320e165e1d89" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a7c046d7813f92f155a026b57327f43d2" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1abad06a155ed3596c5a9b9118b3013c0b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a4067b31c5cb195e7df9e0b0b4d164f43" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1abc955c60d7711895b8aee8198b52f424" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a50fa8a6a86660d125b59b7439a58acbe" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a64aab8620a7edfa633ed4d5553f5a33c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a25dbbf5b811952bdaccbc1d98b19a3a4" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArray_1a9ac62554a9086f9bb27585256a6b8576" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArray</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1acddece61538d74dc1d7f71ea7c581e67" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArrayView</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a2d2c039824d104f03d97d00a5b87d914" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArrayView</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ac8e675f45de1e53c3cc147375a920ea4" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>MultiArrayView</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a31d58906c7c895d7b845a9aa2252998b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>norm</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a0816d7af1f17517f39dbef405d2e4a47" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>norm</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ae01c274541e9b1d39eab573df7344fd1" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator MultiArrayView&lt; N, T, StridedArrayTag &gt;</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a018c002f23f0985c9ca89cd0a244f59d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a509f81b4fe64d6545f02c54a75fa9b5a" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a19ffd54d21c4a293f7a86cbefdcdf65c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a902647635a189183308cb1fa8457f54a" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a95f6b94c53d6aa8ba4a9c4671a9daa65" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1af2c5eb62f1650fb7a3735990346478ed" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a05f95d6148a375885a7be85819dcbc02" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a2fa26a6082ac991137129dcbc4257ae0" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ad157dd636e184ad7a235158bab39c5d8" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1abcbc55ed1f30019f85a6f25bf376ef2a" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a7792042817681cc6d8f5674b168419c1" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1ab21079f4fd22d16b5eaddfd202bf4d8d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a529d6056a5b0cc0bee865ac77449dd70" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1MultiArray_1ab5abfd58da4e496b7ac6f31ab74f869e" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a88ea293d8f6d74123071e5ee63fc0c5a" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a78d6b918c2821316ffc5665e4498a62b" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a2246e065e45bd9bd792efabac9fab724" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a598e0fbcc032101333126d0978bf119f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a760fa719a40dee563dc71dce3f56091b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiArray_1ac1bb8327f4e4e58fa8123c5503fd912d" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiArray_1afa950f74d05a3e46a65dcaa0e353ec8c" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a3afee44754e764e42527a74f10d91162" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a0db6c678b054c0cfba823c0fd355cc92" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1acdc8d880c5be17fdbf3818e9a623ae6f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a2f94e807ef5ad8c113669bc93786bd0c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a5df322338746f147fe4c51cd95fa1ed3" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a5bd660af26f82ea07946ef35780a04a3" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a57a1104160719fee7bbc19880aaef568" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ac9d3cda29b22226f730c4520bcb2c1ad" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1aeb419d8b7de6792fcd6639f161f92e8e" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1ad34bd39ed3fc67faf70e1b5ab5b3e075" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1MultiArray_1aae7e28d153b8aea7880b9310942a96e9" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a3417966535ad503c8f293f298205a8f5" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1MultiArray_1a6e8d929ccae2ab0f0a07668610b5b172" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ae4dd7bff037e05a3580cd66ca857c3f2" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a0a8fa9f6f487fd5747387a4310908b6f" prot="private" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1adf7e662c32853f825114543deaf8c119" prot="public" virt="non-virtual" ambiguityscope="vigra::linalg::Matrix::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a025fdc363d970d08f5f058e4ca1b107e" prot="public" virt="non-virtual" ambiguityscope="vigra::linalg::Matrix::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1af1b5b2258b5849d3d8248b0b56ea5415" prot="public" virt="non-virtual" ambiguityscope="vigra::linalg::Matrix::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArray_1aa573ed91bf7c43ac1301cc019a5820a8" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArray_1aa04e374b14935a8cb65734c419874ee1" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArray_1ad4d7ed46ffb1338b0654272afa1682f8" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1aaf7167061b3a03a33146694f32aa380f" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a47317f3dddbd8b1d447eee03040ae00b" prot="public" virt="non-virtual" ambiguityscope="MultiArrayView&lt; N, T &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1af2799b196fd761fc6d5313cf374f2b5a" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1aebc939b0cbcef6234def78f6fcb50bf2" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a77fdced99246dc012c098ffdd020e336" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ace2c9cd7baee89bc7f005e3664693235" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a994b70e9a282ffd06e7fc7df7308e4c0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a7ec14f3bf1d4cdfc41d8630176a82a07" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a62a571ba62a9cc4b4f27af78b20a6d0e" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>permuteDimensions</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a4f32a16f89e9ff9927a20dc3c7abee6b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>permuteStridesAscending</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a421ac71c17f86f900041784e3c77857a" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>permuteStridesDescending</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a5b3042c71814da638e52b4d547771cf4" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>product</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a6553cf5e426582b760da93d2f1b7636d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>reference</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1ab9e043616d5c995d0e712c860eba960d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>reshape</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a0750433ac5ac087d36813ec8731ded8f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>reshape</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a7f58eb1cf89d57154bcfe16fc45b4270" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>reshape</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1abc9c642edfbb527968cd801cddc3b08d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>reshape</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a11c02eb13319fb16a7066e8e7c8f27a0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>rowCount</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1ab31ab2f1d8c651241873adce974fac6a" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>rowVector</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1aa2a1a7741de3368ab949dff7b574680c" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>scanOrderIndexToCoordinate</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a53c8f0d5c70f10f31fbc246cbe524e32" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>shape</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a33c2d2f3676a54c9393d06fbda8bd190" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>shape</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a14c1df938ca1578ffc71bc9728b4e401" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>size</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1abfcdc6d232e4633fe63ba5f0881e0998" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>size</name></member>
+      <member refid="classvigra_1_1MultiArray_1a49de2bda8c5700d3d386b176401e4a66" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a76ee76a88e612da5109e278165878e66" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>squaredNorm</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a3fee5f2594095fe1e747155d6bad57b0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>stride</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a38ba1f2e9f964bc1e2f8531bd030c84e" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>stride</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1ac5561077d69e2d8b92a62bc5206664e4" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>stridearray</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a614a382ab304114f19a2c1168502647d" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>strideOrdering</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a78785a3e970fb24bb63462af833934d8" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>strideOrdering</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a2271545a765e00427cb6c59f6c4d78e0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>subarray</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a705dbbdf9c755bf803cc66288b382af6" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>sum</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a2cd8aa61cf4235dccea9ad9b4dcb1caa" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>sum</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a3b2d9689550ecef9ddc5b225f253b7d7" prot="public" virt="non-virtual" ambiguityscope="MultiArray&lt; 2, T, ALLOC &gt;::"><scope>vigra::linalg::TemporaryMatrix</scope><name>sum</name></member>
+      <member refid="classvigra_1_1MultiArray_1a2e15da47fd16916e4165a55e99a0ed3b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>swap</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a1d0311cdc0759be49f6e54595b88c5c5" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>swapData</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a37c3d67af76aa3ab3c6ceecd01efe841" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>swapData</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a4d4727187e1a94b33400901c1c815c0b" prot="protected" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>swapDataImpl</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a88db486033a8a86f3a4dc0d5436fff52" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>temp_type</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a178ad8253e56384a0059bf4eec75a388" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1afd31602cc3ca79a2052d36bcf8d13bb1" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a8fc76914490314c3a374741ff6f2817b" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a9f4db1f070e07d98bb45b662819d5cde" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a2e7a4d6bd7798dff5c090d06782935e0" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a52fd871c4ba8acc002007ca611f07c94" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>TemporaryMatrix</name></member>
+      <member refid="classvigra_1_1linalg_1_1Matrix_1a80913ef765a08d8d59d2879dc828f315" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>transpose</name></member>
+      <member refid="classvigra_1_1MultiArray_1a25503acdb8a49fc3ce1c8a0697440f54" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>traverser</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a6da88764aadffdf26736523ba73a53b2" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>traverser_begin</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1af5bd133df88785669c1f7058fd6ee4b5" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>traverser_begin</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a8e25dc1fff81a9ff3776106365bbd73f" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>traverser_end</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a8eeb5d1af1828e5f7f99548c03f51640" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>traverser_end</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a15eabd051d5bcdcce478c0a509946fca" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1MultiArrayView_1a6317301617e7845bcd8d940a7af43156" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>view</name></member>
+      <member refid="classvigra_1_1linalg_1_1TemporaryMatrix_1a2ccbe038aca0b8ec7d2740afde658ac4" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>view_type</name></member>
+      <member refid="classvigra_1_1MultiArray_1ae67638f4b1e3885c9308aac696c195fa" prot="public" virt="non-virtual"><scope>vigra::linalg::TemporaryMatrix</scope><name>~MultiArray</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

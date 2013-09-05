@@ -1,0 +1,1125 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__ResamplingConvolutionFilters" kind="group">
+    <compoundname>ResamplingConvolutionFilters</compoundname>
+    <title>Resampling Convolution Filters</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga4400ecb5107998456c8290af3c8bbc71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Kernel</type>
+          </param>
+          <param>
+            <type>class MapCoordinate</type>
+          </param>
+          <param>
+            <type>class KernelArray</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createResamplingKernels</definition>
+        <argsstring>(Kernel const &amp;kernel, MapCoordinate const &amp;mapCoordinate, KernelArray &amp;kernels)</argsstring>
+        <name>createResamplingKernels</name>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>MapCoordinate const &amp;</type>
+          <declname>mapCoordinate</declname>
+        </param>
+        <param>
+          <type>KernelArray &amp;</type>
+          <declname>kernels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="350" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="348" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga3abb6e1a494b5d3ce952dbacf71c3092" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidExpandBurtFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>pyramidExpandBurtFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Two-fold up-sampling for image pyramid reconstruction. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1ga3abb6e1a494b5d3ce952dbacf71c3092" kindref="member" tooltip="Two-fold up-sampling for image pyramid reconstruction.">pyramidExpandBurtFilter</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1ga3abb6e1a494b5d3ce952dbacf71c3092" kindref="member" tooltip="Two-fold up-sampling for image pyramid reconstruction.">pyramidExpandBurtFilter</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use a <ref refid="classvigra_1_1ImagePyramid" kindref="compound">vigra::ImagePyramid</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Image,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Alloc&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1ga3abb6e1a494b5d3ce952dbacf71c3092" kindref="member" tooltip="Two-fold up-sampling for image pyramid reconstruction.">pyramidExpandBurtFilter</ref>(ImagePyramid&lt;Image,<sp/>Alloc&gt;<sp/>&amp;<sp/>pyramid,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fromLevel,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>toLevel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="918"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga5c0a69ed1aee54b5d955a7df5e61ff40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidExpandBurtFilter</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, double centerValue=0.4)</argsstring>
+        <name>pyramidExpandBurtFilter</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="925" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="922" bodyend="975"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gaf32d6feb10a24158a99062161b1f8339" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidExpandBurtFilter</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, double centerValue=0.4)</argsstring>
+        <name>pyramidExpandBurtFilter</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="983" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="980" bodyend="986"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga81c60dc945f479b67078feafdb5d0dc2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Image</type>
+          </param>
+          <param>
+            <type>class Alloc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidExpandBurtFilter</definition>
+        <argsstring>(ImagePyramid&lt; Image, Alloc &gt; &amp;pyramid, int fromLevel, int toLevel, double centerValue=0.4)</argsstring>
+        <name>pyramidExpandBurtFilter</name>
+        <param>
+          <type>ImagePyramid&lt; Image, Alloc &gt; &amp;</type>
+          <declname>pyramid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>fromLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toLevel</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="993" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="991" bodyend="1001"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga220bd2af2ffb47ed8ed6ba583207c079" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Image</type>
+          </param>
+          <param>
+            <type>class Alloc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidExpandBurtLaplacian</definition>
+        <argsstring>(ImagePyramid&lt; Image, Alloc &gt; &amp;pyramid, int fromLevel, int toLevel, double centerValue=0.4)</argsstring>
+        <name>pyramidExpandBurtLaplacian</name>
+        <param>
+          <type>ImagePyramid&lt; Image, Alloc &gt; &amp;</type>
+          <declname>pyramid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>fromLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toLevel</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+<para>Reconstruct a Laplacian pyramid. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="1038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="1036" bodyend="1053"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gafde4a3aeaffdb86f415419444acf49e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidReduceBurtFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>pyramidReduceBurtFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Two-fold down-sampling for image pyramid construction. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1gafde4a3aeaffdb86f415419444acf49e7" kindref="member" tooltip="Two-fold down-sampling for image pyramid construction.">pyramidReduceBurtFilter</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1gafde4a3aeaffdb86f415419444acf49e7" kindref="member" tooltip="Two-fold down-sampling for image pyramid construction.">pyramidReduceBurtFilter</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use a <ref refid="classvigra_1_1ImagePyramid" kindref="compound">vigra::ImagePyramid</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Image,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Alloc&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1gafde4a3aeaffdb86f415419444acf49e7" kindref="member" tooltip="Two-fold down-sampling for image pyramid construction.">pyramidReduceBurtFilter</ref>(ImagePyramid&lt;Image,<sp/>Alloc&gt;<sp/>&amp;<sp/>pyramid,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fromLevel,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>toLevel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerValue<sp/>=<sp/>0.4);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="794"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gacc4ac98a8699f5fa4c6bf05a1c9f56d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidReduceBurtFilter</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, double centerValue=0.4)</argsstring>
+        <name>pyramidReduceBurtFilter</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="801" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="798" bodyend="850"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga88610ac2f039d8d06487d560b638b0d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidReduceBurtFilter</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, double centerValue=0.4)</argsstring>
+        <name>pyramidReduceBurtFilter</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="858" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="855" bodyend="861"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga2741ae8d68f2498303e5c875e37416e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Image</type>
+          </param>
+          <param>
+            <type>class Alloc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidReduceBurtFilter</definition>
+        <argsstring>(ImagePyramid&lt; Image, Alloc &gt; &amp;pyramid, int fromLevel, int toLevel, double centerValue=0.4)</argsstring>
+        <name>pyramidReduceBurtFilter</name>
+        <param>
+          <type>ImagePyramid&lt; Image, Alloc &gt; &amp;</type>
+          <declname>pyramid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>fromLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toLevel</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="865" bodyend="875"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga6608e09fdd3756af97586288bc2db2c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Image</type>
+          </param>
+          <param>
+            <type>class Alloc</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::pyramidReduceBurtLaplacian</definition>
+        <argsstring>(ImagePyramid&lt; Image, Alloc &gt; &amp;pyramid, int fromLevel, int toLevel, double centerValue=0.4)</argsstring>
+        <name>pyramidReduceBurtLaplacian</name>
+        <param>
+          <type>ImagePyramid&lt; Image, Alloc &gt; &amp;</type>
+          <declname>pyramid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>fromLevel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>toLevel</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerValue</declname>
+          <defval>0.4</defval>
+        </param>
+        <briefdescription>
+<para>Create a Laplacian pyramid. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="1014" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="1012" bodyend="1025"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>resamplingConvolveImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply two separable resampling filters successively, the first in x-direction, the second in y-direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is a shorthand for the concatenation of a call to <ref refid="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" kindref="member">resamplingConvolveX()</ref> and <ref refid="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" kindref="member">resamplingConvolveY()</ref> with the given kernels. See there for detailed documentation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member" tooltip="Apply two separable resampling filters successively, the first in x-direction, the second in y-direct...">resamplingConvolveImage</ref>(SrcIterator<sp/>sul,SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelX<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kx,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatioX,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offsetX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelY<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ky,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatioY,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offsetY);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member" tooltip="Apply two separable resampling filters successively, the first in x-direction, the second in y-direct...">resamplingConvolveImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelX<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kx,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatioX,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offsetX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelY<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ky,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatioY,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offsetY);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">Rational&lt;int&gt;<sp/>xratio(2),<sp/>yratio(3),<sp/>offset(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>src(w,h),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest(rational_cast&lt;int&gt;(xratio*w),<sp/>rational_cast&lt;int&gt;(yratio*h));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>sigma<sp/>=<sp/>2.0;</highlight></codeline>
+<codeline><highlight class="normal">Gaussian&lt;float&gt;<sp/>smooth(sigma);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>simultaneously<sp/>enlarge<sp/>and<sp/>smooth<sp/>source<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">resamplingConvolveImage(srcImageRange(src),<sp/>destImageRange(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>smooth,<sp/>xratio,<sp/>offset,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>smooth,<sp/>yratio,<sp/>offset);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="711"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gadc551cb388ed655bf4d75c8d816b0477" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelX</type>
+          </param>
+          <param>
+            <type>class KernelY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveImage</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, KernelX const &amp;kx, Rational&lt; int &gt; const &amp;samplingRatioX, Rational&lt; int &gt; const &amp;offsetX, KernelY const &amp;ky, Rational&lt; int &gt; const &amp;samplingRatioY, Rational&lt; int &gt; const &amp;offsetY)</argsstring>
+        <name>resamplingConvolveImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>KernelX const &amp;</type>
+          <declname>kx</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatioX</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offsetX</declname>
+        </param>
+        <param>
+          <type>KernelY const &amp;</type>
+          <declname>ky</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatioY</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offsetY</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="722" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="716" bodyend="735"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gacb29ac0e46392c2e7ac22b5d1a3cf4c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelX</type>
+          </param>
+          <param>
+            <type>class KernelY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, KernelX const &amp;kx, Rational&lt; int &gt; const &amp;samplingRatioX, Rational&lt; int &gt; const &amp;offsetX, KernelY const &amp;ky, Rational&lt; int &gt; const &amp;samplingRatioY, Rational&lt; int &gt; const &amp;offsetY)</argsstring>
+        <name>resamplingConvolveImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>KernelX const &amp;</type>
+          <declname>kx</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatioX</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offsetX</declname>
+        </param>
+        <param>
+          <type>KernelY const &amp;</type>
+          <declname>ky</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatioY</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offsetY</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="747" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="741" bodyend="752"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gaa9dc5f38f7cb55b8539de6f1648191f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>resamplingConvolveLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1-dimensional resampling convolution of the source signal using the given set of kernels. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is mainly used internally: It is called for each dimension of a higher dimensional array in order to perform a separable resize operation.</para><para><bold> Declaration:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelArray,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1gaa9dc5f38f7cb55b8539de6f1648191f8" kindref="member" tooltip="Performs a 1-dimensional resampling convolution of the source signal using the given set of kernels...">resamplingConvolveLine</ref>(SrcIter<sp/>s,<sp/>SrcIter<sp/>send,<sp/>SrcAcc<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIter<sp/>d,<sp/>DestIter<sp/>dend,<sp/>DestAcc<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelArray<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernels,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>mapTargetToSourceCoordinate)<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="267"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga2cbe0477810e02b34ff17d8645005ec1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIter</type>
+          </param>
+          <param>
+            <type>class SrcAcc</type>
+          </param>
+          <param>
+            <type>class DestIter</type>
+          </param>
+          <param>
+            <type>class DestAcc</type>
+          </param>
+          <param>
+            <type>class KernelArray</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveLine</definition>
+        <argsstring>(SrcIter s, SrcIter send, SrcAcc src, DestIter d, DestIter dend, DestAcc dest, KernelArray const &amp;kernels, Functor mapTargetToSourceCoordinate)</argsstring>
+        <name>resamplingConvolveLine</name>
+        <param>
+          <type>SrcIter</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIter</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>SrcAcc</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>dend</declname>
+        </param>
+        <param>
+          <type>DestAcc</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>KernelArray const &amp;</type>
+          <declname>kernels</declname>
+        </param>
+        <param>
+          <type>Functor</type>
+          <declname>mapTargetToSourceCoordinate</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="274" bodyend="344"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveX</definition>
+        <argsstring>(...)</argsstring>
+        <name>resamplingConvolveX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply a resampling filter in the x-direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements a convolution operation in x-direction (i.e. applies a 1D filter to every row) where the width of the source and destination images differ. This is typically used to avoid aliasing if the image is scaled down, or to interpolate smoothly if the image is scaled up. The target coordinates are transformed into source coordinates by</para><para><programlisting><codeline><highlight class="normal">xsource<sp/>=<sp/>(xtarget<sp/>-<sp/>offset)<sp/>/<sp/>samplingRatio</highlight></codeline>
+</programlisting></para><para>The <computeroutput>samplingRatio</computeroutput> and <computeroutput>offset</computeroutput> must be given as <ref refid="classvigra_1_1Rational" kindref="compound">vigra::Rational</ref> in order to avoid rounding errors in this transformation. It is required that for all pixels of the target image, <computeroutput>xsource</computeroutput> remains within the range of the source image (i.e. <computeroutput>0 &lt;= xsource &lt;= sourceWidth-1</computeroutput>. Since <computeroutput>xsource</computeroutput> is in general not an integer, the <computeroutput>kernel</computeroutput> must be a functor that can be accessed at arbitrary (<computeroutput>double</computeroutput>) coordinates. It must also provide a member function <computeroutput>radius()</computeroutput> which specifies the support (non-zero interval) of the kernel. VIGRA already provides a number of suitable functors, e.g. <ref refid="classvigra_1_1Gaussian" kindref="compound">vigra::Gaussian</ref>, <ref refid="classvigra_1_1BSpline" kindref="compound">vigra::BSpline</ref> <ref refid="classvigra_1_1CatmullRomSpline" kindref="compound">vigra::CatmullRomSpline</ref>, and <ref refid="classvigra_1_1CoscotFunction" kindref="compound">vigra::CoscotFunction</ref>. The function <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> is implemented by means <ref refid="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" kindref="member">resamplingConvolveX()</ref> and <ref refid="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" kindref="member">resamplingConvolveY()</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" kindref="member" tooltip="Apply a resampling filter in the x-direction.">resamplingConvolveX</ref>(SrcIter<sp/>sul,<sp/>SrcIter<sp/>slr,<sp/>SrcAcc<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIter<sp/>dul,<sp/>DestIter<sp/>dlr,<sp/>DestAcc<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatio,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offset);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" kindref="member" tooltip="Apply a resampling filter in the x-direction.">resamplingConvolveX</ref>(triple&lt;SrcIter,<sp/>SrcIter,<sp/>SrcAcc&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIter,<sp/>DestIter,<sp/>DestAcc&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatio,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offset);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">Rational&lt;int&gt;<sp/>ratio(2),<sp/>offset(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>src(w,h),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest(rational_cast&lt;int&gt;(ratio*w),<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>sigma<sp/>=<sp/>2.0;</highlight></codeline>
+<codeline><highlight class="normal">Gaussian&lt;float&gt;<sp/>smooth(sigma);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>simultaneously<sp/>enlarge<sp/>and<sp/>smooth<sp/>source<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">resamplingConvolveX(srcImageRange(src),<sp/>destImageRange(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>smooth,<sp/>ratio,<sp/>offset);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">Kernel<sp/>kernel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kernelRadius<sp/>=<sp/>kernel.radius();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>...;<sp/><sp/></highlight><highlight class="comment">//<sp/>must<sp/>be<sp/>&lt;=<sp/>radius()</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value<sp/>=<sp/>kernel(x);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="452"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga656df34df09f4008338b1afd7c19b119" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIter</type>
+          </param>
+          <param>
+            <type>class SrcAcc</type>
+          </param>
+          <param>
+            <type>class DestIter</type>
+          </param>
+          <param>
+            <type>class DestAcc</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveX</definition>
+        <argsstring>(SrcIter sul, SrcIter slr, SrcAcc src, DestIter dul, DestIter dlr, DestAcc dest, Kernel const &amp;kernel, Rational&lt; int &gt; const &amp;samplingRatio, Rational&lt; int &gt; const &amp;offset)</argsstring>
+        <name>resamplingConvolveX</name>
+        <param>
+          <type>SrcIter</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIter</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAcc</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAcc</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatio</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="462" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="458" bodyend="485"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gadd68b6535b0de210a0604887221377d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIter</type>
+          </param>
+          <param>
+            <type>class SrcAcc</type>
+          </param>
+          <param>
+            <type>class DestIter</type>
+          </param>
+          <param>
+            <type>class DestAcc</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveX</definition>
+        <argsstring>(triple&lt; SrcIter, SrcIter, SrcAcc &gt; src, triple&lt; DestIter, DestIter, DestAcc &gt; dest, Kernel const &amp;kernel, Rational&lt; int &gt; const &amp;samplingRatio, Rational&lt; int &gt; const &amp;offset)</argsstring>
+        <name>resamplingConvolveX</name>
+        <param>
+          <type>triple&lt; SrcIter, SrcIter, SrcAcc &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIter, DestIter, DestAcc &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatio</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="491" bodyend="499"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveY</definition>
+        <argsstring>(...)</argsstring>
+        <name>resamplingConvolveY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply a resampling filter in the y-direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements a convolution operation in y-direction (i.e. applies a 1D filter to every column) where the height of the source and destination images differ. This is typically used to avoid aliasing if the image is scaled down, or to interpolate smoothly if the image is scaled up. The target coordinates are transformed into source coordinates by</para><para><programlisting><codeline><highlight class="normal">ysource<sp/>=<sp/>(ytarget<sp/>-<sp/>offset)<sp/>/<sp/>samplingRatio</highlight></codeline>
+</programlisting></para><para>The <computeroutput>samplingRatio</computeroutput> and <computeroutput>offset</computeroutput> must be given as <ref refid="classvigra_1_1Rational" kindref="compound">vigra::Rational</ref> in order to avoid rounding errors in this transformation. It is required that for all pixels of the target image, <computeroutput>ysource</computeroutput> remains within the range of the source image (i.e. <computeroutput>0 &lt;= ysource &lt;= sourceHeight-1</computeroutput>. Since <computeroutput>ysource</computeroutput> is in general not an integer, the <computeroutput>kernel</computeroutput> must be a functor that can be accessed at arbitrary (<computeroutput>double</computeroutput>) coordinates. It must also provide a member function <computeroutput>radius()</computeroutput> which specifies the support (non-zero interval) of the kernel. VIGRA already provides a number of suitable functors, e.g. <ref refid="classvigra_1_1Gaussian" kindref="compound">vigra::Gaussian</ref>, <ref refid="classvigra_1_1BSpline" kindref="compound">vigra::BSpline</ref> <ref refid="classvigra_1_1CatmullRomSpline" kindref="compound">vigra::CatmullRomSpline</ref>, and <ref refid="classvigra_1_1CoscotFunction" kindref="compound">vigra::CoscotFunction</ref>. The function <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> is implemented by means <ref refid="group__ResamplingConvolutionFilters_1ga047eb80825598893b6ffce266b7a4dbd" kindref="member">resamplingConvolveX()</ref> and <ref refid="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" kindref="member">resamplingConvolveY()</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" kindref="member" tooltip="Apply a resampling filter in the y-direction.">resamplingConvolveY</ref>(SrcIter<sp/>sul,<sp/>SrcIter<sp/>slr,<sp/>SrcAcc<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIter<sp/>dul,<sp/>DestIter<sp/>dlr,<sp/>DestAcc<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatio,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offset);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIter,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAcc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__ResamplingConvolutionFilters_1ga3781a892b11a52e752ed4dab52cb6c5f" kindref="member" tooltip="Apply a resampling filter in the y-direction.">resamplingConvolveY</ref>(triple&lt;SrcIter,<sp/>SrcIter,<sp/>SrcAcc&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIter,<sp/>DestIter,<sp/>DestAcc&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>samplingRatio,<sp/>Rational&lt;int&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>offset);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="resampling__convolution_8hxx_source" kindref="compound">vigra/resampling_convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">Rational&lt;int&gt;<sp/>ratio(2),<sp/>offset(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>src(w,h),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest(w,<sp/>rational_cast&lt;int&gt;(ratio*h));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>sigma<sp/>=<sp/>2.0;</highlight></codeline>
+<codeline><highlight class="normal">Gaussian&lt;float&gt;<sp/>smooth(sigma);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>simultaneously<sp/>enlarge<sp/>and<sp/>smooth<sp/>source<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">resamplingConvolveY(srcImageRange(src),<sp/>destImageRange(dest),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>smooth,<sp/>ratio,<sp/>offset);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">Kernel<sp/>kernel;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kernelRadius<sp/>=<sp/>kernel.radius();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>...;<sp/><sp/></highlight><highlight class="comment">//<sp/>must<sp/>be<sp/>&lt;=<sp/>radius()</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value<sp/>=<sp/>kernel(y);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="591"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1gad750a56b963c348a91b08f1202c9a37a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIter</type>
+          </param>
+          <param>
+            <type>class SrcAcc</type>
+          </param>
+          <param>
+            <type>class DestIter</type>
+          </param>
+          <param>
+            <type>class DestAcc</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveY</definition>
+        <argsstring>(SrcIter sul, SrcIter slr, SrcAcc src, DestIter dul, DestIter dlr, DestAcc dest, Kernel const &amp;kernel, Rational&lt; int &gt; const &amp;samplingRatio, Rational&lt; int &gt; const &amp;offset)</argsstring>
+        <name>resamplingConvolveY</name>
+        <param>
+          <type>SrcIter</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIter</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAcc</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIter</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAcc</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatio</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="601" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="597" bodyend="625"/>
+      </memberdef>
+      <memberdef kind="function" id="group__ResamplingConvolutionFilters_1ga2745b94b3e318f8ca9db27c98d3122b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIter</type>
+          </param>
+          <param>
+            <type>class SrcAcc</type>
+          </param>
+          <param>
+            <type>class DestIter</type>
+          </param>
+          <param>
+            <type>class DestAcc</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resamplingConvolveY</definition>
+        <argsstring>(triple&lt; SrcIter, SrcIter, SrcAcc &gt; src, triple&lt; DestIter, DestIter, DestAcc &gt; dest, Kernel const &amp;kernel, Rational&lt; int &gt; const &amp;samplingRatio, Rational&lt; int &gt; const &amp;offset)</argsstring>
+        <name>resamplingConvolveY</name>
+        <param>
+          <type>triple&lt; SrcIter, SrcIter, SrcAcc &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIter, DestIter, DestAcc &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>samplingRatio</declname>
+        </param>
+        <param>
+          <type>Rational&lt; int &gt; const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" line="635" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resampling_convolution.hxx" bodystart="631" bodyend="639"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>These functions implement the convolution operation when the source and target images have different sizes. This is realized by accessing a continuous kernel at the appropriate non-integer positions. The technique is, for example, described in D. Schumacher: <emphasis>General Filtered Image Rescaling</emphasis>, in: Graphics Gems III, Academic Press, 1992. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

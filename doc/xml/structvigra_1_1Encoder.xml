@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1Encoder" kind="struct" prot="public">
+    <compoundname>vigra::Encoder</compoundname>
+    <innerclass refid="structvigra_1_1Encoder_1_1TIFFCompressionException" prot="public">vigra::Encoder::TIFFCompressionException</innerclass>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1Encoder_1a0c34f7a3e6061ac0e27bd07c2b294b95" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; unsigned char &gt;</type>
+        <definition>typedef ArrayVector&lt;unsigned char&gt; ICCProfile</definition>
+        <argsstring></argsstring>
+        <name>ICCProfile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="253" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a9497a52df9c803aeeac92ebfc034cd5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void abort</definition>
+        <argsstring>()=0</argsstring>
+        <name>abort</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="228"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1af6ee7eacbde6b379b68d954e44f6e549" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void close</definition>
+        <argsstring>()=0</argsstring>
+        <name>close</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="227"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1afc98913614fca3ea5ee8443192883e8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void *</type>
+        <definition>virtual void* currentScanlineOfBand</definition>
+        <argsstring>(unsigned int)=0</argsstring>
+        <name>currentScanlineOfBand</name>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="259"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1aa287976f764156cc6667f993b8daa7ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void finalizeSettings</definition>
+        <argsstring>()=0</argsstring>
+        <name>finalizeSettings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="238"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a4351f157f9d31c6262886a2692abcb35" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::string</type>
+        <definition>virtual std::string getFileType</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getFileType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="230"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1ac8f29ef73b7fd74cd815b72e494e562e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>unsigned int</type>
+        <definition>virtual unsigned int getOffset</definition>
+        <argsstring>() const =0</argsstring>
+        <name>getOffset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="231"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1af22c5fd2311750367adb6f22dea81e24" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void init</definition>
+        <argsstring>(const std::string &amp;)=0</argsstring>
+        <name>init</name>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="219"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a90616caeb4b1b8a4743a06f0112f8b69" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void init</definition>
+        <argsstring>(const std::string &amp;fileName, const std::string &amp;mode)</argsstring>
+        <name>init</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>fileName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="222" bodyend="225"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a520f83eb63414d1d1dbab8ec70c1728e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void nextScanline</definition>
+        <argsstring>()=0</argsstring>
+        <name>nextScanline</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="260"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a8f689549cbb8a3f8ff691c21c657936c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void setCanvasSize</definition>
+        <argsstring>(const vigra::Size2D &amp;)</argsstring>
+        <name>setCanvasSize</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Size2D" kindref="compound">vigra::Size2D</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="243" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1aab5bbf20773e73ded24d45ee90b08e55" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void setCompressionType</definition>
+        <argsstring>(const std::string &amp;, int=-1)=0</argsstring>
+        <name>setCompressionType</name>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="236"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a232e8fd7fb2789bd545e250b676f9f59" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void setHeight</definition>
+        <argsstring>(unsigned int)=0</argsstring>
+        <name>setHeight</name>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="234"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a273fda721f9eb33e487480e81c7a9b7a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void setICCProfile</definition>
+        <argsstring>(const ICCProfile &amp;)</argsstring>
+        <name>setICCProfile</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1ArrayVector" kindref="compound">ICCProfile</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="255" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a94f732a94e859152f8e8ab3fe08209b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void setNumBands</definition>
+        <argsstring>(unsigned int)=0</argsstring>
+        <name>setNumBands</name>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="235"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1ac3c9150cbcd95bebc442d1ac4b9f56ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void setPixelType</definition>
+        <argsstring>(const std::string &amp;)=0</argsstring>
+        <name>setPixelType</name>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="237"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a4a2a115d506ccc48b019ff74c9182084" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void setPosition</definition>
+        <argsstring>(const vigra::Diff2D &amp;)</argsstring>
+        <name>setPosition</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="240" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1aa986c6e5898637ef003940cf1ad60d61" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void setWidth</definition>
+        <argsstring>(unsigned int)=0</argsstring>
+        <name>setWidth</name>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="233"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a7aa7455a30aa717efaa6148eca1b831d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void setXResolution</definition>
+        <argsstring>(float)</argsstring>
+        <name>setXResolution</name>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="246" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1ad90ff4e3b352d5d162cb0d426a052e23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void setYResolution</definition>
+        <argsstring>(float)</argsstring>
+        <name>setYResolution</name>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="249" bodyend="251"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Encoder_1a2a7d9ce14c0db46b3d1baaae0a7c13ba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~Encoder</definition>
+        <argsstring>()</argsstring>
+        <name>~Encoder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="218" bodyend="218"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" line="217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/codec.hxx" bodystart="216" bodyend="263"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1Encoder_1a9497a52df9c803aeeac92ebfc034cd5a" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>abort</name></member>
+      <member refid="structvigra_1_1Encoder_1af6ee7eacbde6b379b68d954e44f6e549" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>close</name></member>
+      <member refid="structvigra_1_1Encoder_1afc98913614fca3ea5ee8443192883e8d" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>currentScanlineOfBand</name></member>
+      <member refid="structvigra_1_1Encoder_1aa287976f764156cc6667f993b8daa7ee" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>finalizeSettings</name></member>
+      <member refid="structvigra_1_1Encoder_1a4351f157f9d31c6262886a2692abcb35" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>getFileType</name></member>
+      <member refid="structvigra_1_1Encoder_1ac8f29ef73b7fd74cd815b72e494e562e" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>getOffset</name></member>
+      <member refid="structvigra_1_1Encoder_1a0c34f7a3e6061ac0e27bd07c2b294b95" prot="public" virt="non-virtual"><scope>vigra::Encoder</scope><name>ICCProfile</name></member>
+      <member refid="structvigra_1_1Encoder_1af22c5fd2311750367adb6f22dea81e24" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>init</name></member>
+      <member refid="structvigra_1_1Encoder_1a90616caeb4b1b8a4743a06f0112f8b69" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>init</name></member>
+      <member refid="structvigra_1_1Encoder_1a520f83eb63414d1d1dbab8ec70c1728e" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>nextScanline</name></member>
+      <member refid="structvigra_1_1Encoder_1a8f689549cbb8a3f8ff691c21c657936c" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>setCanvasSize</name></member>
+      <member refid="structvigra_1_1Encoder_1aab5bbf20773e73ded24d45ee90b08e55" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>setCompressionType</name></member>
+      <member refid="structvigra_1_1Encoder_1a232e8fd7fb2789bd545e250b676f9f59" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>setHeight</name></member>
+      <member refid="structvigra_1_1Encoder_1a273fda721f9eb33e487480e81c7a9b7a" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>setICCProfile</name></member>
+      <member refid="structvigra_1_1Encoder_1a94f732a94e859152f8e8ab3fe08209b5" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>setNumBands</name></member>
+      <member refid="structvigra_1_1Encoder_1ac3c9150cbcd95bebc442d1ac4b9f56ea" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>setPixelType</name></member>
+      <member refid="structvigra_1_1Encoder_1a4a2a115d506ccc48b019ff74c9182084" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>setPosition</name></member>
+      <member refid="structvigra_1_1Encoder_1aa986c6e5898637ef003940cf1ad60d61" prot="public" virt="pure-virtual"><scope>vigra::Encoder</scope><name>setWidth</name></member>
+      <member refid="structvigra_1_1Encoder_1a7aa7455a30aa717efaa6148eca1b831d" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>setXResolution</name></member>
+      <member refid="structvigra_1_1Encoder_1ad90ff4e3b352d5d162cb0d426a052e23" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>setYResolution</name></member>
+      <member refid="structvigra_1_1Encoder_1a2a7d9ce14c0db46b3d1baaae0a7c13ba" prot="public" virt="virtual"><scope>vigra::Encoder</scope><name>~Encoder</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

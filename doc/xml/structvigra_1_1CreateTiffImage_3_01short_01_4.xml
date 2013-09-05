@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CreateTiffImage_3_01short_01_4" kind="struct" prot="public">
+    <compoundname>vigra::CreateTiffImage&lt; short &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1CreateTiffImage_3_01short_01_4_1a0342267d7a0af3762839641ec6603843" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, TiffImage *tiff)</argsstring>
+        <name>exec</name>
+        <param>
+          <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>TiffImage *</type>
+          <declname>tiff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1439" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1437" bodyend="1441"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" line="1434" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tiff.hxx" bodystart="1433" bodyend="1442"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CreateTiffImage_3_01short_01_4_1a0342267d7a0af3762839641ec6603843" prot="public" virt="non-virtual"><scope>vigra::CreateTiffImage&lt; short &gt;</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4" kind="class" prot="public">
+    <compoundname>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Engine</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a2956488b37cf164f0f381e59bc43a7e8" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isBinaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isBinaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="629" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="629" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a796f76f65844dd6bb05dbc5d0817ccfa" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isBinaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isBinaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="625" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a4deffdfbeca662fb7ed6a1326400255c" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isInitializer</definition>
+        <argsstring></argsstring>
+        <name>isInitializer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="622" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="622" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a6b0c4471917852dae0373e2023552b28" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isTernaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isTernaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="630" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="630" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a78916c29dc8ef6b8a4538e16aa563cea" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isTernaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isTernaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="626" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="626" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1aebd9d3dbf8c593c25a821b5fd125d6c9" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isUnaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isUnaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="628" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="628" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1ad040176aa00458e384fee4b03943fd06" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isUnaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isUnaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="624" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="624" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a1fb778e2351b15435ef5ee6d992c4510" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RandomNumberGenerator" kindref="compound">RandomNumberGenerator</ref>&lt; Engine &gt;</type>
+        <definition>typedef RandomNumberGenerator&lt;Engine&gt; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="620" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="620" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="617" bodyend="631"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a2956488b37cf164f0f381e59bc43a7e8" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isBinaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a796f76f65844dd6bb05dbc5d0817ccfa" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isBinaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a4deffdfbeca662fb7ed6a1326400255c" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isInitializer</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a6b0c4471917852dae0373e2023552b28" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isTernaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a78916c29dc8ef6b8a4538e16aa563cea" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isTernaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1aebd9d3dbf8c593c25a821b5fd125d6c9" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isUnaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1ad040176aa00458e384fee4b03943fd06" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>isUnaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4_1a1fb778e2351b15435ef5ee6d992c4510" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

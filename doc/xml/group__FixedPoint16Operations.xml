@@ -1,0 +1,974 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FixedPoint16Operations" kind="group">
+    <compoundname>FixedPoint16Operations</compoundname>
+    <title>Functions for FixedPoint16</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaad996c0c0cd7877767d3e72097976c5b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>FixedPoint16&lt;IntBits, OverflowHandling&gt; vigra::abs</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>absolute value. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1689" bodyend="1692"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga6c46b7a1b6bcad18a2a818143c8de239" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+        <definition>FixedPoint16&lt;IntBits3, OverflowHandling&gt;&amp; vigra::add</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r, FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;result)</argsstring>
+        <name>add</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>addition with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1534" bodyend="1539"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gae83e1ae2e3dae6dc462c69a7c8175fc5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; 2, OverflowHandling &gt;</type>
+        <definition>FixedPoint16&lt;2, OverflowHandling&gt; vigra::atan2</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; y, FixedPoint16&lt; IntBits, OverflowHandling &gt; x)</argsstring>
+        <name>atan2</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>Arctangent. Accuracy better than 1/3 degree (9 significant bits). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1641" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1640" bodyend="1684"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga3de623a9fcd9aa5b8515d2e602ad3441" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>Int32</type>
+        <definition>Int32 vigra::ceil</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>ceil</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding up. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1744" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1743" bodyend="1747"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gac71b069a80f6decdb6fad1cfd508f5f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+        <definition>FixedPoint16&lt;IntBits3, OverflowHandling&gt;&amp; vigra::div</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r, FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;result)</argsstring>
+        <name>div</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>division with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1604" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1602" bodyend="1607"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gac21c347588d5301b43d42cce346995e8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>FixedPoint16&lt;IntBits, OverflowHandling&gt; vigra::dual_frac</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>dual_frac</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>dual fractional part. (1 - frac(v)) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1726" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1725" bodyend="1730"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gac12bb448fd83be21e6e529cd1994abb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TARGET</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>TARGET</type>
+        <definition>TARGET fixed_point_cast</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>fixed_point_cast</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Convert a <ref refid="classvigra_1_1FixedPoint16" kindref="compound">FixedPoint16</ref> to a built-in type. If the target is integral, the value is rounded.<linebreak/>
+ Usage: <programlisting><codeline><highlight class="normal">FixedPoint16&lt;16,15&gt;<sp/>fp(...);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d<sp/>=<sp/><ref refid="group__FixedPointOperations_1ga4ab4a9ac3f89439366bbbcb41e1aed78" kindref="member">fixed_point_cast</ref>&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(fp);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1458" bodyend="1461"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaf9acd2d5db732d3d15b3d30e7b70671d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>Int32</type>
+        <definition>Int32 vigra::floor</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>floor</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding down. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1736" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1735" bodyend="1738"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga51bbe37b56a46473c8041924e52b9826" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>FixedPoint16&lt;IntBits, OverflowHandling&gt; vigra::frac</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>frac</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>fractional part. (difference between v and its floor) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1716" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1715" bodyend="1720"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gac462ab7aeaeaa2af19c524e89c9ee1fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>FixedPoint16&lt;IntBits, OverflowHandling&gt; vigra::hypot</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v1, FixedPoint16&lt; IntBits, OverflowHandling &gt; v2)</argsstring>
+        <name>hypot</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v2</declname>
+        </param>
+        <briefdescription>
+<para>Length of hypotenuse. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1627" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1626" bodyend="1633"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga7a7b91fe8e1da3a17615e9ac1adc4182" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+        <definition>FixedPoint16&lt;IntBits3, OverflowHandling&gt;&amp; vigra::mul</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r, FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;result)</argsstring>
+        <name>mul</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1581" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1579" bodyend="1584"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga9bc8f44c220da2d20d812be973983bb4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>NormTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;::NormType</type>
+        <definition>NormTraits&lt;FixedPoint16&lt;IntBits, OverflowHandling&gt; &gt;::NormType vigra::norm</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; const &amp;v)</argsstring>
+        <name>norm</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>norm (same as abs). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1708" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1707" bodyend="1710"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gab061d27e4a29a3151a334ed02cf5cfa5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1477" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1476" bodyend="1480"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga1ca6e0e0fb80c2f350dda56853ac683a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; FixedPoint16&lt; IntBits1, OverflowHandling &gt;, FixedPoint16&lt; IntBits2, OverflowHandling &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;FixedPoint16&lt;IntBits1, OverflowHandling&gt;, FixedPoint16&lt;IntBits2, OverflowHandling&gt; &gt;::Promote vigra::operator*</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1568" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1567" bodyend="1573"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga9696782c029526a08b62fcdd4d1cd64b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; FixedPoint16&lt; IntBits1, OverflowHandling &gt;, FixedPoint16&lt; IntBits2, OverflowHandling &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;FixedPoint16&lt;IntBits1, OverflowHandling&gt;, FixedPoint16&lt;IntBits2, OverflowHandling&gt; &gt;::Promote vigra::operator+</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>addition with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1522" bodyend="1528"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gad9f66cf8e4b6e5c5440a76bf44a19920" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; FixedPoint16&lt; IntBits1, OverflowHandling &gt;, FixedPoint16&lt; IntBits2, OverflowHandling &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;FixedPoint16&lt;IntBits1, OverflowHandling&gt;, FixedPoint16&lt;IntBits2, OverflowHandling&gt; &gt;::Promote vigra::operator-</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>subtraction with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1545" bodyend="1551"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gab8a9b5981320a7a71b908b1b4ba434ac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>PromoteTraits&lt; FixedPoint16&lt; IntBits1, OverflowHandling &gt;, FixedPoint16&lt; IntBits2, OverflowHandling &gt; &gt;::Promote</type>
+        <definition>PromoteTraits&lt;FixedPoint16&lt;IntBits1, OverflowHandling&gt;, FixedPoint16&lt;IntBits2, OverflowHandling&gt; &gt;::Promote vigra::operator/</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>division with automatic determination of the appropriate result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1590" bodyend="1596"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga83e570cad80273f6ab3805176ba6efbd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less than </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1486" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1485" bodyend="1489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga3fd04a99f83b89391848d284c9fe2c86" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;=</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less or equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1494" bodyend="1498"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaf372af8944f118fcd7b755b60362d554" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1467" bodyend="1471"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gadd406409450f5e7dcceb7e4dcd6f8246" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1503" bodyend="1507"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga8dbcf24233b03449957220e8faced0ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;=</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater or equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1512" bodyend="1516"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaad0bcd8708c6fe598780a675ad30e52d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>Int32</type>
+        <definition>Int32 vigra::round</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>round</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding to the nearest integer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1753" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1752" bodyend="1756"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1ga2d7df7a7ce314097e5d4be827ecb18d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>Int32</type>
+        <definition>Int32 vigra::roundi</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>roundi</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>rounding to the nearest integer. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1762" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1761" bodyend="1764"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaeba9152f83152e566195b4a6600a1023" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>SquareRootTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;::SquareRootResult</type>
+        <definition>SquareRootTraits&lt;FixedPoint16&lt;IntBits, OverflowHandling&gt; &gt;::SquareRootResult vigra::sqrt</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>sqrt</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>square root. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1613" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1612" bodyend="1617"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gad5ff4b2e985f4917da11535f352a847f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+        </templateparamlist>
+        <type>NormTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;::SquaredNormType</type>
+        <definition>NormTraits&lt;FixedPoint16&lt;IntBits, OverflowHandling&gt; &gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>squared norm (same as v*v). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1699" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1698" bodyend="1701"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FixedPoint16Operations_1gaf596c4c928259b41eb1b7da68affec8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>IntBits1</declname>
+            <defname>IntBits1</defname>
+          </param>
+          <param>
+            <type>FPOverflowHandling</type>
+            <declname>OverflowHandling</declname>
+            <defname>OverflowHandling</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits2</declname>
+            <defname>IntBits2</defname>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>IntBits3</declname>
+            <defname>IntBits3</defname>
+          </param>
+        </templateparamlist>
+        <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+        <definition>FixedPoint16&lt;IntBits3, OverflowHandling&gt;&amp; vigra::sub</definition>
+        <argsstring>(FixedPoint16&lt; IntBits1, OverflowHandling &gt; l, FixedPoint16&lt; IntBits2, OverflowHandling &gt; r, FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;result)</argsstring>
+        <name>sub</name>
+        <param>
+          <type>FixedPoint16&lt; IntBits1, OverflowHandling &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits2, OverflowHandling &gt;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>FixedPoint16&lt; IntBits3, OverflowHandling &gt; &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+<para>subtraction with enforced result type. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="1558" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="1556" bodyend="1561"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><bold>#include</bold> &lt;<ref refid="fixedpoint_8hxx_source" kindref="compound">vigra/fixedpoint.hxx</ref>&gt;<linebreak/>
+ </para>    </briefdescription>
+    <detaileddescription>
+<para>These functions fulfill the requirements of an <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref>.</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

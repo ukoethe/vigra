@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ImportExport" kind="page">
+    <compoundname>ImportExport</compoundname>
+    <title>Image Import and Export</title>
+    <detaileddescription>
+<para>Conversion from and to other image data types</para><para><itemizedlist>
+<listitem>
+<para><ref refid="group__VigraImpex" kindref="compound">Image Import/Export Facilities</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>VIGRA&apos;s highlevel image import/export interface</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VolumeImpex" kindref="compound">Import/export of volume data.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Import/export interface for volume data</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VigraHDF5Impex" kindref="compound">Import/Export of Images and Arrays in HDF5 Format</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Import/export of images and arrays in <ulink url="http://www.hdfgroup.org/HDF5/">HDF5</ulink> format</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__TIFFImpex" kindref="compound">Import/export of the TIFF format</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>image import/export interface if you want to call libtiff functions directly</emphasis> </para></listitem>
+</itemizedlist>
+</para><para>There are two fundamentally different approaches to interfacing between VIGRA and the rest of the world.</para><para><bold>If you already have an image data type in your system:</bold></para><para>Then I recommend using VIGRA&apos;s algorithms directly on top of your data type. To do this, you simply wrap your data in an <ref refid="classvigra_1_1ImageIterator" kindref="compound">vigra::ImageIterator</ref> and/or <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref> (depending on the functions you want to call). If your data have some exotic properties, that prevent this solution from working, you can still implement your own versions or subclasses of the interface classe, which isn&apos;t very difficult.</para><para>Alternatively, you may use the data structures provided within VIGRA and convert your data type into one of them. Take a look at <ref refid="group__TIFFImpex_1ga3b11b4794c6a24de19dc1dbb5e2f8cb8" kindref="member">tiffToScalarImage()</ref> and <ref refid="group__TIFFImpex_1ga5304acecf03804f7c0864fc5fe1e87bf" kindref="member">createScalarTiffImage()</ref> to see how this might be done.</para><para><bold>If you don&apos;t have an image data type in your system:</bold></para><para>Use the data structures provided within VIGRA and use one of the import/export facilities above. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

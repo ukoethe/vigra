@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__VolumeImpex" kind="group">
+    <compoundname>VolumeImpex</compoundname>
+    <title>Import/export of volume data.</title>
+    <innerclass refid="classvigra_1_1VolumeExportInfo" prot="public">vigra::VolumeExportInfo</innerclass>
+    <innerclass refid="classvigra_1_1VolumeImportInfo" prot="public">vigra::VolumeImportInfo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__VolumeImpex_1ga246fc974022a6ce5f4b79b5b0947d7bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Tag</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportVolume</definition>
+        <argsstring>(MultiArrayView&lt; 3, T, Tag &gt; const &amp;volume, const VolumeExportInfo &amp;volinfo)</argsstring>
+        <name>exportVolume</name>
+        <param>
+          <type>MultiArrayView&lt; 3, T, Tag &gt; const &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <param>
+          <type>const VolumeExportInfo &amp;</type>
+          <declname>volinfo</declname>
+        </param>
+        <briefdescription>
+<para>Function for exporting a 3D volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>The volume is exported in a by-slice manner, where the number of slices equals the depth of the volume. The file names will be enumerated like <computeroutput>name_base+&quot;000&quot;+name_ext</computeroutput>, <computeroutput>name_base+&quot;001&quot;+name_ext</computeroutput> etc. (the actual number of zeros depends on the depth). If the target image type does not support the source voxel type, all slices will be mapped simultaneously to the appropriate target range.</para><para><bold>#include</bold> &lt;<ref refid="multi__impex_8hxx_source" kindref="compound">vigra/multi_impex.hxx</ref>&gt;</para><para>Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="686" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="684" bodyend="711"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1gac2225e2f39be0ce7e23069e4683d5290" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Tag</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::exportVolume</definition>
+        <argsstring>(MultiArrayView&lt; 3, T, Tag &gt; const &amp;volume, const std::string &amp;name_base, const std::string &amp;name_ext)</argsstring>
+        <name>exportVolume</name>
+        <param>
+          <type>MultiArrayView&lt; 3, T, Tag &gt; const &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_base</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_ext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="719" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="716" bodyend="722"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1ga5ca71d957818df7330bfbcf3f1c4cde3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::findImageSequence</definition>
+        <argsstring>(const std::string &amp;name_base, const std::string &amp;name_ext, std::vector&lt; std::string &gt; &amp;numbers)</argsstring>
+        <name>findImageSequence</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_base</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_ext</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>numbers</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1ga0c37a23bef258e2fc520dfb00a523b44" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Stride</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void importImpl</definition>
+        <argsstring>(MultiArrayView&lt; 3, T, Stride &gt; &amp;volume) const </argsstring>
+        <name>importImpl</name>
+        <param>
+          <type>MultiArrayView&lt; 3, T, Stride &gt; &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="413" bodyend="484"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1ga5966d29fa165f094bd4fbf6d69e5cea3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Allocator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importVolume</definition>
+        <argsstring>(MultiArray&lt; 3, T, Allocator &gt; &amp;volume, const std::string &amp;name_base, const std::string &amp;name_ext)</argsstring>
+        <name>importVolume</name>
+        <param>
+          <type>MultiArray&lt; 3, T, Allocator &gt; &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_base</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name_ext</declname>
+        </param>
+        <briefdescription>
+<para>Function for importing a 3D volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>The data are expected to be stored in a by-slice manner, where the slices are enumerated from <computeroutput>name_base+&quot;[0-9]+&quot;+name_ext</computeroutput>. <computeroutput>name_base</computeroutput> may contain a path. All slice files with the same name base and extension are considered part of the same volume. Slice numbers must be non-negative, but can otherwise start anywhere and need not be successive. Slices will be read in ascending numerical (not lexicographic) order. All slices must have the same size. The <computeroutput>volume</computeroutput> will be reshaped to match the count and size of the slices found.</para><para><bold>#include</bold> &lt;<ref refid="multi__impex_8hxx_source" kindref="compound">vigra/multi_impex.hxx</ref>&gt;</para><para>Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="514" bodyend="522"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1ga40c370854a3a488e18ca1719c0e94e74" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Allocator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importVolume</definition>
+        <argsstring>(MultiArray&lt; 3, T, Allocator &gt; &amp;volume, const std::string &amp;filename)</argsstring>
+        <name>importVolume</name>
+        <param>
+          <type>MultiArray&lt; 3, T, Allocator &gt; &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+<para>Function for importing a 3D volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>The data can be given in two ways:</para><para><itemizedlist>
+<listitem>
+<para>If the volume is stored in a by-slice manner (e.g. one image per slice), the <computeroutput>filename</computeroutput> can refer to an arbitrary image from the set. <computeroutput><ref refid="group__VolumeImpex_1ga5966d29fa165f094bd4fbf6d69e5cea3" kindref="member">importVolume()</ref></computeroutput> then assumes that the slices are enumerated like <computeroutput>name_base+&quot;[0-9]+&quot;+name_ext</computeroutput>, where <computeroutput>name_base</computeroutput>, the index, and <computeroutput>name_ext</computeroutput> are determined automatically. All slice files with the same name base and extension are considered part of the same volume. Slice numbers must be non-negative, but can otherwise start anywhere and need not be successive. Slices will be read in ascending numerical (not lexicographic) order. All slices must have the same size. </para></listitem>
+<listitem>
+<para>Otherwise, <computeroutput><ref refid="group__VolumeImpex_1ga5966d29fa165f094bd4fbf6d69e5cea3" kindref="member">importVolume()</ref></computeroutput> will try to read <computeroutput>filename</computeroutput> as an info text file with the following key-value pairs: <itemizedlist>
+<listitem>
+<para>name = [short descriptive name of the volume] (optional) </para></listitem>
+<listitem>
+<para>filename = [absolute or relative path to raw voxel data file] (required) </para></listitem>
+<listitem>
+<para>gradfile = [absolute or relative path to gradient data file] (currently ignored) </para></listitem>
+<listitem>
+<para>description = [arbitrary description of the data set] (optional) </para></listitem>
+<listitem>
+<para>width = [positive integer] (required) </para></listitem>
+<listitem>
+<para>height = [positive integer] (required) </para></listitem>
+<listitem>
+<para>depth = [positive integer] (required) </para></listitem>
+<listitem>
+<para>datatype = [UNSIGNED_CHAR | UNSIGNED_BYTE] (default: UNSIGNED_CHAR) </para></listitem>
+</itemizedlist>
+The voxel type is currently assumed to be binary compatible to the <computeroutput>value_type T</computeroutput> of the <computeroutput>MuliArray</computeroutput>. Lines starting with &quot;#&quot; are ignored. </para></listitem>
+</itemizedlist>
+</para><para>In either case, the <computeroutput>volume</computeroutput> will be reshaped to match the count and size of the slices found.</para><para><bold>#include</bold> &lt;<ref refid="multi__impex_8hxx_source" kindref="compound">vigra/multi_impex.hxx</ref>&gt;</para><para>Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="563" bodyend="570"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1gabce131fcb9a3f036e34a3a6722432fcb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Stride</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::importVolume</definition>
+        <argsstring>(VolumeImportInfo const &amp;info, MultiArrayView&lt; 3, T, Stride &gt; &amp;volume)</argsstring>
+        <name>importVolume</name>
+        <param>
+          <type>VolumeImportInfo const &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 3, T, Stride &gt; &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <briefdescription>
+<para>Function for importing a 3D volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>Read the volume data set <computeroutput>info</computeroutput> refers to. Explicit construction of the info object allows to allocate a <computeroutput>volume</computeroutput> object type whose <computeroutput>value_type</computeroutput> matches the voxel type of the stored data. The <computeroutput>volume</computeroutput> will be reshaped to match the count and size of the slices found.</para><para><bold>#include</bold> &lt;<ref refid="multi__impex_8hxx_source" kindref="compound">vigra/multi_impex.hxx</ref>&gt;</para><para>Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="586" bodyend="589"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

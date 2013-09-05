@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::simple_member_dispatch::member_base_type</compoundname>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1load__type" prot="public" virt="non-virtual">simple_member_dispatch::load_type&lt; ACX, T, V &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class ACX</type>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a7b8839a7cde47ce197111f3a8c601f9e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void call</definition>
+        <argsstring>(ACX &amp;, const T &amp;, unsigned)</argsstring>
+        <name>call</name>
+        <param>
+          <type>ACX &amp;</type>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+        </param>
+        <param>
+          <type>unsigned</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="829" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="829" bodyend="829"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a6d2740b8f68fe33ed40358074b06aefe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="826" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="826" bodyend="826"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a63f5b62d9e8fb3d738415252d170c1c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void operator()</definition>
+        <argsstring>(ACX &amp;, const T &amp;)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ACX &amp;</type>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="827" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="827" bodyend="827"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1af90af5c44825b915e7a5afee6091ae50" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void operator()</definition>
+        <argsstring>(const ACX &amp;, const ACX &amp;, const ACX &amp;)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const ACX &amp;</type>
+        </param>
+        <param>
+          <type>const ACX &amp;</type>
+        </param>
+        <param>
+          <type>const ACX &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="828" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="828" bodyend="828"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a1cc6628de6e6bc6eed3bb20aee4d171a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~member_base_type</definition>
+        <argsstring>()</argsstring>
+        <name>~member_base_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="830" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="830" bodyend="830"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="825" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="824" bodyend="831"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a7b8839a7cde47ce197111f3a8c601f9e" prot="public" virt="virtual"><scope>vigra::type_lists::simple_member_dispatch::member_base_type</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a6d2740b8f68fe33ed40358074b06aefe" prot="public" virt="virtual"><scope>vigra::type_lists::simple_member_dispatch::member_base_type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a63f5b62d9e8fb3d738415252d170c1c5" prot="public" virt="virtual"><scope>vigra::type_lists::simple_member_dispatch::member_base_type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1af90af5c44825b915e7a5afee6091ae50" prot="public" virt="virtual"><scope>vigra::type_lists::simple_member_dispatch::member_base_type</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1simple__member__dispatch_1_1member__base__type_1a1cc6628de6e6bc6eed3bb20aee4d171a" prot="public" virt="virtual"><scope>vigra::type_lists::simple_member_dispatch::member_base_type</scope><name>~member_base_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

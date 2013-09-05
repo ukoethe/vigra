@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FoerstnerRingKernelBase" kind="class" prot="public">
+    <compoundname>vigra::FoerstnerRingKernelBase</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">FoerstnerKernelBase</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FoerstnerRingKernelBase_1a7d9075c8c36b5f4251d615d27aac4ff6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FoerstnerRingKernelBase</definition>
+        <argsstring>(double scale)</argsstring>
+        <name>FoerstnerRingKernelBase</name>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="331" bodyend="333"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="327" bodyend="334"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac33b8c57b658d98ba6009b097695ba0c" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>FoerstnerKernelBase</name></member>
+      <member refid="classvigra_1_1FoerstnerRingKernelBase_1a7d9075c8c36b5f4251d615d27aac4ff6" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>FoerstnerRingKernelBase</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a5fc42cc60e9815800e09d6de1010af61" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1aedffe52f50dc6d525d2b310992044172" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>radius_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a9a1247a9213f552c041fd48cbd89042c" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>ResultType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac48d84277177fb97ea8b35297dc3ac28" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>ValueType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1ac0a0084178affd77974808675f63c3f7" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>vectors_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a2855935a4b1218be55d1010ea6eaf855" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>VectorType</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a6b79d1e416a854d01a66c5e29e2a5a94" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>weights_</name></member>
+      <member refid="classvigra_1_1FoerstnerKernelBase_1a7758f4dcb69e626ef0a108cedf1e5c28" prot="public" virt="non-virtual"><scope>vigra::FoerstnerRingKernelBase</scope><name>WeightType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

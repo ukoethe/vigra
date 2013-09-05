@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1multi__math" kind="namespace">
+    <compoundname>vigra::multi_math</compoundname>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathBinaryOperator" prot="public">vigra::multi_math::MultiMathBinaryOperator</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathOperand" prot="public">vigra::multi_math::MultiMathOperand</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01FFTWComplex_3_01Real_01_4_01_4" prot="public">vigra::multi_math::MultiMathOperand&lt; FFTWComplex&lt; Real &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4" prot="public">vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4" prot="public">vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathScalarOperand" prot="public">vigra::multi_math::MultiMathScalarOperand</innerclass>
+    <innerclass refid="structvigra_1_1multi__math_1_1MultiMathUnaryOperator" prot="public">vigra::multi_math::MultiMathUnaryOperator</innerclass>
+    <innernamespace refid="namespacevigra_1_1multi__math_1_1detail">vigra::multi_math::detail</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1adeb573d1651c92c7688cd10079db6148" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::multi_math::all</definition>
+        <argsstring>(MultiMathOperand&lt; T &gt; const &amp;v)</argsstring>
+        <name>all</name>
+        <param>
+          <type>MultiMathOperand&lt; T &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="858" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="857" bodyend="865"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1ae75aca621f8e438389dc27d48cfaceea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::multi_math::any</definition>
+        <argsstring>(MultiMathOperand&lt; T &gt; const &amp;v)</argsstring>
+        <name>any</name>
+        <param>
+          <type>MultiMathOperand&lt; T &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="870" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="869" bodyend="877"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1af3bf5af6cf66322e324cd5481e32df4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>U</type>
+        <definition>U vigra::multi_math::product</definition>
+        <argsstring>(MultiMathOperand&lt; T &gt; const &amp;v, U res=NumericTraits&lt; U &gt;::one())</argsstring>
+        <name>product</name>
+        <param>
+          <type>MultiMathOperand&lt; T &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>res</declname>
+          <defval>NumericTraits&lt; U &gt;::one()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="840" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="839" bodyend="846"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1a63b4f94f024cd5f8b46838cec3f34531" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class S</type>
+          </param>
+        </templateparamlist>
+        <type>U</type>
+        <definition>U vigra::multi_math::product</definition>
+        <argsstring>(MultiArrayView&lt; N, T, S &gt; const &amp;v, U res=NumericTraits&lt; U &gt;::one())</argsstring>
+        <name>product</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, S &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>res</declname>
+          <defval>NumericTraits&lt; U &gt;::one()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="851" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="850" bodyend="853"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1a8d7d245233a0dcd85159082c9eae6d62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>U</type>
+        <definition>U vigra::multi_math::sum</definition>
+        <argsstring>(MultiMathOperand&lt; T &gt; const &amp;v, U res=NumericTraits&lt; U &gt;::zero())</argsstring>
+        <name>sum</name>
+        <param>
+          <type>MultiMathOperand&lt; T &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>res</declname>
+          <defval>NumericTraits&lt; U &gt;::zero()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="822" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="821" bodyend="828"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1multi__math_1af4e13ebc07a381f6d7c84c633fca060f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class S</type>
+          </param>
+        </templateparamlist>
+        <type>U</type>
+        <definition>U vigra::multi_math::sum</definition>
+        <argsstring>(MultiArrayView&lt; N, T, S &gt; const &amp;v, U res=NumericTraits&lt; U &gt;::zero())</argsstring>
+        <name>sum</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, S &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>res</declname>
+          <defval>NumericTraits&lt; U &gt;::zero()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="833" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="832" bodyend="835"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><xrefsect id="todo_1_todo000002"><xreftitle>Todo</xreftitle><xrefdescription><para>looks like the windows CL/cl_platform.h does signed/unsigned strangely, so that the signed properties may not have the right NumericalTraits::isSigned -- not sure if there&apos;s a reason for that. </para></xrefdescription></xrefsect></para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="623"/>
+  </compounddef>
+</doxygen>

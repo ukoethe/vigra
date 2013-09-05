@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1StridePairCoord" kind="struct" prot="public">
+    <compoundname>vigra::StridePairCoord</compoundname>
+    <basecompoundref refid="classvigra_1_1TinyVector" prot="public" virt="non-virtual">TinyVector&lt; double, N &gt;</basecompoundref>
+    <derivedcompoundref refid="structvigra_1_1StridePairDiff" prot="public" virt="non-virtual">StridePairDiff&lt; N &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1StridePairPointer" prot="public" virt="non-virtual">StridePairPointer&lt; N, T &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1StridePairCoord_1ab38aba925f9be6e4e50a777f3c408d69" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; double, N &gt;</type>
+        <definition>typedef TinyVector&lt;double, N&gt; entry_type</definition>
+        <argsstring></argsstring>
+        <name>entry_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1StridePairCoord_1af9f64bc6706a8f906348359271484fdf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; dim0</definition>
+        <argsstring>()</argsstring>
+        <name>dim0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="119" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="118" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1StridePairCoord_1a2ab9bd1e0573b8aa4abe432a418db0e9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double dim0</definition>
+        <argsstring>() const </argsstring>
+        <name>dim0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="122" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1StridePairCoord_1a1319e076f9acb8ef96d9d8bcad36cf51" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StridePairCoord</definition>
+        <argsstring>(const entry_type &amp;c)</argsstring>
+        <name>StridePairCoord</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">entry_type</ref> &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="115" bodyend="115"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1StridePairCoord_1aa84bbea586f1bbe8e0f556f41f3e97f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StridePairCoord</definition>
+        <argsstring>()</argsstring>
+        <name>StridePairCoord</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="116" bodyend="116"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2495">
+        <label>TinyVectorBase&lt; double, SIZE, double[SIZE], TinyVector&lt; double, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+      <node id="2493">
+        <label>StridePairCoord&lt; N &gt;</label>
+        <childnode refid="2494" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2494">
+        <label>TinyVector&lt; double, N &gt;</label>
+        <link refid="classvigra_1_1TinyVector"/>
+        <childnode refid="2495" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2498">
+        <label>TinyVectorBase&lt; double, SIZE, double[SIZE], TinyVector&lt; double, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+      <node id="2496">
+        <label>StridePairCoord&lt; N &gt;</label>
+        <childnode refid="2497" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2497">
+        <label>TinyVector&lt; double, N &gt;</label>
+        <link refid="classvigra_1_1TinyVector"/>
+        <childnode refid="2498" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="112" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="111" bodyend="126"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TinyVectorBase_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVector_1a759c70a07ad662807722c03a28099898" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1TinyVector_1abcf1535411d96307d41df2c089aadc26" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1TinyVector_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1TinyVector_1aa3f1dd1091b459deaab1fa22d8084021" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>copy</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a36e4d11a00a3572c87bf7e913e9b5ca1" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a64ea5854d043d6a5ae6987e997ee39fb" prot="protected" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>data_</name></member>
+      <member refid="classvigra_1_1TinyVector_1aa67da613c17b4ded61f92de19f1961cc" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>difference_type</name></member>
+      <member refid="structvigra_1_1StridePairCoord_1af9f64bc6706a8f906348359271484fdf" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>dim0</name></member>
+      <member refid="structvigra_1_1StridePairCoord_1a2ab9bd1e0573b8aa4abe432a418db0e9" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>dim0</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>end</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>end</name></member>
+      <member refid="structvigra_1_1StridePairCoord_1ab38aba925f9be6e4e50a777f3c408d69" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>entry_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5cdf4fd70a8962218c77deb30edce0b5" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad8e08b8eaa8d5765d11de7344a018613" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVector_1aad33c76f1f18b2e752d92c1c03b20f73" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a0626973e733c59d2dcf29679b6542db3" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>maximum</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ac5b93cc371537a7772a60cc0d3be43f8" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>minimum</name></member>
+      <member refid="classvigra_1_1TinyVector_1ace8fc2dc3b3eea8b1a370233f548095c" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>NormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa88a2ee7578dac50baf55ab6ec2532e5" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a79a2f305963885081f260ab8354bb3e2" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a9bde39ba39082812af1ec50d7dbe8436" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5b918c0cb3d061b9ceb9968ad0bb0e5c" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a2b5024ff0b4ffe93430cf14e39584929" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a050b22df740bf19289a2ef06d33fdab1" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVector_1a3171b3e8894a7cf4fd240875d96877e3" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVector_1ae1607f15b916540c5a1fb644d362f466" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVector_1a226a3f4b47d526610702caa2738358a3" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa2454492558f0f1b146ed554017ca033" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a3b782fefbfb41b6f90a060a292839975" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVector_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1TinyVector_1a6553cf5e426582b760da93d2f1b7636d" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>reference</name></member>
+      <member refid="classvigra_1_1TinyVector_1a903ce05bb2324c24c36b174f56a6d301ae4f124e6e1028007acea275b0a1fa1d8" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>ReverseCopy</name></member>
+      <member refid="classvigra_1_1TinyVector_1a903ce05bb2324c24c36b174f56a6d301" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>ReverseCopyTag</name></member>
+      <member refid="classvigra_1_1TinyVector_1a7e685ff180a0c5fc980bfb154b3bac30" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>scalar_multiplier</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>size</name></member>
+      <member refid="classvigra_1_1TinyVector_1ad9f995eefce4da7a28a1bd801c168e0c" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1TinyVector_1a5b05058c5a4a4de31068b031f7be7f1b" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a84627a72058502328269676b81780f89ad4a8f9f8c603d29a20ca6f9c056dd4da" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>static_size</name></member>
+      <member refid="structvigra_1_1StridePairCoord_1a1319e076f9acb8ef96d9d8bcad36cf51" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>StridePairCoord</name></member>
+      <member refid="structvigra_1_1StridePairCoord_1aa84bbea586f1bbe8e0f556f41f3e97f5" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>StridePairCoord</name></member>
+      <member refid="classvigra_1_1TinyVector_1a0d619106c79b2c05a2d517824c84b4d7" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1ad63e1c90f3c96e348692cf0a9926d911" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1ac56e970db55176861493d7c91c553cbe" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1ad0d832a1b050244940b10567ab83c302" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1af2bdf399dabd31eaa8a19a3029198e72" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1ad551e87362be8826bbafab1513981c21" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1ae93f6df5295ff8a1dd3dda5069093037" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1a2c2b4c129f76203b44510d08bd977377" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1aa8bfb8c5a6b6df453863fa89bcd6edca" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1a3f8067135bd93604bda318c676eee705" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1aef936a2c5fa2e3de4d55e6f2e43d331f" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1adaa6b977d19361598c1f39c76ef3865b" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVector_1af33ba05fb7ae6210290af7816614760e" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVector</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a355d5e31ff587c46c78e44be3db7da83" prot="protected" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>TinyVectorBase</name></member>
+      <member refid="classvigra_1_1TinyVector_1a15eabd051d5bcdcce478c0a509946fca" prot="public" virt="non-virtual"><scope>vigra::StridePairCoord</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

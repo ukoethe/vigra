@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__InspectFunctor" kind="group">
+    <compoundname>InspectFunctor</compoundname>
+    <title>Functors To Inspect Images</title>
+    <innerclass refid="classvigra_1_1ArrayOfRegionStatistics" prot="public">vigra::ArrayOfRegionStatistics</innerclass>
+    <innerclass refid="classvigra_1_1FindAverage" prot="public">vigra::FindAverage</innerclass>
+    <innerclass refid="classvigra_1_1FindAverageAndVariance" prot="public">vigra::FindAverageAndVariance</innerclass>
+    <innerclass refid="classvigra_1_1FindBoundingRectangle" prot="public">vigra::FindBoundingRectangle</innerclass>
+    <innerclass refid="classvigra_1_1FindMinMax" prot="public">vigra::FindMinMax</innerclass>
+    <innerclass refid="classvigra_1_1FindROISize" prot="public">vigra::FindROISize</innerclass>
+    <innerclass refid="classvigra_1_1FindSum" prot="public">vigra::FindSum</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01ArrayOfRegionStatistics_3_01RegionStatistics_00_01LabelType_01_4_01_4" prot="public">vigra::FunctorTraits&lt; ArrayOfRegionStatistics&lt; RegionStatistics, LabelType &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01FindAverage_3_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; FindAverage&lt; VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01FindAverageAndVariance_3_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; FindAverageAndVariance&lt; VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01FindBoundingRectangle_01_4" prot="public">vigra::FunctorTraits&lt; FindBoundingRectangle &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01FindMinMax_3_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01FindROISize_3_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; FindROISize&lt; VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01LastValueFunctor_3_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; LastValueFunctor&lt; VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01ReduceFunctor_3_01FUNCTOR_00_01VALUETYPE_01_4_01_4" prot="public">vigra::FunctorTraits&lt; ReduceFunctor&lt; FUNCTOR, VALUETYPE &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1LastValueFunctor" prot="public">vigra::LastValueFunctor</innerclass>
+    <innerclass refid="classvigra_1_1ReduceFunctor" prot="public">vigra::ReduceFunctor</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__InspectFunctor_1gaa43c1f0fc89a820bc9f6e70ddae29623" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FUNCTOR</type>
+          </param>
+          <param>
+            <type>class VALUETYPE</type>
+          </param>
+        </templateparamlist>
+        <type>ReduceFunctor&lt; FUNCTOR, VALUETYPE &gt;</type>
+        <definition>ReduceFunctor&lt;FUNCTOR, VALUETYPE&gt; vigra::reduceFunctor</definition>
+        <argsstring>(FUNCTOR const &amp;f, VALUETYPE const &amp;initial)</argsstring>
+        <name>reduceFunctor</name>
+        <param>
+          <type>FUNCTOR const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>VALUETYPE const &amp;</type>
+          <declname>initial</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="1803" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="1802" bodyend="1805"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Functors which report image statistics </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

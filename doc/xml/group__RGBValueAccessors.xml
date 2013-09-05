@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RGBValueAccessors" kind="group">
+    <compoundname>RGBValueAccessors</compoundname>
+    <title>Accessors for RGBValue</title>
+    <innerclass refid="classvigra_1_1BlueAccessor" prot="public">vigra::BlueAccessor</innerclass>
+    <innerclass refid="classvigra_1_1GrayToRGBAccessor" prot="public">vigra::GrayToRGBAccessor</innerclass>
+    <innerclass refid="classvigra_1_1GreenAccessor" prot="public">vigra::GreenAccessor</innerclass>
+    <innerclass refid="classvigra_1_1RedAccessor" prot="public">vigra::RedAccessor</innerclass>
+    <innerclass refid="classvigra_1_1RGBAccessor" prot="public">vigra::RGBAccessor</innerclass>
+    <innerclass refid="classvigra_1_1RGBToGrayAccessor" prot="public">vigra::RGBToGrayAccessor</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

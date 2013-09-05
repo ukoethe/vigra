@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BSplineBase" kind="class" prot="public">
+    <compoundname>vigra::BSplineBase</compoundname>
+    <derivedcompoundref refid="classvigra_1_1BSpline" prot="public" virt="non-virtual">BSpline&lt; ORDER, T &gt;</derivedcompoundref>
+    <includes refid="splines_8hxx" local="no">vigra/splines.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>ORDER</declname>
+        <defname>ORDER</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+        <defval>double</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1ae45326fbc1e2bb968bbb688bd8da81f1" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s unary argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="92" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1a9e9bfdf07be793850c9f72f5907c5ab9" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T first_argument_type</definition>
+        <argsstring></argsstring>
+        <name>first_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s first binary argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type (unary and binary) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1a0b7ba84ad055a593f010a3c16905b5f1" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>typedef unsigned int second_argument_type</definition>
+        <argsstring></argsstring>
+        <name>second_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s second binary argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5c" prot="public" static="no">
+        <name>StaticOrder</name>
+        <enumvalue id="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5ca26130503b8ca5a4cf2bacfaf8666e522" prot="public">
+          <name>order</name>
+          <initializer> ORDER</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the spline order </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="104" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1a265a253612b46abed17c61b0a5e5ce30" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the value type if used as a kernel in <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BSplineBase_1abba02cf27af42ca7921c62ed71ce8fa7" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T WeightMatrix[ORDER+1][ORDER+1]</definition>
+        <argsstring>[ORDER+1][ORDER+1]</argsstring>
+        <name>WeightMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BSplineBase_1aede889ebf114de2a4c420d79c1231a8b" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1BSplineBase" kindref="compound">BSplineBase</ref>&lt; ORDER-1, T &gt;</type>
+        <definition>BSplineBase&lt;ORDER-1, T&gt; s1_</definition>
+        <argsstring></argsstring>
+        <name>s1_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="183" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="183" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1ac1446c627cf7a8ec2abd195412759663" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BSplineBase</definition>
+        <argsstring>(unsigned int derivativeOrder=0)</argsstring>
+        <name>BSplineBase</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>derivativeOrder</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create functor for given derivative of the spline. The spline&apos;s order is specified spline by the template argument <computeroutput>ORDER</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="111" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="109" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1adb43d0799ebe95a4baa5adda651f0aa7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int derivativeOrder</definition>
+        <argsstring>() const </argsstring>
+        <name>derivativeOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the derivative order of the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="146" bodyend="147"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1a125f66e1a3dfd9e5621235e8d4fb8b58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(argument_type x) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1ae45326fbc1e2bb968bbb688bd8da81f1" kindref="member">argument_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Unary function call. Returns the value of the spline with the derivative order given in the constructor. Note that only derivatives up to <computeroutput>ORDER-1</computeroutput> are continuous, and derivatives above <computeroutput>ORDER+1</computeroutput> are zero. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="119" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="118" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1a319112fc035f4ba4f23c5e875130fa73" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1a9e9bfdf07be793850c9f72f5907c5ab9" kindref="member">first_argument_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1a0b7ba84ad055a593f010a3c16905b5f1" kindref="member">second_argument_type</ref></type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Binary function call. The given derivative order is added to the derivative order specified in the constructor. Note that only derivatives up to <computeroutput>ORDER-1</computeroutput> are continuous, and derivatives above <computeroutput>ORDER+1</computeroutput> are zero. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="128" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1a9c891605cda7d9543e8ee3e60118a551" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BSplineBase_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref></type>
+        <definition>value_type operator[]</definition>
+        <argsstring>(value_type x) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1a265a253612b46abed17c61b0a5e5ce30" kindref="member">value_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Index operator. Same as unary function call. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="135" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1af9d4bbcb7073e260ae97ad6d2bacfbf0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt;double&gt; const&amp; prefilterCoefficients</definition>
+        <argsstring>() const </argsstring>
+        <name>prefilterCoefficients</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the prefilter coefficients required for interpolation. To interpolate with a B-spline, <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref> can be used. However, the image to be interpolated must be pre-filtered using <ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member">recursiveFilterX()</ref> and <ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member">recursiveFilterY()</ref> with the filter coefficients given by this function. The length of the array corresponds to how many times the above recursive filtering has to be applied (zero length means no prefiltering necessary). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="157" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1a57d76ea64cd2523fcf4d19cc73af0093" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double radius</definition>
+        <argsstring>() const </argsstring>
+        <name>radius</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the required filter radius for a discrete approximation of the spline. Always equal to <computeroutput>(ORDER + 1) / 2.0</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="141" bodyend="142"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="group__MathFunctions_1ga293714b6ca3b96e88f09c9ea1bb78008" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt; double &gt; const &amp; calculatePrefilterCoefficients</definition>
+        <argsstring>()</argsstring>
+        <name>calculatePrefilterCoefficients</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="203" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga5671955d955116c14907bc3ae490e4ea" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>WeightMatrix &amp;</type>
+        <definition>BSplineBase&lt; ORDER, T &gt;::WeightMatrix &amp; calculateWeightMatrix</definition>
+        <argsstring>()</argsstring>
+        <name>calculateWeightMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="224" bodyend="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BSplineBase_1a7d9f5a994381dc8e0b76a4d645dc314f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>WeightMatrix &amp;</type>
+        <definition>static WeightMatrix&amp; weights</definition>
+        <argsstring>()</argsstring>
+        <name>weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the coefficients to transform spline coefficients into the coefficients of the corresponding polynomial. Currently internally used in <ref refid="classvigra_1_1SplineImageView" kindref="compound">SplineImageView</ref>; needs more documentation ??? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="172" bodyend="176"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="group__MathFunctions_1gae431ca135e885013a1010228aa0c190b" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" kindref="member">result_type</ref></type>
+        <definition>BSplineBase&lt; ORDER, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1a9e9bfdf07be793850c9f72f5907c5ab9" kindref="member">first_argument_type</ref></type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1BSplineBase_1a0b7ba84ad055a593f010a3c16905b5f1" kindref="member">second_argument_type</ref></type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="188" bodyend="200"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Basic interface of the spline functors.</para><para>Implements the spline functions defined by the recursion</para><para><formula id="84">\[ B_0(x) = \left\{ \begin{array}{ll} 1 &amp; -\frac{1}{2} \leq x &lt; \frac{1}{2} \\ 0 &amp; \mbox{otherwise} \end{array}\right. \]</formula></para><para>and</para><para><formula id="85">\[ B_n(x) = B_0(x) * B_{n-1}(x) \]</formula></para><para>where * denotes convolution, and <emphasis>n</emphasis> is the spline order given by the template parameter <computeroutput>ORDER</computeroutput>. These spline classes can be used as unary and binary functors, as kernels for <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref>, and as arguments for <ref refid="classvigra_1_1SplineImageView" kindref="compound">vigra::SplineImageView</ref>. Note that the spline order is given as a template argument.</para><para><bold>#include</bold> &lt;<ref refid="splines_8hxx_source" kindref="compound">vigra/splines.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="149">
+        <label>BSplineBase&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSplineBase"/>
+      </node>
+      <node id="150">
+        <label>BSpline&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSpline"/>
+        <childnode refid="149" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="83" bodyend="184"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BSplineBase_1ae45326fbc1e2bb968bbb688bd8da81f1" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1ac1446c627cf7a8ec2abd195412759663" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>BSplineBase</name></member>
+      <member refid="group__MathFunctions_1ga293714b6ca3b96e88f09c9ea1bb78008" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>calculatePrefilterCoefficients</name></member>
+      <member refid="group__MathFunctions_1ga5671955d955116c14907bc3ae490e4ea" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>calculateWeightMatrix</name></member>
+      <member refid="classvigra_1_1BSplineBase_1adb43d0799ebe95a4baa5adda651f0aa7" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>derivativeOrder</name></member>
+      <member refid="group__MathFunctions_1gae431ca135e885013a1010228aa0c190b" prot="protected" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>exec</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a9e9bfdf07be793850c9f72f5907c5ab9" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>first_argument_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a125f66e1a3dfd9e5621235e8d4fb8b58" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a319112fc035f4ba4f23c5e875130fa73" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a9c891605cda7d9543e8ee3e60118a551" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5ca26130503b8ca5a4cf2bacfaf8666e522" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>order</name></member>
+      <member refid="classvigra_1_1BSplineBase_1af9d4bbcb7073e260ae97ad6d2bacfbf0" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>prefilterCoefficients</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a57d76ea64cd2523fcf4d19cc73af0093" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>radius</name></member>
+      <member refid="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aede889ebf114de2a4c420d79c1231a8b" prot="protected" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>s1_</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a0b7ba84ad055a593f010a3c16905b5f1" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>second_argument_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5c" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>StaticOrder</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1abba02cf27af42ca7921c62ed71ce8fa7" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>WeightMatrix</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a7d9f5a994381dc8e0b76a4d645dc314f" prot="public" virt="non-virtual"><scope>vigra::BSplineBase</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

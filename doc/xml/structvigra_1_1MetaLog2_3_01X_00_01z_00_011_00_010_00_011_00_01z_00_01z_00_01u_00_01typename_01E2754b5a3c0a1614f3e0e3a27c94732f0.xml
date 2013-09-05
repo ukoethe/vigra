@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1MetaLog2_3_01X_00_01z_00_011_00_010_00_011_00_01z_00_01z_00_01u_00_01typename_01E2754b5a3c0a1614f3e0e3a27c94732f0" kind="struct" prot="public">
+    <compoundname>vigra::MetaLog2&lt; X, z, 1, 0, 1, z, z, u, typename EnableMetaLog2&lt; X &gt;::type &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class X</type>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>z</declname>
+        <defname>z</defname>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>u</declname>
+        <defname>u</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1MetaLog2_3_01X_00_01z_00_011_00_010_00_011_00_01z_00_01z_00_01u_00_01typename_01E2754b5a3c0a1614f3e0e3a27c94732f0_1a6b44396785639e1104d57739b9f7140c" prot="public" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="642" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="642" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="639" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="638" bodyend="643"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1MetaLog2_3_01X_00_01z_00_011_00_010_00_011_00_01z_00_01z_00_01u_00_01typename_01E2754b5a3c0a1614f3e0e3a27c94732f0_1a6b44396785639e1104d57739b9f7140c" prot="public" virt="non-virtual"><scope>vigra::MetaLog2&lt; X, z, 1, 0, 1, z, z, u, typename EnableMetaLog2&lt; X &gt;::type &gt;</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,609 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="linear__algebra_8hxx" kind="file">
+    <compoundname>linear_algebra.hxx</compoundname>
+    <includes refid="matrix_8hxx" local="yes">matrix.hxx</includes>
+    <includes refid="linear__solve_8hxx" local="yes">linear_solve.hxx</includes>
+    <includes refid="eigensystem_8hxx" local="yes">eigensystem.hxx</includes>
+    <incdepgraph>
+      <node id="3948">
+        <label>multi_pointoperators.hxx</label>
+        <link refid="multi__pointoperators_8hxx_source"/>
+        <childnode refid="3944" relation="include">
+        </childnode>
+        <childnode refid="3949" relation="include">
+        </childnode>
+        <childnode refid="3950" relation="include">
+        </childnode>
+        <childnode refid="3953" relation="include">
+        </childnode>
+        <childnode refid="3951" relation="include">
+        </childnode>
+        <childnode refid="3906" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3931" relation="include">
+        </childnode>
+      </node>
+      <node id="3932">
+        <label>functional</label>
+      </node>
+      <node id="3905">
+        <label>iomanip</label>
+      </node>
+      <node id="3915">
+        <label>limits</label>
+      </node>
+      <node id="3919">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3915" relation="include">
+        </childnode>
+      </node>
+      <node id="3933">
+        <label>iterator</label>
+      </node>
+      <node id="3906">
+        <label>multi_array.hxx</label>
+        <link refid="multi__array_8hxx_source"/>
+        <childnode refid="3907" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3909" relation="include">
+        </childnode>
+        <childnode refid="3923" relation="include">
+        </childnode>
+        <childnode refid="3939" relation="include">
+        </childnode>
+        <childnode refid="3941" relation="include">
+        </childnode>
+        <childnode refid="3942" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3946" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+      </node>
+      <node id="3931">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="3910" relation="include">
+        </childnode>
+      </node>
+      <node id="3920">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="3944">
+        <label>initimage.hxx</label>
+        <link refid="initimage_8hxx_source"/>
+        <childnode refid="3943" relation="include">
+        </childnode>
+        <childnode refid="3936" relation="include">
+        </childnode>
+        <childnode refid="3945" relation="include">
+        </childnode>
+      </node>
+      <node id="3930">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="3919" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3931" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3932" relation="include">
+        </childnode>
+        <childnode refid="3933" relation="include">
+        </childnode>
+      </node>
+      <node id="3903">
+        <label>cmath</label>
+      </node>
+      <node id="3913">
+        <label>stdexcept</label>
+      </node>
+      <node id="3945">
+        <label>functortraits.hxx</label>
+        <link refid="functortraits_8hxx_source"/>
+        <childnode refid="3932" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+      </node>
+      <node id="3901">
+        <label>vigra/linear_algebra.hxx</label>
+        <link refid="linear_algebra.hxx"/>
+        <childnode refid="3902" relation="include">
+        </childnode>
+        <childnode refid="3954" relation="include">
+        </childnode>
+        <childnode refid="3958" relation="include">
+        </childnode>
+      </node>
+      <node id="3935">
+        <label>iteratortags.hxx</label>
+        <link refid="iteratortags_8hxx_source"/>
+        <childnode refid="3933" relation="include">
+        </childnode>
+      </node>
+      <node id="3927">
+        <label>string</label>
+      </node>
+      <node id="3949">
+        <label>copyimage.hxx</label>
+        <link refid="copyimage_8hxx_source"/>
+        <childnode refid="3943" relation="include">
+        </childnode>
+      </node>
+      <node id="3941">
+        <label>basicimageview.hxx</label>
+        <link refid="basicimageview_8hxx_source"/>
+        <childnode refid="3942" relation="include">
+        </childnode>
+        <childnode refid="3944" relation="include">
+        </childnode>
+      </node>
+      <node id="3936">
+        <label>iteratortraits.hxx</label>
+        <link refid="iteratortraits_8hxx_source"/>
+        <childnode refid="3909" relation="include">
+        </childnode>
+        <childnode refid="3937" relation="include">
+        </childnode>
+      </node>
+      <node id="3954">
+        <label>linear_solve.hxx</label>
+        <link refid="linear__solve_8hxx_source"/>
+        <childnode refid="3955" relation="include">
+        </childnode>
+        <childnode refid="3927" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+        <childnode refid="3902" relation="include">
+        </childnode>
+        <childnode refid="3956" relation="include">
+        </childnode>
+      </node>
+      <node id="3917">
+        <label>cfloat</label>
+      </node>
+      <node id="3956">
+        <label>singular_value_decomposition.hxx</label>
+        <link refid="singular__value__decomposition_8hxx_source"/>
+        <childnode refid="3902" relation="include">
+        </childnode>
+        <childnode refid="3957" relation="include">
+        </childnode>
+      </node>
+      <node id="3943">
+        <label>utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3925" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3921" relation="include">
+        </childnode>
+        <childnode refid="3934" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+        <childnode refid="3927" relation="include">
+        </childnode>
+        <childnode refid="3926" relation="include">
+        </childnode>
+      </node>
+      <node id="3912">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="3950">
+        <label>transformimage.hxx</label>
+        <link refid="transformimage_8hxx_source"/>
+        <childnode refid="3943" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3936" relation="include">
+        </childnode>
+        <childnode refid="3939" relation="include">
+        </childnode>
+        <childnode refid="3945" relation="include">
+        </childnode>
+        <childnode refid="3951" relation="include">
+        </childnode>
+      </node>
+      <node id="3921">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="3922" relation="include">
+        </childnode>
+      </node>
+      <node id="3923">
+        <label>tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3924" relation="include">
+        </childnode>
+        <childnode refid="3904" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3925" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3928" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+        <childnode refid="3934" relation="include">
+        </childnode>
+      </node>
+      <node id="3947">
+        <label>sys/types.h</label>
+      </node>
+      <node id="3951">
+        <label>inspectimage.hxx</label>
+        <link refid="inspectimage_8hxx_source"/>
+        <childnode refid="3952" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3943" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3936" relation="include">
+        </childnode>
+        <childnode refid="3945" relation="include">
+        </childnode>
+        <childnode refid="3939" relation="include">
+        </childnode>
+        <childnode refid="3931" relation="include">
+        </childnode>
+      </node>
+      <node id="3929">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3924" relation="include">
+        </childnode>
+        <childnode refid="3918" relation="include">
+        </childnode>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3925" relation="include">
+        </childnode>
+        <childnode refid="3921" relation="include">
+        </childnode>
+        <childnode refid="3919" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3930" relation="include">
+        </childnode>
+      </node>
+      <node id="3911">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="3912" relation="include">
+        </childnode>
+        <childnode refid="3913" relation="include">
+        </childnode>
+      </node>
+      <node id="3916">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="3914" relation="include">
+        </childnode>
+        <childnode refid="3915" relation="include">
+        </childnode>
+        <childnode refid="3917" relation="include">
+        </childnode>
+        <childnode refid="3918" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3919" relation="include">
+        </childnode>
+        <childnode refid="3920" relation="include">
+        </childnode>
+      </node>
+      <node id="3952">
+        <label>vector</label>
+      </node>
+      <node id="3942">
+        <label>imageiterator.hxx</label>
+        <link refid="imageiterator_8hxx_source"/>
+        <childnode refid="3943" relation="include">
+        </childnode>
+        <childnode refid="3909" relation="include">
+        </childnode>
+        <childnode refid="3936" relation="include">
+        </childnode>
+        <childnode refid="3910" relation="include">
+        </childnode>
+      </node>
+      <node id="3938">
+        <label>iteratoradapter.hxx</label>
+        <link refid="iteratoradapter_8hxx_source"/>
+      </node>
+      <node id="3937">
+        <label>imageiteratoradapter.hxx</label>
+        <link refid="imageiteratoradapter_8hxx_source"/>
+        <childnode refid="3933" relation="include">
+        </childnode>
+      </node>
+      <node id="3922">
+        <label>utility</label>
+      </node>
+      <node id="3926">
+        <label>sstream</label>
+      </node>
+      <node id="3939">
+        <label>rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3924" relation="include">
+        </childnode>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3909" relation="include">
+        </childnode>
+        <childnode refid="3923" relation="include">
+        </childnode>
+        <childnode refid="3940" relation="include">
+        </childnode>
+      </node>
+      <node id="3934">
+        <label>diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3904" relation="include">
+        </childnode>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3935" relation="include">
+        </childnode>
+        <childnode refid="3936" relation="include">
+        </childnode>
+        <childnode refid="3938" relation="include">
+        </childnode>
+        <childnode refid="3921" relation="include">
+        </childnode>
+      </node>
+      <node id="3925">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="3913" relation="include">
+        </childnode>
+        <childnode refid="3926" relation="include">
+        </childnode>
+        <childnode refid="3927" relation="include">
+        </childnode>
+        <childnode refid="3911" relation="include">
+        </childnode>
+      </node>
+      <node id="3940">
+        <label>static_assert.hxx</label>
+        <link refid="static__assert_8hxx_source"/>
+      </node>
+      <node id="3957">
+        <label>array_vector.hxx</label>
+        <link refid="array__vector_8hxx_source"/>
+        <childnode refid="3925" relation="include">
+        </childnode>
+        <childnode refid="3928" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3907" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3904" relation="include">
+        </childnode>
+      </node>
+      <node id="3904">
+        <label>iosfwd</label>
+      </node>
+      <node id="3924">
+        <label>cstdlib</label>
+      </node>
+      <node id="3946">
+        <label>multi_iterator.hxx</label>
+        <link refid="multi__iterator_8hxx_source"/>
+        <childnode refid="3947" relation="include">
+        </childnode>
+        <childnode refid="3923" relation="include">
+        </childnode>
+        <childnode refid="3935" relation="include">
+        </childnode>
+      </node>
+      <node id="3955">
+        <label>ctype.h</label>
+      </node>
+      <node id="3914">
+        <label>climits</label>
+      </node>
+      <node id="3910">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="3911" relation="include">
+        </childnode>
+        <childnode refid="3914" relation="include">
+        </childnode>
+        <childnode refid="3915" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+      </node>
+      <node id="3958">
+        <label>eigensystem.hxx</label>
+        <link refid="eigensystem_8hxx_source"/>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3918" relation="include">
+        </childnode>
+        <childnode refid="3902" relation="include">
+        </childnode>
+        <childnode refid="3957" relation="include">
+        </childnode>
+        <childnode refid="3959" relation="include">
+        </childnode>
+      </node>
+      <node id="3953">
+        <label>combineimages.hxx</label>
+        <link refid="combineimages_8hxx_source"/>
+        <childnode refid="3943" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3945" relation="include">
+        </childnode>
+        <childnode refid="3903" relation="include">
+        </childnode>
+      </node>
+      <node id="3918">
+        <label>complex</label>
+      </node>
+      <node id="3902">
+        <label>matrix.hxx</label>
+        <link refid="matrix_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3904" relation="include">
+        </childnode>
+        <childnode refid="3905" relation="include">
+        </childnode>
+        <childnode refid="3906" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3948" relation="include">
+        </childnode>
+      </node>
+      <node id="3908">
+        <label>algorithm</label>
+      </node>
+      <node id="3928">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="3910" relation="include">
+        </childnode>
+      </node>
+      <node id="3909">
+        <label>accessor.hxx</label>
+        <link refid="accessor_8hxx_source"/>
+        <childnode refid="3910" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3921" relation="include">
+        </childnode>
+      </node>
+      <node id="3907">
+        <label>memory</label>
+      </node>
+      <node id="3959">
+        <label>polynomial.hxx</label>
+        <link refid="polynomial_8hxx_source"/>
+        <childnode refid="3903" relation="include">
+        </childnode>
+        <childnode refid="3918" relation="include">
+        </childnode>
+        <childnode refid="3908" relation="include">
+        </childnode>
+        <childnode refid="3904" relation="include">
+        </childnode>
+        <childnode refid="3925" relation="include">
+        </childnode>
+        <childnode refid="3929" relation="include">
+        </childnode>
+        <childnode refid="3916" relation="include">
+        </childnode>
+        <childnode refid="3957" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>2004<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_LINEAR_ALGEBRA_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_LINEAR_ALGEBRA_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;matrix.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;linear_solve.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;eigensystem.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_LINEAR_ALGEBRA_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/linear_algebra.hxx"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,559 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiArrayDistanceTransform" kind="group">
+    <compoundname>MultiArrayDistanceTransform</compoundname>
+    <title>Euclidean distance transform for multi-dimensional arrays.</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistance</definition>
+        <argsstring>(...)</argsstring>
+        <name>separableMultiDistance</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Euclidean distance on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>explicitly<sp/>specify<sp/>pixel<sp/>pitch<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Array&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" kindref="member" tooltip="Euclidean distance on multi-dimensional arrays.">separableMultiDistance</ref>(<sp/>SrcIterator<sp/>s,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>pixelPitch);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>pixel<sp/>pitch<sp/>=<sp/>1.0<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" kindref="member" tooltip="Euclidean distance on multi-dimensional arrays.">separableMultiDistance</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>explicitly<sp/>specify<sp/>pixel<sp/>pitch<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Array&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" kindref="member" tooltip="Euclidean distance on multi-dimensional arrays.">separableMultiDistance</ref>(<sp/>triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>pixelPitch);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>pixel<sp/>pitch<sp/>=<sp/>1.0<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" kindref="member" tooltip="Euclidean distance on multi-dimensional arrays.">separableMultiDistance</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This function performs a Euclidean distance transform on the given multi-dimensional array. It simply calls <ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member">separableMultiDistSquared()</ref> and takes the pixel-wise square root of the result. See <ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member">separableMultiDistSquared()</ref> for more documentation.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__distance_8hxx_source" kindref="compound">vigra/multi_distance.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>float&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Calculate<sp/>Euclidean<sp/>distance<sp/>squared<sp/>for<sp/>all<sp/>background<sp/>pixels<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">separableMultiDistance(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__DistanceTransform_1gad481d272471bfa808196959dffca524b" kindref="member">vigra::distanceTransform()</ref>, <ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member">vigra::separableMultiDistSquared()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="507"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gaaf6d97fdaadb86ea76852a9dfe8a3edd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistance</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, bool background, Array const &amp;pixelPitch)</argsstring>
+        <name>separableMultiDistance</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>pixelPitch</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="514" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="511" bodyend="521"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1ga6744bae0a65efce979b983adaf1137fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistance</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, bool background)</argsstring>
+        <name>separableMultiDistance</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="527" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="525" bodyend="534"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1ga4f899d52fca1dc0c1aa7ad65f578a41b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistance</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, bool background, Array const &amp;pixelPitch)</argsstring>
+        <name>separableMultiDistance</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>pixelPitch</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="538" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gae5293d72762d5c2e22b83632bd80a3e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistance</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, bool background)</argsstring>
+        <name>separableMultiDistance</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="548" bodyend="553"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistSquared</definition>
+        <argsstring>(...)</argsstring>
+        <name>separableMultiDistSquared</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Euclidean distance squared on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm is taken from Donald Bailey: &quot;An Efficient Euclidean Distance Transform&quot;, Proc. IWCIA&apos;04, Springer LNCS 3322, 2004.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>explicitly<sp/>specify<sp/>pixel<sp/>pitch<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Array&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member" tooltip="Euclidean distance squared on multi-dimensional arrays.">separableMultiDistSquared</ref>(<sp/>SrcIterator<sp/>s,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>d,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>pixelPitch);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>pixel<sp/>pitch<sp/>=<sp/>1.0<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member" tooltip="Euclidean distance squared on multi-dimensional arrays.">separableMultiDistSquared</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>explicitly<sp/>specify<sp/>pixel<sp/>pitch<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Array&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member" tooltip="Euclidean distance squared on multi-dimensional arrays.">separableMultiDistSquared</ref>(<sp/>triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Array<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>pixelPitch);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>pixel<sp/>pitch<sp/>=<sp/>1.0<sp/>for<sp/>each<sp/>coordinate</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayDistanceTransform_1gaae083ae030d660264b728eef8a0f5b46" kindref="member" tooltip="Euclidean distance squared on multi-dimensional arrays.">separableMultiDistSquared</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>background);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>This function performs a squared Euclidean squared distance transform on the given multi-dimensional array. Both source and destination arrays are represented by iterators, shape objects and accessors. The destination array is required to already have the correct size.</para><para>This function expects a mask as its source, where background pixels are marked as zero, and non-background pixels as non-zero. If the parameter <emphasis>background</emphasis> is true, then the squared distance of all background pixels to the nearest object is calculated. Otherwise, the distance of all object pixels to the nearest background pixel is calculated.</para><para>Optionally, one can pass an array that specifies the pixel pitch in each direction. This is necessary when the data have non-uniform resolution (as is common in confocal microscopy, for example).</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A full-sized internal array is only allocated if working on the destination array directly would cause overflow errors (i.e. if <computeroutput> <ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">NumericTraits&lt;typename DestAccessor::value_type&gt;::max()</ref> &lt; N * M*M</computeroutput>, where M is the size of the largest dimension of the array.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__distance_8hxx_source" kindref="compound">vigra/multi_distance.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>int&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Calculate<sp/>Euclidean<sp/>distance<sp/>squared<sp/>for<sp/>all<sp/>background<sp/>pixels<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">separableMultiDistSquared(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__DistanceTransform_1gad481d272471bfa808196959dffca524b" kindref="member">vigra::distanceTransform()</ref>, <ref refid="group__MultiArrayDistanceTransform_1gac5b055757926655498f70c6253761e27" kindref="member">vigra::separableMultiDistance()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="337"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gab618df915f9a38a944648b1793e18b7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistSquared</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, bool background, Array const &amp;pixelPitch)</argsstring>
+        <name>separableMultiDistSquared</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>pixelPitch</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="341" bodyend="399"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1ga0d6bfd48432991894a7aa2e5a2dd0c3c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistSquared</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, bool background, Array const &amp;pixelPitch)</argsstring>
+        <name>separableMultiDistSquared</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>pixelPitch</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="406" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="403" bodyend="409"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gaddbb036ef7c593a680f34e43fb2289c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistSquared</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, bool background)</argsstring>
+        <name>separableMultiDistSquared</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="416" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="414" bodyend="419"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayDistanceTransform_1gaef7b23a61598219b5f2d403af2a6a79e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableMultiDistSquared</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, bool background)</argsstring>
+        <name>separableMultiDistSquared</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>background</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_distance.hxx" bodystart="423" bodyend="428"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>These functions perform the Euclidean distance transform an arbitrary dimensional array that is specified by iterators (compatible to <ref refid="MultiIteratorPage" kindref="compound">Multi-dimensional Array Iterators</ref>) and shape objects. It can therefore be applied to a wide range of data structures (<ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>, <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> etc.). </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

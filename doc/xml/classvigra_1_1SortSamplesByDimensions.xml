@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SortSamplesByDimensions" kind="class" prot="public">
+    <compoundname>vigra::SortSamplesByDimensions</compoundname>
+    <includes refid="rf__split_8hxx" local="no">vigra/random_forest/rf_split.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class DataMatrix</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SortSamplesByDimensions_1abaa8134f48160073cc59674c57f4263e" prot="private" static="no" mutable="no">
+        <type>DataMatrix const &amp;</type>
+        <definition>DataMatrix const&amp; data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SortSamplesByDimensions_1a1de6102e6d91e491dc6e6546821e0754" prot="private" static="no" mutable="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex sortColumn_</definition>
+        <argsstring></argsstring>
+        <name>sortColumn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SortSamplesByDimensions_1add7b8e2e553f2f84fbb015ff487e9d15" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double thresVal_</definition>
+        <argsstring></argsstring>
+        <name>thresVal_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="205" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="205" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByDimensions_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(MultiArrayIndex l, MultiArrayIndex r) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="225" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByDimensions_1ace491338940cb36ba7a5e25a92eedee5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(MultiArrayIndex l) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="230" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="229" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByDimensions_1a0b6322675e50131299077d14ed240ad0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setColumn</definition>
+        <argsstring>(MultiArrayIndex sortColumn)</argsstring>
+        <name>setColumn</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>sortColumn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="216" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByDimensions_1a262bb3373d61f1df596be635602eb4c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setThreshold</definition>
+        <argsstring>(double value)</argsstring>
+        <name>setThreshold</name>
+        <param>
+          <type>double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="220" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByDimensions_1a947557b1db69a25b247c66bb6f0ca5c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SortSamplesByDimensions</definition>
+        <argsstring>(DataMatrix const &amp;data, MultiArrayIndex sortColumn, double thresVal=0.0)</argsstring>
+        <name>SortSamplesByDimensions</name>
+        <param>
+          <type>DataMatrix const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>sortColumn</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>thresVal</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="208" bodyend="214"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Functor to sort the indices of a feature Matrix by a certain dimension </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="201" bodyend="233"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1abaa8134f48160073cc59674c57f4263e" prot="private" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>data_</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1ace491338940cb36ba7a5e25a92eedee5" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1a0b6322675e50131299077d14ed240ad0" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>setColumn</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1a262bb3373d61f1df596be635602eb4c2" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>setThreshold</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1a1de6102e6d91e491dc6e6546821e0754" prot="private" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>sortColumn_</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1a947557b1db69a25b247c66bb6f0ca5c9" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>SortSamplesByDimensions</name></member>
+      <member refid="classvigra_1_1SortSamplesByDimensions_1add7b8e2e553f2f84fbb015ff487e9d15" prot="private" virt="non-virtual"><scope>vigra::SortSamplesByDimensions</scope><name>thresVal_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

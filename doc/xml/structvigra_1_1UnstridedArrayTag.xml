@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1UnstridedArrayTag" kind="struct" prot="public">
+    <compoundname>vigra::UnstridedArrayTag</compoundname>
+    <includes refid="metaprogramming_8hxx" local="no">vigra/metaprogramming.hxx</includes>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><verbatim>tag for marking a MultiArray unstrided.
+</verbatim></para><para><bold>#include</bold> &lt;<ref refid="multi__array_8hxx_source" kindref="compound">vigra/multi_array.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="117" bodyend="117"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

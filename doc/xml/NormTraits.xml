@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="NormTraits" kind="page">
+    <compoundname>NormTraits</compoundname>
+    <title>template&lt;&gt; struct NormTraits&lt;ArithmeticType&gt;</title>
+    <detaileddescription>
+<para>Unary traits for the calculation of the norm and squared norm of arithmetic objects.</para><para><bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>This traits class is used to determine appropriate result types for the functions <ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member">norm()</ref> and <ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member">squaredNorm()</ref>. These functions are always declared like this (where <computeroutput>ArithmeticType</computeroutput> is a type that supports a norm):</para><para><programlisting><codeline><highlight class="normal">NormTraits&lt;ArithmeticType&gt;::NormType<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member" tooltip="norm (= magnitude)">norm</ref>(ArithmeticType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>t);</highlight></codeline>
+<codeline><highlight class="normal">NormTraits&lt;ArithmeticType&gt;::SquaredNormType<sp/><ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member" tooltip="squared norm (= squared magnitude)">squaredNorm</ref>(ArithmeticType<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>t);</highlight></codeline>
+</programlisting></para><para>The following members are defined in <bold> <computeroutput>NormTraits&lt;ArithmeticType&gt;</computeroutput></bold>:</para><para><table rows="3" cols="2"><row>
+<entry thead="no"><para><bold> <computeroutput>typedef ArithmeticType Type;</computeroutput></bold> </para></entry><entry thead="no"><para>the type itself  </para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... SquaredNormType;</computeroutput></bold> </para></entry><entry thead="no"><para>result of <computeroutput>squaredNorm(ArithmeticType)</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... NormType;</computeroutput></bold> </para></entry><entry thead="no"><para>result of <computeroutput>norm(ArithmeticType)</computeroutput><linebreak/>
+ Usually equal to <computeroutput>SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult</computeroutput>  </para></entry></row>
+</table>
+</para><para>NormTraits for the built-in types are defined in <bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

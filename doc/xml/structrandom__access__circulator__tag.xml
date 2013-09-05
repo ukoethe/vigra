@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structrandom__access__circulator__tag" kind="struct" prot="public">
+    <compoundname>random_access_circulator_tag</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/iteratortags.hxx" line="49" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/iteratortags.hxx" bodystart="49" bodyend="49"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CoordinateSteps" kind="struct" prot="public">
+    <compoundname>vigra::CoordinateSteps</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1CoordinateSteps_1ac2dc8cbe358a1d69d067fc8abcb54ba8" prot="public" static="no">
+        <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; double, N &gt; &amp;</type>
+        <definition>typedef const TinyVector&lt;double, N&gt;&amp; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="574" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="573" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="572" bodyend="575"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CoordinateSteps_1ac2dc8cbe358a1d69d067fc8abcb54ba8" prot="public" virt="non-virtual"><scope>vigra::CoordinateSteps</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

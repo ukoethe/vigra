@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiIteratorGroup" kind="group">
+    <compoundname>MultiIteratorGroup</compoundname>
+    <title>Multi-dimensional Array Iterators</title>
+    <innerclass refid="classvigra_1_1MultiArrayShape" prot="public">vigra::MultiArrayShape</innerclass>
+    <innerclass refid="classvigra_1_1MultiIterator" prot="public">vigra::MultiIterator</innerclass>
+    <innerclass refid="classvigra_1_1MultiIterator_3_011_00_01T_00_01REFERENCE_00_01POINTER_01_4" prot="public">vigra::MultiIterator&lt; 1, T, REFERENCE, POINTER &gt;</innerclass>
+    <innerclass refid="classvigra_1_1MultiIterator_3_012_00_01T_00_01REFERENCE_00_01POINTER_01_4" prot="public">vigra::MultiIterator&lt; 2, T, REFERENCE, POINTER &gt;</innerclass>
+    <innerclass refid="structvigra_1_1MultiIteratorStrideTraits" prot="public">vigra::MultiIteratorStrideTraits</innerclass>
+    <innerclass refid="classvigra_1_1StridedMultiIterator" prot="public">vigra::StridedMultiIterator</innerclass>
+    <innerclass refid="classvigra_1_1StridedMultiIterator_3_011_00_01T_00_01REFERENCE_00_01POINTER_01_4" prot="public">vigra::StridedMultiIterator&lt; 1, T, REFERENCE, POINTER &gt;</innerclass>
+    <innerclass refid="classvigra_1_1StridedMultiIterator_3_012_00_01T_00_01REFERENCE_00_01POINTER_01_4" prot="public">vigra::StridedMultiIterator&lt; 2, T, REFERENCE, POINTER &gt;</innerclass>
+    <innerclass refid="classvigra_1_1StridedScanOrderIterator" prot="public">vigra::StridedScanOrderIterator</innerclass>
+    <innerclass refid="classvigra_1_1StridedScanOrderIterator_3_01N_00_01T_00_01REFERENCE_00_01POINTER_00_011_01_4" prot="public">vigra::StridedScanOrderIterator&lt; N, T, REFERENCE, POINTER, 1 &gt;</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" prot="public" static="no">
+        <type>std::ptrdiff_t</type>
+        <definition>typedef std::ptrdiff_t MultiArrayIndex</definition>
+        <argsstring></argsstring>
+        <name>MultiArrayIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Index type for a single dimension of a <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> or <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="346" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1gaf6799170bf47f30c42a3f164f6ccf8ce" prot="public" static="no">
+        <type>MultiArrayShape&lt; 1 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;1&gt;::type Shape1</definition>
+        <argsstring></argsstring>
+        <name>Shape1</name>
+        <briefdescription>
+<para>shape type for MultiArray&lt;1, T&gt; </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="361" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" prot="public" static="no">
+        <type>MultiArrayShape&lt; 2 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;2&gt;::type Shape2</definition>
+        <argsstring></argsstring>
+        <name>Shape2</name>
+        <briefdescription>
+<para>shape type for <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray&lt;2, T&gt;</ref> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1gac70cfe6730d928789a2b3ce1f37ae379" prot="public" static="no">
+        <type>MultiArrayShape&lt; 3 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;3&gt;::type Shape3</definition>
+        <argsstring></argsstring>
+        <name>Shape3</name>
+        <briefdescription>
+<para>shape type for MultiArray&lt;3, T&gt; </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="363" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1ga32d5611234a997a33e239ff31b773628" prot="public" static="no">
+        <type>MultiArrayShape&lt; 4 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;4&gt;::type Shape4</definition>
+        <argsstring></argsstring>
+        <name>Shape4</name>
+        <briefdescription>
+<para>shape type for MultiArray&lt;4, T&gt; </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="364" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="364" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MultiIteratorGroup_1ga5eb712151ca3fc644d569dee5723f67c" prot="public" static="no">
+        <type>MultiArrayShape&lt; 5 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;5&gt;::type Shape5</definition>
+        <argsstring></argsstring>
+        <name>Shape5</name>
+        <briefdescription>
+<para>shape type for MultiArray&lt;5, T&gt; </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="365" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="365" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>General iterators for arrays of arbitrary dimension. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

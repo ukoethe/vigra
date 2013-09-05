@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MappedBucketQueue" kind="class" prot="public">
+    <compoundname>vigra::MappedBucketQueue</compoundname>
+    <basecompoundref refid="classvigra_1_1BucketQueue" prot="public" virt="non-virtual">vigra::BucketQueue&lt; ValueType, Ascending &gt;</basecompoundref>
+    <includes refid="bucket__queue_8hxx" local="no">vigra/bucket_queue.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class ValueType</type>
+      </param>
+      <param>
+        <type>class PriorityFunctor</type>
+      </param>
+      <param>
+        <type>bool</type>
+        <declname>Ascending</declname>
+        <defname>Ascending</defname>
+        <defval>false</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1ab933a4dc6b91d4c1584a7294675685fa" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BucketQueue" kindref="compound">BucketQueue</ref>&lt; ValueType, Ascending &gt;</type>
+        <definition>typedef BucketQueue&lt;ValueType, Ascending&gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="239" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" static="no">
+        <type>BaseType::const_reference</type>
+        <definition>typedef BaseType::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="242" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1a1c21b3998ab89054b3ab0afcdc0cbb42" prot="public" static="no">
+        <type>BaseType::priority_type</type>
+        <definition>typedef BaseType::priority_type priority_type</definition>
+        <argsstring></argsstring>
+        <name>priority_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1a6553cf5e426582b760da93d2f1b7636d" prot="public" static="no">
+        <type>BaseType::reference</type>
+        <definition>typedef BaseType::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="241" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1ad9f995eefce4da7a28a1bd801c168e0c" prot="public" static="no">
+        <type>BaseType::size_type</type>
+        <definition>typedef BaseType::size_type size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="243" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MappedBucketQueue_1a15eabd051d5bcdcce478c0a509946fca" prot="public" static="no">
+        <type>BaseType::value_type</type>
+        <definition>typedef BaseType::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="240" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="240" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MappedBucketQueue_1a32c7e067f38885cd2a6cdf47469508f9" prot="private" static="no" mutable="no">
+        <type>PriorityFunctor</type>
+        <definition>PriorityFunctor get_priority_</definition>
+        <argsstring></argsstring>
+        <name>get_priority_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="235" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="235" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1MappedBucketQueue_1a06ea65876f7f6ca682627b157c2c191d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MappedBucketQueue</definition>
+        <argsstring>(unsigned int bucket_count=256, PriorityFunctor const &amp;priority=PriorityFunctor())</argsstring>
+        <name>MappedBucketQueue</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>bucket_count</declname>
+          <defval>256</defval>
+        </param>
+        <param>
+          <type>PriorityFunctor const &amp;</type>
+          <declname>priority</declname>
+          <defval>PriorityFunctor()</defval>
+        </param>
+        <briefdescription>
+<para>Create a queue with. </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>bucket_count entries. Priorities will be computed by the <computeroutput>PriorityFunctor</computeroutput> given in </para></listitem>
+<listitem><para>priority (i.e. <computeroutput>priority(v)</computeroutput> must result in an integer, where <computeroutput>v</computeroutput> is an instance of <computeroutput>ValueType</computeroutput>). </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="251" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MappedBucketQueue_1a545a00ccbe7317d45342ef2f72c16180" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void push</definition>
+        <argsstring>(value_type const &amp;v)</argsstring>
+        <name>push</name>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+<para>Insert new element. </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>v. Its priority is calculated by <computeroutput>priority(v)</computeroutput>, where <computeroutput>priority</computeroutput> is an instance of the <computeroutput>PriorityFunctor</computeroutput> passed in the constructor. If the priority is outside the range <computeroutput>[0, ..., bucket_count-1]</computeroutput>, it is clamped to the range borders. </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="264" bodyend="275"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Priority queue implemented using bucket sort (STL compatible). </para>    </briefdescription>
+    <detaileddescription>
+<para>This template is compatible to <computeroutput><ulink url="http://www.sgi.com/tech/stl/priority_queue.html">std::priority_queue</ulink></computeroutput>, but uses a more efficient algorithm based on bucket sort. It us used like <ref refid="classvigra_1_1BucketQueue" kindref="compound">vigra::BucketQueue</ref>, but has an additional <computeroutput>PriorityFunctor</computeroutput> which extracts the priority value of an element of type <computeroutput>ValueType</computeroutput>. Thus functor is called within <computeroutput>push</computeroutput> so that it does not need an extra argument.</para><para><bold>#include</bold> &lt;<ref refid="bucket__queue_8hxx_source" kindref="compound">vigra/bucket_queue.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="1029">
+        <label>MappedBucketQueue&lt; ValueType, PriorityFunctor, Ascending &gt;</label>
+        <link refid="classvigra_1_1MappedBucketQueue"/>
+        <childnode refid="1030" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1030">
+        <label>BucketQueue&lt; ValueType, Ascending &gt;</label>
+        <link refid="classvigra_1_1BucketQueue"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1031">
+        <label>MappedBucketQueue&lt; ValueType, PriorityFunctor, Ascending &gt;</label>
+        <link refid="classvigra_1_1MappedBucketQueue"/>
+        <childnode refid="1032" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1032">
+        <label>BucketQueue&lt; ValueType, Ascending &gt;</label>
+        <link refid="classvigra_1_1BucketQueue"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="232" bodyend="276"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MappedBucketQueue_1ab933a4dc6b91d4c1584a7294675685fa" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1BucketQueue_1a21c09d871bbd44d1e19d66558e21e579" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>BucketQueue</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a504a3c1d1bd2155019beb41c62fa874d" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1BucketQueue_1ac6e61de369e994009e36f344f99c15ad" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>empty</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a32c7e067f38885cd2a6cdf47469508f9" prot="private" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>get_priority_</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a06ea65876f7f6ca682627b157c2c191d" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>MappedBucketQueue</name></member>
+      <member refid="classvigra_1_1BucketQueue_1ab89145e7939ab6935557a83950126b8f" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>maxIndex</name></member>
+      <member refid="classvigra_1_1BucketQueue_1a312e7f6c761a199c1369fbe651e084f0" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>pop</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a1c21b3998ab89054b3ab0afcdc0cbb42" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>priority_type</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a545a00ccbe7317d45342ef2f72c16180" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>push</name></member>
+      <member refid="classvigra_1_1BucketQueue_1adbae2382fe805ec8a0bdc6d9a451b443" prot="public" virt="non-virtual" ambiguityscope="vigra::BucketQueue::"><scope>vigra::MappedBucketQueue</scope><name>push</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a6553cf5e426582b760da93d2f1b7636d" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>reference</name></member>
+      <member refid="classvigra_1_1BucketQueue_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>size</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1ad9f995eefce4da7a28a1bd801c168e0c" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1BucketQueue_1a285f78e29505802b845caad75bbae16b" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>top</name></member>
+      <member refid="classvigra_1_1BucketQueue_1a683c805d9cfdbe3ef81ee90b3301c46d" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>topPriority</name></member>
+      <member refid="classvigra_1_1MappedBucketQueue_1a15eabd051d5bcdcce478c0a509946fca" prot="public" virt="non-virtual"><scope>vigra::MappedBucketQueue</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

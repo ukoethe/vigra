@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MultibandVectorAccessor" kind="class" prot="public">
+    <compoundname>vigra::MultibandVectorAccessor</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1MultibandVectorAccessor_1ab0ef3eff68e3b085aa227c64cd823065" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T component_type</definition>
+        <argsstring></argsstring>
+        <name>component_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector&apos;s value_type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MultibandVectorAccessor_1a2ede12991ecd0605008a07118b5cd4df" prot="public" static="no">
+        <type><ref refid="classvigra_1_1VectorElementAccessor" kindref="compound">VectorElementAccessor</ref>&lt; MultibandVectorAccessor&lt; T &gt; &gt;</type>
+        <definition>typedef VectorElementAccessor&lt;MultibandVectorAccessor&lt;T&gt; &gt; ElementAccessor</definition>
+        <argsstring></argsstring>
+        <name>ElementAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MultibandVectorAccessor_1adc5155f7d684b123013455fc92fac78a" prot="public" static="no">
+        <type>Multiband&lt; T &gt;</type>
+        <definition>typedef Multiband&lt;T&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MultibandVectorAccessor_1a567a727cc40bcd6c9c8b4ff6377498e5" prot="private" static="no" mutable="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultibandVectorAccessor_1af571d1cedeac90079dcc4524b38b35c3" prot="private" static="no" mutable="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex stride_</definition>
+        <argsstring></argsstring>
+        <name>stride_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1a75c782b99ca13bed01bfca842f8d383a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; getComponent</definition>
+        <argsstring>(ITERATOR const &amp;i, int idx) const </argsstring>
+        <name>getComponent</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read the component data at given vector index at given iterator position </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="95" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1aacd0e3c27a08826066ddc442bfc1e385" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>component_type const &amp;</type>
+        <definition>component_type const&amp; getComponent</definition>
+        <argsstring>(ITERATOR const &amp;i, DIFFERENCE const &amp;diff, int idx) const </argsstring>
+        <name>getComponent</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read the component data at given vector index at an offset of given iterator position </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="115" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1a2d476f1d7242071e9ab1eac660096954" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultibandVectorAccessor</definition>
+        <argsstring>(MultiArrayIndex size, MultiArrayIndex stride)</argsstring>
+        <name>MultibandVectorAccessor</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>stride</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="77" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1aee32b776e76e452e150421707a3e3154" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setComponent</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i, int idx) const </argsstring>
+        <name>setComponent</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the component data at given vector index at given iterator position. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="106" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1a721f8e2b70b81d65776337a28bbaac50" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void setComponent</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i, DIFFERENCE const &amp;diff, int idx) const </argsstring>
+        <name>setComponent</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the component data at given vector index at an offset of given iterator position. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>component_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="127" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultibandVectorAccessor_1a9e58599bbcd35fb216f7a2f6a4361aa9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex size</definition>
+        <argsstring>(U) const </argsstring>
+        <name>size</name>
+        <param>
+          <type>U</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="133" bodyend="136"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="72" bodyend="137"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1ab0ef3eff68e3b085aa227c64cd823065" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>component_type</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a2ede12991ecd0605008a07118b5cd4df" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>ElementAccessor</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a75c782b99ca13bed01bfca842f8d383a" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1aacd0e3c27a08826066ddc442bfc1e385" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>getComponent</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a2d476f1d7242071e9ab1eac660096954" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>MultibandVectorAccessor</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1aee32b776e76e452e150421707a3e3154" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a721f8e2b70b81d65776337a28bbaac50" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>setComponent</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a9e58599bbcd35fb216f7a2f6a4361aa9" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>size</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1a567a727cc40bcd6c9c8b4ff6377498e5" prot="private" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>size_</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1af571d1cedeac90079dcc4524b38b35c3" prot="private" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>stride_</name></member>
+      <member refid="classvigra_1_1MultibandVectorAccessor_1adc5155f7d684b123013455fc92fac78a" prot="public" virt="non-virtual"><scope>vigra::MultibandVectorAccessor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

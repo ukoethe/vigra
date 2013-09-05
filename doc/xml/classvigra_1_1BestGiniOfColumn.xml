@@ -1,0 +1,337 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BestGiniOfColumn" kind="class" prot="public">
+    <compoundname>vigra::BestGiniOfColumn</compoundname>
+    <includes refid="rf__split_8hxx" local="no">vigra/random_forest/rf_split.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>LineSearchLossTag</declname>
+        <defname>LineSearchLossTag</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1a00849ef9aa434f78600709ec7247f568" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; bestCurrentCounts[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>bestCurrentCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="835" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="835" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1aaa06197a3f3ce3a0ac5744a275934b06" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; class_weights_</definition>
+        <argsstring></argsstring>
+        <name>class_weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="834" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="834" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1a99db359c49053ebe05644db4810bba24" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref></type>
+        <definition>ProblemSpec ext_param_</definition>
+        <argsstring></argsstring>
+        <name>ext_param_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="839" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="839" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1a13f16be79905b7016a6884012956734a" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double min_gini_</definition>
+        <argsstring></argsstring>
+        <name>min_gini_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="836" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="836" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1a3a7079be2fd237164a2a607f671b77f7" prot="public" static="no" mutable="no">
+        <type>std::ptrdiff_t</type>
+        <definition>std::ptrdiff_t min_index_</definition>
+        <argsstring></argsstring>
+        <name>min_index_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="837" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="837" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BestGiniOfColumn_1ab79735b653e853681f38d4a996bd9e76" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double min_threshold_</definition>
+        <argsstring></argsstring>
+        <name>min_threshold_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="838" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="838" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BestGiniOfColumn_1a39a95e8f139621e7f3d9ea13a76d9d1e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BestGiniOfColumn</definition>
+        <argsstring>()</argsstring>
+        <name>BestGiniOfColumn</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="842" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="841" bodyend="842"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BestGiniOfColumn_1af563ef0374a40f5e81dab4ede5f315af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>BestGiniOfColumn</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;ext)</argsstring>
+        <name>BestGiniOfColumn</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="849" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="845" bodyend="852"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BestGiniOfColumn_1a7a43181a5b8f2657685341f05be9d604" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DataSource_t</type>
+          </param>
+          <param>
+            <type>class Iter</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double loss_of_region</definition>
+        <argsstring>(DataSource_t const &amp;labels, Iter &amp;begin, Iter &amp;end, Array const &amp;region_response) const </argsstring>
+        <name>loss_of_region</name>
+        <param>
+          <type>DataSource_t const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>Iter &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter &amp;</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>region_response</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="950" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="946" bodyend="956"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BestGiniOfColumn_1ab89086b04416197b21525390b360a768" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DataSourceF_t</type>
+          </param>
+          <param>
+            <type>class DataSource_t</type>
+          </param>
+          <param>
+            <type>class I_Iter</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(DataSourceF_t const &amp;column, DataSource_t const &amp;labels, I_Iter &amp;begin, I_Iter &amp;end, Array const &amp;region_response)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>DataSourceF_t const &amp;</type>
+          <declname>column</declname>
+        </param>
+        <param>
+          <type>DataSource_t const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>I_Iter &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>I_Iter &amp;</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>region_response</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate the best gini split along a Feature Column <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>column</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the feature vector - has to support the [] operator </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labels</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the label vector </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>begin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(in and out) begin and end iterators to the indices of the samples in the current region. the range begin - end is sorted by the column supplied during function execution. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>region_response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>??? class histogram of the range.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+precondition: begin, end valid range, class_counts positive integer valued array with the class counts in the current range. labels.size() &gt;= max(begin, end); postcondition: begin, end sorted by column given. min_gini_ contains the minimum gini found or NumericTraits&lt;double&gt;::max if no split was found. min_index_ contains the splitting index in the range or invalid data if no split was found. BestCirremtcounts[0] and [1] contain the class histogram of the left and right region of the left and right regions. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="897" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="892" bodyend="943"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BestGiniOfColumn_1ae845159051e744858982c02a84763f74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_external_parameters</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;ext)</argsstring>
+        <name>set_external_parameters</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="855" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="854" bodyend="860"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Given a column, choose a split that minimizes some loss </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="82">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="78">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="79" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="81" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="77">
+        <label>BestGiniOfColumn&lt; LineSearchLossTag &gt;</label>
+        <link refid="classvigra_1_1BestGiniOfColumn"/>
+        <childnode refid="78" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+        <childnode refid="79" relation="usage">
+          <edgelabel>bestCurrentCounts</edgelabel>
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+      </node>
+      <node id="79">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="80" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="80">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="81">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="82" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="832" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="831" bodyend="958"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a00849ef9aa434f78600709ec7247f568" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>bestCurrentCounts</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a39a95e8f139621e7f3d9ea13a76d9d1e" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>BestGiniOfColumn</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1af563ef0374a40f5e81dab4ede5f315af" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>BestGiniOfColumn</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1aaa06197a3f3ce3a0ac5744a275934b06" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>class_weights_</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a99db359c49053ebe05644db4810bba24" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a7a43181a5b8f2657685341f05be9d604" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>loss_of_region</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a13f16be79905b7016a6884012956734a" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>min_gini_</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1a3a7079be2fd237164a2a607f671b77f7" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>min_index_</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1ab79735b653e853681f38d4a996bd9e76" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>min_threshold_</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1ab89086b04416197b21525390b360a768" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BestGiniOfColumn_1ae845159051e744858982c02a84763f74" prot="public" virt="non-virtual"><scope>vigra::BestGiniOfColumn</scope><name>set_external_parameters</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

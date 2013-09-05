@@ -1,0 +1,707 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ImageImportInfo" kind="class" prot="public">
+    <compoundname>vigra::ImageImportInfo</compoundname>
+    <includes refid="imageinfo_8hxx" local="no">vigra/imageinfo.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImageImportInfo_1a0c34f7a3e6061ac0e27bd07c2b294b95" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; unsigned char &gt;</type>
+        <definition>typedef ArrayVector&lt;unsigned char&gt; ICCProfile</definition>
+        <argsstring></argsstring>
+        <name>ICCProfile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>ICC profiles (handled as raw data so far). see <ref refid="classvigra_1_1ImageImportInfo_1a8ba62aaaa4209a934cf32b41c430cf58" kindref="member">getICCProfile()</ref>/setICCProfile() </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="533" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3d" prot="public" static="no">
+        <name>PixelType</name>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da13759b5b800cc50a6e10f73681f6fe9b" prot="public">
+          <name>UINT8</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3dac4a99142c241d04e1607af8a319c201b" prot="public">
+          <name>INT16</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da8ed234b18120112ac09d0219a8f60d1b" prot="public">
+          <name>UINT16</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3dac1081c62db14e24ef35a1c3c36cba2e7" prot="public">
+          <name>INT32</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da473815478d857d6a0dbe1f84f44a8592" prot="public">
+          <name>UINT32</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da9cf4a0866224b0bb4a7a895da27c9c4c" prot="public">
+          <name>FLOAT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da33465d1d419b1074fb259ef444609e92" prot="public">
+          <name>DOUBLE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="387" bodyend="387"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a03cbe3ad6accb4f6a49bba92247d4788" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D m_canvas_size</definition>
+        <argsstring></argsstring>
+        <name>m_canvas_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="547" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="547" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1abeab36922e15d948509bdf36c5a46cd9" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_filename</definition>
+        <argsstring></argsstring>
+        <name>m_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="543" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a01cbf83c5b3f2d5bf688bd1226e24b26" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_filetype</definition>
+        <argsstring></argsstring>
+        <name>m_filetype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="543" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1ac6a72ba5cf510cdb179f3b1ae815bc65" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_height</definition>
+        <argsstring></argsstring>
+        <name>m_height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1af34d52394fc21267b491acca5f80187b" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ImageImportInfo_1a0c34f7a3e6061ac0e27bd07c2b294b95" kindref="member">ICCProfile</ref></type>
+        <definition>ICCProfile m_icc_profile</definition>
+        <argsstring></argsstring>
+        <name>m_icc_profile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="548" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="548" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a36fb80c3f18f4963f18c9064852dce4f" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_image_index</definition>
+        <argsstring></argsstring>
+        <name>m_image_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1afec28e13c7efc2d8ba7e517e4418d5b0" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_num_bands</definition>
+        <argsstring></argsstring>
+        <name>m_num_bands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1abc99872703f1fe99168eb41c36a010cc" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_num_extra_bands</definition>
+        <argsstring></argsstring>
+        <name>m_num_extra_bands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a0481f9d3ae30470243231c9804f637a1" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_num_images</definition>
+        <argsstring></argsstring>
+        <name>m_num_images</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a85c4f51253224662173b694ec003ac87" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_pixeltype</definition>
+        <argsstring></argsstring>
+        <name>m_pixeltype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="543" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a7f732fe6d12a0dab78ba3ffbc330815f" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+        <definition>Diff2D m_pos</definition>
+        <argsstring></argsstring>
+        <name>m_pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="546" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a226b54ebc937470a33ab6d4e01382371" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int m_width</definition>
+        <argsstring></argsstring>
+        <name>m_width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1aaae03bd6fc774bd4d7f4666109df5b06" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float m_x_res</definition>
+        <argsstring></argsstring>
+        <name>m_x_res</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="545" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1ImageImportInfo_1a66fa4f1613a360bf67f968a6d2758a4d" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float m_y_res</definition>
+        <argsstring></argsstring>
+        <name>m_y_res</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="545" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a8c6233c327f633c3d6fb06023db03d66" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D getCanvasSize</definition>
+        <argsstring>() const </argsstring>
+        <name>getCanvasSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the size of the canvas, on which the image is positioned at <ref refid="classvigra_1_1ImageImportInfo_1ab72a3cc43dbf95ce6a9a4c3b296e0fe4" kindref="member">getPosition()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="519"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a09ee81e40060d94bf70d03532fb7adb3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getFileName</definition>
+        <argsstring>() const </argsstring>
+        <name>getFileName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="418"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a2cca342ce553050d5b26e8392784e0bc" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getFileType</definition>
+        <argsstring>() const </argsstring>
+        <name>getFileType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the file type of the image associated with this info object.</para><para>See <ref refid="classvigra_1_1ImageImportInfo_1a02e2607f84d0409fa46bf4dee7ae0f7b" kindref="member">ImageImportInfo::ImageImportInfo</ref> for a list of the available file types. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="426"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a8ba62aaaa4209a934cf32b41c430cf58" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="classvigra_1_1ImageImportInfo_1a0c34f7a3e6061ac0e27bd07c2b294b95" kindref="member">ICCProfile</ref> &amp;</type>
+        <definition>const ICCProfile&amp; getICCProfile</definition>
+        <argsstring>() const </argsstring>
+        <name>getICCProfile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reference to the ICC profile.</para><para>Note: The reference will become invalid when the <ref refid="classvigra_1_1ImageImportInfo" kindref="compound">ImageImportInfo</ref> object has been destroyed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="540"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ac5f662105a1754656145ef027d03e89c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int getImageIndex</definition>
+        <argsstring>() const </argsstring>
+        <name>getImageIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Gets the index of the image to import from the image file. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="455"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getPixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>getPixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the image.</para><para>Possible values are: <variablelist>
+<varlistentry><term>&quot;UINT8&quot;</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>&quot;INT16&quot;</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>&quot;UINT16&quot;</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>&quot;INT32&quot;</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>&quot;UINT32&quot;</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>&quot;FLOAT&quot;</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>&quot;DOUBLE&quot;</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="486"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ab72a3cc43dbf95ce6a9a4c3b296e0fe4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref></type>
+        <definition>Diff2D getPosition</definition>
+        <argsstring>() const </argsstring>
+        <name>getPosition</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the layer offset of the current image, if there is one </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="514"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a8c6fe205ca2d5ac007db05b32671ce3c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float getXResolution</definition>
+        <argsstring>() const </argsstring>
+        <name>getXResolution</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the image resolution in horizontal direction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="523"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a43eca0243bc5cf8ac58c9bea6b3635f3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float getYResolution</definition>
+        <argsstring>() const </argsstring>
+        <name>getYResolution</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the image resolution in vertical direction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="527"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get height of the image. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="434"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a02e2607f84d0409fa46bf4dee7ae0f7b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ImageImportInfo</definition>
+        <argsstring>(const char *, unsigned int=0)</argsstring>
+        <name>ImageImportInfo</name>
+        <param>
+          <type>const char *</type>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct <ref refid="classvigra_1_1ImageImportInfo" kindref="compound">ImageImportInfo</ref> object.</para><para>The image with the given filename is read into memory. The file type will be determined by the first few bytes of the file (magic number). Recognized file types:</para><para><variablelist>
+<varlistentry><term>&quot;BMP&quot;</term></varlistentry>
+<listitem><para>Microsoft Windows bitmap image file. </para></listitem>
+<varlistentry><term>&quot;EXR&quot;</term></varlistentry>
+<listitem><para>OpenEXR high dynamic range image format. (only available if libopenexr is installed) </para></listitem>
+<varlistentry><term>&quot;GIF&quot;</term></varlistentry>
+<listitem><para>CompuServe graphics interchange format; 8-bit color. </para></listitem>
+<varlistentry><term>&quot;HDR&quot;</term></varlistentry>
+<listitem><para>Radiance RGBE high dynamic range image format. </para></listitem>
+<varlistentry><term>&quot;JPEG&quot;</term></varlistentry>
+<listitem><para>Joint Photographic Experts Group JFIF format; compressed 24-bit color (only available if libjpeg is installed). </para></listitem>
+<varlistentry><term>&quot;PNG&quot;</term></varlistentry>
+<listitem><para>Portable Network Graphic (only available if libpng is installed). </para></listitem>
+<varlistentry><term>&quot;PBM&quot;</term></varlistentry>
+<listitem><para>Portable bitmap format (black and white). </para></listitem>
+<varlistentry><term>&quot;PGM&quot;</term></varlistentry>
+<listitem><para>Portable graymap format (gray scale). </para></listitem>
+<varlistentry><term>&quot;PNM&quot;</term></varlistentry>
+<listitem><para>Portable anymap. </para></listitem>
+<varlistentry><term>&quot;PPM&quot;</term></varlistentry>
+<listitem><para>Portable pixmap format (color). </para></listitem>
+<varlistentry><term>&quot;SUN&quot;</term></varlistentry>
+<listitem><para>SUN Rasterfile. </para></listitem>
+<varlistentry><term>&quot;TIFF&quot;</term></varlistentry>
+<listitem><para>Tagged Image File Format. (only available if libtiff is installed.) </para></listitem>
+<varlistentry><term>&quot;VIFF&quot;</term></varlistentry>
+<listitem><para>Khoros Visualization image file. </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="415"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a2022c5c91591c762ef38e274c636a37e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isByte</definition>
+        <argsstring>() const </argsstring>
+        <name>isByte</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the image has 1 byte per pixel (gray) or 3 bytes per pixel (RGB). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="510"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a65a49d7739d9130be8be08b17fb49228" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isColor</definition>
+        <argsstring>() const </argsstring>
+        <name>isColor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the image is colored (RGB). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="471"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a24e25f9d99015bf12136a5cd6774b054" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isGrayscale</definition>
+        <argsstring>() const </argsstring>
+        <name>isGrayscale</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the image is gray scale. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="467"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a62ce27eb9300cb7ad1ad4fbc32ad6db8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int numBands</definition>
+        <argsstring>() const </argsstring>
+        <name>numBands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the total number of bands in the image. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="438"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a3e4bee349e3d258b9a1f20b68291f8d4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int numExtraBands</definition>
+        <argsstring>() const </argsstring>
+        <name>numExtraBands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the number of extra (non color) bands in the image. Usually these are the alpha channels. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="443"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ae1d8eda7a7945fcec6c9724346f636d9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int numImages</definition>
+        <argsstring>() const </argsstring>
+        <name>numImages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the number of images contained in the image file. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="447"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PixelType</type>
+        <definition>PixelType pixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>pixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the image.</para><para>Same as <ref refid="classvigra_1_1ImageImportInfo_1a4720882fce62cf0a522a2fceef5757ba" kindref="member">getPixelType()</ref>, but the result is returned as a ImageImportInfo::PixelType enum. This is useful to implement a switch() on the pixel type.</para><para>Possible values are: <variablelist>
+<varlistentry><term>UINT8</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>INT16</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>UINT16</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>INT32</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>UINT32</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>FLOAT</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>DOUBLE</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="505"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ad0a13fc4d8f76773806ac562abf07693" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void setImageIndex</definition>
+        <argsstring>(const int)</argsstring>
+        <name>setImageIndex</name>
+        <param>
+          <type>const int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the index of the image to import from the image file. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="451"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a2ff3a7aba044197e8bc713d86b2d775b" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 2 &gt;::type</type>
+        <definition>MultiArrayShape&lt;2&gt;::type shape</definition>
+        <argsstring>() const </argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get size of the image in a form compatible to <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="463"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ada7e687e2eff4c367496c91daf04e66c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get size of the image. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="459"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get width of the image. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="430"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1ae2dc52ffd4e94f49589ce04704000010" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>~ImageImportInfo</definition>
+        <argsstring>()</argsstring>
+        <name>~ImageImportInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="416"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1ImageImportInfo_1a7c5b32b9298f2eda8cd1ade15cda061b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void readHeader_</definition>
+        <argsstring>()</argsstring>
+        <name>readHeader_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="550"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Argument object for the function <ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member">importImage()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ref refid="group__VigraImpex_1ga01aca6d5278dab14e11aef62e746e63e" kindref="member">importImage()</ref> for a usage example. This object must be used to read an image from disk and enquire about its properties.</para><para><bold>#include</bold> &lt;<ref refid="imageinfo_8hxx_source" kindref="compound">vigra/imageinfo.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" line="385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageinfo.hxx" bodystart="384" bodyend="551"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da33465d1d419b1074fb259ef444609e92" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>DOUBLE</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da9cf4a0866224b0bb4a7a895da27c9c4c" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>FLOAT</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a8c6233c327f633c3d6fb06023db03d66" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getCanvasSize</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a09ee81e40060d94bf70d03532fb7adb3" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getFileName</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a2cca342ce553050d5b26e8392784e0bc" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getFileType</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a8ba62aaaa4209a934cf32b41c430cf58" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getICCProfile</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ac5f662105a1754656145ef027d03e89c" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getImageIndex</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getPixelType</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ab72a3cc43dbf95ce6a9a4c3b296e0fe4" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getPosition</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a8c6fe205ca2d5ac007db05b32671ce3c" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getXResolution</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a43eca0243bc5cf8ac58c9bea6b3635f3" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>getYResolution</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>height</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a0c34f7a3e6061ac0e27bd07c2b294b95" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>ICCProfile</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a02e2607f84d0409fa46bf4dee7ae0f7b" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>ImageImportInfo</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3dac4a99142c241d04e1607af8a319c201b" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>INT16</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3dac1081c62db14e24ef35a1c3c36cba2e7" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>INT32</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a2022c5c91591c762ef38e274c636a37e" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>isByte</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a65a49d7739d9130be8be08b17fb49228" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>isColor</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a24e25f9d99015bf12136a5cd6774b054" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>isGrayscale</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a03cbe3ad6accb4f6a49bba92247d4788" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_canvas_size</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1abeab36922e15d948509bdf36c5a46cd9" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_filename</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a01cbf83c5b3f2d5bf688bd1226e24b26" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_filetype</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ac6a72ba5cf510cdb179f3b1ae815bc65" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_height</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1af34d52394fc21267b491acca5f80187b" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_icc_profile</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a36fb80c3f18f4963f18c9064852dce4f" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_image_index</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1afec28e13c7efc2d8ba7e517e4418d5b0" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_num_bands</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1abc99872703f1fe99168eb41c36a010cc" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_num_extra_bands</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a0481f9d3ae30470243231c9804f637a1" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_num_images</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a85c4f51253224662173b694ec003ac87" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_pixeltype</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a7f732fe6d12a0dab78ba3ffbc330815f" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_pos</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a226b54ebc937470a33ab6d4e01382371" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_width</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1aaae03bd6fc774bd4d7f4666109df5b06" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_x_res</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a66fa4f1613a360bf67f968a6d2758a4d" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>m_y_res</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a62ce27eb9300cb7ad1ad4fbc32ad6db8" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>numBands</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a3e4bee349e3d258b9a1f20b68291f8d4" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>numExtraBands</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ae1d8eda7a7945fcec6c9724346f636d9" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>numImages</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3d" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>pixelType</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a7c5b32b9298f2eda8cd1ade15cda061b" prot="private" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>readHeader_</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ad0a13fc4d8f76773806ac562abf07693" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>setImageIndex</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a2ff3a7aba044197e8bc713d86b2d775b" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>shape</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ada7e687e2eff4c367496c91daf04e66c" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>size</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da8ed234b18120112ac09d0219a8f60d1b" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>UINT16</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da473815478d857d6a0dbe1f84f44a8592" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>UINT32</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a37140413518dff2aa63096a2e31b9b3da13759b5b800cc50a6e10f73681f6fe9b" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>UINT8</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>width</name></member>
+      <member refid="classvigra_1_1ImageImportInfo_1ae2dc52ffd4e94f49589ce04704000010" prot="public" virt="non-virtual"><scope>vigra::ImageImportInfo</scope><name>~ImageImportInfo</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

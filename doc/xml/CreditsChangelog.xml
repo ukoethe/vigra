@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="CreditsChangelog" kind="page">
+    <compoundname>CreditsChangelog</compoundname>
+    <title>Credits and Changelog</title>
+    <detaileddescription>
+<para><bold> Credits</bold> <itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+<ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/">Ullrich K<umlaut char="o"/>the</ulink> originated and wrote the library.</para><para>Mikhail Amchislavsky (<ulink url="mailto:mamchisl@ucdavis.edu">mamchisl@ucdavis.edu</ulink>) contributed code to read and write PNM files.</para><para>Hans Meine (<ulink url="mailto:hans_meine@gmx.net">hans_meine@gmx.net</ulink>) contributed interface code for the FFTW Fourier transform library, the ImageArray class and the Gabor filter code. He also collaborated in the implementation of many other modules and contributed various improvements.</para><para>Gunnar Kedenburg (<ulink url="mailto:gunnar@haquebright.de">gunnar@haquebright.de</ulink>) completely rewrote the image import/export library and implemented much of the <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> functionality.</para><para>Yevgen Reznichenko (<ulink url="mailto:rezniche@kogs.informatik.uni-hamburg.de">rezniche@kogs.informatik.uni-hamburg.de</ulink>) added a number of image processing algorithms.</para><para>Christian Dennis Rahn (<ulink url="mailto:rahn@informatik.uni-hamburg.de">rahn@informatik.uni-hamburg.de</ulink>) implemented much of the <ref refid="group__MultiArrayConvolutionFilters" kindref="compound">Convolution filters for multi-dimensional arrays.</ref>.</para><para>Kasim Terzic, Florian Heinrich and Benjamin Seppke implemented image analysis functionality for 3- and higher-dimensional data.</para><para>Pablo d&apos;Angelo, Douglas Wilkins, Lukas Jirkovsky and other members of the <ulink url="http://hugin.sourceforge.net">Hugin team</ulink> contributed various extensions of the impex library (UINT16/UINT32 support, ICC profile support, HDR and OpenEXR file types).</para><para>Rahul Nair implemented the <ref refid="classvigra_1_1RandomForest" kindref="compound">vigra::RandomForest</ref> classifier and VIGRA Matlab bindings.</para><para>Michael Hanselmann and Martin Lindner implemented much of the HDF5 support. Michael Hanselmann also contributed his pLSA (probabilistic latent semantic analysis) implementation.</para><para>Nathan Huesken and Christoph Sommer helped a lot in developing <ulink url="../vigranumpy/index.html">vigranumpy</ulink>, the VIGRA Python bindings.</para><para>Jens-Malte Gottfried contributed to the cmake-based build system.</para><para>Joachim Schleicher implemented a reader for the SIF file format.</para><para>Oliver Gathmann and Michael Held implemented support for the multi-page TIFF format.</para><para>Numerous people reported bugs and made suggestions.  </para><para>Many thanks to all! </para><para><bold> Changes from Version 1.7.1 to 1.8.0</bold></para><para><itemizedlist>
+<listitem>
+<para>Various extensions to <ref refid="group__LocalMinMax" kindref="compound">Local Minima and Maxima</ref> (3D algorithms, on-the-fly thresholding).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1BucketQueue" kindref="compound">vigra::BucketQueue</ref>, <ref refid="classvigra_1_1MappedBucketQueue" kindref="compound">vigra::MappedBucketQueue</ref>.</para><para></para></listitem>
+<listitem>
+<para>Refactored and extended 2D watershed algorithms (especially <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref>).</para><para></para></listitem>
+<listitem>
+<para>Added the <ref refid="classvigra_1_1Quaternion" kindref="compound">vigra::Quaternion</ref> class.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__Unsupervised__Decomposition" kindref="compound">Unsupervised Decomposition</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added mathematical functions (<ref refid="group__MathFunctions_1ga3cf86b8d2300cd08b69024eb89f90115" kindref="member">even()</ref>, <ref refid="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" kindref="member">odd()</ref>, <ref refid="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" kindref="member">gamma()</ref>, <ref refid="group__MathFunctions_1gafc5038616b325ecfd12b4ef51318aa26" kindref="member">loggamma()</ref>, <ref refid="group__MathFunctions_1ga53853aa76befa82637051ecbadc9a10b" kindref="member">legendre()</ref>, <ref refid="group__MathFunctions_1ga9cf8d64d518f2d493bee81d886906cdf" kindref="member">besselJ()</ref>, <ref refid="group__MathFunctions_1ga84d85515af4527b6922f14a853fe40d3" kindref="member">besselY()</ref>, <ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence()</ref>, <ref refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" kindref="member">indexSort()</ref>, <ref refid="group__MathFunctions_1ga89c0801ae0f386bade8dbc77fa485301" kindref="member">inversePermutation()</ref>, <ref refid="group__MathFunctions_1ga8686fee88c6f46f3e19a76f00826dc10" kindref="member">applyPermutation()</ref>, <ref refid="group__MathFunctions_1ga482d2e82f374a8758cd516d19f4c3424" kindref="member">checksum()</ref>)</para><para></para></listitem>
+<listitem>
+<para>Implemented wrapper of the <ulink url="http://www.fftw.org/">FFTW library</ulink> to support arbitrary dimensional Fourier transforms (see <ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member">fourierTransform()</ref> and <ref refid="classvigra_1_1FFTWPlan" kindref="compound">vigra::FFTWPlan</ref>) and FFT-based convolution (see <ref refid="group__MultiArrayConvolutionFilters_1gaaf819a613a16ee9807d69ecb2d91b2ae" kindref="member">convolveFFT()</ref> and <ref refid="classvigra_1_1FFTWConvolvePlan" kindref="compound">vigra::FFTWConvolvePlan</ref>) and refactored <ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__EdgeDetection_1ga56f43f065071a98fa8785867a70e2a67" kindref="member">cannyEdgelListThreshold()</ref>, <ref refid="group__EdgeDetection_1ga23436177c86663716d99e7dd43b6620f" kindref="member">cannyEdgelList3x3Threshold()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added capability to handle subarrays and anisotropic resolution to <ref refid="group__MultiArrayConvolutionFilters_1ga1c43f1c6fd2f6391c7a26de88545b8db" kindref="member">separableConvolveMultiArray()</ref> and related Gaussian filters. Added <computeroutput>windowRatio</computeroutput> parameters to <ref refid="classvigra_1_1Kernel1D_1a48c46ac7770600ec38f55c1dc498244a" kindref="member">vigra::Kernel1D::initGaussian()</ref> and <ref refid="classvigra_1_1Kernel1D_1a825b69c78f7b71bc33dea8d461849161" kindref="member">vigra::Kernel1D::initGaussianDerivative()</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">vigra::StridedScanOrderIterator</ref> and corresponding <ref refid="classvigra_1_1MultiArrayView_1ad69bd11391be1a1dba5c8202259664f8" kindref="member">vigra::MultiArrayView::begin()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Extended <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>. Added <ref refid="group__MultiIteratorGroup_1gaf6799170bf47f30c42a3f164f6ccf8ce" kindref="member">vigra::Shape1</ref> ... <ref refid="group__MultiIteratorGroup_1ga5eb712151ca3fc644d569dee5723f67c" kindref="member">vigra::Shape5</ref> convenience typedefs.</para><para></para></listitem>
+<listitem>
+<para>Implemented <ref refid="group__MultiMathModule" kindref="compound">vigra::multi_math</ref> (arithmetic and algebraic functions for multi-dimensional arrays).</para><para></para></listitem>
+<listitem>
+<para>Extended the <ref refid="classvigra_1_1HDF5File" kindref="compound">vigra::HDF5File</ref> class.</para><para></para></listitem>
+<listitem>
+<para>Improved and documented the <ref refid="TimingMacros" kindref="compound">Timing macros for runtime measurements</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added support for the <ulink url="http://www.openexr.com/">OpenEXR image format</ulink> and multi-page TIFF. Improved support for the SIF format.</para><para></para></listitem>
+<listitem>
+<para><bold>vigranumpy</bold>: added <ulink url="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">axistags </ulink> and completly re-implemented VigraArray and the conversion between Python and C++ arrays in terms of axistags.</para><para></para></listitem>
+<listitem>
+<para>Minor improvements and bug fixes in the code and documentation. </para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.7.0 to 1.7.1</bold></para><para><itemizedlist>
+<listitem>
+<para>Fixed the build process for MacOS X.</para><para></para></listitem>
+<listitem>
+<para>Re-activated <computeroutput>vigra-config</computeroutput> (script to query VIGRA installation information) and added <computeroutput>VigraConfig.cmake</computeroutput> (query VIGRA installation information from within cmake).</para><para></para></listitem>
+<listitem>
+<para>Added CDash support (nightly builds and tests).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__MathFunctions_1ga8ba489a131e75016f32095b106659d22" kindref="member">convexHull()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1Box" kindref="compound">vigra::Box</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1Sampler" kindref="compound">vigra::Sampler</ref> class to sample given data in various ways.</para><para></para></listitem>
+<listitem>
+<para>Added much new functionality to the <ref refid="classvigra_1_1RandomForest" kindref="compound">vigra::RandomForest</ref> class (e.g. more split strategies, variable importance measures, feature selection)</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__VigraSIFImport_1ga6d4fea3f886159b3e14ac64880cdb794" kindref="member">readSIF()</ref> (reader for the Andor SIF file format).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1HDF5File" kindref="compound">vigra::HDF5File</ref> for easier navigation in HDF5 files.</para><para></para></listitem>
+<listitem>
+<para>Added recursive approximation of the Gaussian filter (<ref refid="group__RecursiveConvolution_1gabdf886196470e2cc9cbf346c9fddf2ba" kindref="member">recursiveGaussianFilterX()</ref>, <ref refid="group__RecursiveConvolution_1ga06487fbca4d237ebb6b31bd946fe4b10" kindref="member">recursiveGaussianFilterY()</ref>)</para><para></para></listitem>
+<listitem>
+<para>vigranumpy: added Gabor filtering.</para><para></para></listitem>
+<listitem>
+<para>Fixed multi-threading bugs at various places.</para><para></para></listitem>
+<listitem>
+<para>Minor improvements and bug fixes in the code and documentation. </para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.6.0 to 1.7.0</bold></para><para><itemizedlist>
+<listitem>
+<para>Incompatible changes: <itemizedlist>
+<listitem>
+<para>Modified angle convention from counter-clockwise to clockwise (see e.g. <ref refid="classvigra_1_1Edgel" kindref="compound">vigra::Edgel</ref>). This fits better with the left-handed coordinate system we use.</para><para></para></listitem>
+<listitem>
+<para><ref refid="group__MatrixAlgebra_1ga2fb4d56ba8360951f0ffa62e105e1a69" kindref="member">symmetricEigensystem()</ref>: sort eigenvalues by decreasing value (was: decreasing abs value) </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para>Implemented a new build system on the basis of <ulink url="http://www.cmake.org/">cmake</ulink>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">vigra::NumpyAnyArray</ref> and <ref refid="classvigra_1_1NumpyArray" kindref="compound">vigra::NumpyArray</ref>, improved <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <bold><ulink url="../vigranumpy/index.html">vigranumpy</ulink></bold> (VIGRA Python bindings).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="VigraMatlab" kindref="compound">Vigra Matlab</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added support for <ulink url="http://www.hdfgroup.org/HDF5/">HDF5</ulink> import/export of arrays (see <ref refid="group__VigraHDF5Impex" kindref="compound">Import/Export of Images and Arrays in HDF5 Format</ref>).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1RandomForest" kindref="compound">vigra::RandomForest</ref> classifier.</para><para></para></listitem>
+<listitem>
+<para>Added constrained optimization functions: <ref refid="group__Optimization_1ga73b680f4375cd2963543db1a7cf85e41" kindref="member">nonnegativeLeastSquares()</ref>, <ref refid="group__Optimization_1ga60bf3f23776bd500a5009b2a25442860" kindref="member">quadraticProgramming()</ref>, <ref refid="group__Optimization_1gab47cd570de4c39a53b4da2d830d4568c" kindref="member">leastAngleRegression()</ref> (LASSO and non-negative LASSO).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__MatrixAlgebra_1ga134cdba4837625a7d004a67cd5907058" kindref="member">choleskySolve()</ref> and improved <ref refid="group__MatrixAlgebra_1gadeaf1b2866e989c2612712b86236196e" kindref="member">choleskyDecomposition()</ref> (in-place capability).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__MathFunctions_1ga9210561d31f03b4fa1656bafc7182c0b" kindref="member">symmetric2x2Eigenvalues()</ref> and <ref refid="group__MathFunctions_1ga2c49eca66b2ba5c308d04fa324dcc230" kindref="member">symmetric3x3Eigenvalues()</ref> for fast eigenvalue computation on small matrices.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__RangesAndPoints_1gae808cc0b904cf1dc0a5f79477b85ea8b" kindref="member">meshGrid()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1FixedPoint16" kindref="compound">vigra::FixedPoint16</ref>.</para><para></para></listitem>
+<listitem>
+<para>Minor improvements and bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.5.0 to 1.6.0</bold></para><para><itemizedlist>
+<listitem>
+<para>Added functions for arrays of arbitrary dimensions: <itemizedlist>
+<listitem>
+<para><ref refid="group__MultiArrayDistanceTransform" kindref="compound">Euclidean distance transform</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayMorphology" kindref="compound">separable morphology</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member">resizeMultiArraySplineInterpolation()</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para>Added functionality for 3D image analysis: <ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member">labelVolume()</ref>, <ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member">seededRegionGrowing3D()</ref>, <ref refid="group__SeededRegionGrowing_1ga848b9a3983f20e8ad753d104aad16810" kindref="member">watersheds3D()</ref>, <ref refid="group__VoxelNeighborhood" kindref="compound">Utilities to manage voxel neighborhoods</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__RandomNumberGeneration" kindref="compound">Random Number Generation</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref> and and factory functions for affine transformation matrices</para><para></para></listitem>
+<listitem>
+<para>Added linear algebra functionality: <ref refid="group__MatrixAlgebra_1gadeaf1b2866e989c2612712b86236196e" kindref="member">choleskyDecomposition()</ref>, <ref refid="group__MatrixAlgebra_1gaf20e05edcc344f32d96fdaf5a6b3b972" kindref="member">singularValueDecomposition()</ref>, <ref refid="group__MatrixAlgebra_1ga15edf238753abafb705497c01e38112c" kindref="member">determinant()</ref>, <ref refid="group__MatrixAlgebra_1gaf664311a5660212a4c9ac7bdb0f1de98" kindref="member">logDeterminant()</ref>, <ref refid="group__Optimization_1gab3be347f5631d0aa2ee74c07479e0383" kindref="member">leastSquares()</ref>, <ref refid="group__Optimization_1ga591ca4f43e4114253d7bfa2953f07c4d" kindref="member">weightedLeastSquares()</ref>, <ref refid="group__Optimization_1ga647810e9f3f2ff2e401f410b4855c58a" kindref="member">ridgeRegression()</ref></para><para></para></listitem>
+<listitem>
+<para>Extended <ref refid="group__MatrixAlgebra_1gac51ce45fdb17942988cdc77e50611983" kindref="member">linearSolve()</ref>, <ref refid="group__MatrixAlgebra_1ga3dd7bb55aeb57c7646b0eaf8142c7b12" kindref="member">qrDecomposition()</ref>, and <ref refid="group__MatrixAlgebra_1ga898e3fc2bdea632e7307604325b88016" kindref="member">inverse()</ref> to handle rectangular matrices (complete reimplementation of these functions).</para><para></para></listitem>
+<listitem>
+<para>Added matrix functionality: <ref refid="group__LinearAlgebraFunctions_1ga4d4da3a8e920621579d24ea264d74c78" kindref="member">joinVertically()</ref>, <ref refid="group__LinearAlgebraFunctions_1ga1edda1b184d6467b46dfe47171d549da" kindref="member">joinHorizontally()</ref>, <ref refid="group__LinearAlgebraFunctions_1ga2256980551b8296e4296323c136330a3" kindref="member">columnStatistics()</ref>, <ref refid="group__LinearAlgebraFunctions_1ga2ec3530fa54858e6e27ac98d27a9be00" kindref="member">rowStatistics()</ref>, <ref refid="group__LinearAlgebraFunctions_1ga9570361590f341c6a3699b1d2074c3de" kindref="member">prepareColumns()</ref>, <ref refid="group__LinearAlgebraFunctions_1ga5fe2473988371a491bcee05be079d535" kindref="member">prepareRows()</ref></para><para></para></listitem>
+<listitem>
+<para>Added/fixed <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> and <ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">vigra::linalg::Matrix</ref> computed assignments</para><para></para></listitem>
+<listitem>
+<para>Extended <ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member">MultiArrayView::norm()</ref> to compute L1, L2 and Linfinity, added MultiArrayView::swapData(), MultiArrayView::permuteDimensions(), <ref refid="group__LinearAlgebraFunctions_1ga38a88300083908488d85348c0cf4d3ff" kindref="member">MultiArrayView::transpose()</ref>, and other minor improvements to MultiArrayView</para><para></para></listitem>
+<listitem>
+<para>Added typedef <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">vigra::MultiArrayIndex</ref> to fix signed/unsigned mismatch problems</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1ImagePyramid" kindref="compound">vigra::ImagePyramid</ref></para><para></para></listitem>
+<listitem>
+<para>Minor improvements in <ref refid="group__VigraImpex" kindref="compound">Image Import/Export Facilities</ref></para><para></para></listitem>
+<listitem>
+<para>Added sRGB to <ref refid="group__ColorConversions" kindref="compound">Color Space Conversions</ref></para><para></para></listitem>
+<listitem>
+<para>Added weighted operator()s to FindAverage[AndVariance] functors.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__MathFunctions_1ga0271fdd97b849704cded72b31cce3c83" kindref="member">log2i()</ref> (integer base-2 logarithm), <ref refid="group__MathFunctions_1ga73c914923c1c096cef574906d6169329" kindref="member">floorPower2()</ref>, and <ref refid="group__MathFunctions_1ga54aeb0113ef25c8a4f2e72a1acc794c5" kindref="member">ceilPower2()</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__MathFunctions_1gad84c74edbd392ac2035df2a6d583fc05" kindref="member">argMin()</ref>, <ref refid="group__MathFunctions_1gaf658d43400902a049a289c4e5ded84d9" kindref="member">argMax()</ref>, <ref refid="group__MathFunctions_1ga45d791e8c9cac48509aa4e1557ecf676" kindref="member">argMinIf()</ref>, <ref refid="group__MathFunctions_1gafe67abfb62abdfc09a8e1e47a87485ea" kindref="member">argMaxIf()</ref></para><para></para></listitem>
+<listitem>
+<para>Changed default border treatment of Gaussian filters and derivatives to BORDER_TREATMENT_REFLECT</para><para></para></listitem>
+<listitem>
+<para>Promoted documentation to Doxygen 1.5.6</para><para></para></listitem>
+<listitem>
+<para>Minor improvements and bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.4.0 to 1.5.0</bold></para><para><itemizedlist>
+<listitem>
+<para>Added <ref refid="group__NoiseNormalization" kindref="compound">Noise Normalization</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__SlantedEdgeMTF" kindref="compound">Camera MTF Estimation</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member">gaussianGradientMagnitude()</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member">fourierTransform()</ref> and <ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member">fourierTransformInverse()</ref></para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__EdgeDetection_1ga04e860482291f33d59c0992b479041e6" kindref="member">cannyEdgelList3x3()</ref></para><para></para></listitem>
+<listitem>
+<para>Added srcImage(), srcImageRange() etc. with ROI (see <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref>)</para><para></para></listitem>
+<listitem>
+<para>Improved the <ref refid="group__VigraImpex" kindref="compound">Image Import/Export Facilities</ref> (thanks to Pablo d&apos;Angelo, Douglas Wilkins and others): <itemizedlist>
+<listitem>
+<para>Added UINT16 and UINT32 pixel types. </para></listitem>
+<listitem>
+<para>Added support for obtaining extra bands beyond RGB. </para></listitem>
+<listitem>
+<para>Added support for a position field that indicates the start of this image relative to some global origin (PNG + TIFF). </para></listitem>
+<listitem>
+<para>Added support for x and y resolution fields. </para></listitem>
+<listitem>
+<para>Added support for ICC profiles (TIFF, PNG, and JPEG). </para></listitem>
+<listitem>
+<para>Added support for deflate compression (PNG + TIFF). </para></listitem>
+<listitem>
+<para>Added support for .hdr file format (high dynamic range).</para><para></para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para>Improved support of 64-bit compilers.</para><para></para></listitem>
+<listitem>
+<para>Added mathematical functions: elliptic integrals (<ref refid="group__MathFunctions_1ga7e909bd1d07e846d5d3ba78eaed7c520" kindref="member">ellipticIntegralF()</ref>, <ref refid="group__MathFunctions_1ga29d6193bd95ec54c5f25dd0470f58215" kindref="member">ellipticIntegralE()</ref>), chi-squared distribution (<ref refid="group__MathFunctions_1ga0f6a2804ceaf785495472fb9bf2dd5bc" kindref="member">chi2()</ref>, <ref refid="group__MathFunctions_1gaa94c7af27b4aecda8a764beb89dbc2a6" kindref="member">chi2CDF()</ref>, <ref refid="group__MathFunctions_1ga074ace0a87d00243c85a52e5071a1ad4" kindref="member">noncentralChi2()</ref>, <ref refid="group__MathFunctions_1ga4e01fc59c3d8455e8ccbbd8824230226" kindref="member">noncentralChi2CDF()</ref>)</para><para></para></listitem>
+<listitem>
+<para>Dropped &quot;vigra/&quot; from #includes in headers (so compiler will first look in the same directory).</para><para></para></listitem>
+<listitem>
+<para>Switched to relative paths in the MSVC project files. Compile vigraimpex into a DLL.</para><para></para></listitem>
+<listitem>
+<para>Bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.3.3 to 1.4.0</bold></para><para><itemizedlist>
+<listitem>
+<para>Switched to the MIT X11 License.</para><para></para></listitem>
+<listitem>
+<para>Introduced <ref refid="group__FixedSizeInt" kindref="compound">Fixed Size Integer Types</ref> (UInt8, Int16 etc.) and made VIGRA compile on 64-bit compilers. Thanks to Hans Ekkehard Plesser <ulink url="mailto:hans.ekkehard.plesser@umb.no">hans.ekkehard.plesser@umb.no</ulink>) for bug reports and other help. Added corresponding typedefs UInt8Image, Int16RGBImage etc.</para><para></para></listitem>
+<listitem>
+<para>Added NumericTraits::isSigned. Thanks to Pablo D&apos;Angelo <ulink url="mailto:pablo.dangelo@web.de">pablo.dangelo@web.de</ulink>) for a patch.</para><para></para></listitem>
+<listitem>
+<para>Added watersheds().</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__LinearAlgebraFunctions_1gaf58b1441f2deb06bdc454c4bdbd641e9" kindref="member">cross()</ref> (cross product).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__EdgeDetection_1ga9aa609d12e327e0d633047b78d61c84e" kindref="member">cannyEdgeImageWithThinning()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added the possibility to choose between 4- and 8-neighborhood in <ref refid="group__LocalMinMax_1ga527dfba5468e97ca7f1d676d34bc7162" kindref="member">localMinima()</ref> and <ref refid="group__LocalMinMax_1ga00086937b5ac265fc74b5a8ee0c15c47" kindref="member">localMaxima()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1FixedPoint" kindref="compound">vigra::FixedPoint</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="SquareRootTraits" kindref="compound">template&lt;&gt; struct SquareRootTraits&lt;ArithmeticType&gt;</ref> and <ref refid="group__MathFunctions_1ga540e54c778be63996a0f61f7117c2903" kindref="member">sqrti()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">vigra::RestrictedNeighborhoodCirculator</ref>.</para><para></para></listitem>
+<listitem>
+<para>Extended <ref refid="classvigra_1_1SplineImageView" kindref="compound">vigra::SplineImageView</ref> to support access outside the image border according to reflective boundary conditions. Added partial specializations for orders 0 and 1 to speed up computations.</para><para></para></listitem>
+<listitem>
+<para>Extended <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue</ref> to have arbitrarily ordered color channels (e.g. BGR). Thanks to Paul Furgale (<ulink url="mailto:umfurga1@cc.umanitoba.ca">umfurga1@cc.umanitoba.ca</ulink>) for the suggestion and a first implementation.</para><para></para></listitem>
+<listitem>
+<para>Bug fixes in the code and documentation. Thanks to Holger Friedrich (<ulink url="mailto:holger.friedrich@vsi.cs.uni-frankfurt.de">holger.friedrich@vsi.cs.uni-frankfurt.de</ulink>) for patches.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.3.2 to 1.3.3</bold></para><para><itemizedlist>
+<listitem>
+<para>Added <ref refid="NormTraits" kindref="compound">template&lt;&gt; struct NormTraits&lt;ArithmeticType&gt;</ref>, <ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member">norm()</ref>, <ref refid="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" kindref="member">squaredNorm()</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__TensorImaging_1ga7635aadbeaf4383498850941c5286366" kindref="member">gradientEnergyTensor()</ref></para><para></para></listitem>
+<listitem>
+<para>Added the test suite to the distribution (see <ulink url="Installation.html">installation</ulink> section)</para><para></para></listitem>
+<listitem>
+<para>Bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.3.1 to 1.3.2</bold></para><para><itemizedlist>
+<listitem>
+<para>Added <ref refid="classvigra_1_1linalg_1_1Matrix" kindref="compound">Matrix class</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="group__LinearAlgebraFunctions" kindref="compound">Matrix algebra,</ref> solution of linear systems, eigenvalue computation".</para><para></para></listitem>
+<listitem>
+<para>Bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.3.0 to 1.3.1</bold></para><para><itemizedlist>
+<listitem>
+<para>Fixed syntax for dependent types in templates to make VIGRA compile with g++ 3.4 (which is very strict in enforcing dependent type rules).</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1FunctorTraits" kindref="compound">vigra::FunctorTraits</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added <ref refid="classvigra_1_1ReduceFunctor" kindref="compound">vigra::ReduceFunctor</ref>.</para><para></para></listitem>
+<listitem>
+<para>Added reduce and expand modes to the <ref refid="group__MultiPointoperators" kindref="compound">multi-dimensional point operators</ref>.</para><para></para></listitem>
+<listitem>
+<para>Bug fixes in the code and documentation.</para><para></para></listitem>
+</itemizedlist>
+</para><para><bold> Changes from Version 1.2.0 to 1.3.0</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Added algorithms for <ref refid="MultiDimensionalArrays" kindref="compound">Multi-Dimensional Arrays and Iterators</ref> : <ref refid="group__MultiPointoperators" kindref="compound">Point operators for multi-dimensional arrays.</ref> and <ref refid="group__MultiArrayConvolutionFilters" kindref="compound">Convolution filters for multi-dimensional arrays.</ref> and the <ref refid="classvigra_1_1MultiArrayNavigator" kindref="compound">navigator utility</ref>.</para><para>Extended <ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member">convolveImage()</ref> (non-separable convolution) to support all <ref refid="BorderTreatmentMode" kindref="compound">border treatment modes</ref>.</para><para>Added <ref refid="classvigra_1_1Rational" kindref="compound">vigra::Rational</ref></para><para>Added <ref refid="classvigra_1_1Polynomial" kindref="compound">vigra::Polynomial</ref> and <ref refid="group__Polynomials_1gaf46ab7ff907f8abcaccdb43990c4df6b" kindref="member">polynomialRoots()</ref>.</para><para>Added more <ref refid="group__MathFunctions" kindref="compound">mathematical functions and functors</ref>.</para><para>Added <ref refid="classvigra_1_1SplineImageView" kindref="compound">vigra::SplineImageView</ref>.</para><para>Added <ref refid="group__TensorImaging" kindref="compound">tensor image processing and analysis</ref></para><para>Added 2nd order <ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member">recursiveFilterX()</ref> and <ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member">recursiveFilterY()</ref></para><para>Added <ref refid="group__ResamplingConvolutionFilters" kindref="compound">Resampling Convolution Filters</ref> and reimplemented <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> in terms of them.</para><para>Added <ref refid="group__MultiArrayToImage" kindref="compound">multiarray to image wrappers</ref>.</para><para>Added <ref refid="group__GeometricTransformations" kindref="compound">image mirroring and rotation</ref>.</para><para>Added <ref refid="group__FourierTransform" kindref="compound">fftw3.hxx to support FFTW version 3</ref> (unfortunately, this is incompatible to FFTW 2, which is still supported in <computeroutput>fftw.hxx</computeroutput> but should no longer be used within VIGRA).</para><para>Added <ref refid="classvigra_1_1ArrayVector" kindref="compound">vigra::ArrayVector</ref> as a <computeroutput>std::vector</computeroutput> alternative whose memory is guaranteed to be one contiguous piece and whose iterator is guaranteed to be a <computeroutput>value_type *</computeroutput>.</para><para>Added an <computeroutput>allocator</computeroutput> template parameters to all classes that allocate dynamic memory.</para><para>Bug fixes in the code and documentation. </para><para><bold> Changes from Version 1.1.6 to 1.2.0</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Complete redesign of the image import/export library.</para><para>Added support for Microsoft Visual C++ 7.1 (.net 2003). This is the first Microsoft compiler that compiles VIGRA without special configurations and work-arounds. Work-arounds for older MS compilers will probably no longer be maintained.</para><para>Added support for PNG image format.</para><para>Added cygwin support to the build system.</para><para>Added <ref refid="group__PixelNeighborhood" kindref="compound">pixel neighborhood utilities </ref> and <ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">vigra::NeighborhoodCirculator</ref>.</para><para>Added <ref refid="classvigra_1_1CrackContourCirculator" kindref="compound">vigra::CrackContourCirculator</ref></para><para>Added <ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member">recursiveFilterX()</ref> and <ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member">recursiveFilterY()</ref> that support negative filter coefficients and all <ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmenModes </ref></para><para>Changed <ref refid="group__CommonConvolutionFilters_1ga187dd5c94b6113dbd3578001fee70113" kindref="member">gaussianSmoothing()</ref> to use BORDER_TREATMENT_REFLECT</para><para>Added <ref refid="group__CommonConvolutionFilters_1ga036bfcbd28303db0c41d32d292af3bb3" kindref="member">simpleSharpening()</ref> and <ref refid="group__CommonConvolutionFilters_1gaca082340d8a747dd9784e2b896db9a30" kindref="member">gaussianSharpening()</ref></para><para>Added <ref refid="classvigra_1_1Size2D" kindref="compound">vigra::Size2D</ref>, <ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref>, <ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref></para><para>Added <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref></para><para>Split &quot;utilities.hxx&quot; into &quot;diff2d.hxx&quot;, &quot;interpolating_accessor.hxx&quot;, &quot;iteratortags.hxx&quot;, &quot;mathutil.hxx&quot;, &quot;metaprogramming.hxx&quot;, &quot;tuple.hxx&quot;. &quot;utilities.hxx&quot; now includes these other files.</para><para>Added <ref refid="MultiDimensionalArrays" kindref="compound">Multi-Dimensional Arrays and Iterators</ref> and <ref refid="group__VolumeImpex" kindref="compound">Import/export of volume data.</ref></para><para>Redesigned <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref>, added <ref refid="classvigra_1_1TinyVectorView" kindref="compound">vigra::TinyVectorView</ref> </para><para><bold> Changes from Version 1.1.5 to 1.1.6</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Restored VIGRA compatibility with Microsoft Visual C++ 6.0 (in addition to C++.net) </para><para><bold> Changes from Version 1.1.4 to 1.1.5</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Added <ref refid="classvigra_1_1ImageArray" kindref="compound">vigra::ImageArray</ref>.</para><para>Added more corner detectors (see <ref refid="group__CornerDetection" kindref="compound">Corner Detection</ref>).</para><para>Added local symmetry detector (see <ref refid="group__SymmetryDetection" kindref="compound">Symmetry Detection</ref>).</para><para>Added Gabor filter code (see <ref refid="group__GaborFilter" kindref="compound">Gabor Filter</ref>).</para><para>Extended <ref refid="FunctorExpressions" kindref="compound">functor expression library </ref>.</para><para>Added <ref refid="group__InitAlgo_1gabae1fd1bcc1be861f086b347fefbf355" kindref="member">initImageWithFunctor()</ref>.</para><para>Improved Gaussian derivative filters (higher accuracy, correct sign, see <ref refid="classvigra_1_1Kernel1D_1a825b69c78f7b71bc33dea8d461849161" kindref="member">vigra::Kernel1D::initGaussianDerivative()</ref>).</para><para>Ported VIGRA to Microsoft VisualC++.net (however, this compiler still doesn&apos;t support all VIGRA features, because it still doesn&apos;t implement partial template specialization and partial function ordering).</para><para>Finished the new build system.</para><para>Improved the documentation. </para><para><bold> Changes from Version 1.1.3 to 1.1.4</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Added <ref refid="group__FourierTransform" kindref="compound">Fourier transform</ref> support, and <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> complex number type.</para><para>Added convolution convenience functions (see <ref refid="group__CommonConvolutionFilters" kindref="compound">Common Filters</ref>).</para><para>Added <ref refid="classvigra_1_1IteratorAdaptor" kindref="compound">vigra::IteratorAdaptor</ref> template for quick and easy generation of iterator adaptors.</para><para>Used <ref refid="classvigra_1_1IteratorAdaptor" kindref="compound">vigra::IteratorAdaptor</ref> to implement improved row and column iterators for images.</para><para>Added rowIterator() and columnIterator() functions returning optimized iterator adapters to all 2D iterators (e.g. <ref refid="classvigra_1_1ImageIterator" kindref="compound">vigra::ImageIterator</ref>). Changed algorithms to make use of these new members.</para><para>Added rounding and clipping to accessor functions when floating point values are converted to intergral numbers.</para><para>Added STL-compatible typedefs to all functors, iterators and <ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref>.</para><para>Removed ConstRowIterator and ConstColumnsIterator. Thanks to the new typedefs, RowIterator and ColumnIterator are automatically const when the underlying iterator was const. Thus, separate const iterators are not necessary.</para><para>Major performance tuning. Many algorithms now actually perform as fast as their inflexible C counterparts. Thanks to <ulink url="mailto:viola@merl.com">Paul Viola</ulink> for doing benchmarks. </para><para><bold> Changes from Version 1.1.2 to 1.1.3</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Switched from obsolete <ulink url="http://www.zib.de/Visual/software/doc++/index.html">doc++</ulink> documentation generator to <ulink url="http://www.doxygen.org">doxygen</ulink>.</para><para>Improved documentation.</para><para>Minor changes to the code to quiet compiler warnings if compiling with &quot;&lt;TT&gt;g++ -Wall -pedantic&lt;/TT&gt;&quot;.</para><para>Dropped support for rint() as this was not portable enough.</para><para>In <ref refid="error_8hxx_source" kindref="compound">error.hxx</ref>: replaced snprintf() with sprintf() for portability.</para><para>Renamed CellGridImage into CrackEdgeImage in <ref refid="group__EdgeDetection" kindref="compound">Edge Detection</ref>.</para><para>Added <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref> and made <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue</ref> derive from it.</para><para>Added typedefs for TinyVector images.</para><para>Added <ref refid="group__ColorConversions" kindref="compound">Color Space Conversions</ref>.</para><para>Added <ref refid="classvigra_1_1VectorComponentAccessor" kindref="compound">vigra::VectorComponentAccessor</ref>.</para><para>Extended <ref refid="classvigra_1_1FindMinMax" kindref="compound">vigra::FindMinMax</ref> to work with RGB images.</para><para>Minor improvements and bug fixes.  </para><para><bold> Changes from Version 1.1.1 to 1.1.2</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Made VIGRA compile under MS Visual C++ 6.0.</para><para>Added <ref refid="classvigra_1_1BrightnessContrastFunctor" kindref="compound">vigra::BrightnessContrastFunctor</ref>.</para><para>Added <ref refid="group__TransformAlgo_1ga36fbe70cf44cf9289ca012b726f449d6" kindref="member">gradientBasedTransform()</ref> and related <ref refid="classvigra_1_1MagnitudeFunctor" kindref="compound">vigra::MagnitudeFunctor</ref> and <ref refid="classvigra_1_1RGBGradientMagnitudeFunctor" kindref="compound">vigra::RGBGradientMagnitudeFunctor</ref>.</para><para>Added <ref refid="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" kindref="member">nonlinearDiffusion()</ref>.</para><para>Added more smoothing methods to <ulink url="Examples.html">smooth</ulink> example.</para><para>Added <ulink url="Examples.html">resize</ulink> example.</para><para>Minor corrections and bug fixes. </para><para><bold> Changes from Version 1.1.0 to 1.1.1</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Fixed bug with PNM import code.</para><para>added Canny edge detection algorithm (code adapted from C implementation by <ulink url="mailto:utcke@informatik.uni-hamburg.de">Sven Utcke</ulink>) </para><para><bold> Changes from Version 1.0 to 1.1.0</bold></para><para><itemizedlist>
+<listitem>
+</listitem>
+</itemizedlist>
+Put everything in namespace &quot;vigra&quot;.</para><para>Renamed <linebreak/>
+ VigraStdException =&gt; StdException.<linebreak/>
+ vigraImpexListFormats() =&gt; <ref refid="group__VigraImpex_1ga1f42a533f86021968b8ca4d9d9644279" kindref="member">impexListFormats()</ref></para><para>Added expression templates for <ref refid="FunctorExpressions" kindref="compound">automated functor creation</ref>.</para><para>Added support for input/output of the PNM image file format (contributed by <ulink url="mailto:mamchisl@ucdavis.edu">Mikhail Amchislavsky</ulink>).</para><para>Improved support for the <ref refid="group__TIFFImpex" kindref="compound">TIFF image format</ref>. VIGRA can now read and create TIFF with various pixel types (unsigned byte, short and long int, float, double).</para><para>Renamed Dist2D into <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref>, since it represents a difference vector rather than a distance. Extended Diff2D so that it can also act as a <ref refid="group__ImageIterators_1ga110ba64ad5460bac151be32b748da74b" kindref="member">vigra::CoordinateIterator</ref>. Note that this required renaming <computeroutput>Dist2D::width</computeroutput> and <computeroutput>Dist2D::height</computeroutput> into <computeroutput>Diff2D::x</computeroutput> and <computeroutput>Diff2D::y</computeroutput> respectively.</para><para>Changed the documentation layout.</para><para>Improved <ref refid="group__Labeling_1ga25fed81e4512334de2cfa257d38972b2" kindref="member">labelImage()</ref> according to ideas of Prof. Vladimir Kovalevsky.</para><para>Several minor changes and bug fixes. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>
