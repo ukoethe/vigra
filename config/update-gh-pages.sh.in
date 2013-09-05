@@ -1,0 +1,21 @@
+#!/bin/bash
+
+branch=`git rev-parse --abbrev-ref HEAD`
+if [ "$branch" == "master" ]; then
+    current=`git rev-parse --short HEAD`
+    cd @DOCDIR@
+    branch=`git rev-parse --abbrev-ref HEAD`
+    if [ "$branch" == "gh-pages" ]; then
+        if [ -n "$(git status --porcelain)" ]; then 
+            git add -A
+            git commit -m "documentation for commit $current"
+        else
+            echo "Nothing to commit"
+        fi
+        git push origin gh-pages
+    else
+        echo "WARNING: cannot upload documentation: '@DOCDIR@' is not a git repo or not in branch 'gh-pages'"
+    fi
+else
+    echo "WARNING: cannot upload documentation: repository is not in branch 'master'" 
+fi

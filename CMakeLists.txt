@@ -130,6 +130,23 @@ ENABLE_TESTING()
 
 ADD_CUSTOM_TARGET(doc)
 
+# Automatically push the latest documentation to github's gh-pages.
+# This only works when ${DOCDIR} refers to a VIGRA repository that is 
+# checked out in branch 'gh-pages', and the present repository is 
+# in branch 'master' (these conditions are checked in the script).
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    configure_file(${PROJECT_SOURCE_DIR}/config/update-gh-pages.sh.in 
+                   ${PROJECT_BINARY_DIR}/update-gh-pages.sh @ONLY)
+    EXECUTE_PROCESS(COMMAND chmod u+x ${PROJECT_BINARY_DIR}/update-gh-pages.sh OUTPUT_QUIET ERROR_QUIET)
+       
+    ADD_CUSTOM_TARGET(gh-pages 
+          ${PROJECT_BINARY_DIR}/update-gh-pages.sh
+          DEPENDS doc
+          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+          COMMENT "Pushing documentation to github pages.")
+endif()
+
 ##################################################
 #
 #     setup private experimentation target
