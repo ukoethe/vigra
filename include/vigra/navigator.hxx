@@ -36,6 +36,8 @@
 #ifndef VIGRA_NAVIGATOR_HXX
 #define VIGRA_NAVIGATOR_HXX
 
+#include "multi_shape.hxx"
+
 namespace vigra {
 
 /********************************************************/
