@@ -724,6 +724,7 @@ void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1
     IntermedVis
         visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
+    vigra_precondition(options_.prepare_online_learning_,"onlineLearn: online learning must be enabled on RandomForest construction");
 
     // Preprocess the data to get something the split functor can work
     // with. Also fill the ext_param structure by preprocessing
