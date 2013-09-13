@@ -43,6 +43,7 @@
 # include <vigra/random_forest_hdf5_impex.hxx>
 #endif
 #include <vigra/timing.hxx>
+#include <vigra/random.hxx>
 #include <set>
 #include <cmath>
 #include <memory>
@@ -122,7 +123,8 @@ template<class LabelType, class FeatureType>
 python::tuple
 pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf, 
                                             NumpyArray<2,FeatureType> trainData, 
-                                            NumpyArray<2,LabelType> trainLabels)
+                                            NumpyArray<2,LabelType> trainLabels,
+                                            UInt32 randomSeed=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRFWithFeatureSelection(): training data and labels must not\n"
@@ -134,8 +136,13 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData, trainLabels, 
-                 visitors::create_visitor(var_imp, oob_v));
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
+        if (randomSeed != 0)
+            rnd.seed(randomSeed);
+        rf.learn(trainData, trainLabels,
+                visitors::create_visitor(var_imp, oob_v),
+                vigra::rf_default(), vigra::rf_default(),
+                rnd);
     }
     
     double oob = oob_v.oob_breiman;
@@ -149,7 +156,8 @@ template<class LabelType, class FeatureType>
 double
 pythonLearnRandomForest(RandomForest<LabelType> & rf, 
                         NumpyArray<2,FeatureType> trainData, 
-                        NumpyArray<2,LabelType> trainLabels)
+                        NumpyArray<2,LabelType> trainLabels,
+                        UInt32 randomSeed=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRF(): training data and labels must not\n"
@@ -160,7 +168,12 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
 
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
+        if (randomSeed != 0)
+            rnd.seed(randomSeed);
+        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),
+                vigra::rf_default(), vigra::rf_default(),
+                rnd);
     }
     double oob = oob_v.oob_breiman;
 
@@ -174,14 +187,20 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     NumpyArray<2,FeatureType> trainData,
                     NumpyArray<2,LabelType> trainLabels,
                     int startIndex,
-                    bool adjust_thresholds)
+                    bool adjust_thresholds=false,
+                    UInt32 randomSeed=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.onlineLearn(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
-    rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
+    RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
+    if (randomSeed != 0)
+        rnd.seed(randomSeed);
+    rf.onlineLearn(trainData, trainLabels, startIndex,
+            vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
+            rnd, adjust_thresholds);
 }
 
 template<class LabelType,class FeatureType>
@@ -189,14 +208,19 @@ void
 pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     NumpyArray<2,FeatureType> trainData,
                     NumpyArray<2,LabelType> trainLabels,
-                    int treeId)
+                    int treeId, UInt32 randomSeed=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.reLearnTree(): training data and labels must not\n"
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
-    rf.reLearnTree(trainData, trainLabels, treeId);
+    RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
+    if (randomSeed != 0)
+        rnd.seed(randomSeed);
+    rf.reLearnTree(trainData, trainLabels, treeId,
+            vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
+            rnd);
 }
 
 template<class LabelType,class FeatureType>
@@ -363,30 +387,32 @@ void defineRandomForest()
              "The output is an array containing a probability for every test sample and class.\n")
         .def("learnRF",
              registerConverters(&pythonLearnRandomForest<LabelType,float>),
-             (arg("trainData"), arg("trainLabels")),
+             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0),
              "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB. See the vigra documentation for the meaning af the rest of the parameters.\n")
         .def("reLearnTree",
              registerConverters(&pythonRFReLearnTree<LabelType,float>),
-            (arg("trainData"), arg("trainLabels"), arg("treeId")),
+            (arg("trainData"), arg("trainLabels"), arg("treeId"),
+             arg("randomSeed")=0),
              "Re-learn one tree of the forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB. This might be helpful in an online learning setup to improve the classifier.\n")
         .def("learnRFWithFeatureSelection",
              registerConverters(&pythonLearnRandomForestWithFeatureSelection<LabelType,float>),
-             (arg("trainData"), arg("trainLabels")),
+             (arg("trainData"), arg("trainLabels"), arg("randomSeed")=0),
              "Train a random Forest using 'trainData' and 'trainLabels'.\n\n"
              "and returns the OOB and the Variable importance"
              "See the vigra documentation for the meaning af the rest of the paremeters.\n")
         .def("onlineLearn",
              registerConverters(&pythonRFOnlineLearn<LabelType,float>),
-             (arg("trainData"),arg("trainLabels"),arg("startIndex")),
+             (arg("trainData"),arg("trainLabels"),arg("startIndex"),
+              arg("adjust_thresholds")=false, arg("randomSeed")=0),
              "Learn online.\n\n"
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
 #ifdef HasHDF5
         .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag> &, std::string const &, std::string const &))&rf_export_HDF5,
              (arg("filename"), arg("pathInFile")=""),
-             "Store the random forest in the given HDF5 file 'filname' under the internal\n"
+             "Store the random forest in the given HDF5 file 'filename' under the internal\n"
              "path 'pathInFile'.\n")
 #endif // HasHDF5
         ;
