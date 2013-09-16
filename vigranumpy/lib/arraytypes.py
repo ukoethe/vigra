@@ -655,6 +655,50 @@ class VigraArray(numpy.ndarray):
             q = qimage2ndarray.array2qimage(yxImage, normalize)
 
         return q
+        
+    def asRGB(self, normalize=True):
+        '''
+        Expand a scalar array (i.e. an array with a single channel) into an RGB array with
+        three identical color channels. This is useful when you want to paste color
+        annotations (e.g. user labels) into the array.
+        
+        The parameter `normalize` can be used to normalize the array's
+        value range to 0..255:
+
+        `normalize` = (nmin, nmax):
+          scale & clip array values from nmin..nmax to 0..255
+
+        `normalize` = True: (default)
+          scale the array's actual range min()..max() to 0..255
+
+        `normalize` = False:
+          don't scale the array's values
+           
+        '''
+        if self.channels != 1:
+            raise RuntimeError("VigraArray.asRGB(): array must have a single channel.")
+        img = self.dropChannelAxis()
+        shape = img.shape + (3,)
+        axistags = copy.copy(img.axistags)
+        axistags.append(AxisInfo.c)
+        res = VigraArray(shape, axistags=axistags)
+        if normalize:
+            try:
+                m, M = normalize
+                clip = True
+            except:
+                m, M = img.min(), img.max()
+                clip = False
+            if m == M:
+                return res
+            f = 255.0 / (M - m)
+            img = f * (img - m)
+            if clip:
+                img = numpy.minimum(255.0, numpy.maximum(0.0, img))
+        res[...,0] = img
+        res[...,1] = img
+        res[...,2] = img
+        return res
 
     ###############################################################
     #                                                             #
