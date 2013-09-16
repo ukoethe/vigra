@@ -136,13 +136,10 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     
     {
         PyAllowThreads _pythread;
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
-        if (randomSeed != 0)
-            rnd.seed(randomSeed);
         rf.learn(trainData, trainLabels,
                 visitors::create_visitor(var_imp, oob_v),
                 vigra::rf_default(), vigra::rf_default(),
-                rnd);
+                RandomNumberGenerator<>(randomSeed, randomSeed == 0));
     }
     
     double oob = oob_v.oob_breiman;
@@ -168,12 +165,9 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
 
     {
         PyAllowThreads _pythread;
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
-        if (randomSeed != 0)
-            rnd.seed(randomSeed);
         rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),
                 vigra::rf_default(), vigra::rf_default(),
-                rnd);
+                RandomNumberGenerator<>(randomSeed, randomSeed == 0));
     }
     double oob = oob_v.oob_breiman;
 
@@ -195,12 +189,9 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
-    RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
-    if (randomSeed != 0)
-        rnd.seed(randomSeed);
     rf.onlineLearn(trainData, trainLabels, startIndex,
             vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            rnd, adjust_thresholds);
+            RandomNumberGenerator<>(randomSeed, randomSeed == 0), adjust_thresholds);
 }
 
 template<class LabelType,class FeatureType>
@@ -215,12 +206,9 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
-    RandomNumberGenerator<> rnd = RandomNumberGenerator<>();
-    if (randomSeed != 0)
-        rnd.seed(randomSeed);
     rf.reLearnTree(trainData, trainLabels, treeId,
             vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            rnd);
+            RandomNumberGenerator<>(randomSeed, randomSeed == 0));
 }
 
 template<class LabelType,class FeatureType>

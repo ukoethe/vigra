@@ -371,12 +371,20 @@ class RandomNumberGenerator
         /** Create a new random generator object from the given seed.
             
             The same seed will always produce identical random sequences.
+            If \a ignoreSeed is <tt>true</tt>, the given seed is ignored,
+            and the generator is seeded randomly (as if it was constructed 
+            with <tt>RandomNumberGenerator<>(RandomSeed)</tt>). This allows 
+            you to switch between random and deterministic seeding at
+            run-time.
         */
-    RandomNumberGenerator(UInt32 theSeed)
+    RandomNumberGenerator(UInt32 theSeed, bool ignoreSeed=false)
     : normalCached_(0.0),
       normalCachedValid_(false)
     {
-        this->seedImpl(theSeed);
+        if(ignoreSeed)
+            this->seedImpl(RandomSeed);
+        else
+            this->seedImpl(theSeed);
     }
 
         /** Create a new random generator object from the given seed sequence.
@@ -414,10 +422,17 @@ class RandomNumberGenerator
         /** Re-initialize the random generator object from the given seed.
             
             The same seed will always produce identical random sequences.
+            If \a ignoreSeed is <tt>true</tt>, the given seed is ignored,
+            and the generator is seeded randomly (as if <tt>seed(RandomSeed)</tt>
+            was called). This allows you to switch between random and deterministic 
+            seeding at run-time.
         */
-    void seed(UInt32 theSeed)
+    void seed(UInt32 theSeed, bool ignoreSeed=false)
     {
-        this->seedImpl(theSeed);
+        if(ignoreSeed)
+            this->seedImpl(RandomSeed);
+        else
+            this->seedImpl(theSeed);
         normalCachedValid_ = false;
     }
 
