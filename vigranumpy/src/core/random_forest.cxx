@@ -136,10 +136,11 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     
     {
         PyAllowThreads _pythread;
+        RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
         rf.learn(trainData, trainLabels,
                 visitors::create_visitor(var_imp, oob_v),
                 vigra::rf_default(), vigra::rf_default(),
-                RandomNumberGenerator<>(randomSeed, randomSeed == 0));
+                rnd);
     }
     
     double oob = oob_v.oob_breiman;
@@ -165,9 +166,10 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
 
     {
         PyAllowThreads _pythread;
+        RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
         rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),
                 vigra::rf_default(), vigra::rf_default(),
-                RandomNumberGenerator<>(randomSeed, randomSeed == 0));
+                rnd);
     }
     double oob = oob_v.oob_breiman;
 
@@ -189,9 +191,10 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
+    RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.onlineLearn(trainData, trainLabels, startIndex,
             vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            RandomNumberGenerator<>(randomSeed, randomSeed == 0), adjust_thresholds);
+            rnd, adjust_thresholds);
 }
 
 template<class LabelType,class FeatureType>
@@ -206,9 +209,10 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                        "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
     PyAllowThreads _pythread;
+    RandomNumberGenerator<> rnd(randomSeed, randomSeed == 0);
     rf.reLearnTree(trainData, trainLabels, treeId,
             vigra::rf_default(), vigra::rf_default(), vigra::rf_default(),
-            RandomNumberGenerator<>(randomSeed, randomSeed == 0));
+            rnd);
 }
 
 template<class LabelType,class FeatureType>
