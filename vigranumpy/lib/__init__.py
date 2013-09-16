@@ -191,11 +191,11 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
        numpy order before writing. Moreover, the axistags will be
        stored along with the data in an attribute 'axistags'.
 
-       'compression' can be set to GZIP, SZIP or LZF
-       GZIP (standard compression),
-       SZIP (available if HDF5 is compiled with szip. Faster compression, limited types),
-       LZF (very fast compression, all types).
-       The LZF compression filter is many times faster than GZIP 
+       'compression' can be set to 'gzip', 'szip' or 'lzf'
+       gzip (standard compression),
+       szip (available if HDF5 is compiled with szip. Faster compression, limited types),
+       lzf (very fast compression, all types).
+       The 'lzf' compression filter is many times faster than 'gzip' 
        at the cost of a lower compresion ratio.
 
        Requirements: the 'h5py' module must be installed.
