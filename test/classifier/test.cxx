@@ -832,6 +832,32 @@ struct ClassifierTest
                  rf_import_HDF5(RF5, filename_b);
                  should_all(RF, RF5);
 
+                hid_t fileId = H5Fopen(filename.c_str(),
+                        H5F_ACC_RDONLY, H5P_DEFAULT);
+
+                // reading from hid_t
+                rf_import_HDF5(RF5, fileId);
+                should_all(RF, RF5);
+
+                // reading from hid_t with group name
+                vigra::RandomForest<> RF6;
+                rf_import_HDF5(RF6, fileId, "/");
+                should_all(RF, RF6);
+
+                // writing to hid_t
+                hid_t fileId2 = H5Fopen(filename_b.c_str(),
+                        H5F_ACC_RDWR, H5P_DEFAULT);
+                rf_export_HDF5(RF, fileId2, "/t/");
+
+                // reading from the hid_t we wrote to
+                vigra::RandomForest<> RF7;
+                rf_import_HDF5(RF7, fileId2, "/t/");
+                should_all(RF, RF7);
+
+                // reading from hid_t with relative group name
+                rf_import_HDF5(RF6, fileId2, "t");
+                should_all(RF, RF6);
+
                  std::cerr << "[";
                  for(int ss = 0; ss < ii+1; ++ss)
                      std::cerr << "#";

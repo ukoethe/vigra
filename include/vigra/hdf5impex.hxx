@@ -642,6 +642,36 @@ class HDF5File
         open(filename, mode);
     }
 
+        /** \brief Initialize an HDF5File object from HDF5 file handle
+
+        Initializes an HDF5File object corresponding to the HDF5 file
+        opened elsewhere specified with the given file id.
+        Current group is set to the specified pathname.
+
+        \warning In case the underlying HDF5 library used by Vigra is not
+        exactly the same library used to open the file with the given id,
+        this method will lead to crashes.
+        */
+    HDF5File(hid_t inf_id, const std::string & pathname = "")
+    {
+        // get group handle for given pathname
+        fileHandle_ = HDF5Handle(inf_id, NULL,
+                "HDF5File(hid_t, pathname): Could not initialize HDF5Handle");
+        // calling openCreateGroup_ without setting a valid cGroupHandle does
+        // not work. Starting from root() is a safe bet.
+        root();
+        cGroupHandle_ = HDF5Handle(openCreateGroup_(pathname), &H5Gclose,
+                "HDF5File(hid_t, pathname): Failed to open group");
+
+        // extract track_time attribute
+        hbool_t track_times_tmp;
+        hid_t plist_id = H5Fget_create_plist(inf_id);
+        herr_t status = H5Pget_obj_track_times(plist_id, &track_times_tmp );
+        vigra_postcondition(status >= 0,
+            "HDF5File(hid_t, pathname): cannot access track time attribute");
+        track_time = track_times_tmp;
+    }
+
         /** \brief The destructor flushes and closes the file.
          */
     ~HDF5File()

@@ -117,6 +117,19 @@ pythonImportRandomForestFromHDF5(std::string filename,
            
     return rf.release();
 }                   
+
+template<class LabelType>
+RandomForest<LabelType> *
+pythonImportRandomForestFromHDF5id(hid_t inf_id,
+                                 std::string pathname = "")
+{
+    VIGRA_UNIQUE_PTR<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
+
+    vigra_precondition(rf_import_HDF5(*rf, inf_id, pathname),
+           "RandomForest(): Unable to load from HDF5 file.");
+
+    return rf.release();
+}
 #endif // HasHDF5
 
 template<class LabelType, class FeatureType>
@@ -350,6 +363,12 @@ void defineRandomForest()
                                                    arg("pathInFile")="")),
              "Load from HDF5 file::\n\n"
              "  RandomForest(filename, pathInFile)\n\n")
+        .def("__init__",python::make_constructor(&pythonImportRandomForestFromHDF5id<LabelType>,
+                                                 boost::python::default_call_policies(),
+                                                 ( arg("file_id"),
+                                                   arg("pathInFile")="")),
+             "Load from an open HDF5 file id::\n\n"
+             "  RandomForest(file_id, pathInFile)\n\n")
 #endif // HasHDF5
         .def("featureCount",
             &RandomForest<LabelType>::column_count,
@@ -406,6 +425,10 @@ void defineRandomForest()
              (arg("filename"), arg("pathInFile")=""),
              "Store the random forest in the given HDF5 file 'filename' under the internal\n"
              "path 'pathInFile'.\n")
+        .def("writeHDF5", (void (*)(const RandomForest<LabelType, ClassificationTag> &, hid_t, std::string const &))&rf_export_HDF5,
+             (arg("file_id"), arg("pathInFile")=""),
+             "Store the random forest in the HDF5 file with given 'file_id' \n"
+             "under the internal path 'pathInFile'.\n")
 #endif // HasHDF5
         ;
 }
