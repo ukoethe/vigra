@@ -261,6 +261,7 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
     // get external parameters
     detail::problemspec_import_HDF5(h5context, rf.ext_param_,
                                     rf_hdf5_ext_param);
+    rf.trees_.clear();
     // get all groups in base path
     // no check for the rf_hdf5_tree prefix...
     std::vector<std::string> names = h5context.ls();

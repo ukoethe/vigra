@@ -801,6 +801,7 @@ struct ClassifierTest
                 std::string filename = data.names(ii) + "_rf.hdf5";
                 std::string filename_b = data.names(ii) + "_b_rf.hdf5";
                 std::remove(filename.c_str());
+                std::remove(filename_b.c_str());
                 vigra::RandomForest<> RF(vigra::RandomForestOptions()
                                              .tree_count(100));
 
@@ -824,6 +825,10 @@ struct ClassifierTest
                  rf_export_HDF5(RF4, filename_b);
 
                  vigra::RandomForest<> RF5;
+                 rf_import_HDF5(RF5, filename_b);
+                 should_all(RF, RF5);
+
+		  // test loading into an existing random forest object
                  rf_import_HDF5(RF5, filename_b);
                  should_all(RF, RF5);
 
