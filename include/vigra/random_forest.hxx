@@ -285,7 +285,7 @@ class RandomForest
      */
     Options_t & set_options()
     {
-        return options;
+        return options_;
     }
 
 
