@@ -63,8 +63,14 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
     
     set(VIGRANUMPY_LIBRARIES_RELATIVE "")
     foreach(PATH ${VIGRANUMPY_LIBRARIES})
-        file(RELATIVE_PATH RELPATH ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_CONFIG_INSTALL_PATH} ${PATH})
-        set(VIGRANUMPY_LIBRARIES_RELATIVE ${VIGRANUMPY_LIBRARIES_RELATIVE} ${RELPATH})
+        if(EXISTS ${PATH})
+            file(RELATIVE_PATH RELPATH ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_CONFIG_INSTALL_PATH} ${PATH})
+            set(VIGRANUMPY_LIBRARIES_RELATIVE ${VIGRANUMPY_LIBRARIES_RELATIVE} ${RELPATH})
+        else()
+            # If ${PATH} is not referring to a path, it is probably a keyword like 
+            # "optimized" or "debug" (e.g. on the Mac). We then pass it on unchanged. 
+            set(VIGRANUMPY_LIBRARIES_RELATIVE ${VIGRANUMPY_LIBRARIES_RELATIVE} ${PATH})
+        endif()
     endforeach(PATH)
     
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigranumpyConfig.cmake.in
