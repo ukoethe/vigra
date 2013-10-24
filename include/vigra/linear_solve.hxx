@@ -1112,7 +1112,7 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
      */
 template <class T, class C1, class C2, class C3>
 inline 
-void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const & b, MultiArrayView<2, T, C3> & x)
+void choleskySolve(MultiArrayView<2, T, C1> const & L, MultiArrayView<2, T, C2> const & b, MultiArrayView<2, T, C3> & x)
 {
     /* Solve L * y = b */
     linearSolveLowerTriangular(L, b, x);
