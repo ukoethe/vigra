@@ -688,7 +688,8 @@ ArrayVector<T, Alloc>::insert(iterator p, value_type const & v)
     }
     else
     {
-        push_back(this->back());
+        T lastElement = this->back();
+        push_back(lastElement);
         p = this->begin() + pos;
         std::copy_backward(p, this->end() - 2, this->end() - 1);
         *p = v;
