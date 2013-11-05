@@ -1282,7 +1282,7 @@ class VigraArray(numpy.ndarray):
     def nonzero(self):
         res = numpy.ndarray.nonzero(self)
         for k in xrange(len(res)):
-            res[k].axistags = AxisTags(self.axistags[k])
+            res[k].axistags = AxisTags(AxisInfo(self.axistags[k]))
         return res
 
     @property
