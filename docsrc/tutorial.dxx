@@ -52,6 +52,9 @@
 
     <li> \ref OwnFunctionsTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>... without getting confused by templates</em>
+
+    <li> \ref PythonBindingsTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>scripting with VIGRA made easy</em>
         
     </ul>
 */
@@ -753,11 +756,11 @@
     
     The recommended file format for arrays of arbitrary dimension is <a href="http://www.hdfgroup.org/HDF5/">HDF5</a>. It supports all possible pixel types, arbitrary dimensions, on-the-fly compression, arbitrary many arrays per file, and flexible metadata storage along with arrays. See \ref VigraHDF5Impex for more information.
 
-    In case of 3D volume data, three additional import and export methods are supported:
+    The functions \ref importVolume() and \ref exportVolume() support three additional methods to read and write 3D volume data:
     <ul>
-    <li> Image stacks (consisting of one 2D image per slice) can be read by the function \ref importVolume() and written by \ref exportVolume().
-    <li> Raw data must be accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) and can then be read by an overload of \ref importVolume().
-    <li> Multipage TIFF can be imported one page at a time by constructing \ref vigra::ImageImportInfo objects with the appropriate page number in a loop. 
+    <li> Multipage TIFF (read/write) and Andor SIF (read only) file formats.
+    <li> Image stacks (consisting of one 2D image per slice - read/write).
+    <li> Raw data if accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) - read only.
     </ul>
 */
 
@@ -874,4 +877,57 @@
     \endcode
     
     These simple tricks already get you a long way in the advanced use of VIGRA. You will notice, that many existing VIGRA functions are not implemented in temrs of \ref vigra::MultiArrayView, but in terms of \ref ImageIterators "image iterators" and \ref MultiIteratorGroup "hierarchical iterators". However, these iterators are quite difficult to use, so the MultiArrayView approach is recommended for new code.
+*/
+
+/** \page PythonBindingsTutorial VIGRA Python Bindings
+    
+    When you configure VIGRA with the option <tt>-DWITH_VIGRANUMPY=1</tt> while running cmake, a Python module <tt>vigra</tt> will be compiled and installed. It exposes most of VIGRA's functionality for easy scripting and prototyping in Python. Most importantly, VIGRA's Python bindings are fully integrated with the popular 'numpy' package so that you can call vigra functions directly with numpy <tt>ndarrays</tt>. No explicit or implicit conversion of data formats is required.
+    
+    The syntax of the Python version is usually very similar to the C++ syntax, with one important difference: You do not have to pass pre-allocated result images to the functions. That is, while in C++ you write
+    
+    \code
+    MultiArray<2, float> inputImage(Shape2(width, height)), 
+                         resultImage(inputImage.shape());  // pre-allocate result with correct shape
+    ... // fill inputImage
+    
+    // smooth image with Gaussian filter with sigma=1.5
+    // (pre-allocated resultImage must be passed to the function)
+    gaussianSmoothing(inputImage, resultImage, 1.5);
+    \endcode
+    
+    the corresponding Python call is
+    
+    \code
+    >>> import numpy, vigra
+    
+    >>> inputImage = numpy.zeros((width, height), dtype=numpy.float32)
+    ...  # fill inputImage
+    
+    # smooth image with Gaussian filter with sigma=1.5
+    # (resultImage is automatically allocated and returned) 
+    >>> resultImage = vigra.filters.gaussianSmoothing(inputImage, 1.5);
+    \endcode
+    
+    However, it is still possible to pass a result array of appropriate shape explicitly by means of the <tt>out</tt> parameter:
+    
+    \code
+    >>> resultImage = numpy.zeros(inputImage.shape, dtype=numpy.float32)
+    >>> vigra.filters.gaussianSmoothing(inputImage, 1.5, out=resultImage)
+    \endcode
+    
+    If the C++ function provides options, they are exposed on the Python side as keyword arguments:
+    
+    \code
+    >>> labeling, max_label = vigra.analysis.watersheds(inputImage, seeds=seedImage, method='UnionFind')
+    \endcode
+    
+    In general, the correspondence between a Python function and its C++ counterpart is straightforward, and the Python documentation frequently refers to the C++ documentation for details. However, there is an important caveat: the default axis interpretation is different in VIGRA's <tt>MultiArray</tt> (which uses 'Fortran order') and in numpy's <tt>ndarray</tt> (which uses 'C-order). To help you deal with this difficulty, vigranumpy provides a subclass <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">VigraArray</a> of <tt>ndarray</tt> and the concept of <a href="../vigranumpy/index.html#more-on-the-motivation-and-use-of-axistags">axistags</a>.
+    
+    The full Python documentation is available via <a href="../vigranumpy/index.html">HTML</a> or can be obtained directly from the Python prompt by the <tt>help()</tt> command:
+    
+    \code
+    >>> help(vigra.filters.gaussianSmoothing)
+    \endcode
+    
+    An important
 */
