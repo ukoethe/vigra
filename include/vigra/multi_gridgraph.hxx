@@ -1204,43 +1204,281 @@ struct GridGraphBase<N, undirected_tag>
 
 } // namespace detail
 
-    // Grid Graph class to adapt vigra MultiArrayViews to a BGL-like interface.
-    //       This class only knows about
-    //       - dimensions
-    //       - shape
-    //       - neighborhood type (DirectedNeighborhood or IndirectNeighborhood, i.e.\ including diagonal neighbors)
-    //       - whether the graph is directed or undirected
+/** \addtogroup GraphDataStructures Graph Data Structures
+        
+        GridGraph implementing the APIs of the lemon and boost::graph libaries.
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                      GridGraph                       */
+/*                                                      */
+/********************************************************/
+
+/** \brief Define a grid graph in arbitrary dimensions.
+
+    A GridGraph connects each pixel to its direct or indirect neighbors. 
+    Direct neighbors correspond to the 4-neighborhood in 2D and the 6-neighborhood
+    in 3D, whereas indirect neighbors correspond to the 8-neighborhood and 
+    26-neighborhood respectively. The GridGraph class extends this scheme to
+    arbitrary dimensions. While the dimension must be defined at compile time
+    via the template parameter <tt>N</tt>, the desired neighborhood can be chosen
+    at runtime in the GridGraph's constructor. The shape of the grid is
+    also specified at runtime in terms of suitable shape object.
+    
+    Another choice to be made at compile time is whether the graph should be directed 
+    or undirected. This is defined via the <tt>DirectedTag</tt> template parameter
+    which can take the values <tt>directed_tag</tt>or <tt>undirected_tag</tt>.
+    
+    The main difficulty in a grid graph is to skip the missing neighbors
+    of the pixels near the grid's border. For example, the upper left pixel in a 
+    2D grid has only two direct neighbors instead of the usual four. The GridGraph
+    class uses a precomputed set of internal look-up tables to efficiently determine the 
+    appropriate number and location of the existing neighbors.
+    
+    For the sake of compatibility, the GridGraph class implements two 
+    popular graph APIs: the one defined by the <a href="http://www.boost.org/doc/libs/release/libs/graph/">boost::graph</a> library and
+    the one defined by the <a href="http://lemon.cs.elte.hu/">LEMON</a> libary.
+    Their basic principles are very similar: The graph's nodes, edges and adjacency
+    structure are accessed via a set of iterators, whereas additional properties
+    (like node and edge weights) are provided via <i>property maps</i> that are
+    indexed with suitable node or edge descriptor objects returned by the iterators.
+    VIGRA's GridGrap class is designed such that multi-dimensional coordinates
+    (i.e. <tt>TinyVector<MultiArrayIndex></tt> serve as descriptor objects, which means
+    that normal <tt>MultiArray</tt>s or <tt>MultiArrayView</tt>s can serve as property
+    maps in most situations. Thus, node properties like a foreground probability for 
+    foreground/background segmentation can simply be stored as normal images.
+    
+    Since the boost::graph and LEMON APIs differ in how they call corresponding
+    functionality, most GridGraph helper classes and functions are exposed under 
+    two different names. To implement your own algorithms, you can choose the API 
+    you like most. VIGRA adopts the convention that algorithms using the boost::graph 
+    API go into the namespace <tt>vigra::boost_graph</tt>, while those using the 
+    LEMON API are placed into the namespace <tt>vigra::lemon_graph</tt>. This helps 
+    to avoid name clashes when the two APIs happen to use the same name for different 
+    things. 
+    
+    The documentation of the GridGraph members specifies which API the respective
+    function or class belongs to. Please refer to the documentation of the two 
+    libraries for a tutorial introduction and full reference of the respective APIs.
+    
+    <b>Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_gridgraph.hxx\> <br/>
+    Namespace: vigra
+    
+    At present, the GridGraph class is mainly used internally to implement image 
+    analysis functions (e.g. detection of local extrema, connected components labeling, 
+    watersheds, SLIC superpixels) for arbitrary dimensional arrays. For example,
+    a dimension-independent algorithm to detect local maxima using the LEMON API
+    might look like this:
+    
+    \code
+    namespace vigra { namespace lemon_graph { 
+
+    template <class Graph, class InputMap, class OutputMap>
+    void
+    localMaxima(Graph const & g, 
+                InputMap const & src,
+                OutputMap & local_maxima,
+                typename OutputMap::value_type marker)
+    {
+        // define abreviations for the required iterators
+        typedef typename Graph::NodeIt    graph_scanner;
+        typedef typename Graph::OutArcIt  neighbor_iterator;
+
+        // iterate over all nodes (i.e. pixels)
+        for (graph_scanner node(g); node != INVALID; ++node) 
+        {
+            // remember the value of the current node
+            typename InputMap::value_type current = src[*node];
+
+            // iterate over all neighbors of the current node
+            bool is_local_maximum = true;
+            for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
+            {
+                // if a neighbor is larger, the node is not a local maximum
+                if (current < src[g.target(*arc)]) 
+                    is_local_maximum = false;
+            }
+            
+            // mark the node when it is a local maximum
+            if (is_local_maximum)
+                local_maxima[*node] = marker;
+        }
+    }
+    
+    }} // namespace vigra::lemon_graph
+    \endcode
+    
+    When implemented in terms of the boost::graph API, the same algorithm
+    looks like this:
+    
+    \code
+
+    namespace vigra { namespace boost_graph {
+
+    template <class Graph, class InputMap, class OutputMap>
+    void
+    localMaxima(Graph const & g, 
+                InputMap const & src,
+                OutputMap & local_maxima,
+                typename property_traits<OutputMap>::value_type marker)
+    {
+        // define abreviations and variables for the required iterators
+        typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
+        typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
+
+        graph_scanner      node, node_end;
+        neighbor_iterator  arc, arc_end;
+
+        // iterate over all nodes (i.e. pixels)
+        tie(node, node_end) = vertices(g);
+        for (; node != node_end; ++node) 
+        {
+            // remember the value of the current node
+            typename property_traits<InputMap>::value_type current = get(src, *node);
+
+            // iterate over all neighbors of the current node
+            bool is_local_maximum = true;
+            tie(arc, arc_end) = adjacent_vertices(*node, g);
+            for (;arc != arc_end; ++arc)
+            {
+                // if a neighbor is larger, the node is not a local maximum
+                if (current < get(src, *arc))
+                    is_local_maximum = false;
+            }
+            
+            // mark the node when it is a local maximum
+            if (is_local_maximum)
+                put(local_maxima, *node, marker);
+        }
+    }
+
+    }} // namespace vigra::boost_graph
+    \endcode
+    
+    It can be seen that the difference between the APIs is purely syntactical 
+    (especially note that boost::graphs user traits classes whereas LEMON uses
+    nested typedefs). Either of these algorithms can now serve as the backend
+    for a local maxima function for <tt>MultiArrayViews</tt>:
+    
+    \code
+    namespace vigra {
+    
+    template <unsigned int N, class T1, 
+                              class T2>
+    void
+    localMaxima(MultiArrayView<N, T1> const & src,
+                MultiArrayView<N, T2> local_maxima,
+                T2 marker,
+                NeighborhoodType neighborhood = IndirectNeighborhood)
+    {
+        vigra_precondition(src.shape() == local_maxima.shape(),
+            "localMinMax(): shape mismatch between input and output.");
+        
+        // create a grid graph with appropriate shape and desired neighborhood
+        GridGraph<N, undirected_tag> graph(src.shape(), neighborhood);
+        
+        // forward the call to the graph-based algorithm, using 
+        // MultiArrayViews as property maps
+        lemon_graph::localMaxima(graph, src, local_maxima, marker);
+    }
+
+    } // namespace vigra
+    \endcode
+    
+    Slightly enhanced versions of this code are actually used to implement this
+    functionality in VIGRA.
+*/
 template<unsigned int N, class DirectedTag>
 class GridGraph
 : public detail::GridGraphBase<N, DirectedTag>
 {
 public:
+        /** \brief 'true' if the graph is directed (API: boost::graph)
+        */
     static const bool is_directed = IsSameType<DirectedTag, directed_tag>::value;
     
     typedef detail::GridGraphBase<N, DirectedTag>   base_type;
     typedef GridGraph<N, DirectedTag>               self_type;
+    
+        /** \brief shape type of the graph
+        */
     typedef typename MultiArrayShape<N>::type       shape_type;
-    typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;
+    
+        /** \brief shape type of an edge property map (must have one additional dimension)
+        */
+    typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;    
+    
+        /** \brief type of node and edge IDs
+        */
     typedef MultiArrayIndex                         index_type;
+    
+        /** \brief type to specify number of vertices  (API: boost::graph)
+        */
     typedef MultiArrayIndex                         vertices_size_type;
+    
+        /** \brief type to specify number of edges (API: boost::graph)
+        */
     typedef MultiArrayIndex                         edges_size_type;
+    
+        /** \brief type to specify number of neighbors (API: boost::graph)
+        */
     typedef MultiArrayIndex                         degree_size_type;
 
-    // Boost Graph interface
+        /** \brief iterator over the vertices of the graph (API: boost::graph)
+        */
     typedef MultiCoordinateIterator<N>              vertex_iterator;
+    
+        /** \brief iterator over the neighbor vertices of a given vertex (API: boost::graph)
+        */
     typedef GridGraphNeighborIterator<N>            neighbor_vertex_iterator;
+    
+        /** \brief iterator over only those neighbor vertices of a given vertex 
+                   that have smaller ID (API: VIGRA)
+        */
     typedef GridGraphNeighborIterator<N, true>      back_neighbor_vertex_iterator;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef neighbor_vertex_iterator                adjacency_iterator;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef GridGraphInArcIterator<N>               in_edge_iterator;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef GridGraphOutArcIterator<N>              out_edge_iterator;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef GridGraphOutArcIterator<N, true>        out_back_edge_iterator;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef GridGraphArcIterator<N, !is_directed>   edge_iterator;
-
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef shape_type                              vertex_descriptor;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef GridGraphArcDescriptor<N>               edge_descriptor;
- 
+     
+        /** \brief  (API: boost::graph)
+        */
     typedef DirectedTag                             directed_category;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef boost::disallow_parallel_edge_tag       edge_parallel_category;
+    
+        /** \brief  (API: boost::graph)
+        */
     typedef boost::no_property                      vertex_property_type; // we only support "external properties".
     // FIXME: Maybe support the vertex -> coordinate map (identity) as the only internal property map
     // and additionally the vertex_descriptor -> ID map (vertex_index = SOI).
@@ -1280,27 +1518,27 @@ public:
     typedef lemon::True FindEdgeTag;
     typedef lemon::True FindArcTag;
 
-    class IndexMap 
-    {
-      public:
-        typedef Node                                    Key;
-        typedef Node                                    Value;
-        typedef Key                                     key_type;
-        typedef Value                                   value_type; 
-        typedef Value const &                           reference;
-        typedef boost::readable_property_map_tag        category;
+    // class IndexMap 
+    // {
+      // public:
+        // typedef Node                                    Key;
+        // typedef Node                                    Value;
+        // typedef Key                                     key_type;
+        // typedef Value                                   value_type; 
+        // typedef Value const &                           reference;
+        // typedef boost::readable_property_map_tag        category;
 
-        IndexMap()
-        {}
+        // IndexMap()
+        // {}
 
-        IndexMap(const GridGraph&)
-        {}
+        // IndexMap(const GridGraph&)
+        // {}
 
-        Value const & operator[](Key const & key) const 
-        {
-            return key;
-        }
-    };
+        // Value const & operator[](Key const & key) const 
+        // {
+            // return key;
+        // }
+    // };
         
     template <class T>
     class NodeMap
@@ -1930,10 +2168,10 @@ public:
     // --------------------------------------------------
     // other helper functions:
     
-    IndexMap indexMap() const 
-    {
-        return IndexMap();
-    }
+    // IndexMap indexMap() const 
+    // {
+        // return IndexMap();
+    // }
 
     bool isDirected() const
     {
@@ -2080,6 +2318,8 @@ public:
     MultiArrayIndex num_vertices_, num_edges_;
     NeighborhoodType neighborhoodType_;
 };
+
+//@}
 
 } // namespace vigra
 
