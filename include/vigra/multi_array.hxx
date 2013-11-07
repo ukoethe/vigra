@@ -617,8 +617,13 @@ struct NormTraits<MultiArray<N, T, A> >
 
 This class implements the interface of both MultiArray and
 MultiArrayView.  By default, MultiArrayViews are tagged as
-unstrided. If necessary, strided arrays are constructed automatically
-by calls to a variant of the bind...() function.
+strided (using <tt>StridedArrayTag</tt> as third template parameter). 
+This means that the array elements need not be consecutive in memory,
+making the view flexible to represent all kinds of subarrays and slices.
+In certain cases (which have become rare due to improvements of 
+optimizer and processor technology), an array may be tagged with 
+<tt>UnstridedArrayTag</tt> which indicates that the first array dimension
+is guaranteed to be unstrided, i.e. has consecutive elements in memory.
 
 In addition to the member functions described here, <tt>MultiArrayView</tt>
 and its subclasses support arithmetic and algebraic functions via the 
@@ -640,7 +645,7 @@ The template parameter are as follows
        memory location, strided if there is an offset in between (e.g.
        when a view is created that skips every other array element).
        The compiler can generate faster code for unstrided arrays.
-       Possible values: UnstridedArrayTag (default), StridedArrayTag
+       Possible values: StridedArrayTag (default), UnstridedArrayTag
 \endcode
 
 <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
