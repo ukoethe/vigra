@@ -56,6 +56,8 @@
       <li> Frank Lenzen contributed his implementations of total variation filters.
 
       <li> Patrick Fahner helped writing the tutorial.
+      
+      <li> Stefan Schmidt made major contributions to \ref vigra::GridGraph.
 
       <li> Numerous people reported bugs and made suggestions.
 </ul>
@@ -63,10 +65,43 @@
 Many thanks to all!
 <p>
 
-<b> Changes from Version 1.9.0 to 1.9.1</b>
+<b> Changes from Version 1.9.0 to 1.10.0</b>
 
 <ul>  
       <li> VIGRA got a \ref Tutorial !
+      
+      <li> Significant simplification of the API: <tt>MultiArrayView</tt> arguments can now be passed to functions directly:
+      
+      \code
+      MultiArray<float> src(Shape2(200,100)), dest(src.shape());
+      gaussianSmoothing(src, dest, 2.0);
+      \endcode
+      
+      The old syntax with \ref ArgumentObjectFactories (<tt>srcImageRange()</tt>, <tt>srcMultiArray()</tt> and relatives) remains valid, but is only required when the arguments are old-style <tt>BasicImage</tt>s.
+      
+      <li> Made <tt>StridedArrayTag</tt> the default for \ref MultiArrayView .
+      
+      <li> Added an efficient multi-dimensional \ref vigra::GridGraph class which support both the LEMON and boost::graph APIs.
+      
+      <li> Generalized various algorithms to arbitrary dimensions (\ref gaussianGradientMultiArray(), \ref hessianOfGaussianMultiArray(), \ref gaussianDivergenceMultiArray(), \ref localMinima(), \ref localMaxima(), \ref labelMultiArray(), \ref watershedsMultiArray()).
+      
+      <li> Added \ref slicSuperpixels() for arbitrary dimensions.
+      
+      <li> Added automatic differentiation (see \ref vigra::autodiff::DualVector).
+      
+      <li> Added \ref nonlinearLeastSquares() using the Levenberg-Marquardt algorithm and automatic differentiation.
+      
+      <li> Added a function <tt>setCoordinateOffset()</tt> to the feature accumulator classes to enable block-wise computation of coordinate-based features.
+      
+      <li> Added \ref vigra::MultiCoordinateIterator to enumerate the grid coordinates of a multi-dimensional array.
+      
+      <li> Fixed thread-safety of <tt>RandomForest::learn()</tt> (random seeding) and <tt>RandomForest::predictLebels()</tt>.
+      
+      <li> Improved HDF5 I/O for strided <tt>MultiArrayView</tt>s and HDF5 on-the-fly compression.
+      
+      <tt> Added support for multi-page TIFF to \ref importVolume() and \ref exportVolume(). Added support for Andor SIF to \ref importVolume().
+      
+      <li> Added <tt>VigranumpyConfig.cmake</tt> to simplify cmake-based compilation of custom vigranumpy modules.
       
       <li> Minor improvements and bug fixes in the code and documentation. 
  </ul>
