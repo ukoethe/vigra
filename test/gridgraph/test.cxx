@@ -597,7 +597,7 @@ struct GridGraphTests
         using namespace boost;
         
         typedef GridGraph<N, DirectedTag> Graph;
-        
+
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
         for(; i != iend; ++i)
         {
@@ -605,6 +605,10 @@ struct GridGraphTests
             Shape s = *i + Shape(1);
             Graph g(s, NType);
             typename Graph::template NodeMap<int> vertexMap(g);
+            lemon::InDegMap<Graph>  inDegreeMap(g);
+            lemon::OutDegMap<Graph> outDegreeMap(g);
+            typename Graph::IndexMap indexMap(g.indexMap());
+        
             int count = 0;
         
             typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
@@ -632,6 +636,13 @@ struct GridGraphTests
                 shouldEqual(g.forward_degree(j) + g.back_degree(j), g.out_degree(j));
                 shouldEqual(g.in_degree(j), g.out_degree(j));
                 shouldEqual(g.degree(j), g.isDirected() ? 2*g.out_degree(j) : g.out_degree(j));
+                shouldEqual(g.out_degree(j), boost::out_degree(*j, g));
+                shouldEqual(g.in_degree(j), boost::in_degree(*j, g));
+                shouldEqual(g.out_degree(j), outDegreeMap[*j]);
+                shouldEqual(g.in_degree(j), inDegreeMap[*j]);
+
+                shouldEqual(*j, indexMap[*j]);
+
                 put(vertexMap, *j, get(vertexMap, *j) + 1); // same as: vertexMap[*j] += 1;
             }
             should(!j.isValid() && j.atEnd());
