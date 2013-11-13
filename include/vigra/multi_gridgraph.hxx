@@ -245,67 +245,6 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
     }
 }
 
-template <class Shape>
-void
-computeNeighborOffsetsOld(ArrayVector<Shape> const & neighborOffsets, 
-                       ArrayVector<ArrayVector<bool> > const & neighborExists,
-                       ArrayVector<ArrayVector<Shape> > & incrementOffsets,
-                       ArrayVector<ArrayVector<GridGraphArcDescriptor<Shape::static_size> > > & edgeDescriptorOffsets,
-                       ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
-                       bool directed, bool includeBackEdges, bool includeForwardEdges)
-{
-    typedef GridGraphArcDescriptor<Shape::static_size> EdgeDescriptor;
-    
-    unsigned int borderTypeCount = neighborExists.size();
-    incrementOffsets.resize(borderTypeCount);
-    edgeDescriptorOffsets.resize(borderTypeCount);
-    indices.resize(borderTypeCount);
-    
-    for(unsigned int k=0; k<borderTypeCount; ++k)
-    {
-        incrementOffsets[k].clear();
-        edgeDescriptorOffsets[k].clear();
-        indices[k].clear();
-        
-        unsigned int j   = includeBackEdges
-                              ? 0
-                              : neighborOffsets.size() / 2,
-                     end = includeForwardEdges
-                              ? neighborOffsets.size()
-                              : neighborOffsets.size() / 2;
-        for(; j < end; ++j)
-        {
-            if(neighborExists[k][j])
-            {
-                if(incrementOffsets[k].size() == 0)
-                {
-                    incrementOffsets[k].push_back(neighborOffsets[j]);
-                }
-                else
-                {
-                    incrementOffsets[k].push_back(neighborOffsets[j] - neighborOffsets[indices[k].back()]);
-                }
-                
-                if(directed || j < neighborOffsets.size() / 2) // directed edge or backward edge
-                {
-                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(Shape(), j));
-                }
-                else if(edgeDescriptorOffsets[k].size() == 0 || !edgeDescriptorOffsets[k].back().isReversed()) // the first forward edge
-                {
-                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size()-j-1, true));
-                }       
-                else // second or higher forward edge
-                {
-                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
-                                                                      neighborOffsets.size()-j-1, true));
-                }
-                
-                indices[k].push_back(j);
-            }
-        }
-    }
-}
-
 } // namespace detail
 
 template<unsigned int N, bool BackEdgesOnly=false>
@@ -1221,14 +1160,17 @@ struct GridGraphBase<N, undirected_tag>
 /** \brief Define a grid graph in arbitrary dimensions.
 
     A GridGraph connects each pixel to its direct or indirect neighbors. 
-    Direct neighbors correspond to the 4-neighborhood in 2D and the 6-neighborhood
-    in 3D, whereas indirect neighbors correspond to the 8-neighborhood and 
-    26-neighborhood respectively. The GridGraph class extends this scheme to
-    arbitrary dimensions. While the dimension must be defined at compile time
-    via the template parameter <tt>N</tt>, the desired neighborhood can be chosen
-    at runtime in the GridGraph's constructor. The shape of the grid is
-    also specified at runtime in terms of a suitable shape object.
-    
+    Direct neighbors are the adjacent point along the coordinate axes, 
+    whereas indirect neighbors include the diagonally adjacent points. Thus, 
+    direct neighbors correspond to the 4-neighborhood in 2D and the 
+    6-neighborhood in 3D, whereas indirect neighbors correspond to the 
+    8-neighborhood and 26-neighborhood respectively. The GridGraph class 
+    extends this scheme to arbitrary dimensions. While the dimension must be 
+    defined at compile time via the template parameter <tt>N</tt>, the 
+    desired neighborhood can be chosen at runtime in the GridGraph's 
+    constructor. The shape of the grid is also specified at runtime in terms 
+    of a suitable shape object. 
+
     Another choice to be made at compile time is whether the graph should be directed 
     or undirected. This is defined via the <tt>DirectedTag</tt> template parameter
     which can take the values <tt>directed_tag</tt> or <tt>undirected_tag</tt>.
@@ -1262,7 +1204,7 @@ struct GridGraphBase<N, undirected_tag>
     LEMON concepts ReadMap, WriteMap, ReadWriteMap, and ReferenceMap.
     
     VIGRA's GridGraph class is designed such that multi-dimensional coordinates
-    (i.e. <tt>TinyVector<MultiArrayIndex></tt> serve as descriptor objects, which means
+    (i.e. <tt>TinyVector<MultiArrayIndex></tt>) serve as descriptor objects, which means
     that normal <tt>MultiArray</tt>s or <tt>MultiArrayView</tt>s can serve as property
     maps in most situations. Thus, node properties like a foreground probability for 
     foreground/background segmentation can simply be stored as normal images.
@@ -1324,7 +1266,7 @@ struct GridGraphBase<N, undirected_tag>
             bool is_local_maximum = true;
             for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
             {
-                // if a neighbor is larger, the node is not a local maximum
+                // if a neighbor has larger value, the center node is not a local maximum
                 if (current < src[g.target(*arc)]) 
                     is_local_maximum = false;
             }
@@ -1371,7 +1313,7 @@ struct GridGraphBase<N, undirected_tag>
             tie(arc, arc_end) = adjacent_vertices(*node, g);
             for (;arc != arc_end; ++arc)
             {
-                // if a neighbor is larger, the node is not a local maximum
+                // if a neighbor has larger value, the center node is not a local maximum
                 if (current < get(src, *arc))
                     is_local_maximum = false;
             }
@@ -1431,102 +1373,102 @@ public:
     typedef detail::GridGraphBase<N, DirectedTag>   base_type;
     typedef GridGraph<N, DirectedTag>               self_type;
     
-        /** \brief shape type of the graph
+        /** \brief Shape type of the graph and a node property map.
         */
     typedef typename MultiArrayShape<N>::type       shape_type;
     
-        /** \brief shape type of an edge property map (must have one additional dimension)
+        /** \brief Shape type of an edge property map (must have one additional dimension).
         */
     typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;    
     
-        /** \brief type of node and edge IDs
-        */
+        /** \brief Type of node and edge IDs.
+.        */
     typedef MultiArrayIndex                         index_type;
     
-        /** \brief type to specify number of vertices  (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::vertices_size_type</tt>)
+        /** \brief Type to specify number of vertices (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::vertices_size_type</tt>).
         */
     typedef MultiArrayIndex                         vertices_size_type;
     
-        /** \brief type to specify number of edges (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::edges_size_type</tt>)
+        /** \brief Type to specify number of edges (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::edges_size_type</tt>).
         */
     typedef MultiArrayIndex                         edges_size_type;
     
-        /** \brief type to specify number of neighbors (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::degree_size_type</tt>)
+        /** \brief Type to specify number of neighbors (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::degree_size_type</tt>).
         */
     typedef MultiArrayIndex                         degree_size_type;
 
-        /** \brief iterator over the vertices of the graph (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::vertex_iterator</tt>)
+        /** \brief Iterator over the vertices of the graph (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::vertex_iterator</tt>).
         */
     typedef MultiCoordinateIterator<N>              vertex_iterator;
     
-        /** \brief iterator over the neighbor vertices of a given vertex (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::adjacency_iterator</tt>)
+        /** \brief Iterator over the neighbor vertices of a given vertex (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::adjacency_iterator</tt>).
         */
     typedef GridGraphNeighborIterator<N>            adjacency_iterator;
     
-        /** \brief same as adjacency_iterator (API: VIGRA)
+        /** \brief Same as adjacency_iterator (API: VIGRA).
         */
     typedef adjacency_iterator                      neighbor_vertex_iterator;
     
-        /** \brief iterator over only those neighbor vertices of a given vertex 
-                   that have smaller ID (API: VIGRA)
+        /** \brief Iterator over only those neighbor vertices of a given vertex 
+                   that have smaller ID (API: VIGRA).
         */
     typedef GridGraphNeighborIterator<N, true>      back_neighbor_vertex_iterator;
     
-        /** \brief iterator over the incoming edges of a given vertex (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::in_edge_iterator</tt>)
+        /** \brief Iterator over the incoming edges of a given vertex (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::in_edge_iterator</tt>).
         */
     typedef GridGraphInArcIterator<N>               in_edge_iterator;
     
-        /** \brief iterator over the outgoing edges of a given vertex (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::out_edge_iterator</tt>)
+        /** \brief Iterator over the outgoing edges of a given vertex (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::out_edge_iterator</tt>).
         */
     typedef GridGraphOutArcIterator<N>              out_edge_iterator;
     
-        /** \brief iterator over only those outgoing edges of a given vertex
-                   that go to vertices with smaller IDs (API: VIGRA)
+        /** \brief Iterator over only those outgoing edges of a given vertex
+                   that go to vertices with smaller IDs (API: VIGRA).
         */
     typedef GridGraphOutArcIterator<N, true>        out_back_edge_iterator;
     
-        /** \brief iterator over the edges of a graph (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::edge_iterator</tt>)
+        /** \brief Iterator over the edges of a graph (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::edge_iterator</tt>).
         */
     typedef GridGraphArcIterator<N, !is_directed>   edge_iterator;
     
-        /** \brief the vertex descriptor (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::vertex_descriptor</tt>)
+        /** \brief The vertex descriptor (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::vertex_descriptor</tt>).
         */
     typedef shape_type                              vertex_descriptor;
     
-        /** \brief the edge descriptor (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::edge_descriptor</tt>)
+        /** \brief The edge descriptor (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::edge_descriptor</tt>).
         */
     typedef GridGraphArcDescriptor<N>               edge_descriptor;
      
-        /** \brief is the graph directed or undirected ? (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::directed_category</tt>)
+        /** \brief Is the graph directed or undirected ? (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::directed_category</tt>).
         */
     typedef DirectedTag                             directed_category;
     
-        /** \brief the graph does not allow multiple edges between the same vertices 
+        /** \brief The graph does not allow multiple edges between the same vertices 
                   (API: boost::graph, use via 
-                  <tt>boost::graph_traits<Graph>::edge_parallel_category</tt>)
+                  <tt>boost::graph_traits<Graph>::edge_parallel_category</tt>).
         */
     typedef boost::disallow_parallel_edge_tag       edge_parallel_category;
     
-        /** \brief the graph does not define internal property maps (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::vertex_property_type</tt>)
+        /** \brief The graph does not define internal property maps (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::vertex_property_type</tt>).
         */
     typedef boost::no_property                      vertex_property_type; // we only support "external properties".
     // FIXME: Maybe support the vertex -> coordinate map (identity) as the only internal property map
     // and additionally the vertex_descriptor -> ID map (vertex_index = SOI).
 
-        /** \brief define several graph tags related to graph traversal (API: boost::graph,
-             use via <tt>boost::graph_traits<Graph>::traversal_category</tt>)
+        /** \brief Define several graph tags related to graph traversal (API: boost::graph,
+             use via <tt>boost::graph_traits<Graph>::traversal_category</tt>).
         */
     struct traversal_category 
     : virtual public boost::bidirectional_graph_tag,
@@ -1542,52 +1484,54 @@ public:
     typedef ArrayVector<ArrayVector<edge_descriptor> >   RelativeEdgeOffsetsArray;
     typedef ArrayVector<ArrayVector<MultiArrayIndex> >   IndexArray;
 
+    ////////////////////////////////////////////////////////////////////
+    
     // LEMON interface
     typedef self_type                               Graph;
     
-        /** \brief the Node descriptor (API: LEMON)
+        /** \brief The Node descriptor (API: LEMON).
         */
     typedef vertex_descriptor                       Node;
     
-        /** \brief iterator over all nodes of the graph (API: LEMON)
+        /** \brief Iterator over all nodes of the graph (API: LEMON).
         */
     typedef vertex_iterator                         NodeIt;
     
-        /** \brief the arc (directed edge) descriptor (API: LEMON)
+        /** \brief The arc (directed edge) descriptor (API: LEMON).
         */
     typedef GridGraphArcDescriptor<N>               Arc;
     
-        /** \brief iterator over the outgoing edges of a node (API: LEMON)
+        /** \brief Iterator over the outgoing edges of a node (API: LEMON).
         */
     typedef GridGraphOutArcIterator<N>              OutArcIt;
     
-        /** \brief iterator over only those outgoing edges of a node
-            that end in a node with smaller ID (API: VIGRA)
+        /** \brief Iterator over only those outgoing edges of a node
+            that end in a node with smaller ID (API: VIGRA).
         */
     typedef GridGraphOutArcIterator<N, true>        OutBackArcIt;
     
-        /** \brief iterator over the acrs (directed edges) of a node (API: LEMON)
+        /** \brief Iterator over the acrs (directed edges) of a node (API: LEMON).
         */
     typedef GridGraphArcIterator<N, false>          ArcIt;
     
-        /** \brief iterator over the incoming arcs of a node (API: LEMON)
+        /** \brief Iterator over the incoming arcs of a node (API: LEMON).
         */
     typedef GridGraphInArcIterator<N>               InArcIt;
     
-        /** \brief the edge descriptor (API: LEMON)
+        /** \brief The edge descriptor (API: LEMON).
         */
     typedef typename MultiArrayShape<N+1>::type     Edge;
     
-        /** \brief iterator over the incident edges of a node (API: LEMON)
+        /** \brief Iterator over the incident edges of a node (API: LEMON).
         */
     typedef GridGraphOutEdgeIterator<N>             IncEdgeIt;
     
-        /** \brief iterator over only those incident edges of a node that
-            end in a node with smaller ID (API: VIGRA)
+        /** \brief Iterator over only those incident edges of a node that
+            end in a node with smaller ID (API: VIGRA).
         */
     typedef GridGraphOutEdgeIterator<N, true>       IncBackEdgeIt;
     
-        /** \brief iterator over the edges of the graph (API: LEMON)
+        /** \brief Iterator over the edges of the graph (API: LEMON).
         */
     typedef GridGraphEdgeIterator<N, !is_directed>  EdgeIt;
     
@@ -1597,8 +1541,10 @@ public:
     typedef lemon::True FindEdgeTag;
     typedef lemon::True FindArcTag;
     
-        /** \brief type of a node property map that maps node descriptor objects 
-            onto property values of type <tt>T</tt> (API: LEMON)
+    ////////////////////////////////////////////////////////////////////
+    
+        /** \brief Type of a node property map that maps node descriptor objects 
+            onto property values of type <tt>T</tt> (API: LEMON).
         */
     template <class T>
     class NodeMap
@@ -1623,31 +1569,31 @@ public:
         : base_type()
         {}
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates a zero-initialized entry for each node of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates a zero-initialized entry for each node of the graph).
             */
         explicit NodeMap(GridGraph const & g)
         : base_type(g.shape())
         {}
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates an entry with initial value \a t for each node of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates an entry with initial value \a t for each node of the graph).
             */
         NodeMap(GridGraph const & g, T const & t)
         : base_type(g.shape(), t)
         {}
 
-            /** \brief construct property map for the given \a shape.
-                Preallocates a zero-initialized entry for each node of a grid
-                graph with this shape.
+            /** \brief Construct property map for the given \a shape.
+                (preallocates a zero-initialized entry for each node of a grid
+                graph with this shape).
             */
         explicit NodeMap(difference_type const & shape)
         : base_type(shape)
         {}
         
-            /** \brief construct property map for the given \a shape.
-                Preallocates an entry with initial value \a t for each node of a grid
-                graph with this shape.
+            /** \brief Construct property map for the given \a shape.
+                (preallocates an entry with initial value \a t for each node of a grid
+                graph with this shape).
             */
         NodeMap(difference_type const & shape, T const & t)
         : base_type(shape, t)
@@ -1667,16 +1613,16 @@ public:
         
         // appropriate operator[] are inherited
 #ifdef DOXYGEN
-            /** \brief read/write access to the value associated with node descriptor \a key.
+            /** \brief Read/write access to the value associated with node descriptor \a key.
             */
         Value & operator[](Key const & key);
 
-            /** \brief read-only access to the value associated with node descriptor \a key.
+            /** \brief Read-only access to the value associated with node descriptor \a key.
             */
         Value const & operator[](Key const & key) const;
 #endif // DOXYGEN
         
-            /** \brief set the property of node desctiptor \a key to value \a v.
+            /** \brief Set the property of node desctiptor \a key to value \a v.
             */
         void set(Key const & k, Value const & v)
         {
@@ -1685,8 +1631,8 @@ public:
     };
     
     
-        /** \brief type of an edge property map that maps edge descriptor objects 
-            onto property values of type <tt>T</tt> (API: LEMON)
+        /** \brief Type of an edge property map that maps edge descriptor objects 
+            onto property values of type <tt>T</tt> (API: LEMON).
         */
     template <class T>
     class EdgeMap
@@ -1711,31 +1657,31 @@ public:
         : base_type()
         {}
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates a zero-initialized entry for each edge of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates a zero-initialized entry for each edge of the graph).
             */
         explicit EdgeMap(GridGraph const & g)
         : base_type(g.edge_propmap_shape())
         {}
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates an entry with initial value \a t for each edge of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates an entry with initial value \a t for each edge of the graph).
             */
         EdgeMap(GridGraph const & g, T const & t)
         : base_type(g.edge_propmap_shape(), t)
         {}
 
-            /** \brief construct property map for the given \a shape.
-                Preallocates a zero-initialized entry for each edge of 
-                a grid graph with this shape.
+            /** \brief Construct property map for the given \a shape
+                (preallocates a zero-initialized entry for each edge of 
+                a grid graph with this shape).
             */
         explicit EdgeMap(difference_type const & shape)
         : base_type(shape)
         {}
         
-            /** \brief construct property map for the given \a shape.
-                Preallocates an entry with initial value \a t for each edge 
-                of a grid graph with this shape.
+            /** \brief Construct property map for the given \a shape
+                (preallocates an entry with initial value \a t for each edge 
+                of a grid graph with this shape).
             */
         EdgeMap(difference_type const & shape, T const & t)
         : base_type(shape, t)
@@ -1755,16 +1701,16 @@ public:
         
         // appropriate operator[] are inherited
 #ifdef DOXYGEN
-            /** \brief read/write access to the value associated with edge descriptor \a key.
+            /** \brief Read/write access to the value associated with edge descriptor \a key.
             */
         Value & operator[](Key const & key);
 
-            /** \brief read-only access to the value associated with edge descriptor \a key.
+            /** \brief Read-only access to the value associated with edge descriptor \a key.
             */
         Value const & operator[](Key const & key) const;
 #endif // DOXYGEN
         
-            /** \brief set the property of edge desctiptor \a key to value \a v.
+            /** \brief Set the property of edge desctiptor \a key to value \a v.
             */
         void set(Key const & k, Value const & v)
         {
@@ -1773,8 +1719,8 @@ public:
     };
 
 #ifdef DOXYGEN
-        /** \brief type of an arc property map that maps arc descriptor objects 
-            onto property values of type <tt>T</tt>  (API: LEMON)
+        /** \brief Type of an arc property map that maps arc descriptor objects 
+            onto property values of type <tt>T</tt> (API: LEMON).
         */
     template <class T>
     class ArcMap
@@ -1782,43 +1728,44 @@ public:
     {
       public:
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates a zero-initialized entry for each arc of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates a zero-initialized entry for each arc of the graph).
             */
         explicit ArcMap(GridGraph const & g);
         
-            /** \brief construct property map for the given graph \a g.
-                Preallocates an entry with initial value \a t for each arc of the graph.
+            /** \brief Construct property map for the given graph \a g
+                (preallocates an entry with initial value \a t for each arc of the graph).
             */
         ArcMap(GridGraph const & g, T const & t);
 
-            /** \brief construct property map for the given \a shape.
-                Preallocates a zero-initialized entry for each arc of 
-                a grid graph with this shape.
+            /** \brief Construct property map for the given \a shape
+                (preallocates a zero-initialized entry for each arc of 
+                a grid graph with this shape).
             */
         explicit ArcMap(difference_type const & shape);
         
-            /** \brief construct property map for the given \a shape.
-                Preallocates an entry with initial value \a t for each arc of 
-                a grid graph with this shape.
+            /** \brief Construct property map for the given \a shape
+                (preallocates an entry with initial value \a t for each arc of 
+                a grid graph with this shape).
             */
         ArcMap(difference_type const & shape, T const & t);
 
-            /** \brief read/write access to the value associated with arc descriptor \a key.
+            /** \brief Read/write access to the value associated with arc descriptor \a key.
             */
         Value & operator[](Key const & key);
 
-            /** \brief read-only access to the value associated with arc descriptor \a key.
+            /** \brief Read-only access to the value associated with arc descriptor \a key.
             */
         Value const & operator[](Key const & key) const;
         
-            /** \brief set the property of arc desctiptor \a key to value \a v.
+            /** \brief Set the property of arc desctiptor \a key to value \a v.
             */
         void set(Key const & k, Value const & v);
     };
 #endif // DOXYGEN
 
-        // a LEMON-compatible property map that returns the coordinate of a given node
+        /** \brief Type of a property map that returns the coordinate of a given node (API: LEMON).
+        */
     class IndexMap 
     {
       public:
@@ -1832,19 +1779,92 @@ public:
         IndexMap()
         {}
 
-        IndexMap(const GridGraph&)
+            /** \brief Construct property map for the given graph.
+            */
+        explicit IndexMap(const GridGraph&)
         {}
 
+            /** \brief Get the grid coordinate of the node descriptor \a key.
+            */
         Value const & operator[](Key const & key) const 
         {
             return key;
         }
     };
         
+        /** \brief Type of a property map that returns the number of incoming edges of a given node (API: LEMON, use via <tt>lemon::InDegMap<Graph></tt>).
+        */
+    class InDegMap
+    {
+      public:
+      
+        /// The graph type of InDegMap (works for directed and undirected graphs)
+        typedef GridGraph                               Graph;
+        typedef GridGraph                               Digraph;
+        typedef Node                                    Key;
+        typedef degree_size_type                        Value;
+        typedef Key                                     key_type;
+        typedef Value                                   value_type; 
+        typedef Value const &                           reference;
+        typedef boost::readable_property_map_tag        category;
+        
+            /** \brief Construct property map for the given graph.
+            */
+        explicit InDegMap(const GridGraph& graph)
+        : graph_(graph)
+        {}
+        
+            /** \brief Get the in-degree of the node descriptor \a key.
+            */
+        Value operator[](const Key& key) const 
+        {
+            return graph_.in_degree(key);
+        }
+        
+      protected:
+      
+        GridGraph const & graph_;
+    };
+
+        /** \brief Type of a property map that returns the number of outgoing edges of a given node (API: LEMON, use via <tt>lemon::OutDegMap<Graph></tt>).
+        */
+    class OutDegMap
+    {
+      public:
+      
+        /// The graph type of OutDegMap (works for directed and undirected graphs)
+        typedef GridGraph                               Graph;
+        typedef GridGraph                               Digraph;
+        typedef Node                                    Key;
+        typedef degree_size_type                        Value;
+        typedef Key                                     key_type;
+        typedef Value                                   value_type; 
+        typedef Value const &                           reference;
+        typedef boost::readable_property_map_tag        category;
+        
+            /** \brief Construct property map for the given graph.
+            */
+        explicit OutDegMap(const GridGraph& graph)
+        : graph_(graph)
+        {}
+        
+            /** \brief Get the out-degree of the node descriptor \a key.
+            */
+        Value operator[](const Key& key) const 
+        {
+            return graph_.out_degree(key);
+        }
+        
+      protected:
+      
+        GridGraph const & graph_;
+    };
+    
+    ////////////////////////////////////////////////////////////////////
+    
         // dummy default constructor to satisfy adjacency_graph concept
     GridGraph()
     {}
-
         
         /** \brief Construct a grid graph with given \a shape and neighborhood type \a ntype.
 
@@ -1872,7 +1892,7 @@ public:
         // detail::makeArraySubNeighborhood(neighborhood[0], neighborExists, shape_type(1), neighborhoodIndices);
     }
     
-        /** \brief get the ID (i.e. scan-order index) for node desciptor \a v (API: LEMON)
+        /** \brief Get the ID (i.e. scan-order index) for node desciptor \a v (API: LEMON).
         */
     index_type id(Node const & v) const
     {
@@ -1894,7 +1914,7 @@ public:
         return id(*v);
     }
     
-        /** \brief get node descriptor for given node ID \a i (API: LEMON)
+        /** \brief Get node descriptor for given node ID \a i (API: LEMON).
         */
     Node nodeFromId(index_type i) const
     {
@@ -1903,75 +1923,75 @@ public:
         return res;
     }
 
-        /** \brief get the maximum ID of any node in this graph (API: LEMON)
+        /** \brief Get the maximum ID of any node in this graph (API: LEMON).
         */
     index_type maxNodeId() const
     {
         return prod(shape()) - 1;
     }
     
-        /** get the grid cordinate of the given node \a v (convenience function)
+        /** \brief Get the grid cordinate of the given node \a v (convenience function).
         */
     Node const & pos(Node const & v) const
     {
         return v;
     }
     
-        /** \brief get vertex iterator pointing to the first vertex of this graph (convenience function,<br/>
+        /** \brief Get vertex iterator pointing to the first vertex of this graph (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::vertices(graph)</tt>,<br/>
-            LEMON uses <tt>Graph::NodeIt(graph)</tt>)
+            LEMON uses <tt>Graph::NodeIt(graph)</tt>).
         */
     vertex_iterator get_vertex_iterator() const 
     {
         return vertex_iterator(shape_);
     }
 
-        /** \brief get vertex iterator pointing to the given vertex (API: VIGRA)
+        /** \brief Get vertex iterator pointing to the given vertex (API: VIGRA).
         */
     vertex_iterator get_vertex_iterator(vertex_descriptor const & v) const 
     {
         return vertex_iterator(shape_) + v;
     }
 
-        /** \brief get vertex iterator pointing beyond the valid range of vertices of this graph (convenience function,<br/>
+        /** \brief Get vertex iterator pointing beyond the valid range of vertices of this graph (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::vertices(graph)</tt>,<br/>
-            LEMON uses the special value <tt>lemon::INVALID</tt> instead)
+            LEMON uses the special value <tt>lemon::INVALID</tt> instead).
         */
     vertex_iterator get_vertex_end_iterator() const 
     {
         return get_vertex_iterator().getEndIterator();
     }
 
-        /** \brief get an iterator pointing to the first neighbor of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing to the first neighbor of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::adjacent_vertices(v, graph)</tt>,<br/>
-            LEMON uses <tt>Graph::ArcIt(g, v)</tt>)
+            LEMON uses <tt>Graph::ArcIt(g, v)</tt>).
         */
     neighbor_vertex_iterator get_neighbor_vertex_iterator(vertex_descriptor const & v) const 
     {
         return neighbor_vertex_iterator(*this, v);
     }
 
-        /** \brief get an iterator pointing beyond the range of neighbors of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing beyond the range of neighbors of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::adjacent_vertices(v, graph)</tt>,<br/>
-            LEMON uses the speical value <tt>lemon::INVALID</tt> instead)
+            LEMON uses the speical value <tt>lemon::INVALID</tt> instead).
         */
     neighbor_vertex_iterator get_neighbor_vertex_end_iterator(vertex_descriptor const & v) const 
     {
        return get_neighbor_vertex_iterator(v).getEndIterator();
     }
 
-        /** \brief get an iterator pointing to the first backward neighbor of the given vertex (API: VIGRA,<br/>
+        /** \brief Get an iterator pointing to the first backward neighbor of the given vertex (API: VIGRA,<br/>
             in analogy to the boost::graph API, we also provide a free function <tt>boost::back_adjacent_vertices(v, g)</tt>,<br/>
-            and the LEMON analogue is <tt>Graph::OutBackArcIt(graph, v)</tt>)
+            and the LEMON analogue is <tt>Graph::OutBackArcIt(graph, v)</tt>).
         */
     back_neighbor_vertex_iterator get_back_neighbor_vertex_iterator(vertex_descriptor const & v) const 
     {
         return back_neighbor_vertex_iterator(*this, v);
     }
 
-        /** \brief get an iterator pointing beyond the range of backward neighbors of the given vertex (API: VIGRA,<br/>
+        /** \brief Get an iterator pointing beyond the range of backward neighbors of the given vertex (API: VIGRA,<br/>
             in analogy to the boost::graph API, we also provide a free function <tt>boost::back_adjacent_vertices(v, g)</tt>,<br/>
-            and LEMON just uses <tt>lemon::INVALID</tt> instead)
+            and LEMON just uses <tt>lemon::INVALID</tt> instead).
         */
     back_neighbor_vertex_iterator get_back_neighbor_vertex_end_iterator(vertex_descriptor const & v) const 
     {
@@ -1981,15 +2001,15 @@ public:
     // --------------------------------------------------
     // support for VertexListGraph:
 
-        /** \brief get the number of vertices in this graph (convenience function,
-            the boost::graph API provides the free function <tt>boost::num_vertices(graph)</tt>)
+        /** \brief Get the number of vertices in this graph (convenience function,
+            the boost::graph API provides the free function <tt>boost::num_vertices(graph)</tt>).
         */
     vertices_size_type num_vertices() const 
     {
         return num_vertices_;
     }
 
-        /** \brief get the number of nodes in this graph (API: LEMON)
+        /** \brief Get the number of nodes in this graph (API: LEMON).
         */
     vertices_size_type nodeNum() const 
     {
@@ -1999,8 +2019,8 @@ public:
     // --------------------------------------------------
     // support for IncidenceGraph:
 
-         /** \brief get the ID (i.e. scan-order index in an edge property map) for the
-             given edges descriptor \a e (API: LEMON)
+         /** \brief Get the ID (i.e. scan-order index in an edge property map) for the
+             given edges descriptor \a e (API: LEMON).
         */
    index_type id(Edge const & e) const
     {
@@ -2022,7 +2042,7 @@ public:
         return id(*e);
     }
 
-        /** \brief get the edge descriptor for the given edge ID \a i (API: LEMON)
+        /** \brief Get the edge descriptor for the given edge ID \a i (API: LEMON).
         */
     Edge edgeFromId(index_type i) const
     {
@@ -2031,7 +2051,7 @@ public:
         return res;
     }
     
-        /** \brief get the maximum ID of any edge in this graph (API: LEMON)
+        /** \brief Get the maximum ID of any edge in this graph (API: LEMON).
         */
     index_type maxEdgeId() const
     {
@@ -2044,8 +2064,8 @@ public:
         return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
     }
     
-        /** \brief get the ID (i.e. scan-order index an an arc property map) for 
-            the given ar \a a (API: LEMON)
+        /** \brief Get the ID (i.e. scan-order index an an arc property map) for 
+            the given ar \a a (API: LEMON).
         */
     index_type id(Arc const & a) const
     {
@@ -2067,7 +2087,7 @@ public:
         return id(*a);
     }
         
-        /** \brief get an arc descriptor for the given arc ID \a i (API: LEMON)
+        /** \brief Get an arc descriptor for the given arc ID \a i (API: LEMON).
         */
     Arc arcFromId(index_type i) const
     {
@@ -2076,7 +2096,7 @@ public:
         return undirectedArc(res);
     }
     
-        /** \brief get the maximal ID af any arc in this graph (API: LEMON)
+        /** \brief Get the maximal ID af any arc in this graph (API: LEMON).
         */
     index_type maxArcId() const
     {
@@ -2088,17 +2108,17 @@ public:
         return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
     }
     
-        /** \brief return <tt>true</tt> when the arc is looking on the underlying
-            edge in its natural (i.e. forward) direction, <tt>false</tt> otherwise (API: LEMON)
+        /** \brief Return <tt>true</tt> when the arc is looking on the underlying
+            edge in its natural (i.e. forward) direction, <tt>false</tt> otherwise (API: LEMON).
         */
     bool direction(Arc const & a) const
     {
         return !a.isReversed();
     }
     
-        /** \brief create an arc for the given edge \a e, oriented along the 
-            edge's natural (<tt>forward = true</tt> or reversed 
-            (<tt>forward = false</tt>) direction (API: LEMON)
+        /** \brief Create an arc for the given edge \a e, oriented along the 
+            edge's natural (<tt>forward = true</tt>) or reversed 
+            (<tt>forward = false</tt>) direction (API: LEMON).
         */
     Arc direct(Edge const & e, bool forward) const
     {
@@ -2108,9 +2128,9 @@ public:
             return Arc(v(e), oppositeIndex(e[N]), true);
     }
     
-        /** \brief create an arc for the given edge \a e oriented
-            so that node \a n is the starting node of the arc (API: LEMON).
-            Returns <tt>lemon::INVALID</tt> if the edge is not incident to this node.
+        /** \brief Create an arc for the given edge \a e oriented
+            so that node \a n is the starting node of the arc (API: LEMON), or
+            return <tt>lemon::INVALID</tt> if the edge is not incident to this node.
         */
     Arc direct(Edge const & e, Node const & n) const
     {
@@ -2121,9 +2141,9 @@ public:
         return Arc(lemon::INVALID);
     }
     
-        /** \brief return the opposite node of the given node \a n
-            along edge \a e (API: LEMON). Returns <tt>lemon::INVALID</tt>
-            if the egde is not incident to this node.
+        /** \brief Return the opposite node of the given node \a n
+            along edge \a e (API: LEMON), or return <tt>lemon::INVALID</tt>
+            if the edge is not incident to this node.
         */
     Node oppositeNode(Node const & n, Edge const & e) const
     {
@@ -2135,8 +2155,8 @@ public:
         return Node(lemon::INVALID);
     }
     
-        /** \brief create an arc referring to the same edge as the given 
-            arc \a a, but with reversed direction (API: LEMON)
+        /** \brief Create an arc referring to the same edge as the given 
+            arc \a a, but with reversed direction (API: LEMON).
         */
     Arc oppositeArc(Arc const & a) const
     {
@@ -2161,155 +2181,163 @@ public:
                  : Arc(neighbor(a.vertexDescriptor(), a.edgeIndex()), oppositeIndex(a.edgeIndex()), true);
     }
     
-        //&@{
-        /** \brief return the start node of the edge the given iterator is referring to (API: LEMON or VIGRA)
+        /** \brief Return the start node of the edge the given iterator is referring to (API: LEMON).
         */
     Node baseNode(IncEdgeIt const & e)  const
     {
         return source(e.arcDescriptor());
     }
     
+        /** \brief Return the start node of the edge the given iterator is referring to (API: VIGRA).
+        */
     Node baseNode(IncBackEdgeIt const & e)  const
     {
         return source(e.arcDescriptor());
     }
     
+        /** \brief Return the start node of the edge the given iterator is referring to (API: LEMON).
+        */
     Node baseNode(OutArcIt const & a)  const
     {
         return source(*a);
     }
     
+        /** \brief Return the start node of the edge the given iterator is referring to (API: VIGRA).
+        */
     Node baseNode(OutBackArcIt const & a)  const
     {
         return source(*a);
     }
-        //@}
-    
-        //@{
-        /** \brief return the end node of the edge the given iterator is referring to (API: LEMON or VIGRA)
+
+        /** \brief Return the end node of the edge the given iterator is referring to (API: LEMON).
         */
     Node runningNode(IncEdgeIt const & e)  const
     {
         return target(e.arcDescriptor());
     }
     
+        /** \brief Return the end node of the edge the given iterator is referring to (API: VIGRA).
+        */
     Node runningNode(IncBackEdgeIt const & e)  const
     {
         return target(e.arcDescriptor());
     }
     
+        /** \brief Return the end node of the edge the given iterator is referring to (API: LEMON).
+        */
     Node runningNode(OutArcIt const & a)  const
     {
         return target(*a);
     }
     
+        /** \brief Return the end node of the edge the given iterator is referring to (API: VIGRA).
+        */
     Node runningNode(OutBackArcIt const & a)  const
     {
         return target(*a);
     }
-        //@}
     
-        /** \brief get the start node of the given arc \a a (API: LEMON)
+        /** \brief Get the start node of the given arc \a a (API: LEMON).
         */
     Node source(Arc const & a) const 
     {
         return source_or_target(a, true);
     }
 
-        /** \brief get the end node of the given arc \a a (API: LEMON)
+        /** \brief Get the end node of the given arc \a a (API: LEMON).
         */
     Node target(Arc const & a) const 
     {
         return source_or_target(a, false);
     }
 
-        /** \brief get the start node of the given edge \a e (API: LEMON,<br/>
-            the boost::graph API provides the free function <tt>boost::source(e, graph)</tt>)
+        /** \brief Get the start node of the given edge \a e (API: LEMON,<br/>
+            the boost::graph API provides the free function <tt>boost::source(e, graph)</tt>).
         */
     Node u(Edge const & e) const 
     {
         return Node(e.template subarray<0,N>());
     }
 
-        /** \brief get the end node of the given edge \a e (API: LEMON,<br/>
-            the boost::graph API provides the free function <tt>boost::target(e, graph)</tt>)
+        /** \brief Get the end node of the given edge \a e (API: LEMON,<br/>
+            the boost::graph API provides the free function <tt>boost::target(e, graph)</tt>).
         */
     Node v(Edge const & e) const 
     {
         return Node(e.template subarray<0,N>()) + neighborOffsets_[e[N]];
     }
 
-        /** \brief get an iterator pointing to the first outgoing edge of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing to the first outgoing edge of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::out_edges(v, graph)</tt>,<br/>
-            LEMON uses <tt>Graph::OutArcIt(g, v)</tt>)
+            LEMON uses <tt>Graph::OutArcIt(g, v)</tt>).
         */
     out_edge_iterator get_out_edge_iterator(vertex_descriptor const & v) const 
     {
         return out_edge_iterator(*this, v);
     }
 
-        /** \brief get an iterator pointing beyond the range of outgoing edges of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing beyond the range of outgoing edges of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::out_edges(v, graph)</tt>,<br/>
-            LEMON uses the special value <tt>lemon::INVALID</tt> instead)
+            LEMON uses the special value <tt>lemon::INVALID</tt> instead).
         */
     out_edge_iterator get_out_edge_end_iterator(vertex_descriptor const & v) const 
     {
         return get_out_edge_iterator(v).getEndIterator();
     }
 
-        /** \brief get an iterator pointing to the first outgoing backward edge of the given vertex (API: VIGRA,<br/>
+        /** \brief Get an iterator pointing to the first outgoing backward edge of the given vertex (API: VIGRA,<br/>
             in analogy to the boost::graph API, we also provide a free function <tt>boost::out_back_edges(v, g)</tt>,<br/>
-            and the LEMON analogue is <tt>Graph::IncBackEdgeIt(graph, v)</tt>)
+            and the LEMON analogue is <tt>Graph::IncBackEdgeIt(graph, v)</tt>).
         */
     out_back_edge_iterator get_out_back_edge_iterator(vertex_descriptor const & v) const 
     {
         return out_back_edge_iterator(*this, v);
     }
 
-        /** \brief get an iterator pointing beyond the range of outgoing backward edges of the given vertex (API: VIGRA,<br/>
+        /** \brief Get an iterator pointing beyond the range of outgoing backward edges of the given vertex (API: VIGRA,<br/>
             in analogy to the boost::graph API, we also provide a free function <tt>boost::out_back_edges(v, g)</tt>,<br/>
-            and LEMON uses the special value <tt>lemon::INVALID</tt> instead)
+            and LEMON uses the special value <tt>lemon::INVALID</tt> instead).
         */
     out_back_edge_iterator get_out_back_edge_end_iterator(vertex_descriptor const & v) const 
     {
         return get_out_back_edge_iterator(v).getEndIterator();
     }
 
-        /** \brief get an iterator pointing to the first incoming edge of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing to the first incoming edge of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::in_edges(v, graph)</tt>,<br/>
-            LEMON uses <tt>Graph::InArcIt(g, v)</tt>)
+            LEMON uses <tt>Graph::InArcIt(g, v)</tt>).
         */
     in_edge_iterator get_in_edge_iterator(vertex_descriptor const & v) const 
     {
         return in_edge_iterator(*this, v);
     }
 
-        /** \brief get an iterator pointing beyond the range of incoming edges of the given vertex (convenience function,<br/>
+        /** \brief Get an iterator pointing beyond the range of incoming edges of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::in_edges(v, graph)</tt>,<br/>
-            LEMON uses the special value <tt>lemon::INVALID</tt> instead)
+            LEMON uses the special value <tt>lemon::INVALID</tt> instead).
         */
     in_edge_iterator get_in_edge_end_iterator(vertex_descriptor const & v) const 
     {
         return get_in_edge_iterator(v).getEndIterator();
     }
 
-        /** \brief get the number of outgoing edges of the given vertex (convenience function,<br/>
+        /** \brief Get the number of outgoing edges of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::out_degree(v, graph)</tt>,<br/>
-            LEMON uses a special property map <tt>lemon::OutDegMap<Graph></tt>)
+            LEMON uses a special property map <tt>lemon::OutDegMap<Graph></tt>).
         */
     degree_size_type out_degree(vertex_descriptor const & v) const 
     {
         return (degree_size_type)neighborIndices_[get_border_type(v)].size();
     }
     
-        /** \brief get the number of outgoing backward edges of the given vertex (API: VIGRA)
+        /** \brief Get the number of outgoing backward edges of the given vertex (API: VIGRA).
         */
     degree_size_type back_degree(vertex_descriptor const & v) const 
     {
         return (degree_size_type)backIndices_[get_border_type(v)].size();
     }
     
-        /** \brief get the number of outgoing forward edges of the given vertex (API: VIGRA)
+        /** \brief Get the number of outgoing forward edges of the given vertex (API: VIGRA).
         */
     degree_size_type forward_degree(vertex_descriptor const & v) const 
     {
@@ -2317,18 +2345,18 @@ public:
         return (degree_size_type)(neighborIndices_[bt].size() - backIndices_[bt].size());
     }
     
-        /** \brief get the number of incoming edges of the given vertex (convenience function,<br/>
+        /** \brief Get the number of incoming edges of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::in_degree(v, graph)</tt>,<br/>
-            LEMON uses a special property map <tt>lemon::InDegMap<Graph></tt>)
+            LEMON uses a special property map <tt>lemon::InDegMap<Graph></tt>).
         */
     degree_size_type in_degree(vertex_descriptor const & v) const 
     {
         return out_degree(v);
     }
     
-        /** \brief get the total number of edges (incoming plus outgoing) of the given vertex (convenience function,<br/>
+        /** \brief Get the total number of edges (incoming plus outgoing) of the given vertex (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::degree(v, graph)</tt>,<br/>
-            LEMON has no analogue)
+            LEMON has no analogue).
         */
     degree_size_type degree(vertex_descriptor const & v) const 
     {
@@ -2340,22 +2368,22 @@ public:
     // --------------------------------------------------
     // support for EdgeListGraph:
 
-        /** \brief get the number of edges in this graph (convenience function,
-            boost::graph API provides the free function <tt>boost::num_edges(graph)</tt>)
+        /** \brief Get the number of edges in this graph (convenience function,
+            boost::graph API provides the free function <tt>boost::num_edges(graph)</tt>).
         */
     edges_size_type num_edges() const 
     {
         return num_edges_;
     }
 
-        /** \brief get the number of edges in this graph (API: LEMON)
+        /** \brief Get the number of edges in this graph (API: LEMON).
         */
     edges_size_type edgeNum() const 
     {
         return num_edges();
     }
 
-        /** \brief get the number of arc in this graph (API: LEMON)
+        /** \brief Get the number of arc in this graph (API: LEMON).
         */
     edges_size_type arcNum() const 
     {
@@ -2364,18 +2392,18 @@ public:
                    : 2*num_edges();
     }
     
-        /** \brief get edge iterator pointing to the first edge of the graph (convenience function,<br/>
+        /** \brief Get edge iterator pointing to the first edge of the graph (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::edges(graph)</tt>,<br/>
-            LEMON uses <tt>Graph::EdgeIt(graph)</tt>)
+            LEMON uses <tt>Graph::EdgeIt(graph)</tt>).
         */
     edge_iterator get_edge_iterator() const 
     {
         return edge_iterator(*this);
     }
 
-        /** \brief get edge iterator pointing beyond the valid range of edges of this graph (convenience function,<br/>
+        /** \brief Get edge iterator pointing beyond the valid range of edges of this graph (convenience function,<br/>
             the boost::graph API provides the free function <tt>boost::vertices(graph)</tt>,<br/>
-            LEMON uses the special value <tt>lemon::INVALID</tt> instead)
+            LEMON uses the special value <tt>lemon::INVALID</tt> instead).
         */
     edge_iterator get_edge_end_iterator() const 
     {
@@ -2385,8 +2413,9 @@ public:
     // --------------------------------------------------
     // support for AdjacencyMatrix concept:
 
-        /** \brief get a descriptor for the edge connecting vertices \a u and \a v,</br>or <tt>(lemon::INVALID, false)</tt> if no such edge exists (convenience function,<br/>
-        the boost::graph API provides the free function <tt>boost::edge(u, v, graph)</tt>)
+        /** \brief Get a descriptor for the edge connecting vertices \a u and \a v,<br/>
+            or <tt>(lemon::INVALID, false)</tt> if no such edge exists (convenience function,<br/>
+            the boost::graph API provides the free function <tt>boost::edge(u, v, graph)</tt>).
         */
     std::pair<edge_descriptor, bool>
     edge(vertex_descriptor const & u, vertex_descriptor const & v) const
@@ -2407,14 +2436,14 @@ public:
         return res;
     }
 
-        /** \brief get a descriptor for the edge connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON)
+        /** \brief Get a descriptor for the edge connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
         */
     Edge findEdge(Node const & u, Node const & v, Edge const & = lemon::INVALID) const 
     {
         return this->edge(u, v).first;
     }
     
-        /** \brief get a descriptor for the arc connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON)
+        /** \brief Get a descriptor for the arc connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
         */
     Arc findArc(Node const & u, Node const & v, Arc const & = lemon::INVALID) const 
     {
@@ -2425,7 +2454,7 @@ public:
                  // : Arc(lemon::INVALID);
     }
     
-        /** \brief create a property map that returns the coordinate of each node (API: LEMON GridGraph)
+        /** \brief Create a property map that returns the coordinate of each node (API: LEMON GridGraph).
         */
     IndexMap indexMap() const 
     {
@@ -2612,7 +2641,7 @@ struct property_traits<vigra::MultiArrayView<N, T, Stride> const>
     typedef boost::readable_property_map_tag              category;
 };
 
-    /** \brief Return number of outgoing edges of vertex \a v (API: boost)
+    /** \brief Return number of outgoing edges of vertex \a v (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2623,7 +2652,7 @@ out_degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & 
     return g.out_degree(v);
 }
 
-    /** \brief Return number of incoming edges of vertex \a v (API: boost)
+    /** \brief Return number of incoming edges of vertex \a v (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2634,7 +2663,7 @@ in_degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v
     return g.in_degree(v);
 }
 
-    /** \brief Return total number of edges (incoming and outgoing) of vertex \a v (API: boost)
+    /** \brief Return total number of edges (incoming and outgoing) of vertex \a v (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2645,7 +2674,7 @@ degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
     return g.degree(v);
 }
 
-    /** \brief Get a (begin, end) iterator pair for the vertices of graph \a g (API: boost)
+    /** \brief Get a (begin, end) iterator pair for the vertices of graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2657,7 +2686,7 @@ vertices(vigra::GridGraph<N, DirectedTag> const & g)
                           g.get_vertex_end_iterator());    
 }
 
-    /** \brief Return the number of vertices in graph \a g (API: boost)
+    /** \brief Return the number of vertices in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2668,7 +2697,7 @@ num_vertices(vigra::GridGraph<N, DirectedTag> const & g)
 }
 
     /** \brief Get a (begin, end) iterator pair for the neighbor vertices of 
-               vertex \a v in graph \a g (API: boost)
+               vertex \a v in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2682,7 +2711,7 @@ adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor c
 }
 
     /** \brief Get a (begin, end) iterator pair for only thise neighbor vertices of 
-               vertex \a v that have smaller ID than \a v (API: VIGRA)
+               vertex \a v that have smaller ID than \a v (API: VIGRA).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2708,7 +2737,7 @@ adjacent_vertices_at_iterator(typename vigra::GridGraph<N, DirectedTag>::vertex_
 }
 
     /** \brief Get a (begin, end) iterator pair for the outgoing edges of 
-               vertex \a v in graph \a g (API: boost)
+               vertex \a v in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2722,7 +2751,7 @@ out_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v
 }
 
     /** \brief Get a (begin, end) iterator pair for only those outgoing edges of 
-               vertex \a v whose ID is smaller than that of \a v (API: VIGRA)
+               vertex \a v whose ID is smaller than that of \a v (API: VIGRA).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2736,7 +2765,7 @@ out_back_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor cons
 }
 
     /** \brief Get a (begin, end) iterator pair for the incoming edges of 
-               vertex \a v in graph \a g (API: boost)
+               vertex \a v in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2749,7 +2778,7 @@ in_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
                           g.get_in_edge_end_iterator(v));    
 }
 
-    /** \brief Get a vertex descriptor for the start vertex of edge \a e in graph \a g (API: boost)
+    /** \brief Get a vertex descriptor for the start vertex of edge \a e in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2760,7 +2789,7 @@ source(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
     return g.source(e);
 }
 
-    /** \brief Get a vertex descriptor for the end vertex of edge \a e in graph \a g (API: boost)
+    /** \brief Get a vertex descriptor for the end vertex of edge \a e in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2771,7 +2800,7 @@ target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
     return g.target(e);
 }
 
-    /** \brief Get a (begin, end) iterator pair for the edges of graph \a g (API: boost)
+    /** \brief Get a (begin, end) iterator pair for the edges of graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2782,7 +2811,7 @@ edges(vigra::GridGraph<N, DirectedTag> const & g)
     return std::make_pair(g.get_edge_iterator(), g.get_edge_end_iterator());
 }
 
-    /** \brief Return the number of edges in graph \a g (API: boost)
+    /** \brief Return the number of edges in graph \a g (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 inline
@@ -2797,7 +2826,7 @@ num_edges(vigra::GridGraph<N, DirectedTag> const & g)
 
 // FIXME: test this
     /** \brief Return the pair (edge_descriptor, true) when an edge between vertices 
-               \a u and \a v exists, or (lemon::INVALID, false) otherwise (API: boost)
+               \a u and \a v exists, or (lemon::INVALID, false) otherwise (API: boost).
     */
 template<unsigned int N, class DirectedTag>
 std::pair<typename vigra::GridGraph<N, DirectedTag>::edge_descriptor, bool>
@@ -2811,7 +2840,7 @@ edge(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & u,
 // provide get / put for MultiArrayViews, indexed by the 
 // above-defined vertex_descriptor and edge_descriptor (in our case, a coordinate tuple):
 // FIXME: place this into multi_array.hxx ?
-    /** \brief Put value \a val at key \a k in the property map \a pmap (API: boost)
+    /** \brief Put value \a val at key \a k in the property map \a pmap (API: boost).
     */
 template<unsigned int N, class T, class Stride, class U>
 inline
@@ -2822,7 +2851,7 @@ void put(vigra::MultiArrayView<N, T, Stride> & pmap,
     pmap[k] = val;  
 }
 
-    /** \brief Read the value at key \a k in property map \a pmap (API: boost)
+    /** \brief Read the value at key \a k in property map \a pmap (API: boost).
     */
 template<unsigned int N, class T, class Stride>
 inline
@@ -2908,33 +2937,14 @@ class InDegMap;
     // LEMON-compatible property map for the in-degree of the nodes
 template<unsigned int N, class DirectedTag>
 class InDegMap<vigra::GridGraph<N, DirectedTag> >
+: public vigra::GridGraph<N, DirectedTag>::InDegMap
 {
   public:
-  
-    /// The graph type of InDegMap
     typedef vigra::GridGraph<N, DirectedTag> Graph;
-    typedef vigra::GridGraph<N, DirectedTag> Digraph;
-    /// The key type
-    typedef typename Graph::Node                    Key;
-    /// The value type
-    typedef typename Graph::degree_size_type        Value;
-    typedef Key                                     key_type;
-    typedef Value                                   value_type; 
-    typedef Value const &                           reference;
-    typedef boost::readable_property_map_tag        category;
     
     explicit InDegMap(const Graph& graph)
-    : graph_(graph)
+    : Graph::InDegMap(graph)
     {}
-    
-    Value operator[](const Key& key) const 
-    {
-        return graph_.in_degree(key);
-    }
-    
-  protected:
-  
-    Graph const & graph_;
 };
 
 template <typename GR>
@@ -2943,33 +2953,14 @@ class OutDegMap;
     // LEMON-compatible property map for the out-degree of the nodes
 template<unsigned int N, class DirectedTag>
 class OutDegMap<vigra::GridGraph<N, DirectedTag> >
+: public vigra::GridGraph<N, DirectedTag>::OutDegMap
 {
   public:
-  
-    /// The graph type of OutDegMap
     typedef vigra::GridGraph<N, DirectedTag> Graph;
-    typedef vigra::GridGraph<N, DirectedTag> Digraph;
-    /// The key type
-    typedef typename Graph::Node                    Key;
-    /// The value type
-    typedef typename Graph::degree_size_type        Value;
-    typedef Key                                     key_type;
-    typedef Value                                   value_type; 
-    typedef Value const &                           reference;
-    typedef boost::readable_property_map_tag        category;
     
     explicit OutDegMap(const Graph& graph)
-    : graph_(graph)
+    : Graph::OutDegMap(graph)
     {}
-    
-    Value operator[](const Key& key) const 
-    {
-        return graph_.out_degree(key);
-    }
-    
-  protected:
-  
-    Graph const & graph_;
 };
 
 
