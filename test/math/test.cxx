@@ -1017,6 +1017,34 @@ struct AutodiffTest
         shouldEqual(min(5.0, N2(2.0,0.0,1.0)), N2(2.0,0.0,1.0));
         shouldEqual(max(N2(5.0,1.0,0.0), 2.0), N2(5.0,1.0,0.0));
         shouldEqual(min(N2(5.0,1.0,0.0), 2.0), N2(2.0,0.0,0.0));
+
+        should(N2(1.0, 1.0, 0.0) < N2(2.0, 0.0, 1.0));
+        should(!(N2(1.0, 1.0, 0.0) < N2(1.0, 0.0, 1.0)));
+        should(N2(1.0, 1.0, 0.0) < 1.1);
+        should(!(N2(1.0, 1.0, 0.0) < 1.0));
+        should(0.8 < N2(2.0, 0.0, 1.0));
+        should(!(2.0 < N2(2.0, 0.0, 1.0)));
+
+        should(N2(1.0, 1.0, 0.0) <= N2(2.0, 0.0, 1.0));
+        should(N2(1.0, 1.0, 0.0) <= N2(1.0, 0.0, 1.0));
+        should(N2(1.0, 1.0, 0.0) <= 1.1);
+        should(N2(1.0, 1.0, 0.0) <= 1.0);
+        should(0.8 <= N2(2.0, 0.0, 1.0));
+        should(2.0 <= N2(2.0, 0.0, 1.0));
+
+        should(N2(2.0, 1.0, 0.0) > N2(1.0, 0.0, 1.0));
+        should(!(N2(1.0, 1.0, 0.0) > N2(1.0, 0.0, 1.0)));
+        should(N2(2.0, 1.0, 0.0) > 1.1);
+        should(!(N2(1.0, 1.0, 0.0) > 1.0));
+        should(2.8 > N2(2.0, 0.0, 1.0));
+        should(!(2.0 > N2(2.0, 0.0, 1.0)));
+
+        should(N2(2.0, 1.0, 0.0) >= N2(1.0, 0.0, 1.0));
+        should(N2(1.0, 1.0, 0.0) >= N2(1.0, 0.0, 1.0));
+        should(N2(2.0, 1.0, 0.0) >= 1.1);
+        should(N2(1.0, 1.0, 0.0) >= 1.0);
+        should(2.8 >= N2(2.0, 0.0, 1.0));
+        should(2.0 >= N2(2.0, 0.0, 1.0));
     }
 
     void testFunctions()
@@ -1061,6 +1089,40 @@ struct AutodiffTest
         should(closeAtTolerance(atan2(b*sin(a), b*cos(a)), a, 1e-13));
         should(closeAtTolerance(pow(a, 1.0), a));
         should(closeAtTolerance(pow(pow(a, b), 1.0 / b), a, 1e-13));
+
+        vigra::BSpline<0, double> s0;
+        vigra::BSpline<1, double> s1;
+        vigra::BSpline<2, double> s2;
+        vigra::BSpline<3, double> s3;
+        vigra::BSpline<4, double> s4;
+        vigra::BSpline<5, double> s5;
+
+        for(double x=-3.3; x < 3.5; x += 0.5)
+        {
+            N1 r = s0(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s0(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s0(x,1), 1e-13));
+
+            r = s1(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s1(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s1(x,1), 1e-13));
+
+            r = s2(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s2(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s2(x,1), 1e-13));
+
+            r = s3(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s3(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s3(x,1), 1e-13));
+
+            r = s4(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s4(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s4(x,1), 1e-13));
+
+            r = s5(N1(x, 0));
+            should(vigra::closeAtTolerance(r.value(), s5(x), 1e-15));
+            should(vigra::closeAtTolerance(r.gradient()[0], s5(x,1), 1e-13));
+        }
     }
 };
 
