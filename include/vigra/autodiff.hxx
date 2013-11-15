@@ -582,21 +582,21 @@ operator!=(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
 #define VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(op) \
 template <class T, int N> \
 inline bool  \
-operator##op(DualVector<T, N> const & v1, DualVector<T, N> const & v2) \
+operator op(DualVector<T, N> const & v1, DualVector<T, N> const & v2) \
 { \
     return v1.v op v2.v; \
 } \
  \
 template <class T, int N> \
 inline bool  \
-operator##op(T v1, DualVector<T, N> const & v2) \
+operator op(T v1, DualVector<T, N> const & v2) \
 { \
     return v1 op v2.v; \
 } \
  \
 template <class T, int N> \
 inline bool  \
-operator##op(DualVector<T, N> const & v1, T v2) \
+operator op(DualVector<T, N> const & v1, T v2) \
 { \
     return v1.v op v2; \
 }
