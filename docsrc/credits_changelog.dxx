@@ -79,7 +79,7 @@ Many thanks to all!
       
       The old syntax with \ref ArgumentObjectFactories (<tt>srcImageRange()</tt>, <tt>srcMultiArray()</tt> and relatives) remains valid, but is only required when the arguments are old-style <tt>BasicImage</tt>s.
       
-      <li> Made <tt>StridedArrayTag</tt> the default for \ref MultiArrayView .
+      <li> Made <tt>StridedArrayTag</tt> the default for \ref vigra::MultiArrayView .
       
       <li> Added an efficient multi-dimensional \ref vigra::GridGraph class which support both the LEMON and boost::graph APIs.
       
@@ -99,7 +99,7 @@ Many thanks to all!
       
       <li> Improved HDF5 I/O for strided <tt>MultiArrayView</tt>s and HDF5 on-the-fly compression.
       
-      <tt> Added support for multi-page TIFF to \ref importVolume() and \ref exportVolume(). Added support for Andor SIF to \ref importVolume().
+      <li> Added support for multi-page TIFF to \ref importVolume() and \ref exportVolume(). Added support for Andor SIF to \ref importVolume().
       
       <li> Added <tt>VigranumpyConfig.cmake</tt> to simplify cmake-based compilation of custom vigranumpy modules.
       
