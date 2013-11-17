@@ -48,8 +48,7 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 ELSE()
     ADD_CUSTOM_TARGET (doc_cpp 
         COMMAND ${CMAKE_COMMAND} -E echo
-            \"Cannot generate C++ documentation 
-            (doxygen or Python not found)\")
+            \"Cannot generate C++ documentation -- doxygen or Python not found.\")
 
 ENDIF()
 
