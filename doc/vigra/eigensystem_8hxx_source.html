@@ -1193,12 +1193,12 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classvigra_1_1linalg_1_1Matrix.html">Matrix&lt;T&gt;</a> TMatrix;</div>
 <div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classvigra_1_1linalg_1_1Matrix.html">Matrix&lt;Complex&gt;</a> ComplexMatrix;</div>
 <div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;</div>
-<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;    <span class="keywordtype">int</span> <span class="keyword">const</span> degree = poly.order();</div>
+<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;    <span class="keywordtype">int</span> <span class="keyword">const</span> <a class="code" href="group__BoostGraphExtensions.html#ga11f5b825eed7d069bbb54ae58d13415c" title="Return total number of edges (incoming and outgoing) of vertex v (API: boost).">degree</a> = poly.order();</div>
 <div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;    <span class="keywordtype">double</span> <span class="keyword">const</span> eps = poly.epsilon();</div>
 <div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;</div>
 <div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;    TMatrix inMatrix(degree, degree);</div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; degree; ++i)</div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;        inMatrix(0, i) = -poly[degree - i - 1] / poly[degree];</div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; <a class="code" href="group__BoostGraphExtensions.html#ga11f5b825eed7d069bbb54ae58d13415c" title="Return total number of edges (incoming and outgoing) of vertex v (API: boost).">degree</a>; ++i)</div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;        inMatrix(0, i) = -poly[degree - i - 1] / poly[<a class="code" href="group__BoostGraphExtensions.html#ga11f5b825eed7d069bbb54ae58d13415c" title="Return total number of edges (incoming and outgoing) of vertex v (API: boost).">degree</a>];</div>
 <div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; degree - 1; ++i)</div>
 <div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;        inMatrix(i + 1, i) = NumericTraits&lt;T&gt;::one();</div>
 <div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;    ComplexMatrix ew(degree, 1);</div>
@@ -1206,7 +1206,7 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;    <span class="keywordtype">bool</span> success = <a class="code" href="group__MatrixAlgebra.html#ga9201f15592d676c01ce4f2cc0a784b2e">nonsymmetricEigensystem</a>(inMatrix, ew, ev);</div>
 <div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;    <span class="keywordflow">if</span>(!success)</div>
 <div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; degree; ++i)</div>
+<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; <a class="code" href="group__BoostGraphExtensions.html#ga11f5b825eed7d069bbb54ae58d13415c" title="Return total number of edges (incoming and outgoing) of vertex v (API: boost).">degree</a>; ++i)</div>
 <div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;    {</div>
 <div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;        <span class="keywordflow">if</span>(polishRoots)</div>
 <div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;            vigra::detail::laguerre1Root(poly, ew(i,0), 1);</div>
@@ -1288,7 +1288,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

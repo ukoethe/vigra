@@ -61,6 +61,8 @@ Inheritance diagram for MultiArrayView&lt; N, T, StrideTag &gt;:</div>
 <area href="classvigra_1_1MultiArray.html" alt="MultiArray&lt; 4, double &gt;" shape="rect" coords="1352,56,1680,80"/>
 <area href="classvigra_1_1MultiArray.html" alt="MultiArray&lt; N+1, Multiband&lt; T &gt; &gt;" shape="rect" coords="1690,56,2018,80"/>
 <area href="classvigra_1_1MultiArray.html" alt="MultiArray&lt; N, Complex, FFTWAllocator&lt; Complex &gt; &gt;" shape="rect" coords="2028,56,2356,80"/>
+<area href="classvigra_1_1GridGraph_1_1ArcMap.html" title="Type of an arc property map that maps arc descriptor objects onto property values of type T (API: LEM..." alt="GridGraph&lt; N, DirectedTag &gt;::ArcMap&lt; T &gt;" shape="rect" coords="1521,112,1849,136"/>
+<area href="classvigra_1_1GridGraph_1_1EdgeMap.html" title="Type of an edge property map that maps edge descriptor objects onto property values of type T (API: L..." alt="GridGraph&lt; N, DirectedTag &gt;::EdgeMap&lt; T &gt;" shape="rect" coords="1859,112,2187,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -366,7 +368,7 @@ Protected Attributes</h2></td></tr>
 class vigra::MultiArrayView&lt; N, T, StrideTag &gt;</h3>
 
 <p>Base class for, and view to, <a class="el" href="classvigra_1_1MultiArray.html">vigra::MultiArray</a>. </p>
-<p>This class implements the interface of both <a class="el" href="classvigra_1_1MultiArray.html" title="Main MultiArray class containing the memory management.">MultiArray</a> and <a class="el" href="classvigra_1_1MultiArrayView.html" title="Base class for, and view to, vigra::MultiArray.">MultiArrayView</a>. By default, MultiArrayViews are tagged as unstrided. If necessary, strided arrays are constructed automatically by calls to a variant of the bind...() function.</p>
+<p>This class implements the interface of both <a class="el" href="classvigra_1_1MultiArray.html" title="Main MultiArray class containing the memory management.">MultiArray</a> and <a class="el" href="classvigra_1_1MultiArrayView.html" title="Base class for, and view to, vigra::MultiArray.">MultiArrayView</a>. By default, MultiArrayViews are tagged as strided (using <code><a class="el" href="structvigra_1_1StridedArrayTag.html">StridedArrayTag</a></code> as third template parameter). This means that the array elements need not be consecutive in memory, making the view flexible to represent all kinds of subarrays and slices. In certain cases (which have become rare due to improvements of optimizer and processor technology), an array may be tagged with <code><a class="el" href="structvigra_1_1UnstridedArrayTag.html">UnstridedArrayTag</a></code> which indicates that the first array dimension is guaranteed to be unstrided, i.e. has consecutive elements in memory.</p>
 <p>In addition to the member functions described here, <code><a class="el" href="classvigra_1_1MultiArrayView.html" title="Base class for, and view to, vigra::MultiArray.">MultiArrayView</a></code> and its subclasses support arithmetic and algebraic functions via the module <a class="el" href="group__MultiMathModule.html">vigra::multi_math</a>.</p>
 <p>If you want to apply an algorithm requiring an image to a <code><a class="el" href="classvigra_1_1MultiArrayView.html" title="Base class for, and view to, vigra::MultiArray.">MultiArrayView</a></code> of appropriate (2-dimensional) shape, you can create a <a class="el" href="classvigra_1_1BasicImageView.html">vigra::BasicImageView</a> that acts as a wrapper with the necessary interface &ndash; see <a class="el" href="group__MultiArrayToImage.html">Create BasicImageView from MultiArrayViews</a>.</p>
 <p>The template parameter are as follows </p>
@@ -379,7 +381,7 @@ class vigra::MultiArrayView&lt; N, T, StrideTag &gt;</h3>
 <div class="line"><span class="stringliteral">   memory location, strided if there is an offset in between (e.g.</span></div>
 <div class="line"><span class="stringliteral">   when a view is created that skips every other array element).</span></div>
 <div class="line"><span class="stringliteral">   The compiler can generate faster code for unstrided arrays.</span></div>
-<div class="line"><span class="stringliteral">   Possible values: UnstridedArrayTag (default), StridedArrayTag</span></div>
+<div class="line"><span class="stringliteral">   Possible values: StridedArrayTag (default), UnstridedArrayTag</span></div>
 </div><!-- fragment --><p><b>#include</b> &lt;<a class="el" href="multi__array_8hxx_source.html">vigra/multi_array.hxx</a>&gt; <br/>
  Namespace: vigra </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="composite_8cxx-example.html#_a13">composite.cxx</a>, <a class="el" href="smooth_explicitly_8cxx-example.html#_a8">smooth_explicitly.cxx</a>, <a class="el" href="subimage_8cxx-example.html#_a12">subimage.cxx</a>, <a class="el" href="subimage_tutorial_8cxx-example.html#_a12">subimage_tutorial.cxx</a>, and <a class="el" href="transpose_8cxx-example.html#_a0">transpose.cxx</a>.</dd>
@@ -2648,7 +2650,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

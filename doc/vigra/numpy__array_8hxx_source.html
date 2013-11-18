@@ -1240,40 +1240,38 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;{</div>
 <div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;    StridedImageIterator&lt;PixelType&gt;</div>
 <div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;        ul(img.data(), 1, img.stride(0), img.stride(1));</div>
-<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> AccessorTraits&lt;PixelType&gt;::default_accessor Accessor;</div>
-<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;    <span class="keywordflow">return</span> triple&lt;StridedImageIterator&lt;PixelType&gt;,</div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;                  StridedImageIterator&lt;PixelType&gt;,</div>
-<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;                  MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
-<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;        (ul, ul + Size2D(img.shape(0), img.shape(1)),</div>
-<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;        MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
-<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;}</div>
-<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;</div>
-<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> PixelType, <span class="keyword">class</span> Str<span class="keywordtype">id</span>e&gt;</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;<span class="keyword">inline</span> pair&lt; StridedImageIterator&lt;PixelType&gt;,</div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;             MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
-<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;destImage(NumpyArray&lt;3, Multiband&lt;PixelType&gt;, Stride&gt; &amp; img)</div>
-<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;{</div>
-<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;    StridedImageIterator&lt;PixelType&gt;</div>
-<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;        ul(img.data(), 1, img.stride(0), img.stride(1));</div>
-<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;    <span class="keywordflow">return</span> pair&lt;StridedImageIterator&lt;PixelType&gt;, MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
-<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;        (ul, MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
-<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;}</div>
-<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;</div>
-<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> PixelType, <span class="keyword">class</span> Str<span class="keywordtype">id</span>e&gt;</div>
-<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;<span class="keyword">inline</span> pair&lt; ConstStridedImageIterator&lt;PixelType&gt;,</div>
-<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;             MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
-<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;maskImage(NumpyArray&lt;3, Multiband&lt;PixelType&gt;, Stride&gt; <span class="keyword">const</span> &amp; img)</div>
-<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;{</div>
-<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;    ConstStridedImageIterator&lt;PixelType&gt;</div>
-<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;        ul(img.data(), 1, img.stride(0), img.stride(1));</div>
-<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> AccessorTraits&lt;PixelType&gt;::default_accessor Accessor;</div>
-<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;    <span class="keywordflow">return</span> pair&lt;ConstStridedImageIterator&lt;PixelType&gt;, MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
-<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;        (ul, MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
-<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;}</div>
+<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    <span class="keywordflow">return</span> triple&lt;StridedImageIterator&lt;PixelType&gt;,</div>
+<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;                  StridedImageIterator&lt;PixelType&gt;,</div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;                  MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;        (ul, ul + Size2D(img.shape(0), img.shape(1)),</div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;        MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;}</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;</div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> PixelType, <span class="keyword">class</span> Str<span class="keywordtype">id</span>e&gt;</div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;<span class="keyword">inline</span> pair&lt; StridedImageIterator&lt;PixelType&gt;,</div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;             MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;destImage(NumpyArray&lt;3, Multiband&lt;PixelType&gt;, Stride&gt; &amp; img)</div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;{</div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;    StridedImageIterator&lt;PixelType&gt;</div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;        ul(img.data(), 1, img.stride(0), img.stride(1));</div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;    <span class="keywordflow">return</span> pair&lt;StridedImageIterator&lt;PixelType&gt;, MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;        (ul, MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;}</div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;</div>
+<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> PixelType, <span class="keyword">class</span> Str<span class="keywordtype">id</span>e&gt;</div>
+<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;<span class="keyword">inline</span> pair&lt; ConstStridedImageIterator&lt;PixelType&gt;,</div>
+<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;             MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
+<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;maskImage(NumpyArray&lt;3, Multiband&lt;PixelType&gt;, Stride&gt; <span class="keyword">const</span> &amp; img)</div>
+<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;{</div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;    ConstStridedImageIterator&lt;PixelType&gt;</div>
+<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;        ul(img.data(), 1, img.stride(0), img.stride(1));</div>
+<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;    <span class="keywordflow">return</span> pair&lt;ConstStridedImageIterator&lt;PixelType&gt;, MultibandVectorAccessor&lt;PixelType&gt; &gt;</div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;        (ul, MultibandVectorAccessor&lt;PixelType&gt;(img.shape(2), img.stride(2)));</div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;}</div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;</div>
+<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;} <span class="comment">// namespace vigra</span></div>
 <div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;</div>
-<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;} <span class="comment">// namespace vigra</span></div>
-<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;</div>
-<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;<span class="preprocessor">#endif // VIGRA_NUMPY_ARRAY_HXX</span></div>
+<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;<span class="preprocessor">#endif // VIGRA_NUMPY_ARRAY_HXX</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- footer.html -->
 <p>
@@ -1291,7 +1289,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

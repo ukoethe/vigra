@@ -68,7 +68,8 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line">&gt; make doc      # generate documentation (Linux/Unix and MinGW only)</div>
 <div class="line">&gt; make install  # install (Linux/Unix and MinGW only)</div>
 <div class="line">&gt; make examples # build examples (optional, Linux/Unix and MinGW only)</div>
-</div><!-- fragment --><p>If you use Microsoft Visual C++, you just execute <code>cmake</code> (not <code>make</code>) or <code>cmake-gui</code> with the appropriate generator which creates a solution file '&lt;vigra_build_path&gt;/vigra.sln'. This file must be opened in Visual Studio, and the projects 'ALL_BUILD', 'check', 'doc', 'INSTALL', and 'examples' should be generated. <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA &ndash; always include <b>"vigra/windows.h"</b> instead.</p>
+</div><!-- fragment --><p>When you use gcc 4.8.1, make sure to change the optimization level to <code>-O2</code> in the cmake configuration (this is best done in the cmake GUI that you get by calling <code>ccmake .</code> before invoking <code>make</code>). The <code>-O3</code> level in that compiler is buggy and leads to crashes.</p>
+<p>If you use Microsoft Visual C++, you just execute <code>cmake</code> (not <code>make</code>) or <code>cmake-gui</code> with the appropriate generator which creates a solution file '&lt;vigra_build_path&gt;/vigra.sln'. This file must be opened in Visual Studio, and the projects 'ALL_BUILD', 'check', 'doc', 'INSTALL', and 'examples' should be generated. <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA &ndash; always include <b>"vigra/windows.h"</b> instead.</p>
 <p>cmake [options] customize installation directories and guide cmake in its search for the VIGRA dependencies. On a Linux system, it is often possible to configure without any options. The most commonly used options are:</p>
 <dl>
 <dt>-DCMAKE_INSTALL_PREFIX=&lt;path&gt; </dt>
@@ -103,7 +104,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

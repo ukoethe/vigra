@@ -81,7 +81,7 @@ Calling Conventions</h1>
 <div class="line">MultiArray&lt;2, float&gt; matrix(<a class="code" href="group__MultiIteratorGroup.html#ga2e2ffc107bb0e38f9b1288b647c8ec5b" title="shape type for MultiArray&lt;2, T&gt;">Shape2</a>(5, 5));</div>
 <div class="line">... <span class="comment">// fill matrix with data</span></div>
 <div class="line"><span class="keywordtype">float</span> det = <a class="code" href="group__MatrixAlgebra.html#ga15edf238753abafb705497c01e38112c">linalg::determinant</a>(matrix);</div>
-</div><!-- fragment --><p>For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. While there are no plans to remove support for these APIs, they should not be used in new code because the MultiArrayView API described above is much simpler and works in all cases.</p>
+</div><!-- fragment --><p>For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. These APIs used to considerably faster, but meanwhile compilers and processors have improved to the point where the much simpler MultiArrayView API no longer imposes a significant abstraction penalty. While there are no plans to remove support for the old APIs, they should not be used in new code.</p>
 <ul>
 <li>
 <p class="startli">Functions on 2-dimensional images may support an <a class="el" href="group__ImageIterators.html">Image Iterators</a> API. These iterators are best passed to the functions via the convenience functions <code>srcImageRange(array)</code>, <code>srcImage(array)</code>, and <code>destImage(array)</code>. A detailed description of the convenience functions can be found in section <a class="el" href="ArgumentObjectFactories.html">Argument Object Factories</a>. Example: </p>
@@ -267,7 +267,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

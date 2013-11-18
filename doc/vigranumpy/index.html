@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Vigranumpy Reference &mdash; vigranumpy 1.9.1 documentation</title>
+    <title>Vigranumpy Reference &mdash; vigranumpy 1.10.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.9.1',
+        VERSION:     '1.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/vigra-icon.ico"/>
-    <link rel="top" title="vigranumpy 1.9.1 documentation" href="#" /> 
+    <link rel="top" title="vigranumpy 1.10.0 documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">vigranumpy 1.9.1 documentation</a> &raquo;</li> 
+        <li><a href="#">vigranumpy 1.10.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,21 +55,33 @@
 <li><a class="reference internal" href="#vigranumpy-reference" id="id62">Vigranumpy Reference</a><ul>
 <li><a class="reference internal" href="#introduction" id="id63">Introduction</a></li>
 <li><a class="reference internal" href="#axistags-and-the-vigraarray-data-structure" id="id64">Axistags and the VigraArray Data Structure</a></li>
-<li><a class="reference internal" href="#import-and-export-functions" id="id65">Import and Export Functions</a></li>
-<li><a class="reference internal" href="#mathematical-functions-and-type-coercion" id="id66">Mathematical Functions and Type Coercion</a></li>
-<li><a class="reference internal" href="#color-and-intensity-manipulation" id="id67">Color and Intensity Manipulation</a></li>
-<li><a class="reference internal" href="#filters" id="id68">Filters</a></li>
-<li><a class="reference internal" href="#sampling-image-resizing-and-image-pyramids" id="id69">Sampling: Image Resizing and Image Pyramids</a></li>
-<li><a class="reference internal" href="#fourier-transforms" id="id70">Fourier Transforms</a></li>
-<li><a class="reference internal" href="#image-analysis" id="id71">Image Analysis</a></li>
-<li><a class="reference internal" href="#geometry" id="id72">Geometry</a></li>
-<li><a class="reference internal" href="#optimization" id="id73">Optimization</a></li>
-<li><a class="reference internal" href="#machine-learning" id="id74">Machine Learning</a></li>
-<li><a class="reference internal" href="#noise-estimation-and-normalization" id="id75">Noise Estimation and Normalization</a></li>
-<li><a class="reference internal" href="#writing-your-own-c-modules" id="id76">Writing Your Own C++ Modules</a></li>
+<li><a class="reference internal" href="#more-on-the-motivation-and-use-of-axistags" id="id65">More On the Motivation and Use of Axistags</a><ul>
+<li><a class="reference internal" href="#history-of-the-problem" id="id66">History of the problem</a></li>
+<li><a class="reference internal" href="#arrays-as-matrices" id="id67">Arrays as Matrices</a></li>
+<li><a class="reference internal" href="#arrays-as-images" id="id68">Arrays as Images</a></li>
+<li><a class="reference internal" href="#multi-dimensional-arrays" id="id69">Multi-Dimensional Arrays</a></li>
+<li><a class="reference internal" href="#vigra-and-numpy" id="id70">VIGRA and numpy</a></li>
+<li><a class="reference internal" href="#vigranumpy-axistags" id="id71">Vigranumpy Axistags</a></li>
+<li><a class="reference internal" href="#vigranumpy-conventions" id="id72">Vigranumpy Conventions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#indices-and-tables" id="id77">Indices and tables</a></li>
+<li><a class="reference internal" href="#axistag-reference" id="id73">Axistag Reference</a></li>
+<li><a class="reference internal" href="#vigraarray-reference" id="id74">VigraArray Reference</a></li>
+<li><a class="reference internal" href="#import-and-export-functions" id="id75">Import and Export Functions</a></li>
+<li><a class="reference internal" href="#mathematical-functions-and-type-coercion" id="id76">Mathematical Functions and Type Coercion</a></li>
+<li><a class="reference internal" href="#color-and-intensity-manipulation" id="id77">Color and Intensity Manipulation</a></li>
+<li><a class="reference internal" href="#filters" id="id78">Filters</a></li>
+<li><a class="reference internal" href="#sampling-image-resizing-and-image-pyramids" id="id79">Sampling: Image Resizing and Image Pyramids</a></li>
+<li><a class="reference internal" href="#fourier-transforms" id="id80">Fourier Transforms</a></li>
+<li><a class="reference internal" href="#image-analysis" id="id81">Image Analysis</a></li>
+<li><a class="reference internal" href="#geometry" id="id82">Geometry</a></li>
+<li><a class="reference internal" href="#optimization" id="id83">Optimization</a></li>
+<li><a class="reference internal" href="#machine-learning" id="id84">Machine Learning</a></li>
+<li><a class="reference internal" href="#noise-estimation-and-normalization" id="id85">Noise Estimation and Normalization</a></li>
+<li><a class="reference internal" href="#writing-your-own-c-modules" id="id86">Writing Your Own C++ Modules</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables" id="id87">Indices and tables</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -228,7 +240,132 @@ in ascending order. For example, axistags will be &#8216;x y c&#8217; or
 </div>
 <p>Functions that reduce the array to a one-dimensional shape (<tt class="docutils literal"><span class="pre">flatten()</span></tt>, <tt class="docutils literal"><span class="pre">flat</span></tt>, <tt class="docutils literal"><span class="pre">ravel()</span></tt>, <tt class="docutils literal"><span class="pre">take()</span></tt>) always transpose the array into &#8216;C&#8217; order before flattening.</p>
 <p>Axistags are stored in a list-like class <a class="reference internal" href="#vigra.AxisTags" title="vigra.AxisTags"><tt class="xref py py-class docutils literal"><span class="pre">vigra.AxisTags</span></tt></a>, whose individual entries are of type <a class="reference internal" href="#vigra.AxisInfo" title="vigra.AxisInfo"><tt class="xref py py-class docutils literal"><span class="pre">vigra.AxisInfo</span></tt></a>. The simplest way to attach axistags to a plain numpy.ndarray (by creating a view of type VigraArray) is via the convenience function <a class="reference internal" href="#vigra.taggedView" title="vigra.taggedView"><tt class="xref py py-func docutils literal"><span class="pre">vigra.taggedView()</span></tt></a>.</p>
-<hr class="docutils" />
+</div>
+<div class="section" id="more-on-the-motivation-and-use-of-axistags">
+<h2><a class="toc-backref" href="#id65">More On the Motivation and Use of Axistags</a><a class="headerlink" href="#more-on-the-motivation-and-use-of-axistags" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="history-of-the-problem">
+<h3><a class="toc-backref" href="#id66">History of the problem</a><a class="headerlink" href="#history-of-the-problem" title="Permalink to this headline">¶</a></h3>
+<p>A Fortran array declaration:</p>
+<div class="highlight-python"><pre>real f(20,10)</pre>
+</div>
+<p>is compiled such that the elements of the first index are consecutive in memory. In contrast, a C array declaration:</p>
+<div class="highlight-python"><pre>float c[20][10];</pre>
+</div>
+<p>places the elements of the last index consecutive in memory. The two possibilities are commonly referred to as &#8220;Fortran order&#8221; and &#8220;C order&#8221;, but we will see that these terms are actually ambiguous because their meaning depends on what the array is used for.</p>
+</div>
+<div class="section" id="arrays-as-matrices">
+<h3><a class="toc-backref" href="#id67">Arrays as Matrices</a><a class="headerlink" href="#arrays-as-matrices" title="Permalink to this headline">¶</a></h3>
+<p>When the array represents a matrix, users require the syntax to conform to the mathematical syntax conventions (in order to avoid bugs when typing formulas). In mathematics, m<sub>ij</sub> means that the first index i refers to rows, and the second index j refers to columns. Thus, Fortran&#8217;s <tt class="docutils literal"><span class="pre">f(i,</span> <span class="pre">j)</span></tt> and C&#8217;s <tt class="docutils literal"><span class="pre">c[i][j]</span></tt> have exactly the same meaning, but the memory layouts of the two matrices differ: Since in Fortran the first index changes quickest, this is referred to as the &#8220;column major&#8221; format (the elements of a column are consecutive in memory). In contrast, C uses the &#8220;row major&#8221; format (the elements of a row are consecutive in memory).</p>
+<p>In short: When the array is a matrix, the syntax is the same, but the memory layouts differ.</p>
+</div>
+<div class="section" id="arrays-as-images">
+<h3><a class="toc-backref" href="#id68">Arrays as Images</a><a class="headerlink" href="#arrays-as-images" title="Permalink to this headline">¶</a></h3>
+<p>When the array represents an image, users require the memory layout to be the same as in the image files which store the data (in order to ensure fast I/O). All image formats (JPEG, TIFF, PNG, ...) follow the convention of analog television to scan an image left to right, then top to bottom. Consequently, the horizontal pixels are consecutive in memory, and therefore Fortran (where the first axis changes fastest) must use the syntax <tt class="docutils literal"><span class="pre">f(x,</span> <span class="pre">y)</span></tt>, whereas C (where the last axis changes fastest) must use <tt class="docutils literal"><span class="pre">c[y][x]</span></tt>.</p>
+<p>In short: When the array is an image, the memory layout is the same, but the syntax differs.</p>
+<p>Thus, we have four basic conventions: FM and CM for matrices, FI and CI for images. The meaning of the terms &#8220;Fortran order&#8221; and &#8220;C order&#8221; depends on whether we are talking about matrices (where they refer to FM and CM, i.e. a difference in memory layout) or images (where they refer to FI and CI, i.e. a difference in index order).</p>
+</div>
+<div class="section" id="multi-dimensional-arrays">
+<h3><a class="toc-backref" href="#id69">Multi-Dimensional Arrays</a><a class="headerlink" href="#multi-dimensional-arrays" title="Permalink to this headline">¶</a></h3>
+<p>When we add more dimensions, the confusion increases, because there are no universally accepted memory and indexing conventions. For example, an RGB image can be stored in &#8220;interleaved format&#8221;:</p>
+<div class="highlight-python"><pre>RGB RGB RGB ...
+RGB RGB RGB ...
+:
+:</pre>
+</div>
+<p>where the color values of each pixel are consecutive in memory, or in &#8220;banded format&#8221;:</p>
+<div class="highlight-python"><pre>R R R ...
+R R R ...
+:
+G G G ...
+G G G ...
+:
+B B B ...
+B B B ...
+:</pre>
+</div>
+<p>where we have a separate scalar image for each color. In Fortran, interleaved and banded images must be indexed as <tt class="docutils literal"><span class="pre">f(color,</span> <span class="pre">x,</span> <span class="pre">y)</span></tt> and <tt class="docutils literal"><span class="pre">f(x,</span> <span class="pre">y,</span> <span class="pre">color)</span></tt> respectively, whereas in C we must use <tt class="docutils literal"><span class="pre">c[y][x][color]</span></tt> or <tt class="docutils literal"><span class="pre">c[color][y][x]</span></tt>.</p>
+</div>
+<div class="section" id="vigra-and-numpy">
+<h3><a class="toc-backref" href="#id70">VIGRA and numpy</a><a class="headerlink" href="#vigra-and-numpy" title="Permalink to this headline">¶</a></h3>
+<p>From the beginning, VIGRA adopted Fortran conventions, i.e. its default behavior is according to FM and FI (this is possible because VIGRA uses array classes, where the mapping from indices to memory is encapsulated in the appropriate way).</p>
+<p>In contrast, numpy adopted C conventions, i.e. its default behavior is CM and CI.</p>
+<p>In addition, both packages provide array views which keep the memory layout intact, but change the index order. Thus, VIGRA also supports the CI convention, and numpy also supports FI. Note that changing the index order is only allowed for images. Matrices always use the fixed index order dictated by mathematics where transpose(m) is a well-defined mathematical operation (which just happens to revert the index order). Therefore, the existence of array views does not imply that VIGRA supports CM or numpy supports FM.</p>
+<p>However, numpy&#8217;s array constructor provides an argument &#8216;order&#8217; which can take the values &#8216;C&#8217; (default) and &#8216;F&#8217; to construct arrays with C or Fortran memory order. By this mechanism, numpy also supports the FM convention (and thus all four basic possibilities).</p>
+<p>But here is the catch: When you get a numpy array view, you have no way to tell which convention it adheres to. It simply doesn&#8217;t contain this information.</p>
+<p>The usual solution to this problem is to enforce a fixed axis order in the entire application, but this workaround breaks down when the application must simultaneously handle arrays with different meaning (e.g. sequences &#8216;xyt&#8217; vs. volumes &#8216;xyz&#8217; vs. multi-spectral images &#8216;xyc&#8217;) or when the application uses modules with conflicting requirements (e.g. numpy&#8217;s &#8216;yx&#8217; vs. PyQt&#8217;s &#8216;xy&#8217;).</p>
+</div>
+<div class="section" id="vigranumpy-axistags">
+<h3><a class="toc-backref" href="#id71">Vigranumpy Axistags</a><a class="headerlink" href="#vigranumpy-axistags" title="Permalink to this headline">¶</a></h3>
+<p>This is precisely where axistags enter: They attach information to array views that allows the user to figure out which convention applies to a given view. Thus, the primary purpose of axistags is entirely passive - they just keep track of how users manipulate the axis order when creating new array views. The main use case of axistags is therefore to re-adjust the axis order whenever an algorithm has specific order requirements. Using axistags, one can easily ensure that arrays conform to the desired order at the beginning of every algorithm. Consider the following example: Let &#8216;image&#8217; be a scalar 2D image with axistags. Then we can ask for the image&#8217;s width and height independently of the current axis order:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">width</span>  <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span>    <span class="c"># this works for any axis order!</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span>
+</pre></div>
+</div>
+<p>Now suppose we want to execute a numpy algorithm which expects the [y, x] ordering. We simply transpose the array before calling the algorithm like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># adjust the axis order</span>
+<span class="n">numpy_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transposeToNumpyOrder</span><span class="p">()</span>
+
+<span class="c"># execute the algorithm</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+        <span class="n">numpy_image</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span>   <span class="c"># note the index order</span>
+</pre></div>
+</div>
+<p>When we want to execute a VIGRA algorithm which expects the [x, y] ordering, we do:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># adjust the axis order</span>
+<span class="n">vigra_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transposeToVigraOrder</span><span class="p">()</span>
+
+<span class="c"># execute the algorithm</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
+        <span class="n">vigra_image</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span>   <span class="c"># note the index order</span>
+</pre></div>
+</div>
+<p>Notice that the order of the loops (the inner loop runs over x) is the same in both cases: To maximize cache locality and therefore speed, the inner loop should operate on consecutive memory cells. Since image memory order derives from file memory order (where the x-axis is consecutive), and array views can never change the memory order, this loop ordering is always preferable, regardless of the index order.</p>
+</div>
+<div class="section" id="vigranumpy-conventions">
+<h3><a class="toc-backref" href="#id72">Vigranumpy Conventions</a><a class="headerlink" href="#vigranumpy-conventions" title="Permalink to this headline">¶</a></h3>
+<p>To handle axis meaning in a well-defined way, vigranumpy adopts the following conventions, which are designed such that The Right Thing (TM) should happen automatically, at least most of the time:</p>
+<ol class="arabic">
+<li><p class="first">When the array represents a matrix, no axistags are allowed because the index order has a fixed semantic meaning and must not be messed around with. In vigranumpy, this requirement is enforced by an assertion:</p>
+<div class="highlight-python"><pre>vigra_precondition( !matrix.axistags(), "matrix must not have axistags");</pre>
+</div>
+<p>in the C++ gluecode functions. This applies, for example, to the feature matrices passed to a random forest and to unsupervised learning algorithms. If desired, we can introduce additional axistags for features and samples in the future because this is a common use case.</p>
+</li>
+<li><p class="first">When arrays represent image data with up to five dimensions, axistags should be used. To sort indices according to the requirements of the next algorithm to be executed, the appropriate convenience function should be called (many more convenience functions are documented in <a class="reference internal" href="#vigra.VigraArray" title="vigra.VigraArray"><tt class="xref py py-class docutils literal"><span class="pre">vigra.VigraArray</span></tt></a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">numpy_array</span>   <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">transposeToNumpyOrder</span><span class="p">()</span>    <span class="c"># gives &#39;yx&#39;, &#39;zyx&#39; etc.</span>
+<span class="n">vigra_array</span>   <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">transposeToVigraOrder</span><span class="p">()</span>    <span class="c"># gives &#39;xy&#39;, &#39;xyz&#39; etc.</span>
+<span class="n">ilastik_array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">view5D</span><span class="p">()</span>                   <span class="c"># gives &#39;txyzc&#39; (inserts singleton axes if necessary)</span>
+<span class="n">user_defined</span>  <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">withAxes</span><span class="p">(</span><span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;t&#39;</span><span class="p">)</span>    <span class="c"># specify order explicitly (inserts singleton axes if necessary)</span>
+</pre></div>
+</div>
+<p>Algorithms with special order requirements can then check for the correct order in an assertion.</p>
+</li>
+<li><p class="first">The function <tt class="docutils literal"><span class="pre">vigra.taggedView()</span></tt> allows to attach axistags to an array very conveniently. For example, when you know from the context that the axes of a given array are to be interpreted as &#8216;xyzt&#8217; in that order, you can make this knowledge explicit by calling:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">tagged_array</span> <span class="o">=</span> <span class="n">vigra</span><span class="o">.</span><span class="n">taggedView</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="s">&#39;xyzt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">When you call a vigranumpy function that executes a C++ VIGRA function, <tt class="docutils literal"><span class="pre">image.transposeToVigraOrder()</span></tt> will be invoked automatically on the input arrays, and the original axis order will be restored in the output arrays.</p>
+</li>
+<li><p class="first">When you call a vigranumpy function that is forwarded to a numpy function (in particular, a ufunc like <tt class="docutils literal"><span class="pre">+</span></tt>, <tt class="docutils literal"><span class="pre">-</span></tt>, <tt class="docutils literal"><span class="pre">sqrt</span></tt> etc.), <tt class="docutils literal"><span class="pre">image.transposeToNumpyOrder()</span></tt> will be invoked automatically on the input arrays, and the original axis order will be restored in the output arrays.</p>
+</li>
+<li><p class="first">When vigranumpy writes arrays to a file, it will always order the axes such that the memory order conforms to the established file conventions (e.g. values along the x-axis are consecutive). In particular, when you use <tt class="docutils literal"><span class="pre">vigra.impex.writeHDF5()</span></tt> to create HDF5 datasets, <tt class="docutils literal"><span class="pre">array.transposeToNumpyOrder()</span></tt> will be called before writing the data (this is a consequence of item 5, because <tt class="docutils literal"><span class="pre">writeHDF5()</span></tt> eventually forwards the actual work to h5py). In addition, the axistags (in numpy order) will be stored in a dataset attribute <tt class="docutils literal"><span class="pre">axistags</span></tt>.</p>
+</li>
+<li><p class="first">When vigranumpy reads data from a file, it preserves the file&#8217;s memory order and attaches the appropriate axistags. In case of images, the axis order follows from the usual file conventions. If you call <tt class="docutils literal"><span class="pre">vigra.impex.readHDF5()</span></tt> to read HDF5, the axistags will be read from the attribute <tt class="docutils literal"><span class="pre">axistags</span></tt> (if present). Upon return, the read functions automatically call <tt class="docutils literal"><span class="pre">array.transposeToVigraOrder()</span></tt>, but this only changes the index order, not the memory layout. This latter convention was adopted to ensure that the default index order is the same in the Python and C++ versions of VIGRA.</p>
+</li>
+<li><p class="first">When you display an image via <tt class="docutils literal"><span class="pre">image.imshow()</span></tt> or <tt class="docutils literal"><span class="pre">image.show()</span></tt>, the axes are re-ordered automatically such that the image is displayed upright (i.e. x goes to the right, y goes down). If you want to override this (i.e. want to enforce transposed display), you can remove the axistags by calling <tt class="docutils literal"><span class="pre">image.view(numpy.ndarray)</span></tt>.</p>
+</li>
+</ol>
+<p>Item 4. has two important consequences one should be aware of:</p>
+<ul class="simple">
+<li>When a function needs parameters that depend on the axis order (such as the new shape in <tt class="docutils literal"><span class="pre">vigra.sampling.resize()</span></tt> or axis-dependent sigmas in <tt class="docutils literal"><span class="pre">vigra.filters.gaussianSmoothing()</span></tt>), these parameters must be re-ordered on the C++ side in the same way as the axes. This is achieved by a call to <tt class="docutils literal"><span class="pre">NumpyArray::permuteLikewise()</span></tt> in the C++ gluecode functions.</li>
+<li>When a vigranumpy function computes a gradient image, the gradient vector elements will always be stored in the order (dx, dy, dz), regardless of the array&#8217;s original axis ordering. The same applies to any function producing vector-valued elements whose interpretation depends on the axis meaning (e.g. the Hessian matrix and the structure tensor). For example, the output of the Hessian is ordered as (dxx, dxy, dxz, dyy, dyz, dzz).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="axistag-reference">
+<h2><a class="toc-backref" href="#id73">Axistag Reference</a><a class="headerlink" href="#axistag-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vigra.AxisType">
 <em class="property">class </em><tt class="descclassname">vigra.</tt><tt class="descname">AxisType</tt><a class="headerlink" href="#vigra.AxisType" title="Permalink to this definition">¶</a></dt>
@@ -510,7 +647,9 @@ a suitable axistags attribute (see <a class="reference internal" href="#vigra.im
 
 </dd></dl>
 
-<hr class="docutils" />
+</div>
+<div class="section" id="vigraarray-reference">
+<h2><a class="toc-backref" href="#id74">VigraArray Reference</a><a class="headerlink" href="#vigraarray-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vigra.VigraArray">
 <em class="property">class </em><tt class="descclassname">vigra.</tt><tt class="descname">VigraArray</tt><a class="headerlink" href="#vigra.VigraArray" title="Permalink to this definition">¶</a></dt>
@@ -727,6 +866,24 @@ singleton axes with the appropriate tags.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="vigra.VigraArray.asRGB">
+<tt class="descname">asRGB</tt><big>(</big><em>normalize=True</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.asRGB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand a scalar array (i.e. an array with a single channel) into an RGB array with
+three identical color channels. This is useful when you want to paste color
+annotations (e.g. user labels) into the array.</p>
+<p>The parameter <cite>normalize</cite> can be used to normalize the array&#8217;s
+value range to 0..255:</p>
+<dl class="docutils">
+<dt><cite>normalize</cite> = (nmin, nmax):</dt>
+<dd>scale &amp; clip array values from nmin..nmax to 0..255</dd>
+<dt><cite>normalize</cite> = True: (default)</dt>
+<dd>scale the array&#8217;s actual range min()..max() to 0..255</dd>
+<dt><cite>normalize</cite> = False:</dt>
+<dd>don&#8217;t scale the array&#8217;s values</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="vigra.VigraArray.__getitem__">
 <tt class="descname">__getitem__</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">array.__getitem__(index)</span></tt> implements the indexing operator <tt class="docutils literal"><span class="pre">array[index]</span></tt>.
@@ -743,6 +900,24 @@ corresponding axes of the base array</li>
 <p>If the index contains &#8216;numpy.newaxis&#8217;, a new singleton axis is inserted at the 
 appropriate position, whose axisinfo is set to &#8216;?&#8217; (unknown). If the index contains
 &#8216;vigra.newaxis(axisinfo)&#8217;, the singleton axis will get the given axisinfo.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vigra.VigraArray.subarray">
+<tt class="descname">subarray</tt><big>(</big><em>p1</em>, <em>p2=None</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.subarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a subarray view from a pair of points. The first point denotes the start
+of the subarray (inclusive), the second its end (exclusive). For example,</p>
+<blockquote>
+<div>a.subarray((1,2,3), (4,5,6))  # equivalent to a[1:4, 2:5, 3:6]</div></blockquote>
+<p>The given points must have the same dimension, otherwise an IndexError is raised. 
+If only one point is given, it refers to the subarray&#8217;s end, and the start is set 
+to the point (0, 0, ...) with appropriate dimension, for example</p>
+<blockquote>
+<div>a.subarray((4,5,6))           # equivalent to a[:4, :5, :6]</div></blockquote>
+<p>The function transforms the given point pair into a tuple of slices and calls 
+self.__getitem__() in it. If the points have lower dimension than the array, an 
+Ellipsis (&#8216;...&#8217;) is implicitly appended to the slicing, so that missing axes 
+are left unaltered.</p>
 </dd></dl>
 
 <dl class="method">
@@ -840,6 +1015,66 @@ which yields the entire array. Example:</p>
 </div>
 <p>but will first transpose both arrays so that axistags are aligned. If
 there is no valid alignment, RuntimeError will be raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vigra.VigraArray.swapaxes">
+<tt class="descname">swapaxes</tt><big>(</big><em>axis1</em>, <em>axis2</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.swapaxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a view of the array with <cite>axis1</cite> and <cite>axis2</cite> interchanged.</p>
+<p>Refer to <cite>numpy.swapaxes</cite> for full documentation.</p>
+<p>numpy.swapaxes : equivalent function</p>
+<blockquote>
+<div><p>Parameters &#8216;i&#8217; and &#8216;j&#8217; can also be ints (axis positions) or strings (axis keys).</p>
+<p>If &#8216;keepsTags&#8217; is False, axistags are swapped like the axes, otherwise they remain
+unchanged such that the swapped axes aquire a new meaning.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="vigra.VigraArray.transpose">
+<tt class="descname">transpose</tt><big>(</big><em>*axes</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a view of the array with axes transposed.</p>
+<p>For a 1-D array, this has no effect. (To change between column and
+row vectors, first cast the 1-D array into a matrix object.)
+For a 2-D array, this is the usual matrix transpose.
+For an n-D array, if axes are given, their order indicates how the
+axes are permuted (see Examples). If axes are not provided and
+<tt class="docutils literal"><span class="pre">a.shape</span> <span class="pre">=</span> <span class="pre">(i[0],</span> <span class="pre">i[1],</span> <span class="pre">...</span> <span class="pre">i[n-2],</span> <span class="pre">i[n-1])</span></tt>, then
+<tt class="docutils literal"><span class="pre">a.transpose().shape</span> <span class="pre">=</span> <span class="pre">(i[n-1],</span> <span class="pre">i[n-2],</span> <span class="pre">...</span> <span class="pre">i[1],</span> <span class="pre">i[0])</span></tt>.</p>
+<p>axes : None, tuple of ints, or <cite>n</cite> ints</p>
+<blockquote>
+<div><ul class="simple">
+<li>None or no argument: reverses the order of the axes.</li>
+<li>tuple of ints: <cite>i</cite> in the <cite>j</cite>-th place in the tuple means <cite>a</cite>&#8216;s
+<cite>i</cite>-th axis becomes <cite>a.transpose()</cite>&#8216;s <cite>j</cite>-th axis.</li>
+<li><cite>n</cite> ints: same as an n-tuple of the same ints (this form is
+intended simply as a &#8220;convenience&#8221; alternative to the tuple form)</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>View of <cite>a</cite>, with axes suitably permuted.</dd>
+</dl>
+<p>ndarray.T : Array property returning the array transposed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[1, 2],</span>
+<span class="go">       [3, 4]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="go">array([[1, 3],</span>
+<span class="go">       [2, 4]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">array([[1, 3],</span>
+<span class="go">       [2, 4]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">array([[1, 3],</span>
+<span class="go">       [2, 4]])</span>
+</pre></div>
+</div>
+<blockquote>
+<div>An additional keyword parameter &#8216;keepTags&#8217; can be provided (it has to be passed as an explicit
+keyword parameter). If it is True, the axistags will remain unchanged such that the transposed 
+axes aquire a new meaning.</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
@@ -969,6 +1204,21 @@ Consult <a class="reference internal" href="#vigra.impex.writeImage" title="vigr
 <tt class="descname">writeSlices</tt><big>(</big><em>filename_base</em>, <em>filename_ext</em>, <em>dtype=''</em>, <em>compression=''</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.writeSlices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a volume to a sequence of files.         
 Consult <a class="reference internal" href="#vigra.impex.writeVolume" title="vigra.impex.writeVolume"><tt class="xref py py-func docutils literal"><span class="pre">vigra.impex.writeVolume()</span></tt></a> for detailed documentation.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="vigra.VigraArray.receiveSocket">
+<em class="property">static </em><tt class="descname">receiveSocket</tt><big>(</big><em>socket</em>, <em>flags=0</em>, <em>copy=True</em>, <em>track=False</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.receiveSocket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstruct an array that has been transferred via a ZMQ socket by a call to 
+VigraArray.sendSocket(). This only works when the &#8216;zmq&#8217; module is available.
+The meaning of the arguments is described in zmq.Socket.recv().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vigra.VigraArray.sendSocket">
+<tt class="descname">sendSocket</tt><big>(</big><em>socket</em>, <em>flags=0</em>, <em>copy=True</em>, <em>track=False</em><big>)</big><a class="headerlink" href="#vigra.VigraArray.sendSocket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send array and metadata over a ZMQ socket. Only works if the &#8216;zmq&#8217; module is available.
+The meaning of the arguments is described in zmq.Socket.send().</p>
 </dd></dl>
 
 <dl class="method">
@@ -1178,7 +1428,7 @@ will be raised if the shape or axistags are unsuitable for an RGB volume.</p>
 
 </div>
 <div class="section" id="import-and-export-functions">
-<h2><a class="toc-backref" href="#id65">Import and Export Functions</a><a class="headerlink" href="#import-and-export-functions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id75">Import and Export Functions</a><a class="headerlink" href="#import-and-export-functions" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.impex defines read and write functions for image and volume data. Note
 that the contents of this module are automatically imported into the vigra module, so
 you may call &#8216;vigra.readImage(...)&#8217; instead of &#8216;vigra.impex.readImage(...)&#8217; etc.</p>
@@ -1306,7 +1556,7 @@ etc.), the returned volume will have the requested pixel type.</p>
 
 <dl class="function">
 <dt id="vigra.impex.writeHDF5">
-<tt class="descclassname">vigra.impex.</tt><tt class="descname">writeHDF5</tt><big>(</big><em>data</em>, <em>filenameOrGroup</em>, <em>pathInFile</em><big>)</big><a class="headerlink" href="#vigra.impex.writeHDF5" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vigra.impex.</tt><tt class="descname">writeHDF5</tt><big>(</big><em>data</em>, <em>filenameOrGroup</em>, <em>pathInFile</em>, <em>compression=None</em><big>)</big><a class="headerlink" href="#vigra.impex.writeHDF5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write an array to an HDF5 file.</p>
 <p>&#8216;filenameOrGroup&#8217; can contain a filename or a group object
 referring to an already open HDF5 file. &#8216;pathInFile&#8217; is the name of the
@@ -1314,9 +1564,15 @@ dataset to be written, including intermediate groups. If the first
 argument is a group object, the path is relative to this group,
 otherwise it is relative to the file&#8217;s root group. If the dataset already
 exists, it will be replaced without warning.</p>
-<p>If &#8216;data&#8217; has an attribute &#8216;axistags&#8217;, the array is transposed to 
-numpy order before writing. Moreover, the axistags will be 
+<p>If &#8216;data&#8217; has an attribute &#8216;axistags&#8217;, the array is transposed to
+numpy order before writing. Moreover, the axistags will be
 stored along with the data in an attribute &#8216;axistags&#8217;.</p>
+<p>&#8216;compression&#8217; can be set to &#8216;gzip&#8217;, &#8216;szip&#8217; or &#8216;lzf&#8217;
+gzip (standard compression),
+szip (available if HDF5 is compiled with szip. Faster compression, limited types),
+lzf (very fast compression, all types).
+The &#8216;lzf&#8217; compression filter is many times faster than &#8216;gzip&#8217; 
+at the cost of a lower compresion ratio.</p>
 <p>Requirements: the &#8216;h5py&#8217; module must be installed.</p>
 </dd></dl>
 
@@ -1440,7 +1696,7 @@ INT32, FLOAT, DOUBLE with arbitrary many channels).</dd>
 
 </div>
 <div class="section" id="mathematical-functions-and-type-coercion">
-<span id="sec-dtype-coercion"></span><h2><a class="toc-backref" href="#id66">Mathematical Functions and Type Coercion</a><a class="headerlink" href="#mathematical-functions-and-type-coercion" title="Permalink to this headline">¶</a></h2>
+<span id="sec-dtype-coercion"></span><h2><a class="toc-backref" href="#id76">Mathematical Functions and Type Coercion</a><a class="headerlink" href="#mathematical-functions-and-type-coercion" title="Permalink to this headline">¶</a></h2>
 <p>vigranumpy supports all arithmetic and algebraic functions defined in
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs">numpy.ufunc</a>, but re-implements them in module <cite>vigra.ufunc</cite> to take full advantage of axistags.</p>
 <span class="target" id="module-vigra.ufunc"></span><p>The following mathematical functions are available in this module
@@ -1550,7 +1806,7 @@ float32 + complex128 =&gt; complex128</pre>
 the function is executed.</p>
 </div>
 <div class="section" id="color-and-intensity-manipulation">
-<h2><a class="toc-backref" href="#id67">Color and Intensity Manipulation</a><a class="headerlink" href="#color-and-intensity-manipulation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id77">Color and Intensity Manipulation</a><a class="headerlink" href="#color-and-intensity-manipulation" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.colors provides functions to adjust image brightness and contrast,
 and to transform between different color spaces.
 See <a class="reference external" href="../vigra/group__ColorConversions.html">Color Conversions</a> in the C++ documentation
@@ -1892,7 +2148,7 @@ vigra.colors.gray2qimage_ARGB32Premultiplied(a, qimage2ndarray.byte_view(qimg), 
 
 </div>
 <div class="section" id="filters">
-<h2><a class="toc-backref" href="#id68">Filters</a><a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id78">Filters</a><a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.filters provides operators that consider a window around each pixel, compute
 one or several numbers from the values in the window, and store the results in the
 corresponding pixel of the output image. This includes convolution, non-linear diffusion,
@@ -2787,7 +3043,7 @@ The optional tuple or list &#8216;step_size&#8217; denotes the distance between 
 
 </div>
 <div class="section" id="sampling-image-resizing-and-image-pyramids">
-<h2><a class="toc-backref" href="#id69">Sampling: Image Resizing and Image Pyramids</a><a class="headerlink" href="#sampling-image-resizing-and-image-pyramids" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id79">Sampling: Image Resizing and Image Pyramids</a><a class="headerlink" href="#sampling-image-resizing-and-image-pyramids" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.sampling contains methods to change the number and/or location of
 the image sampling points, such as resizing, rotation, and interpolation.</p>
 <span class="target" id="module-vigra.sampling"></span><dl class="function">
@@ -3281,7 +3537,7 @@ srcLevel ... destLevel-1. srcLevel must be smaller than destLevel.</p>
 
 </div>
 <div class="section" id="fourier-transforms">
-<h2><a class="toc-backref" href="#id70">Fourier Transforms</a><a class="headerlink" href="#fourier-transforms" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id80">Fourier Transforms</a><a class="headerlink" href="#fourier-transforms" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.fourier contains functions for Fourier transforms, Cosine/Sine
 transforms, and Fourier-domain filters.</p>
 <span class="target" id="module-vigra.fourier"></span><dl class="function">
@@ -3330,7 +3586,7 @@ transforms, and Fourier-domain filters.</p>
 
 </div>
 <div class="section" id="image-analysis">
-<h2><a class="toc-backref" href="#id71">Image Analysis</a><a class="headerlink" href="#image-analysis" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id81">Image Analysis</a><a class="headerlink" href="#image-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.analysis contains segmentation algorithms (e.g. watershed), edge and
 corner detection, localization of maxima and minima etc.</p>
 <span class="target" id="module-vigra.analysis"></span><dl class="class">
@@ -4010,7 +4266,7 @@ list, use:</p>
 <blockquote class="last">
 <div><dl class="docutils">
 <dt>&#8216;Turbo&#8217;:</dt>
-<dd>(default if input dtype == uint8) use <a href="#id78"><span class="problematic" id="id79">fastSeededRegionGrowing_</span></a> or tws() respectively</dd>
+<dd>(default if input dtype == uint8) use <a href="#id88"><span class="problematic" id="id89">fastSeededRegionGrowing_</span></a> or tws() respectively</dd>
 <dt>&#8216;RegionGrowing&#8217;:</dt>
 <dd>(default if input dtype != uint8) use <a class="reference external" href="../../doc/vigra/group__SeededRegionGrowing.html#ga7b54436edf7b15b9628d17a22917b4b1">seededRegionGrowing</a> or <a class="reference external" href="../../doc/vigra/group__SeededRegionGrowing.html#gae9e3ebc5978a393267485d426141a201">seededRegionGrowing3D</a> respectively</dd>
 <dt>&#8216;UnionFind:</dt>
@@ -4077,7 +4333,7 @@ and 6-neighborhood for 3D inputs.</p>
 
 </div>
 <div class="section" id="geometry">
-<h2><a class="toc-backref" href="#id72">Geometry</a><a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id82">Geometry</a><a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.geometry contains geometric primitives (such as polygons) and related algorithms.</p>
 <span class="target" id="module-vigra.geometry"></span><dl class="function">
 <dt id="vigra.geometry.convexHull">
@@ -4093,7 +4349,7 @@ and 6-neighborhood for 3D inputs.</p>
 
 </div>
 <div class="section" id="optimization">
-<h2><a class="toc-backref" href="#id73">Optimization</a><a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id83">Optimization</a><a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.optimization provides functions for constrained and unconstrained linear regression.</p>
 <span class="target" id="module-vigra.optimization"></span><dl class="function">
 <dt id="vigra.optimization.lassoRegression">
@@ -4145,7 +4401,7 @@ biased towards zero the solution will become.</p>
 
 </div>
 <div class="section" id="machine-learning">
-<h2><a class="toc-backref" href="#id74">Machine Learning</a><a class="headerlink" href="#machine-learning" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id84">Machine Learning</a><a class="headerlink" href="#machine-learning" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.learning will eventually provide a wide range of machine learning
 tools. Right now, it only contains an implementation of the random forest classifier
 and probabilistic latent semantic analysis (pLSA) as an example for unsupervised learning.</p>
@@ -4227,21 +4483,21 @@ labels lack training examples.</div></blockquote>
 
 <dl class="method">
 <dt id="vigra.learning.RandomForest.learnRF">
-<tt class="descname">learnRF</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em><big>)</big> &rarr; float :<a class="headerlink" href="#vigra.learning.RandomForest.learnRF" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">learnRF</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em><span class="optional">[</span>, <em>(int)randomSeed=0</em><span class="optional">]</span><big>)</big> &rarr; float :<a class="headerlink" href="#vigra.learning.RandomForest.learnRF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains a random Forest using &#8216;trainData&#8217; and &#8216;trainLabels&#8217;.</p>
 <p>and returns the OOB. See the vigra documentation for the meaning af the rest of the parameters.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="vigra.learning.RandomForest.learnRFWithFeatureSelection">
-<tt class="descname">learnRFWithFeatureSelection</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em><big>)</big> &rarr; tuple :<a class="headerlink" href="#vigra.learning.RandomForest.learnRFWithFeatureSelection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">learnRFWithFeatureSelection</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em><span class="optional">[</span>, <em>(int)randomSeed=0</em><span class="optional">]</span><big>)</big> &rarr; tuple :<a class="headerlink" href="#vigra.learning.RandomForest.learnRFWithFeatureSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train a random Forest using &#8216;trainData&#8217; and &#8216;trainLabels&#8217;.</p>
 <p>and returns the OOB and the Variable importanceSee the vigra documentation for the meaning af the rest of the paremeters.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="vigra.learning.RandomForest.onlineLearn">
-<tt class="descname">onlineLearn</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)arg2</em>, <em>(object)trainData</em>, <em>(int)trainLabels</em>, <em>(bool)startIndex</em><big>)</big> &rarr; None :<a class="headerlink" href="#vigra.learning.RandomForest.onlineLearn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">onlineLearn</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em>, <em>(int)startIndex</em><span class="optional">[</span>, <em>(bool)adjust_thresholds=False</em><span class="optional">[</span>, <em>(int)randomSeed=0</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; None :<a class="headerlink" href="#vigra.learning.RandomForest.onlineLearn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Learn online.</p>
 <p>Works only if forest has been created with prepare_online_learning=true. Needs the old training data and the new appened, starting at startIndex.</p>
 </dd></dl>
@@ -4271,7 +4527,7 @@ thrown whenever Nan is encountered.</p>
 
 <dl class="method">
 <dt id="vigra.learning.RandomForest.reLearnTree">
-<tt class="descname">reLearnTree</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em>, <em>(int)treeId</em><big>)</big> &rarr; None :<a class="headerlink" href="#vigra.learning.RandomForest.reLearnTree" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">reLearnTree</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(object)trainData</em>, <em>(object)trainLabels</em>, <em>(int)treeId</em><span class="optional">[</span>, <em>(int)randomSeed=0</em><span class="optional">]</span><big>)</big> &rarr; None :<a class="headerlink" href="#vigra.learning.RandomForest.reLearnTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-learn one tree of the forest using &#8216;trainData&#8217; and &#8216;trainLabels&#8217;.</p>
 <p>and returns the OOB. This might be helpful in an online learning setup to improve the classifier.</p>
 </dd></dl>
@@ -4285,7 +4541,7 @@ thrown whenever Nan is encountered.</p>
 <dl class="method">
 <dt id="vigra.learning.RandomForest.writeHDF5">
 <tt class="descname">writeHDF5</tt><big>(</big><em>(RandomForest)arg1</em>, <em>(str)filename</em><span class="optional">[</span>, <em>(str)pathInFile=''</em><span class="optional">]</span><big>)</big> &rarr; None :<a class="headerlink" href="#vigra.learning.RandomForest.writeHDF5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Store the random forest in the given HDF5 file &#8216;filname&#8217; under the internal
+<dd><p>Store the random forest in the given HDF5 file &#8216;filename&#8217; under the internal
 path &#8216;pathInFile&#8217;.</p>
 </dd></dl>
 
@@ -4342,7 +4598,7 @@ path &#8216;pathInFile&#8217;.</p>
 
 </div>
 <div class="section" id="noise-estimation-and-normalization">
-<h2><a class="toc-backref" href="#id75">Noise Estimation and Normalization</a><a class="headerlink" href="#noise-estimation-and-normalization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id85">Noise Estimation and Normalization</a><a class="headerlink" href="#noise-estimation-and-normalization" title="Permalink to this headline">¶</a></h2>
 <p>The module vigra.noise provides noise estimation and normalization according to a
 method proposed by Foerstner.</p>
 <span class="target" id="module-vigra.noise"></span><dl class="function">
@@ -4401,7 +4657,7 @@ Since the length of the resulting array is not known beforhand, it can not be wr
 
 </div>
 <div class="section" id="writing-your-own-c-modules">
-<span id="sec-own-modules"></span><h2><a class="toc-backref" href="#id76">Writing Your Own C++ Modules</a><a class="headerlink" href="#writing-your-own-c-modules" title="Permalink to this headline">¶</a></h2>
+<span id="sec-own-modules"></span><h2><a class="toc-backref" href="#id86">Writing Your Own C++ Modules</a><a class="headerlink" href="#writing-your-own-c-modules" title="Permalink to this headline">¶</a></h2>
 <p>When you want to write your own vigranumpy extension modules, first make sure that you compile and link with the same versions of numpy and boost_python that your current vigranumpy installation uses. Otherwise, communication between new and existing modules will not work (and even crash). Then follow these steps:</p>
 <ol class="arabic">
 <li><p class="first">Create the main module source file. This file contains the module&#8217;s &#8216;init&#8217; function. Let&#8217;s assume that the module will be called &#8216;my_module&#8217;, and the file is &#8216;my_module.cxx&#8217;. A stub for &#8216;my_module.cxx&#8217; typically looks like this:</p>
@@ -4535,7 +4791,7 @@ def("my_function", vigra::registerConverters(&amp;my_function),
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1><a class="toc-backref" href="#id77">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id87">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul>
 <li><p class="first"><a class="reference internal" href="genindex.html"><em>Index</em></a></p>
 </li>
@@ -4559,6 +4815,18 @@ def("my_function", vigra::registerConverters(&amp;my_function),
 <li><a class="reference internal" href="#">Vigranumpy Reference</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#axistags-and-the-vigraarray-data-structure">Axistags and the VigraArray Data Structure</a></li>
+<li><a class="reference internal" href="#more-on-the-motivation-and-use-of-axistags">More On the Motivation and Use of Axistags</a><ul>
+<li><a class="reference internal" href="#history-of-the-problem">History of the problem</a></li>
+<li><a class="reference internal" href="#arrays-as-matrices">Arrays as Matrices</a></li>
+<li><a class="reference internal" href="#arrays-as-images">Arrays as Images</a></li>
+<li><a class="reference internal" href="#multi-dimensional-arrays">Multi-Dimensional Arrays</a></li>
+<li><a class="reference internal" href="#vigra-and-numpy">VIGRA and numpy</a></li>
+<li><a class="reference internal" href="#vigranumpy-axistags">Vigranumpy Axistags</a></li>
+<li><a class="reference internal" href="#vigranumpy-conventions">Vigranumpy Conventions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#axistag-reference">Axistag Reference</a></li>
+<li><a class="reference internal" href="#vigraarray-reference">VigraArray Reference</a></li>
 <li><a class="reference internal" href="#import-and-export-functions">Import and Export Functions</a></li>
 <li><a class="reference internal" href="#mathematical-functions-and-type-coercion">Mathematical Functions and Type Coercion</a></li>
 <li><a class="reference internal" href="#color-and-intensity-manipulation">Color and Intensity Manipulation</a></li>
@@ -4607,7 +4875,7 @@ def("my_function", vigra::registerConverters(&amp;my_function),
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">vigranumpy 1.9.1 documentation</a> &raquo;</li> 
+        <li><a href="#">vigranumpy 1.10.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

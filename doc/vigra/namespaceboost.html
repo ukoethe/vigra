@@ -43,6 +43,150 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <td align=right><a href="http://hci.iwr.uni-heidelberg.de/vigra/"><IMG border=0 ALT="VIGRA" SRC="documents/vigra.gif" title="VIGRA Homepage"></a></td></tr>
 </table><p>
 
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga3736ccd28c91b0c1c94a634f15846645"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga3736ccd28c91b0c1c94a634f15846645"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga3736ccd28c91b0c1c94a634f15846645"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::adjacency_iterator, typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::adjacency_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga3736ccd28c91b0c1c94a634f15846645">adjacent_vertices</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga3736ccd28c91b0c1c94a634f15846645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for the neighbor vertices of vertex <em>v</em> in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga3736ccd28c91b0c1c94a634f15846645"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga03ca202b0bb484d07abfeaacafb2fb90"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga03ca202b0bb484d07abfeaacafb2fb90"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga03ca202b0bb484d07abfeaacafb2fb90"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::back_neighbor_vertex_iterator, <br class="typebreak"/>
+typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::back_neighbor_vertex_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga03ca202b0bb484d07abfeaacafb2fb90">back_adjacent_vertices</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga03ca202b0bb484d07abfeaacafb2fb90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for only thise neighbor vertices of vertex <em>v</em> that have smaller ID than <em>v</em> (API: VIGRA). <br/></td></tr>
+<tr class="separator:ga03ca202b0bb484d07abfeaacafb2fb90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga11f5b825eed7d069bbb54ae58d13415c"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga11f5b825eed7d069bbb54ae58d13415c"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga11f5b825eed7d069bbb54ae58d13415c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::degree_size_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga11f5b825eed7d069bbb54ae58d13415c">degree</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga11f5b825eed7d069bbb54ae58d13415c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return total number of edges (incoming and outgoing) of vertex <em>v</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga11f5b825eed7d069bbb54ae58d13415c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad1f8dd75aae022cf6e9bc14ce7c1779d"><td class="memTemplParams" colspan="2"><a class="anchor" id="gad1f8dd75aae022cf6e9bc14ce7c1779d"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:gad1f8dd75aae022cf6e9bc14ce7c1779d"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::edge_descriptor, <br class="typebreak"/>
+bool &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gad1f8dd75aae022cf6e9bc14ce7c1779d">edge</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;u, typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:gad1f8dd75aae022cf6e9bc14ce7c1779d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pair (edge_descriptor, true) when an edge between vertices <em>u</em> and <em>v</em> exists, or (lemon::INVALID, false) otherwise (API: boost). <br/></td></tr>
+<tr class="separator:gad1f8dd75aae022cf6e9bc14ce7c1779d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8172d97524f1680570f97b5adbd2211d"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga8172d97524f1680570f97b5adbd2211d"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga8172d97524f1680570f97b5adbd2211d"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::edge_iterator, <br class="typebreak"/>
+typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::edge_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d">edges</a> (<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga8172d97524f1680570f97b5adbd2211d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for the edges of graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga8172d97524f1680570f97b5adbd2211d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf48bc630417b61f2e78fbf3274f60675"><td class="memTemplParams" colspan="2"><a class="anchor" id="gaf48bc630417b61f2e78fbf3274f60675"></a>
+template&lt;unsigned int N, class T , class Stride &gt; </td></tr>
+<tr class="memitem:gaf48bc630417b61f2e78fbf3274f60675"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a>&lt; N, T, <br class="typebreak"/>
+Stride &gt;::const_reference&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gaf48bc630417b61f2e78fbf3274f60675">get</a> (<a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a>&lt; N, T, Stride &gt; const &amp;pmap, typename <a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a>&lt; N, T, Stride &gt;::difference_type const &amp;k)</td></tr>
+<tr class="memdesc:gaf48bc630417b61f2e78fbf3274f60675"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the value at key <em>k</em> in property map <em>pmap</em> (API: boost). <br/></td></tr>
+<tr class="separator:gaf48bc630417b61f2e78fbf3274f60675"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20c07be93da207980a4a9b1186ab9abc"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga20c07be93da207980a4a9b1186ab9abc"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga20c07be93da207980a4a9b1186ab9abc"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::degree_size_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga20c07be93da207980a4a9b1186ab9abc">in_degree</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga20c07be93da207980a4a9b1186ab9abc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return number of incoming edges of vertex <em>v</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga20c07be93da207980a4a9b1186ab9abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaae4f8ff144389e2b3f6fc9edd1296fa"><td class="memTemplParams" colspan="2"><a class="anchor" id="gaaae4f8ff144389e2b3f6fc9edd1296fa"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:gaaae4f8ff144389e2b3f6fc9edd1296fa"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::in_edge_iterator, typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::in_edge_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gaaae4f8ff144389e2b3f6fc9edd1296fa">in_edges</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:gaaae4f8ff144389e2b3f6fc9edd1296fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for the incoming edges of vertex <em>v</em> in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:gaaae4f8ff144389e2b3f6fc9edd1296fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gade18b76bc3a70196a52bfdda0f13cb6e"><td class="memTemplParams" colspan="2"><a class="anchor" id="gade18b76bc3a70196a52bfdda0f13cb6e"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:gade18b76bc3a70196a52bfdda0f13cb6e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::edges_size_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gade18b76bc3a70196a52bfdda0f13cb6e">num_edges</a> (<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:gade18b76bc3a70196a52bfdda0f13cb6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of edges in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:gade18b76bc3a70196a52bfdda0f13cb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51f90e1690ab65b8e9a15b1812b464f2"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga51f90e1690ab65b8e9a15b1812b464f2"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga51f90e1690ab65b8e9a15b1812b464f2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::vertices_size_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga51f90e1690ab65b8e9a15b1812b464f2">num_vertices</a> (<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga51f90e1690ab65b8e9a15b1812b464f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of vertices in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga51f90e1690ab65b8e9a15b1812b464f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1f7dc567fa1ee7e5da3006d666e6b987"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga1f7dc567fa1ee7e5da3006d666e6b987"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga1f7dc567fa1ee7e5da3006d666e6b987"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::out_back_edge_iterator, <br class="typebreak"/>
+typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::out_back_edge_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga1f7dc567fa1ee7e5da3006d666e6b987">out_back_edges</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga1f7dc567fa1ee7e5da3006d666e6b987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for only those outgoing edges of vertex <em>v</em> whose ID is smaller than that of <em>v</em> (API: VIGRA). <br/></td></tr>
+<tr class="separator:ga1f7dc567fa1ee7e5da3006d666e6b987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf26cba82fc974086c1953bee674ea46b"><td class="memTemplParams" colspan="2"><a class="anchor" id="gaf26cba82fc974086c1953bee674ea46b"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:gaf26cba82fc974086c1953bee674ea46b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::degree_size_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gaf26cba82fc974086c1953bee674ea46b">out_degree</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:gaf26cba82fc974086c1953bee674ea46b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return number of outgoing edges of vertex <em>v</em> (API: boost). <br/></td></tr>
+<tr class="separator:gaf26cba82fc974086c1953bee674ea46b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga62fe21c79bc9a0734ccbec1ba61a4786"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga62fe21c79bc9a0734ccbec1ba61a4786"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga62fe21c79bc9a0734ccbec1ba61a4786"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::out_edge_iterator, typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::out_edge_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga62fe21c79bc9a0734ccbec1ba61a4786">out_edges</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::vertex_descriptor const &amp;v, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga62fe21c79bc9a0734ccbec1ba61a4786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for the outgoing edges of vertex <em>v</em> in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga62fe21c79bc9a0734ccbec1ba61a4786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga771977c848d76f3c8e8bc017bd93b61e"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga771977c848d76f3c8e8bc017bd93b61e"></a>
+template&lt;unsigned int N, class T , class Stride , class U &gt; </td></tr>
+<tr class="memitem:ga771977c848d76f3c8e8bc017bd93b61e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga771977c848d76f3c8e8bc017bd93b61e">put</a> (<a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a>&lt; N, T, Stride &gt; &amp;pmap, typename <a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a>&lt; N, T, Stride &gt;::difference_type const &amp;k, U const &amp;val)</td></tr>
+<tr class="memdesc:ga771977c848d76f3c8e8bc017bd93b61e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put value <em>val</em> at key <em>k</em> in the property map <em>pmap</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga771977c848d76f3c8e8bc017bd93b61e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafba71cef87f1386c3dd7e6350a026ffa"><td class="memTemplParams" colspan="2"><a class="anchor" id="gafba71cef87f1386c3dd7e6350a026ffa"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:gafba71cef87f1386c3dd7e6350a026ffa"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::vertex_descriptor&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa">source</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::edge_descriptor const &amp;e, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:gafba71cef87f1386c3dd7e6350a026ffa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a vertex descriptor for the start vertex of edge <em>e</em> in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:gafba71cef87f1386c3dd7e6350a026ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga32ea87eb7736f3eeb77ae1b2071aa5ea"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga32ea87eb7736f3eeb77ae1b2071aa5ea"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga32ea87eb7736f3eeb77ae1b2071aa5ea"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;<br class="typebreak"/>
+::vertex_descriptor&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga32ea87eb7736f3eeb77ae1b2071aa5ea">target</a> (typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt;::edge_descriptor const &amp;e, <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga32ea87eb7736f3eeb77ae1b2071aa5ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a vertex descriptor for the end vertex of edge <em>e</em> in graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga32ea87eb7736f3eeb77ae1b2071aa5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga969106fea945edbb1d47728d6380549e"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga969106fea945edbb1d47728d6380549e"></a>
+template&lt;unsigned int N, class DirectedTag &gt; </td></tr>
+<tr class="memitem:ga969106fea945edbb1d47728d6380549e"><td class="memTemplItemLeft" align="right" valign="top">std::pair&lt; typename <br class="typebreak"/>
+<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::vertex_iterator, <br class="typebreak"/>
+typename <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, <br class="typebreak"/>
+DirectedTag &gt;::vertex_iterator &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__BoostGraphExtensions.html#ga969106fea945edbb1d47728d6380549e">vertices</a> (<a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>&lt; N, DirectedTag &gt; const &amp;g)</td></tr>
+<tr class="memdesc:ga969106fea945edbb1d47728d6380549e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a (begin, end) iterator pair for the vertices of graph <em>g</em> (API: boost). <br/></td></tr>
+<tr class="separator:ga969106fea945edbb1d47728d6380549e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="_details" id="details"></a><h2 class="details_section">Detailed Description</h2>
 <div class="textblock"><p>This header provides definitions of graph-related types and optionally provides a gateway to popular graph libraries (for now, BGL is supported). </p>
 </div></div><!-- contents -->
@@ -62,7 +206,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

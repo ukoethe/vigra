@@ -520,7 +520,7 @@ Functions</h2></td></tr>
 <div class="line">              <span class="keyword">class </span>T22, <span class="keyword">class </span>S22&gt;</div>
 <div class="line">    <span class="keywordtype">void</span></div>
 <div class="line">    <a class="code" href="group__TensorImaging.html#gafcf8fcdf2b221ff2d4f7430353b373f0" title="Decompose a symmetric 2x2 tensor into its edge and corner parts.">tensorToEdgeCorner</a>(MultiArrayView&lt;2, T1, S1&gt; <span class="keyword">const</span> &amp; src,</div>
-<div class="line">                       MultiArrayView&lt;2, T21, S21&gt; edge,</div>
+<div class="line">                       MultiArrayView&lt;2, T21, S21&gt; <a class="code" href="group__BoostGraphExtensions.html#gad1f8dd75aae022cf6e9bc14ce7c1779d" title="Return the pair (edge_descriptor, true) when an edge between vertices u and v exists, or (lemon::INVALID, false) otherwise (API: boost).">edge</a>,</div>
 <div class="line">                       MultiArrayView&lt;2, T22, S22&gt; corner);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p><a href="#" id="tensorToEdgeCorner_OldAPIToggle" onclick="return toggleHiddenDocumentation(&apos;tensorToEdgeCorner_OldAPI&apos;, &apos;tensorToEdgeCorner_OldAPIToggle&apos;, &apos;deprecated declarations&apos;);">show deprecated declarations</a></p>
@@ -530,7 +530,7 @@ Functions</h2></td></tr>
 <div class="line">              <span class="keyword">class </span>DestIterator1, <span class="keyword">class </span>DestAccessor1,</div>
 <div class="line">              <span class="keyword">class </span>DestIterator2, <span class="keyword">class </span>DestAccessor2&gt;</div>
 <div class="line">    <span class="keywordtype">void</span> <a class="code" href="group__TensorImaging.html#gafcf8fcdf2b221ff2d4f7430353b373f0" title="Decompose a symmetric 2x2 tensor into its edge and corner parts.">tensorToEdgeCorner</a>(SrcIterator sul, SrcIterator slr, SrcAccessor src,</div>
-<div class="line">                            DestIterator1 edgeul, DestAccessor1 edge,</div>
+<div class="line">                            DestIterator1 edgeul, DestAccessor1 <a class="code" href="group__BoostGraphExtensions.html#gad1f8dd75aae022cf6e9bc14ce7c1779d" title="Return the pair (edge_descriptor, true) when an edge between vertices u and v exists, or (lemon::INVALID, false) otherwise (API: boost).">edge</a>,</div>
 <div class="line">                            DestIterator2 cornerul, DestAccessor2 corner);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p> use argument objects in conjunction with <a class="el" href="ArgumentObjectFactories.html">Argument Object Factories</a> : </p>
@@ -539,7 +539,7 @@ Functions</h2></td></tr>
 <div class="line">              <span class="keyword">class </span>DestIterator1, <span class="keyword">class </span>DestAccessor1,</div>
 <div class="line">              <span class="keyword">class </span>DestIterator2, <span class="keyword">class </span>DestAccessor2&gt;</div>
 <div class="line">    <span class="keywordtype">void</span> <a class="code" href="group__TensorImaging.html#gafcf8fcdf2b221ff2d4f7430353b373f0" title="Decompose a symmetric 2x2 tensor into its edge and corner parts.">tensorToEdgeCorner</a>(triple&lt;SrcIterator, SrcIterator, SrcAccessor&gt; s,</div>
-<div class="line">                            pair&lt;DestIterator1, DestAccessor1&gt; edge,</div>
+<div class="line">                            pair&lt;DestIterator1, DestAccessor1&gt; <a class="code" href="group__BoostGraphExtensions.html#gad1f8dd75aae022cf6e9bc14ce7c1779d" title="Return the pair (edge_descriptor, true) when an edge between vertices u and v exists, or (lemon::INVALID, false) otherwise (API: boost).">edge</a>,</div>
 <div class="line">                            pair&lt;DestIterator2, DestAccessor2&gt; corner);</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><p><b> Usage:</b></p>
@@ -578,7 +578,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

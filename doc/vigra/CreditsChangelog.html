@@ -111,13 +111,72 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <p class="endli"></p>
 </li>
 <li>
+<p class="startli">Stefan Schmidt made major contributions to <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a>.</p>
+<p class="endli"></p>
+</li>
+<li>
 Numerous people reported bugs and made suggestions. </li>
 </ul>
 <p>Many thanks to all! </p>
-<p><b> Changes from Version 1.9.0 to 1.9.1</b></p>
+<p><b> Changes from Version 1.9.0 to 1.10.0</b></p>
 <ul>
 <li>
 <p class="startli">VIGRA got a <a class="el" href="Tutorial.html">Tutorial</a> !</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Significant simplification of the API: <code>MultiArrayView</code> arguments can now be passed to functions directly:</p>
+<div class="fragment"><div class="line">MultiArray&lt;float&gt; src(<a class="code" href="group__MultiIteratorGroup.html#ga2e2ffc107bb0e38f9b1288b647c8ec5b" title="shape type for MultiArray&lt;2, T&gt;">Shape2</a>(200,100)), dest(src.shape());</div>
+<div class="line"><a class="code" href="group__CommonConvolutionFilters.html#ga187dd5c94b6113dbd3578001fee70113" title="Perform isotropic Gaussian convolution.">gaussianSmoothing</a>(src, dest, 2.0);</div>
+</div><!-- fragment --><p>The old syntax with <a class="el" href="ArgumentObjectFactories.html">Argument Object Factories</a> (<code>srcImageRange()</code>, <code>srcMultiArray()</code> and relatives) remains valid, but is only required when the arguments are old-style <code>BasicImage</code>s.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Made <code>StridedArrayTag</code> the default for <a class="el" href="classvigra_1_1MultiArrayView.html">vigra::MultiArrayView</a> .</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added an efficient multi-dimensional <a class="el" href="classvigra_1_1GridGraph.html">vigra::GridGraph</a> class which support both the LEMON and boost::graph APIs.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Generalized various algorithms to arbitrary dimensions (<a class="el" href="group__MultiArrayConvolutionFilters.html#ga4d5e9021732f13248ca3a0fe1b7c0552">gaussianGradientMultiArray()</a>, <a class="el" href="group__MultiArrayConvolutionFilters.html#gae419814e55fb3191a87e7b75f505d4da">hessianOfGaussianMultiArray()</a>, <a class="el" href="group__MultiArrayConvolutionFilters.html#ga63e603a8303c5af14dd8e709a63141fe">gaussianDivergenceMultiArray()</a>, <a class="el" href="group__LocalMinMax.html#ga527dfba5468e97ca7f1d676d34bc7162">localMinima()</a>, <a class="el" href="group__LocalMinMax.html#ga00086937b5ac265fc74b5a8ee0c15c47">localMaxima()</a>, <a class="el" href="group__Labeling.html#ga8692820fcfdc8adb7ad57582bbb20392">labelMultiArray()</a>, <a class="el" href="group__SeededRegionGrowing.html#ga67dae5f2292e59d2de0936e7aa4f3e67">watershedsMultiArray()</a>).</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added <a class="el" href="group__SeededRegionGrowing.html#ga5561f1ce9b3f7a95b7de67738a0d2447">slicSuperpixels()</a> for arbitrary dimensions.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added automatic differentiation (see <a class="el" href="classvigra_1_1autodiff_1_1DualVector.html">vigra::autodiff::DualVector</a>).</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added <a class="el" href="group__Optimization.html#gaca08304f34fff2a829234d2c374f4252">nonlinearLeastSquares()</a> using the Levenberg-Marquardt algorithm and automatic differentiation.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added a function <code>setCoordinateOffset()</code> to the feature accumulator classes to enable block-wise computation of coordinate-based features.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added <a class="el" href="classvigra_1_1MultiCoordinateIterator.html">vigra::MultiCoordinateIterator</a> to enumerate the grid coordinates of a multi-dimensional array.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Fixed thread-safety of <code>RandomForest::learn()</code> (random seeding) and <code>RandomForest::predictLebels()</code>.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Improved HDF5 I/O for strided <code>MultiArrayView</code>s and HDF5 on-the-fly compression.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added support for multi-page TIFF to <a class="el" href="group__VolumeImpex.html#gaa8328600a03da4d2849fe33f2a080705">importVolume()</a> and <a class="el" href="group__VolumeImpex.html#gac9a23a3dac8373296367f882493d2d60">exportVolume()</a>. Added support for Andor SIF to <a class="el" href="group__VolumeImpex.html#gaa8328600a03da4d2849fe33f2a080705">importVolume()</a>.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Added <code>VigranumpyConfig.cmake</code> to simplify cmake-based compilation of custom vigranumpy modules.</p>
 <p class="endli"></p>
 </li>
 <li>
@@ -321,7 +380,7 @@ Minor improvements and bug fixes in the code and documentation. </li>
 <p class="endli"></p>
 </li>
 <li>
-<p class="startli">Added <a class="el" href="group__MatrixAlgebra.html#ga134cdba4837625a7d004a67cd5907058">choleskySolve()</a> and improved <a class="el" href="group__MatrixAlgebra.html#gadeaf1b2866e989c2612712b86236196e">choleskyDecomposition()</a> (in-place capability).</p>
+<p class="startli">Added <a class="el" href="group__MatrixAlgebra.html#ga0f41da2ca248dc0afa075c1e0c56a709">choleskySolve()</a> and improved <a class="el" href="group__MatrixAlgebra.html#gadeaf1b2866e989c2612712b86236196e">choleskyDecomposition()</a> (in-place capability).</p>
 <p class="endli"></p>
 </li>
 <li>
@@ -937,7 +996,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

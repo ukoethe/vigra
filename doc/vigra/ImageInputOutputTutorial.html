@@ -253,14 +253,14 @@ output image</div></div>
 <h1><a class="anchor" id="ImpexND"></a>
 Higher Dimensional Arrays</h1>
 <p>The recommended file format for arrays of arbitrary dimension is <a href="http://www.hdfgroup.org/HDF5/">HDF5</a>. It supports all possible pixel types, arbitrary dimensions, on-the-fly compression, arbitrary many arrays per file, and flexible metadata storage along with arrays. See <a class="el" href="group__VigraHDF5Impex.html">Import/Export of Images and Arrays in HDF5 Format</a> for more information.</p>
-<p>In case of 3D volume data, three additional import and export methods are supported: </p>
+<p>The functions <a class="el" href="group__VolumeImpex.html#gaa8328600a03da4d2849fe33f2a080705">importVolume()</a> and <a class="el" href="group__VolumeImpex.html#gac9a23a3dac8373296367f882493d2d60">exportVolume()</a> support three additional methods to read and write 3D volume data: </p>
 <ul>
 <li>
-Image stacks (consisting of one 2D image per slice) can be read by the function <a class="el" href="group__VolumeImpex.html#gaa8328600a03da4d2849fe33f2a080705">importVolume()</a> and written by <a class="el" href="group__VolumeImpex.html#gac9a23a3dac8373296367f882493d2d60">exportVolume()</a>. </li>
+Multipage TIFF (read/write) and Andor SIF (read only) file formats. </li>
 <li>
-Raw data must be accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) and can then be read by an overload of <a class="el" href="group__VolumeImpex.html#gaa8328600a03da4d2849fe33f2a080705">importVolume()</a>. </li>
+Image stacks (consisting of one 2D image per slice - read/write). </li>
 <li>
-Multipage TIFF can be imported one page at a time by constructing <a class="el" href="classvigra_1_1ImageImportInfo.html">vigra::ImageImportInfo</a> objects with the appropriate page number in a loop. </li>
+Raw data if accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) - read only. </li>
 </ul>
 </div></div><!-- contents -->
 <!-- footer.html -->
@@ -279,7 +279,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

@@ -2759,12 +2759,12 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l02717"></a><span class="lineno"> 2717</span>&#160;{</div>
 <div class="line"><a name="l02718"></a><span class="lineno"> 2718</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> NormTraits&lt;typename SrcAccessor::value_type&gt;::NormType NormType;</div>
 <div class="line"><a name="l02719"></a><span class="lineno"> 2719</span>&#160;    </div>
-<div class="line"><a name="l02720"></a><span class="lineno"> 2720</span>&#160;    <a class="code" href="group__StandardImageTypes.html#ga1b553cb653e4e5b3d0daf4c925a06dfd">UInt8Image</a> edges(lr-ul);</div>
-<div class="line"><a name="l02721"></a><span class="lineno"> 2721</span>&#160;    <a class="code" href="group__EdgeDetection.html#gad24417dac847a49d349da6092d86fa7f" title="Detect and mark edges in an edge image using Canny&#39;s algorithm.">cannyEdgeImageFromGradWithThinning</a>(srcIterRange(ul, lr, src), destImage(edges),</div>
+<div class="line"><a name="l02720"></a><span class="lineno"> 2720</span>&#160;    <a class="code" href="group__StandardImageTypes.html#ga1b553cb653e4e5b3d0daf4c925a06dfd">UInt8Image</a> <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(lr-ul);</div>
+<div class="line"><a name="l02721"></a><span class="lineno"> 2721</span>&#160;    <a class="code" href="group__EdgeDetection.html#gad24417dac847a49d349da6092d86fa7f" title="Detect and mark edges in an edge image using Canny&#39;s algorithm.">cannyEdgeImageFromGradWithThinning</a>(srcIterRange(ul, lr, src), destImage(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>),</div>
 <div class="line"><a name="l02722"></a><span class="lineno"> 2722</span>&#160;                                       0.0, 1, <span class="keyword">false</span>);</div>
 <div class="line"><a name="l02723"></a><span class="lineno"> 2723</span>&#160;</div>
 <div class="line"><a name="l02724"></a><span class="lineno"> 2724</span>&#160;    <span class="comment">// find edgels</span></div>
-<div class="line"><a name="l02725"></a><span class="lineno"> 2725</span>&#160;    internalCannyFindEdgels3x3(ul, src, edges, edgels, NumericTraits&lt;NormType&gt;::zero());</div>
+<div class="line"><a name="l02725"></a><span class="lineno"> 2725</span>&#160;    internalCannyFindEdgels3x3(ul, src, <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>, edgels, NumericTraits&lt;NormType&gt;::zero());</div>
 <div class="line"><a name="l02726"></a><span class="lineno"> 2726</span>&#160;}</div>
 <div class="line"><a name="l02727"></a><span class="lineno"> 2727</span>&#160;</div>
 <div class="line"><a name="l02728"></a><span class="lineno"> 2728</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> SrcIterator, <span class="keyword">class</span> SrcAccessor, <span class="keyword">class</span> BackInsertable&gt;</div>
@@ -2939,12 +2939,12 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l02897"></a><span class="lineno"> 2897</span>&#160;<a class="code" href="group__EdgeDetection.html#ga23436177c86663716d99e7dd43b6620f" title="Improved implementation of Canny&#39;s edge detector with thresholding.">cannyEdgelList3x3Threshold</a>(SrcIterator ul, SrcIterator lr, SrcAccessor src,</div>
 <div class="line"><a name="l02898"></a><span class="lineno"> 2898</span>&#160;                           BackInsertable &amp; edgels, GradValue grad_thresh)</div>
 <div class="line"><a name="l02899"></a><span class="lineno"> 2899</span>&#160;{</div>
-<div class="line"><a name="l02900"></a><span class="lineno"> 2900</span>&#160;    <a class="code" href="group__StandardImageTypes.html#ga1b553cb653e4e5b3d0daf4c925a06dfd">UInt8Image</a> edges(lr-ul);</div>
-<div class="line"><a name="l02901"></a><span class="lineno"> 2901</span>&#160;    <a class="code" href="group__EdgeDetection.html#gad24417dac847a49d349da6092d86fa7f" title="Detect and mark edges in an edge image using Canny&#39;s algorithm.">cannyEdgeImageFromGradWithThinning</a>(srcIterRange(ul, lr, src), destImage(edges),</div>
+<div class="line"><a name="l02900"></a><span class="lineno"> 2900</span>&#160;    <a class="code" href="group__StandardImageTypes.html#ga1b553cb653e4e5b3d0daf4c925a06dfd">UInt8Image</a> <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(lr-ul);</div>
+<div class="line"><a name="l02901"></a><span class="lineno"> 2901</span>&#160;    <a class="code" href="group__EdgeDetection.html#gad24417dac847a49d349da6092d86fa7f" title="Detect and mark edges in an edge image using Canny&#39;s algorithm.">cannyEdgeImageFromGradWithThinning</a>(srcIterRange(ul, lr, src), destImage(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>),</div>
 <div class="line"><a name="l02902"></a><span class="lineno"> 2902</span>&#160;                                       0.0, 1, <span class="keyword">false</span>);</div>
 <div class="line"><a name="l02903"></a><span class="lineno"> 2903</span>&#160;</div>
 <div class="line"><a name="l02904"></a><span class="lineno"> 2904</span>&#160;    <span class="comment">// find edgels</span></div>
-<div class="line"><a name="l02905"></a><span class="lineno"> 2905</span>&#160;    internalCannyFindEdgels3x3(ul, src, edges, edgels, grad_thresh);</div>
+<div class="line"><a name="l02905"></a><span class="lineno"> 2905</span>&#160;    internalCannyFindEdgels3x3(ul, src, <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>, edgels, grad_thresh);</div>
 <div class="line"><a name="l02906"></a><span class="lineno"> 2906</span>&#160;}</div>
 <div class="line"><a name="l02907"></a><span class="lineno"> 2907</span>&#160;</div>
 <div class="line"><a name="l02908"></a><span class="lineno"> 2908</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class </span>SrcIterator, <span class="keyword">class </span>SrcAccessor, </div>
@@ -3051,7 +3051,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

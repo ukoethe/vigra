@@ -129,7 +129,7 @@ Functions</h2></td></tr>
 <div class="line">                              <span class="keyword">class </span>T2, <span class="keyword">class </span>S2, </div>
 <div class="line">              <span class="keyword">class </span>KernelIterator&gt;</div>
 <div class="line">    <span class="keywordtype">void</span></div>
-<div class="line">    <a class="code" href="group__MultiArrayConvolutionFilters.html#ga1c43f1c6fd2f6391c7a26de88545b8db" title="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</a>(MultiArrayView&lt;N, T1, S1&gt; <span class="keyword">const</span> &amp; source,</div>
+<div class="line">    <a class="code" href="group__MultiArrayConvolutionFilters.html#ga1c43f1c6fd2f6391c7a26de88545b8db" title="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</a>(MultiArrayView&lt;N, T1, S1&gt; <span class="keyword">const</span> &amp; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>,</div>
 <div class="line">                                MultiArrayView&lt;N, T2, S2&gt; dest, </div>
 <div class="line">                                KernelIterator kernels,</div>
 <div class="line">                                <span class="keyword">typename</span> MultiArrayShape&lt;N&gt;::type start = <span class="keyword">typename</span> MultiArrayShape&lt;N&gt;::type(),</div>
@@ -195,7 +195,7 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt;         dest(shape);</div>
 <div class="line">...</div>
 <div class="line">Kernel1D&lt;<span class="keywordtype">float</span>&gt; gauss;</div>
@@ -218,7 +218,7 @@ Functions</h2></td></tr>
 <div class="line"><a class="code" href="group__MultiArrayConvolutionFilters.html#ga1c43f1c6fd2f6391c7a26de88545b8db" title="Separated convolution on multi-dimensional arrays.">separableConvolveMultiArray</a>(source, destROI, gauss, <a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a>(5,5,5), <a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a>(-5,-5,-5));</div>
 </div><!-- fragment --><p><a href="#" id="separableConvolveMultiArray_OldUsageToggle" onclick="return toggleHiddenDocumentation(&apos;separableConvolveMultiArray_OldUsage&apos;, &apos;separableConvolveMultiArray_OldUsageToggle&apos;, &apos;deprecated examples&apos;);">show deprecated examples</a></p>
 <div id="separableConvolveMultiArray_OldUsage" style="display:none"> <div class="fragment"><div class="line">MultiArray&lt;3, unsigned char&gt;::size_type shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line">Kernel1D&lt;<span class="keywordtype">float</span>&gt; gauss;</div>
@@ -299,7 +299,7 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line">Kernel1D&lt;<span class="keywordtype">float</span>&gt; gauss;</div>
@@ -373,14 +373,14 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt;         dest(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// perform isotropic Gaussian smoothing at scale &#39;sigma&#39;</span></div>
 <div class="line">gaussianSmoothMultiArray(source, dest, sigma);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt;         dest(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -454,14 +454,14 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute Gaussian gradient at scale sigma</span></div>
 <div class="line">gaussianGradientMultiArray(source, dest, sigma);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; dest(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -523,14 +523,14 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line">MultiArray&lt;3, unsigned char&gt;::size_type shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute gradient</span></div>
 <div class="line">symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest));</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, unsigned char&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, unsigned char&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; dest(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">...</div>
@@ -603,13 +603,13 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, float&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, float&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; laplacian(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute Laplacian at scale sigma</span></div>
 <div class="line">laplacianOfGaussianMultiArray(source, laplacian, sigma);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
-<div class="fragment"><div class="line">MultiArray&lt;3, float&gt; source(shape);</div>
+<div class="fragment"><div class="line">MultiArray&lt;3, float&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; laplacian(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -677,13 +677,13 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; laplacian(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute divergence at scale sigma</span></div>
 <div class="line">gaussianDivergenceMultiArray(source, laplacian, sigma);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
-<div class="fragment"><div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; source(shape);</div>
+<div class="fragment"><div class="line">MultiArray&lt;3, TinyVector&lt;float, 3&gt; &gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, float&gt; laplacian(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -756,13 +756,13 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, float&gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, float&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 6&gt; &gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute Hessian at scale sigma</span></div>
 <div class="line">hessianOfGaussianMultiArray(source, dest, sigma);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
-<div class="fragment"><div class="line">MultiArray&lt;3, float&gt; source(shape);</div>
+<div class="fragment"><div class="line">MultiArray&lt;3, float&gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 6&gt; &gt; dest(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -836,13 +836,13 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="multi__convolution_8hxx_source.html">vigra/multi_convolution.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line"><a class="code" href="group__MultiIteratorGroup.html#gac70cfe6730d928789a2b3ce1f37ae379" title="shape type for MultiArray&lt;3, T&gt;">Shape3</a> shape(width, height, depth);</div>
-<div class="line">MultiArray&lt;3, RGBValue&lt;float&gt; &gt; source(shape);</div>
+<div class="line">MultiArray&lt;3, RGBValue&lt;float&gt; &gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 6&gt; &gt; dest(shape);</div>
 <div class="line">...</div>
 <div class="line"><span class="comment">// compute structure tensor at scales innerScale and outerScale</span></div>
 <div class="line">structureTensorMultiArray(source, dest, innerScale, outerScale);</div>
 </div><!-- fragment --><p><b> Usage with anisotropic data:</b></p>
-<div class="fragment"><div class="line">MultiArray&lt;3, RGBValue&lt;float&gt; &gt; source(shape);</div>
+<div class="fragment"><div class="line">MultiArray&lt;3, RGBValue&lt;float&gt; &gt; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>(shape);</div>
 <div class="line">MultiArray&lt;3, TinyVector&lt;float, 6&gt; &gt; dest(shape);</div>
 <div class="line">TinyVector&lt;float, 3&gt; step_size;</div>
 <div class="line">TinyVector&lt;float, 3&gt; resolution_sigmas;</div>
@@ -1046,7 +1046,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

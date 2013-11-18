@@ -118,7 +118,7 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    value /= <a class="code" href="group__FFTWComplexOperators.html#ga396baa79e8bd78a178597d32d5152041" title="norm (= magnitude)">norm</a>;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> NumericTraits&lt;ValueType&gt;::RealPromote Promote;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">return</span> NumericTraits&lt;ValueType&gt;::fromRealPromote(</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;              RequiresExplicitCast&lt;ValueType&gt;::cast(</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;              RequiresExplicitCast&lt;Promote&gt;::cast(</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                (value &lt;= 0.0031308) </div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                    ? norm*12.92*value </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                    : norm*(1.055*std::pow(value, 0.41666666666666667) - 0.055)));</div>
@@ -130,7 +130,7 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    value /= <a class="code" href="group__FFTWComplexOperators.html#ga396baa79e8bd78a178597d32d5152041" title="norm (= magnitude)">norm</a>;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">typename</span> NumericTraits&lt;ValueType&gt;::RealPromote Promote;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> NumericTraits&lt;ValueType&gt;::fromRealPromote(</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;             RequiresExplicitCast&lt;ValueType&gt;::cast(</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;             RequiresExplicitCast&lt;Promote&gt;::cast(</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                (value &lt;= 0.04045) </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                    ? norm*value / 12.92</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4)));</div>
@@ -3477,7 +3477,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

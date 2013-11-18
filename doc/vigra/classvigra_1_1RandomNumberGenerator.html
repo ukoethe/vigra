@@ -60,15 +60,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2b2ae87ef18bbb082edd3a5c4943bbda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9e11ae7472a6f218662d5c9e9ccbcee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#aa9e11ae7472a6f218662d5c9e9ccbcee">RandomNumberGenerator</a> (RandomSeedTag)</td></tr>
 <tr class="separator:aa9e11ae7472a6f218662d5c9e9ccbcee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f41bce08d7b393a3d5c2124c388188d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#a8f41bce08d7b393a3d5c2124c388188d">RandomNumberGenerator</a> (<a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> theSeed)</td></tr>
-<tr class="separator:a8f41bce08d7b393a3d5c2124c388188d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1903655418372cb4d09e4ae6f5cfd21"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#ae1903655418372cb4d09e4ae6f5cfd21">RandomNumberGenerator</a> (<a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> theSeed, bool ignoreSeed=false)</td></tr>
+<tr class="separator:ae1903655418372cb4d09e4ae6f5cfd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22457fc0793fd8ea90c4d09842e710d1"><td class="memTemplParams" colspan="2">template&lt;class Iterator &gt; </td></tr>
 <tr class="memitem:a22457fc0793fd8ea90c4d09842e710d1"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#a22457fc0793fd8ea90c4d09842e710d1">RandomNumberGenerator</a> (Iterator init, <a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> length)</td></tr>
 <tr class="separator:a22457fc0793fd8ea90c4d09842e710d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fe8fa521842f9385f87b7333b91c8e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#a7fe8fa521842f9385f87b7333b91c8e1">seed</a> (RandomSeedTag)</td></tr>
 <tr class="separator:a7fe8fa521842f9385f87b7333b91c8e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6410f02a2ee4c5397d976d4ef6f7323"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#af6410f02a2ee4c5397d976d4ef6f7323">seed</a> (<a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> theSeed)</td></tr>
-<tr class="separator:af6410f02a2ee4c5397d976d4ef6f7323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa293037c85af8d6292c3c1b4d118c4ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#aa293037c85af8d6292c3c1b4d118c4ae">seed</a> (<a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> theSeed, bool ignoreSeed=false)</td></tr>
+<tr class="separator:aa293037c85af8d6292c3c1b4d118c4ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d6e93f421badb04239b48213e99bb13"><td class="memTemplParams" colspan="2">template&lt;class Iterator &gt; </td></tr>
 <tr class="memitem:a5d6e93f421badb04239b48213e99bb13"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classvigra_1_1RandomNumberGenerator.html#a5d6e93f421badb04239b48213e99bb13">seed</a> (Iterator init, <a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a> length)</td></tr>
 <tr class="separator:a5d6e93f421badb04239b48213e99bb13"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,7 +142,7 @@ class vigra::RandomNumberGenerator&lt; Engine &gt;</h3>
 </div><!-- fragment --> 
 </div>
 </div>
-<a class="anchor" id="a8f41bce08d7b393a3d5c2124c388188d"></a>
+<a class="anchor" id="ae1903655418372cb4d09e4ae6f5cfd21"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -150,13 +150,23 @@ class vigra::RandomNumberGenerator&lt; Engine &gt;</h3>
           <td class="memname"><a class="el" href="classvigra_1_1RandomNumberGenerator.html">RandomNumberGenerator</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a>&#160;</td>
-          <td class="paramname"><em>theSeed</em></td><td>)</td>
+          <td class="paramname"><em>theSeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>ignoreSeed</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Create a new random generator object from the given seed.</p>
-<p>The same seed will always produce identical random sequences. </p>
+<p>The same seed will always produce identical random sequences. If <em>ignoreSeed</em> is <code>true</code>, the given seed is ignored, and the generator is seeded randomly (as if it was constructed with <code>RandomNumberGenerator&lt;&gt;(RandomSeed)</code>). This allows you to switch between random and deterministic seeding at run-time. </p>
 
 </div>
 </div>
@@ -211,7 +221,7 @@ class vigra::RandomNumberGenerator&lt; Engine &gt;</h3>
 </div><!-- fragment --> 
 </div>
 </div>
-<a class="anchor" id="af6410f02a2ee4c5397d976d4ef6f7323"></a>
+<a class="anchor" id="aa293037c85af8d6292c3c1b4d118c4ae"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -219,13 +229,23 @@ class vigra::RandomNumberGenerator&lt; Engine &gt;</h3>
           <td class="memname">void seed </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__FixedSizeInt.html#gad055e2244a667a1a5a5c1ee4397c07f9">UInt32</a>&#160;</td>
-          <td class="paramname"><em>theSeed</em></td><td>)</td>
+          <td class="paramname"><em>theSeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>ignoreSeed</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Re-initialize the random generator object from the given seed.</p>
-<p>The same seed will always produce identical random sequences. </p>
+<p>The same seed will always produce identical random sequences. If <em>ignoreSeed</em> is <code>true</code>, the given seed is ignored, and the generator is seeded randomly (as if <code>seed(RandomSeed)</code> was called). This allows you to switch between random and deterministic seeding at run-time. </p>
 
 </div>
 </div>
@@ -445,7 +465,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

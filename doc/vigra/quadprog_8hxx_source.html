@@ -238,7 +238,7 @@ function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        Matrix&lt;T&gt; L(G.<a class="code" href="classvigra_1_1MultiArrayView.html#a53c8f0d5c70f10f31fbc246cbe524e32">shape</a>());</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <a class="code" href="group__MatrixAlgebra.html#gadeaf1b2866e989c2612712b86236196e">choleskyDecomposition</a>(G, L);</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        <span class="comment">// find unconstrained minimizer of the quadratic form  0.5 * x G x + g&#39; x</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        <a class="code" href="group__MatrixAlgebra.html#ga134cdba4837625a7d004a67cd5907058">choleskySolve</a>(L, -g, x);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        <a class="code" href="group__MatrixAlgebra.html#ga0f41da2ca248dc0afa075c1e0c56a709">choleskySolve</a>(L, -g, x);</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="comment">// compute the inverse of the factorized matrix G^-1, this is the initial value for J</span></div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <a class="code" href="group__MatrixAlgebra.html#ga0a8f25a903663b7428cf0ba01b44b7e5">linearSolveLowerTriangular</a>(L, J, J);</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    }</div>
@@ -411,7 +411,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

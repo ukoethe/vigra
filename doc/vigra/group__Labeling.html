@@ -455,7 +455,7 @@ Functions</h2></td></tr>
 <div class="line">               DestValue edge_marker)</div>
 <div class="line">}</div>
 </div><!-- fragment --> </div><p>This algorithm marks all pixels with the given <code>edge_marker</code> which belong to a different region (label) than their right or lower neighbors:</p>
-<div class="fragment"><div class="line">original image                     edges</div>
+<div class="fragment"><div class="line">original image                     <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a></div>
 <div class="line">                          (assuming edge_marker == 1)</div>
 <div class="line"></div>
 <div class="line">   a c c                            1 1 *</div>
@@ -466,10 +466,10 @@ Functions</h2></td></tr>
 <p><b>#include</b> &lt;<a class="el" href="labelimage_8hxx_source.html">vigra/labelimage.hxx</a>&gt;<br/>
  Namespace: vigra</p>
 <div class="fragment"><div class="line">MultiArray&lt;2, unsigned char&gt; src(w,h),</div>
-<div class="line">                             edges(w,h);</div>
+<div class="line">                             <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(w,h);</div>
 <div class="line">MultiArray&lt;2, unsigned int&gt;  labels(w,h);</div>
 <div class="line"></div>
-<div class="line">edges = 255;  <span class="comment">// init background (non-edge) to 255</span></div>
+<div class="line"><a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a> = 255;  <span class="comment">// init background (non-edge) to 255</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// threshold at 128</span></div>
 <div class="line"><a class="code" href="group__TransformAlgo.html#gababa545b60bb7db13076648f83c6b314" title="Apply unary point transformation to each pixel.">transformImage</a>(src, src, Threshold&lt;int, int&gt;(128, 256, 0, 255));</div>
@@ -478,12 +478,12 @@ Functions</h2></td></tr>
 <div class="line"><a class="code" href="group__Labeling.html#ga25fed81e4512334de2cfa257d38972b2" title="Find the connected components of a segmented image.">labelImage</a>(src, labels, <span class="keyword">false</span>);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// create edge image, mark edges with 0</span></div>
-<div class="line"><a class="code" href="group__Labeling.html#ga6b16eb7df332ab9392e0927c2b5383e2" title="Transform a labeled image into an edge image.">regionImageToEdgeImage</a>(labels, edges, 0);</div>
+<div class="line"><a class="code" href="group__Labeling.html#ga6b16eb7df332ab9392e0927c2b5383e2" title="Transform a labeled image into an edge image.">regionImageToEdgeImage</a>(labels, <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>, 0);</div>
 </div><!-- fragment --><p><a href="#" id="regionImageToEdgeImage_OldUsageToggle" onclick="return toggleHiddenDocumentation(&apos;regionImageToEdgeImage_OldUsage&apos;, &apos;regionImageToEdgeImage_OldUsageToggle&apos;, &apos;deprecated examples&apos;);">show deprecated examples</a></p>
 <div id="regionImageToEdgeImage_OldUsage" style="display:none"> <div class="fragment"><div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::BImage</a> src(w,h);</div>
 <div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::IImage</a> labels(w,h);</div>
-<div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::IImage</a> edges(w, h);</div>
-<div class="line">edges = 255;  <span class="comment">// init background (non-edge) to 255</span></div>
+<div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::IImage</a> <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(w, h);</div>
+<div class="line"><a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a> = 255;  <span class="comment">// init background (non-edge) to 255</span></div>
 <div class="line"></div>
 <div class="line"><span class="comment">// threshold at 128</span></div>
 <div class="line"><a class="code" href="group__TransformAlgo.html#gababa545b60bb7db13076648f83c6b314" title="Apply unary point transformation to each pixel.">vigra::transformImage</a>(srcImageRange(src), destImage(src),</div>
@@ -494,7 +494,7 @@ Functions</h2></td></tr>
 <div class="line"><a class="code" href="group__Labeling.html#ga25fed81e4512334de2cfa257d38972b2" title="Find the connected components of a segmented image.">vigra::labelImage</a>(srcImageRange(src), destImage(labels), <span class="keyword">false</span>);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// create edge image, mark edges with 0</span></div>
-<div class="line"><a class="code" href="group__Labeling.html#ga6b16eb7df332ab9392e0927c2b5383e2" title="Transform a labeled image into an edge image.">vigra::regionImageToEdgeImage</a>(srcImageRange(labels), destImage(edges), 0);</div>
+<div class="line"><a class="code" href="group__Labeling.html#ga6b16eb7df332ab9392e0927c2b5383e2" title="Transform a labeled image into an edge image.">vigra::regionImageToEdgeImage</a>(srcImageRange(labels), destImage(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>), 0);</div>
 </div><!-- fragment --><p> <b> Required Interface:</b> </p>
 <div class="fragment"><div class="line">ImageIterator src_upperleft, src_lowerright;</div>
 <div class="line">ImageIterator dest_upperleft;</div>
@@ -538,7 +538,7 @@ Functions</h2></td></tr>
 <div class="line">              <span class="keyword">class </span>Neighborhood3D, </div>
 <div class="line">              <span class="keyword">class </span>EqualityFunctor = std::equal_to&lt;T1&gt; &gt;</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line">    <a class="code" href="group__Labeling.html#ga89a6b1e5784831c7145612bd738f3112" title="Find the connected components of a segmented volume.">labelVolume</a>(MultiArrayView&lt;3, T1, S1&gt; <span class="keyword">const</span> &amp; source,</div>
+<div class="line">    <a class="code" href="group__Labeling.html#ga89a6b1e5784831c7145612bd738f3112" title="Find the connected components of a segmented volume.">labelVolume</a>(MultiArrayView&lt;3, T1, S1&gt; <span class="keyword">const</span> &amp; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>,</div>
 <div class="line">                MultiArrayView&lt;3, T2, S2&gt; dest,</div>
 <div class="line">                Neighborhood3D neighborhood3D,</div>
 <div class="line">                EqualityFunctor equal  = EqualityFunctor());</div>
@@ -688,7 +688,7 @@ Functions</h2></td></tr>
 <div class="line">              <span class="keyword">class </span>ValueType,</div>
 <div class="line">              <span class="keyword">class </span>EqualityFunctor = std::equalt_to&lt;T1&gt; &gt;</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span></div>
-<div class="line">    <a class="code" href="group__Labeling.html#ga9ea391a72baa327cf6b3c7ac555d1c75" title="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</a>(MultiArrayView&lt;3, T1, S1&gt; <span class="keyword">const</span> &amp; source,</div>
+<div class="line">    <a class="code" href="group__Labeling.html#ga9ea391a72baa327cf6b3c7ac555d1c75" title="Find the connected components of a segmented volume, excluding the background from labeling...">labelVolumeWithBackground</a>(MultiArrayView&lt;3, T1, S1&gt; <span class="keyword">const</span> &amp; <a class="code" href="group__BoostGraphExtensions.html#gafba71cef87f1386c3dd7e6350a026ffa" title="Get a vertex descriptor for the start vertex of edge e in graph g (API: boost).">source</a>,</div>
 <div class="line">                              MultiArrayView&lt;3, T2, S2&gt; dest,</div>
 <div class="line">                              Neighborhood3D neighborhood3D,</div>
 <div class="line">                              ValueType backgroundValue,</div>
@@ -890,7 +890,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>

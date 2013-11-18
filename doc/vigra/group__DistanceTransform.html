@@ -114,30 +114,30 @@ norm == 1: use Manhattan distance (L1 norm) </li>
 </div><!-- fragment --> </div><p><b> Usage:</b></p>
 <p><b>#include</b> &lt;<a class="el" href="distancetransform_8hxx_source.html">vigra/distancetransform.hxx</a>&gt;<br/>
  Namespace: vigra</p>
-<div class="fragment"><div class="line">MultiArray&lt;2, unsigned char&gt; src(w,h), edges(w,h);</div>
+<div class="fragment"><div class="line">MultiArray&lt;2, unsigned char&gt; src(w,h), <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(w,h);</div>
 <div class="line">MultiArray&lt;2, float&gt;         distance(w, h);</div>
 <div class="line">...</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// detect edges in src image (edges will be marked 1, background 0)</span></div>
-<div class="line">differenceOfExponentialEdgeImage(src, edges, 0.8, 4.0);</div>
+<div class="line">differenceOfExponentialEdgeImage(src, <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>, 0.8, 4.0);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// find distance of all pixels from nearest edge</span></div>
-<div class="line"><a class="code" href="group__DistanceTransform.html#gad481d272471bfa808196959dffca524b">distanceTransform</a>(edges, distance, 0,                   2);</div>
+<div class="line"><a class="code" href="group__DistanceTransform.html#gad481d272471bfa808196959dffca524b">distanceTransform</a>(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>, distance, 0,                   2);</div>
 <div class="line"><span class="comment">//                                 ^ background label   ^ norm (Euclidean)</span></div>
 </div><!-- fragment --><p><a href="#" id="distanceTransform_OldUsageToggle" onclick="return toggleHiddenDocumentation(&apos;distanceTransform_OldUsage&apos;, &apos;distanceTransform_OldUsageToggle&apos;, &apos;deprecated examples&apos;);">show deprecated examples</a></p>
-<div id="distanceTransform_OldUsage" style="display:none"> <div class="fragment"><div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::BImage</a> src(w,h), edges(w,h);</div>
+<div id="distanceTransform_OldUsage" style="display:none"> <div class="fragment"><div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::BImage</a> src(w,h), <a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>(w,h);</div>
 <div class="line"><a class="code" href="classvigra_1_1BasicImage.html" title="Fundamental class template for images.">vigra::FImage</a> distance(w, h);</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// empty edge image</span></div>
-<div class="line">edges = 0;</div>
+<div class="line"><a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a> = 0;</div>
 <div class="line">...</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// detect edges in src image (edges will be marked 1, background 0)</span></div>
-<div class="line">vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges), </div>
+<div class="line">vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>), </div>
 <div class="line">                                 0.8, 4.0);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// find distance of all pixels from nearest edge</span></div>
-<div class="line"><a class="code" href="group__DistanceTransform.html#gad481d272471bfa808196959dffca524b">vigra::distanceTransform</a>(srcImageRange(edges), destImage(distance),</div>
+<div class="line"><a class="code" href="group__DistanceTransform.html#gad481d272471bfa808196959dffca524b">vigra::distanceTransform</a>(srcImageRange(<a class="code" href="group__BoostGraphExtensions.html#ga8172d97524f1680570f97b5adbd2211d" title="Get a (begin, end) iterator pair for the edges of graph g (API: boost).">edges</a>), destImage(distance),</div>
 <div class="line">                         0,                   2);</div>
 <div class="line"><span class="comment">//                       ^ background label   ^ norm (Euclidean)</span></div>
 </div><!-- fragment --><p> <b> Required Interface:</b> </p>
@@ -174,7 +174,7 @@ University of Heidelberg, Germany</i>
 <I>html generated using <A HREF="http://www.doxygen.org">doxygen</A> and <A HREF="http://www.python.org">Python</A></I>
 <br>
 <i>
-vigra 1.9.1 (Thu Sep 5 2013)
+vigra 1.10.0 (Mon Nov 18 2013)
 </i>
 </tr>
 </table>
