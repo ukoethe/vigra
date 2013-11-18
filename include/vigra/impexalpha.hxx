@@ -479,10 +479,7 @@ namespace vigra
                                    const AlphaScaler& alpha_scaler)
         {
             typedef typename ImageIterator::row_iterator ImageRowIterator;
-            typedef typename ImageAccessor::value_type ImageValueType;
-
             typedef typename AlphaIterator::row_iterator AlphaRowIterator;
-            typedef typename AlphaAccessor::value_type AlphaValueType;
 
             typedef detail::RequiresExplicitCast<ValueType> explicit_cast;
 

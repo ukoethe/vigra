@@ -264,7 +264,6 @@ public:
     void testIsStrided()
     {
         // for MultiArray<3, Multiband<T> >
-        typedef difference3_type Shape;
 
         should(!array3.isUnstrided());
         should(array3.permuteStridesAscending().isUnstrided());
@@ -2908,7 +2907,6 @@ struct MultiArrayDataTestSuite
         }
         {
             typedef Multiband<int> T;
-            typedef MultiArray<3, T> A;
             add( testCase( &MultiArrayDataTest<T>::testHasData ) );
             add( testCase( &MultiArrayDataTest<T>::testEquality ) );
             add( testCase( &MultiArrayDataTest<T>::test_subarray ) );

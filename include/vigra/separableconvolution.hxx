@@ -902,8 +902,6 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   int kleft, int kright, BorderTreatmentMode border,
                   int start = 0, int stop = 0)
 {
-    typedef typename KernelAccessor::value_type KernelValue;
-
     vigra_precondition(kleft <= 0,
                  "convolveLine(): kleft must be <= 0.\n");
     vigra_precondition(kright >= 0,
@@ -1093,8 +1091,6 @@ void separableConvolveX(SrcIterator supperleft,
                         KernelIterator ik, KernelAccessor ka,
                         int kleft, int kright, BorderTreatmentMode border)
 {
-    typedef typename KernelAccessor::value_type KernelValue;
-
     vigra_precondition(kleft <= 0,
                  "separableConvolveX(): kleft must be <= 0.\n");
     vigra_precondition(kright >= 0,
@@ -1250,8 +1246,6 @@ void separableConvolveY(SrcIterator supperleft,
                         KernelIterator ik, KernelAccessor ka,
                         int kleft, int kright, BorderTreatmentMode border)
 {
-    typedef typename KernelAccessor::value_type KernelValue;
-
     vigra_precondition(kleft <= 0,
                  "separableConvolveY(): kleft must be <= 0.\n");
     vigra_precondition(kright >= 0,

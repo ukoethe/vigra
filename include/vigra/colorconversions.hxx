@@ -76,7 +76,7 @@ inline ValueType sRGBCorrection(double value, double norm)
     value /= norm;
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-              RequiresExplicitCast<ValueType>::cast(
+              RequiresExplicitCast<Promote>::cast(
                 (value <= 0.0031308) 
                     ? norm*12.92*value 
                     : norm*(1.055*std::pow(value, 0.41666666666666667) - 0.055)));
@@ -88,7 +88,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
     value /= norm;
     typedef typename NumericTraits<ValueType>::RealPromote Promote;
     return NumericTraits<ValueType>::fromRealPromote(
-             RequiresExplicitCast<ValueType>::cast(
+             RequiresExplicitCast<Promote>::cast(
                 (value <= 0.04045) 
                     ? norm*value / 12.92
                     : norm*VIGRA_CSTD::pow((value + 0.055)/1.055, 2.4)));

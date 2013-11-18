@@ -621,7 +621,6 @@ struct MultiFFTTest
 
     void testConvolveFourierKernel()
     {
-        typedef MultiArrayView<2, double> MV;
         ImageImportInfo info("ghouse.gif");
         Shape2 s(info.width(), info.height());
         DArray2 in(s), out(s), out2(s), out3(s), out4(s), ref(s), tmp(s);

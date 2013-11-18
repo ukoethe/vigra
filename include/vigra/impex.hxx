@@ -284,7 +284,6 @@ namespace vigra
                          const ImageScaler& image_scaler)
         {
             typedef typename ImageIterator::row_iterator ImageRowIterator;
-            typedef typename ImageAccessor::value_type ImageValueType;
 
             typedef RequiresExplicitCast<ValueType> explicit_cast;
 

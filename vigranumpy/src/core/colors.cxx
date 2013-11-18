@@ -311,7 +311,6 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
     // Multiband: channel axis is allowed to be singleband, but does not have to be,
     //            will be last when converted Python -> C++ and channel axis is counted in the dimension ('3')
     typedef NumpyArray<2, Singleband<T> > InputType;
-    typedef NumpyArray<3, Multiband<npy_uint8> > OutputType;
     
     res.reshapeIfEmpty(valueImage.taggedShape().setChannelCount(colortable.shape(1)),
                        "pythonApplyColortable: shape of res is wrong");

@@ -211,7 +211,7 @@ localMinMax(MultiArrayView<N, T1, C1> const & src,
     vigra_precondition(src.shape() == dest.shape(),
         "localMinMax(): shape mismatch between input and output.");
         
-    NeighborhoodType neighborhood;
+    NeighborhoodType neighborhood = DirectNeighborhood;
     
     if(options.neigh == 0 || options.neigh == 2*N)
         neighborhood = DirectNeighborhood;

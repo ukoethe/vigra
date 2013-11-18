@@ -1260,7 +1260,6 @@ struct AccumulatorTest
 
         {
             typedef CoupledIteratorType<2, double, int>::type Iterator;
-            typedef Iterator::value_type Handle;
 
             typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>, 
                                                 Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,

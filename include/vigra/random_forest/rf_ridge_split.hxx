@@ -135,7 +135,6 @@ class RidgeSplit: public SplitBase<Tag>
     {
 
     //std::cerr << "Split called" << std::endl;
-    typedef typename Region::IndexIterator IndexIterator;
     typedef typename MultiArrayView <2, T, C>::difference_type fShape;
     typedef typename MultiArrayView <2, T2, C2>::difference_type lShape;
     typedef typename MultiArrayView <2, double>::difference_type dShape;

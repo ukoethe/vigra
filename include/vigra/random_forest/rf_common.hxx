@@ -292,7 +292,6 @@ class RandomForestOptions
     
     void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
-        typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
         #define PULLBOOL(item_, type_) item_ = type_(in[#item_][0] > 0); 
         PULL(training_set_proportion_,double);
@@ -317,7 +316,6 @@ class RandomForestOptions
     }
     void make_map(map_type & in) const
     {
-        typedef MultiArrayShape<2>::type Shp; 
         #define PUSH(item_, type_) in[#item_] = double_array(1, double(item_));
         #define PUSHFUNC(item_, type_) in[#item_] = double_array(1, double(item_!=0));
         PUSH(training_set_proportion_,double);
@@ -764,7 +762,6 @@ public:
 
     void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
-        typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
         PULL(column_count_,int);
         PULL(class_count_, int);
@@ -781,7 +778,6 @@ public:
     }
     void make_map(map_type & in) const
     {
-        typedef MultiArrayShape<2>::type Shp; 
         #define PUSH(item_) in[#item_] = double_array(1, double(item_));
         PUSH(column_count_);
         PUSH(class_count_)

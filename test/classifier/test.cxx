@@ -586,7 +586,6 @@ struct ClassifierTest
     {
 
             std::cerr << "RFoobTest(): Learning each Datasets 10 times\n";
-            typedef MultiArrayShape<2>::type _TTT;
             for(int ii = 0; ii <data.size() ; ii++)
             {
                 double oob = 0.0;
