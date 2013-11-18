@@ -54,7 +54,6 @@ ADD_LIBRARY(vigraimpex ${LIBTYPE}
     viff.cxx
     void_vector.cxx)
 
-STRING(REGEX REPLACE "\\." "" LIBRARY_VERSION_STRING ${vigra_version})
 set(SOVERSION 5)  # increment this after changing the vigraimpex library
 IF(MACOSX)
     SET_TARGET_PROPERTIES(vigraimpex PROPERTIES VERSION ${SOVERSION}.${vigra_version} 
