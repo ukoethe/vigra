@@ -1,0 +1,937 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="stdimage_8hxx" kind="file">
+    <compoundname>stdimage.hxx</compoundname>
+    <includes refid="sized__int_8hxx" local="yes">sized_int.hxx</includes>
+    <includes refid="tuple_8hxx" local="yes">tuple.hxx</includes>
+    <includes refid="basicimage_8hxx" local="yes">basicimage.hxx</includes>
+    <includes refid="iteratortraits_8hxx" local="yes">iteratortraits.hxx</includes>
+    <includes refid="accessor_8hxx" local="yes">accessor.hxx</includes>
+    <includes refid="rgbvalue_8hxx" local="yes">rgbvalue.hxx</includes>
+    <includedby refid="basicgeometry_8hxx" local="yes">vigra/basicgeometry.hxx</includedby>
+    <includedby refid="stdconvolution_8hxx" local="yes">vigra/stdconvolution.hxx</includedby>
+    <includedby refid="nonlineardiffusion_8hxx" local="yes">vigra/nonlineardiffusion.hxx</includedby>
+    <includedby refid="resizeimage_8hxx" local="yes">vigra/resizeimage.hxx</includedby>
+    <includedby refid="resampling__convolution_8hxx" local="yes">vigra/resampling_convolution.hxx</includedby>
+    <includedby refid="cornerdetection_8hxx" local="yes">vigra/cornerdetection.hxx</includedby>
+    <includedby refid="distancetransform_8hxx" local="yes">vigra/distancetransform.hxx</includedby>
+    <includedby refid="edgedetection_8hxx" local="yes">vigra/edgedetection.hxx</includedby>
+    <includedby refid="labelimage_8hxx" local="yes">vigra/labelimage.hxx</includedby>
+    <includedby refid="fftw3_8hxx" local="yes">vigra/fftw3.hxx</includedby>
+    <includedby refid="gaborfilter_8hxx" local="yes">vigra/gaborfilter.hxx</includedby>
+    <includedby refid="impex_8hxx" local="yes">vigra/impex.hxx</includedby>
+    <includedby refid="localminmax_8hxx" local="yes">vigra/localminmax.hxx</includedby>
+    <includedby refid="noise__normalization_8hxx" local="yes">vigra/noise_normalization.hxx</includedby>
+    <includedby refid="seededregiongrowing_8hxx" local="yes">vigra/seededregiongrowing.hxx</includedby>
+    <includedby refid="seededregiongrowing3d_8hxx" local="yes">vigra/seededregiongrowing3d.hxx</includedby>
+    <includedby refid="slanted__edge__mtf_8hxx" local="yes">vigra/slanted_edge_mtf.hxx</includedby>
+    <includedby refid="symmetry_8hxx" local="yes">vigra/symmetry.hxx</includedby>
+    <includedby refid="watersheds_8hxx" local="yes">vigra/watersheds.hxx</includedby>
+    <incdepgraph>
+      <node id="8603">
+        <label>functional</label>
+      </node>
+      <node id="8576">
+        <label>limits</label>
+      </node>
+      <node id="8580">
+        <label>basicimage.hxx</label>
+        <link refid="basicimage_8hxx_source"/>
+        <childnode refid="8581" relation="include">
+        </childnode>
+        <childnode refid="8577" relation="include">
+        </childnode>
+        <childnode refid="8582" relation="include">
+        </childnode>
+        <childnode refid="8591" relation="include">
+        </childnode>
+        <childnode refid="8592" relation="include">
+        </childnode>
+        <childnode refid="8604" relation="include">
+        </childnode>
+      </node>
+      <node id="8570">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="8571" relation="include">
+        </childnode>
+        <childnode refid="8576" relation="include">
+        </childnode>
+      </node>
+      <node id="8590">
+        <label>iterator</label>
+      </node>
+      <node id="8602">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="8571" relation="include">
+        </childnode>
+      </node>
+      <node id="8596">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="8601">
+        <label>algorithm.hxx</label>
+        <link refid="algorithm_8hxx_source"/>
+        <childnode refid="8570" relation="include">
+        </childnode>
+        <childnode refid="8593" relation="include">
+        </childnode>
+        <childnode refid="8602" relation="include">
+        </childnode>
+        <childnode refid="8577" relation="include">
+        </childnode>
+        <childnode refid="8603" relation="include">
+        </childnode>
+        <childnode refid="8590" relation="include">
+        </childnode>
+      </node>
+      <node id="8587">
+        <label>cmath</label>
+      </node>
+      <node id="8574">
+        <label>stdexcept</label>
+      </node>
+      <node id="8589">
+        <label>iteratortags.hxx</label>
+        <link refid="iteratortags_8hxx_source"/>
+        <childnode refid="8590" relation="include">
+        </childnode>
+      </node>
+      <node id="8585">
+        <label>string</label>
+      </node>
+      <node id="8591">
+        <label>iteratortraits.hxx</label>
+        <link refid="iteratortraits_8hxx_source"/>
+        <childnode refid="8592" relation="include">
+        </childnode>
+        <childnode refid="8597" relation="include">
+        </childnode>
+      </node>
+      <node id="8594">
+        <label>cfloat</label>
+      </node>
+      <node id="8582">
+        <label>utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8583" relation="include">
+        </childnode>
+        <childnode refid="8571" relation="include">
+        </childnode>
+        <childnode refid="8578" relation="include">
+        </childnode>
+        <childnode refid="8586" relation="include">
+        </childnode>
+        <childnode refid="8599" relation="include">
+        </childnode>
+        <childnode refid="8585" relation="include">
+        </childnode>
+        <childnode refid="8584" relation="include">
+        </childnode>
+      </node>
+      <node id="8573">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="8578">
+        <label>tuple.hxx</label>
+        <link refid="tuple_8hxx_source"/>
+        <childnode refid="8579" relation="include">
+        </childnode>
+      </node>
+      <node id="8606">
+        <label>tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="8587" relation="include">
+        </childnode>
+        <childnode refid="8600" relation="include">
+        </childnode>
+        <childnode refid="8588" relation="include">
+        </childnode>
+        <childnode refid="8577" relation="include">
+        </childnode>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8583" relation="include">
+        </childnode>
+        <childnode refid="8571" relation="include">
+        </childnode>
+        <childnode refid="8593" relation="include">
+        </childnode>
+        <childnode refid="8604" relation="include">
+        </childnode>
+        <childnode refid="8599" relation="include">
+        </childnode>
+        <childnode refid="8586" relation="include">
+        </childnode>
+      </node>
+      <node id="8569">
+        <label>vigra/stdimage.hxx</label>
+        <link refid="stdimage.hxx"/>
+        <childnode refid="8570" relation="include">
+        </childnode>
+        <childnode refid="8578" relation="include">
+        </childnode>
+        <childnode refid="8580" relation="include">
+        </childnode>
+        <childnode refid="8591" relation="include">
+        </childnode>
+        <childnode refid="8592" relation="include">
+        </childnode>
+        <childnode refid="8605" relation="include">
+        </childnode>
+      </node>
+      <node id="8599">
+        <label>mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="8587" relation="include">
+        </childnode>
+        <childnode refid="8600" relation="include">
+        </childnode>
+        <childnode refid="8595" relation="include">
+        </childnode>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8583" relation="include">
+        </childnode>
+        <childnode refid="8578" relation="include">
+        </childnode>
+        <childnode refid="8570" relation="include">
+        </childnode>
+        <childnode refid="8593" relation="include">
+        </childnode>
+        <childnode refid="8601" relation="include">
+        </childnode>
+      </node>
+      <node id="8572">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="8573" relation="include">
+        </childnode>
+        <childnode refid="8574" relation="include">
+        </childnode>
+      </node>
+      <node id="8593">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="8575" relation="include">
+        </childnode>
+        <childnode refid="8576" relation="include">
+        </childnode>
+        <childnode refid="8594" relation="include">
+        </childnode>
+        <childnode refid="8595" relation="include">
+        </childnode>
+        <childnode refid="8571" relation="include">
+        </childnode>
+        <childnode refid="8570" relation="include">
+        </childnode>
+        <childnode refid="8596" relation="include">
+        </childnode>
+      </node>
+      <node id="8598">
+        <label>iteratoradapter.hxx</label>
+        <link refid="iteratoradapter_8hxx_source"/>
+      </node>
+      <node id="8597">
+        <label>imageiteratoradapter.hxx</label>
+        <link refid="imageiteratoradapter_8hxx_source"/>
+        <childnode refid="8590" relation="include">
+        </childnode>
+      </node>
+      <node id="8579">
+        <label>utility</label>
+      </node>
+      <node id="8584">
+        <label>sstream</label>
+      </node>
+      <node id="8605">
+        <label>rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="8587" relation="include">
+        </childnode>
+        <childnode refid="8600" relation="include">
+        </childnode>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8593" relation="include">
+        </childnode>
+        <childnode refid="8592" relation="include">
+        </childnode>
+        <childnode refid="8606" relation="include">
+        </childnode>
+        <childnode refid="8607" relation="include">
+        </childnode>
+      </node>
+      <node id="8586">
+        <label>diff2d.hxx</label>
+        <link refid="diff2d_8hxx_source"/>
+        <childnode refid="8587" relation="include">
+        </childnode>
+        <childnode refid="8588" relation="include">
+        </childnode>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8589" relation="include">
+        </childnode>
+        <childnode refid="8591" relation="include">
+        </childnode>
+        <childnode refid="8598" relation="include">
+        </childnode>
+        <childnode refid="8578" relation="include">
+        </childnode>
+      </node>
+      <node id="8583">
+        <label>error.hxx</label>
+        <link refid="error_8hxx_source"/>
+        <childnode refid="8574" relation="include">
+        </childnode>
+        <childnode refid="8584" relation="include">
+        </childnode>
+        <childnode refid="8585" relation="include">
+        </childnode>
+        <childnode refid="8572" relation="include">
+        </childnode>
+      </node>
+      <node id="8607">
+        <label>static_assert.hxx</label>
+        <link refid="static__assert_8hxx_source"/>
+      </node>
+      <node id="8588">
+        <label>iosfwd</label>
+      </node>
+      <node id="8600">
+        <label>cstdlib</label>
+      </node>
+      <node id="8575">
+        <label>climits</label>
+      </node>
+      <node id="8571">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="8572" relation="include">
+        </childnode>
+        <childnode refid="8575" relation="include">
+        </childnode>
+        <childnode refid="8576" relation="include">
+        </childnode>
+        <childnode refid="8577" relation="include">
+        </childnode>
+      </node>
+      <node id="8595">
+        <label>complex</label>
+      </node>
+      <node id="8577">
+        <label>algorithm</label>
+      </node>
+      <node id="8604">
+        <label>memory.hxx</label>
+        <link refid="memory_8hxx_source"/>
+        <childnode refid="8571" relation="include">
+        </childnode>
+      </node>
+      <node id="8592">
+        <label>accessor.hxx</label>
+        <link refid="accessor_8hxx_source"/>
+        <childnode refid="8571" relation="include">
+        </childnode>
+        <childnode refid="8593" relation="include">
+        </childnode>
+        <childnode refid="8578" relation="include">
+        </childnode>
+      </node>
+      <node id="8581">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="8617">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="8619">
+        <label>vigra/orientedtensorfilters.hxx</label>
+        <link refid="orientedtensorfilters_8hxx_source"/>
+      </node>
+      <node id="8621">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="8622" relation="include">
+        </childnode>
+        <childnode refid="8627" relation="include">
+        </childnode>
+      </node>
+      <node id="8609">
+        <label>vigra/basicgeometry.hxx</label>
+        <link refid="basicgeometry_8hxx_source"/>
+        <childnode refid="8610" relation="include">
+        </childnode>
+      </node>
+      <node id="8633">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="8627">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="8631">
+        <label>vigra/localminmax.hxx</label>
+        <link refid="localminmax_8hxx_source"/>
+        <childnode refid="8632" relation="include">
+        </childnode>
+        <childnode refid="8633" relation="include">
+        </childnode>
+        <childnode refid="8626" relation="include">
+        </childnode>
+      </node>
+      <node id="8636">
+        <label>vigra/gaborfilter.hxx</label>
+        <link refid="gaborfilter_8hxx_source"/>
+      </node>
+      <node id="8639">
+        <label>vigra/random_forest_hdf5_impex.hxx</label>
+        <link refid="random__forest__hdf5__impex_8hxx_source"/>
+      </node>
+      <node id="8622">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="8620" relation="include">
+        </childnode>
+        <childnode refid="8615" relation="include">
+        </childnode>
+        <childnode refid="8623" relation="include">
+        </childnode>
+        <childnode refid="8624" relation="include">
+        </childnode>
+      </node>
+      <node id="8625">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="8630">
+        <label>vigra/labelimage.hxx</label>
+        <link refid="labelimage_8hxx_source"/>
+        <childnode refid="8615" relation="include">
+        </childnode>
+        <childnode refid="8631" relation="include">
+        </childnode>
+        <childnode refid="8626" relation="include">
+        </childnode>
+      </node>
+      <node id="8613">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="8615">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="8610" relation="include">
+        </childnode>
+      </node>
+      <node id="8635">
+        <label>vigra/multi_fft.hxx</label>
+        <link refid="multi__fft_8hxx_source"/>
+      </node>
+      <node id="8612">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="8613" relation="include">
+        </childnode>
+        <childnode refid="8614" relation="include">
+        </childnode>
+        <childnode refid="8615" relation="include">
+        </childnode>
+        <childnode refid="8616" relation="include">
+        </childnode>
+        <childnode refid="8617" relation="include">
+        </childnode>
+        <childnode refid="8618" relation="include">
+        </childnode>
+      </node>
+      <node id="8620">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="8612" relation="include">
+        </childnode>
+      </node>
+      <node id="8629">
+        <label>vigra/distancetransform.hxx</label>
+        <link refid="distancetransform_8hxx_source"/>
+      </node>
+      <node id="8628">
+        <label>vigra/resampling_convolution.hxx</label>
+        <link refid="resampling__convolution_8hxx_source"/>
+        <childnode refid="8621" relation="include">
+        </childnode>
+      </node>
+      <node id="8610">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="8608">
+        <label>vigra/stdimage.hxx</label>
+        <link refid="stdimage.hxx"/>
+        <childnode refid="8609" relation="include">
+        </childnode>
+        <childnode refid="8611" relation="include">
+        </childnode>
+        <childnode refid="8620" relation="include">
+        </childnode>
+        <childnode refid="8621" relation="include">
+        </childnode>
+        <childnode refid="8628" relation="include">
+        </childnode>
+        <childnode refid="8614" relation="include">
+        </childnode>
+        <childnode refid="8629" relation="include">
+        </childnode>
+        <childnode refid="8615" relation="include">
+        </childnode>
+        <childnode refid="8630" relation="include">
+        </childnode>
+        <childnode refid="8634" relation="include">
+        </childnode>
+        <childnode refid="8636" relation="include">
+        </childnode>
+        <childnode refid="8637" relation="include">
+        </childnode>
+        <childnode refid="8631" relation="include">
+        </childnode>
+        <childnode refid="8633" relation="include">
+        </childnode>
+        <childnode refid="8623" relation="include">
+        </childnode>
+        <childnode refid="8624" relation="include">
+        </childnode>
+        <childnode refid="8610" relation="include">
+        </childnode>
+        <childnode refid="8617" relation="include">
+        </childnode>
+        <childnode refid="8626" relation="include">
+        </childnode>
+      </node>
+      <node id="8618">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="8637">
+        <label>vigra/impex.hxx</label>
+        <link refid="impex_8hxx"/>
+        <childnode refid="8638" relation="include">
+        </childnode>
+        <childnode refid="8640" relation="include">
+        </childnode>
+        <childnode refid="8618" relation="include">
+        </childnode>
+      </node>
+      <node id="8623">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="8624" relation="include">
+        </childnode>
+        <childnode refid="8626" relation="include">
+        </childnode>
+      </node>
+      <node id="8632">
+        <label>vigra/multi_localminmax.hxx</label>
+        <link refid="multi__localminmax_8hxx_source"/>
+        <childnode refid="8625" relation="include">
+        </childnode>
+      </node>
+      <node id="8624">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="8625" relation="include">
+        </childnode>
+      </node>
+      <node id="8616">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="8611">
+        <label>vigra/stdconvolution.hxx</label>
+        <link refid="stdconvolution_8hxx_source"/>
+        <childnode refid="8612" relation="include">
+        </childnode>
+        <childnode refid="8619" relation="include">
+        </childnode>
+      </node>
+      <node id="8626">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="8625" relation="include">
+        </childnode>
+      </node>
+      <node id="8614">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+      <node id="8638">
+        <label>vigra/hdf5impex.hxx</label>
+        <link refid="hdf5impex_8hxx_source"/>
+        <childnode refid="8639" relation="include">
+        </childnode>
+      </node>
+      <node id="8640">
+        <label>vigra/multi_impex.hxx</label>
+        <link refid="multi__impex_8hxx_source"/>
+        <childnode refid="8638" relation="include">
+        </childnode>
+      </node>
+      <node id="8634">
+        <label>vigra/fftw3.hxx</label>
+        <link refid="fftw3_8hxx_source"/>
+        <childnode refid="8635" relation="include">
+        </childnode>
+        <childnode refid="8610" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>1998-2002<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_STDIMAGE_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_STDIMAGE_HXX</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;sized_int.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tuple.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;basicimage.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;iteratortraits.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;accessor.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;rgbvalue.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{<sp/></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="49"><highlight class="comment">/**<sp/>\addtogroup<sp/>StandardImageTypes<sp/>Standard<sp/>Image<sp/>Types</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"></highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/>\brief<sp/>The<sp/>most<sp/>common<sp/>instantiations<sp/>of<sp/>the<sp/>\ref<sp/>vigra::BasicImage<sp/>template</highlight></codeline>
+<codeline lineno="52"><highlight class="comment">*/</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="53"><highlight class="comment">//@{</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Byte<sp/>(8-bit<sp/>unsigned)<sp/>image.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62" refid="group__StandardImageTypes_1gaf7e342087f23fa1b4651510fbe2fde90" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;UInt8&gt;</ref><sp/><ref refid="group__StandardImageTypes_1gaf7e342087f23fa1b4651510fbe2fde90" kindref="member">BImage</ref>;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Byte<sp/>(8-bit<sp/>unsigned)<sp/>image.</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="group__StandardImageTypes_1ga1b553cb653e4e5b3d0daf4c925a06dfd" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;UInt8&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga1b553cb653e4e5b3d0daf4c925a06dfd" kindref="member">UInt8Image</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Signed<sp/>byte<sp/>(8-bit<sp/>signed)<sp/>image.</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="group__StandardImageTypes_1ga55871a371db690b76295adbc077a1916" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;Int8&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga55871a371db690b76295adbc077a1916" kindref="member">Int8Image</ref>;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>integer<sp/>(16-bit<sp/>signed)<sp/>image.</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="group__StandardImageTypes_1ga8553d180f7b500092428c0dfef36bdf0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;Int16&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga8553d180f7b500092428c0dfef36bdf0" kindref="member">SImage</ref>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>integer<sp/>(16-bit<sp/>unsigned)<sp/>image.</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98" refid="group__StandardImageTypes_1ga08a5639ad5cfd1116fb6a54ba6bb5566" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;UInt16&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga08a5639ad5cfd1116fb6a54ba6bb5566" kindref="member">UInt16Image</ref>;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>integer<sp/>(16-bit<sp/>signed)<sp/>image.</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="group__StandardImageTypes_1ga885822797a13038e4ca0c074a6d2756a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;Int16&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga885822797a13038e4ca0c074a6d2756a" kindref="member">Int16Image</ref>;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(32-bit<sp/>signed)<sp/>image.</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116" refid="group__StandardImageTypes_1gaa8e0f5fa2b9612e2caeed36ff0a6daad" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;Int32&gt;</ref><sp/><ref refid="group__StandardImageTypes_1gaa8e0f5fa2b9612e2caeed36ff0a6daad" kindref="member">IImage</ref>;</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(32-bit<sp/>unsigned)<sp/>image.</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125" refid="group__StandardImageTypes_1gaead9b0da438c09d8f98a5970a7b59b20" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;UInt32&gt;</ref><sp/><ref refid="group__StandardImageTypes_1gaead9b0da438c09d8f98a5970a7b59b20" kindref="member">UInt32Image</ref>;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(32-bit<sp/>signed)<sp/>image.</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134" refid="group__StandardImageTypes_1ga23a490c4345d9f9829e2dcbcff28cb00" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;Int32&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga23a490c4345d9f9829e2dcbcff28cb00" kindref="member">Int32Image</ref>;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Float<sp/>(float)<sp/>image.</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143" refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;float&gt;</ref><sp/><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref>;</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Double<sp/>(double)<sp/>image.</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::StandardAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153" refid="group__StandardImageTypes_1gaa506d6092a193e037a1766737c781f7b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage&lt;double&gt;</ref><sp/><ref refid="group__StandardImageTypes_1gaa506d6092a193e037a1766737c781f7b" kindref="member">DImage</ref>;</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Byte<sp/>(3x<sp/>8-bit<sp/>unsigned)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::UInt8&gt;&quot;.</highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="159"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164" refid="group__StandardImageTypes_1ga40a63f7a3e96164c1077a11438371ff5" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;UInt8&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga40a63f7a3e96164c1077a11438371ff5" kindref="member">BRGBImage</ref>;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="166"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Byte<sp/>(3x<sp/>8-bit<sp/>unsigned)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="167"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::UInt8&gt;&quot;.</highlight></codeline>
+<codeline lineno="168"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="169"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="170"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="171"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="172"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="173"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="174" refid="group__StandardImageTypes_1ga29df47ed6b0437d0a7fc6b05c7a242e7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;UInt8&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga29df47ed6b0437d0a7fc6b05c7a242e7" kindref="member">UInt8RGBImage</ref>;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="176"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Byte<sp/>(3x<sp/>8-bit<sp/>signed)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="177"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::UInt8&gt;&quot;.</highlight></codeline>
+<codeline lineno="178"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="179"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="183"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="184" refid="group__StandardImageTypes_1ga6e9edcdc6420b18fe9c7ef0791b17790" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;Int8&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga6e9edcdc6420b18fe9c7ef0791b17790" kindref="member">Int8RGBImage</ref>;</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="186"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>(3x<sp/>16-bit<sp/>signed)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="187"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int16&gt;&quot;.</highlight></codeline>
+<codeline lineno="188"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="189"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="190"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="191"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="193"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194" refid="group__StandardImageTypes_1ga95efef10274ee7082b8a687e76fa3671" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;Int16&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga95efef10274ee7082b8a687e76fa3671" kindref="member">SRGBImage</ref>;</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="196"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>(3x<sp/>16-bit<sp/>unsigned)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="197"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int16&gt;&quot;.</highlight></codeline>
+<codeline lineno="198"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="199"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="200"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="201"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="202"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="203"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="204" refid="group__StandardImageTypes_1ga77cdcb7ef56633a347f2a52e07dbb3f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;UInt16&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga77cdcb7ef56633a347f2a52e07dbb3f7" kindref="member">UInt16RGBImage</ref>;</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Short<sp/>(3x<sp/>16-bit<sp/>signed)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int16&gt;&quot;.</highlight></codeline>
+<codeline lineno="208"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="209"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="210"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="211"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="212"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="213"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214" refid="group__StandardImageTypes_1ga736b5f3694d1536694fd357ae8a36a49" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;Int16&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga736b5f3694d1536694fd357ae8a36a49" kindref="member">Int16RGBImage</ref>;</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="216"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(3x<sp/>32-bit<sp/>signed)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int32&gt;&quot;.</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="220"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="221"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="222"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="223"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224" refid="group__StandardImageTypes_1ga9e9a94902f552dcf9726d60d65d2780d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;Int32&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga9e9a94902f552dcf9726d60d65d2780d" kindref="member">IRGBImage</ref>;</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="226"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(3x<sp/>32-bit<sp/>unsigned)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="227"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int32&gt;&quot;.</highlight></codeline>
+<codeline lineno="228"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="229"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="230"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234" refid="group__StandardImageTypes_1gadfd8cf7696f2354d7fd792999d743def" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;UInt32&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gadfd8cf7696f2354d7fd792999d743def" kindref="member">UInt32RGBImage</ref>;</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="236"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Integer<sp/>(3x<sp/>32-bit<sp/>signed)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="237"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;vigra::Int32&gt;&quot;.</highlight></codeline>
+<codeline lineno="238"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="239"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="240"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="241"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="242"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="243"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="244" refid="group__StandardImageTypes_1gaeca1ebec69a24d3fb59ab6279bec1598" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;Int32&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gaeca1ebec69a24d3fb59ab6279bec1598" kindref="member">Int32RGBImage</ref>;</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="247"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>(3x<sp/>float)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="248"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;float&gt;&quot;.</highlight></codeline>
+<codeline lineno="249"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="250"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="251"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="252"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="253"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="254"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="255" refid="group__StandardImageTypes_1ga0217ae4add549fefbc1fe4a1f6d5136a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;float&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga0217ae4add549fefbc1fe4a1f6d5136a" kindref="member">FRGBImage</ref>;</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Double-precision<sp/>floating-point<sp/>(3x<sp/>double)<sp/>RGB<sp/>image.</highlight></codeline>
+<codeline lineno="259"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::RGBValue<sp/>&quot;vigra::RGBValue&lt;double&gt;&quot;.</highlight></codeline>
+<codeline lineno="260"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::RGBAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="261"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="262"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="263"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="264"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="265"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="266" refid="group__StandardImageTypes_1gaa036c9ad3ae0ffa40b46046343a0e4f2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;RGBValue&lt;double&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gaa036c9ad3ae0ffa40b46046343a0e4f2" kindref="member">DRGBImage</ref>;</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="268"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="269"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;float,<sp/>2&gt;&quot;.</highlight></codeline>
+<codeline lineno="270"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="271"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="272"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="273"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="274"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="275"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="276" refid="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;float, 2&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" kindref="member">FVector2Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="278"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="279"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;float,<sp/>3&gt;&quot;.</highlight></codeline>
+<codeline lineno="280"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="281"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="282"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="283"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="284"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="285"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="286" refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;float, 3&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="288"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="289"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;float,<sp/>4&gt;&quot;.</highlight></codeline>
+<codeline lineno="290"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="291"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="292"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="293"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="294"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="295"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="296" refid="group__StandardImageTypes_1ga18d596089442715dcc31683b3eafdb77" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;float, 4&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga18d596089442715dcc31683b3eafdb77" kindref="member">FVector4Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="297"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="298"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="299"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;double,<sp/>2&gt;&quot;.</highlight></codeline>
+<codeline lineno="300"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="301"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="302"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="303"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="304"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="305"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="306" refid="group__StandardImageTypes_1gac2804d94abe2f4d5c601f5501f4c294f" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;double, 2&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gac2804d94abe2f4d5c601f5501f4c294f" kindref="member">DVector2Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="307"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="308"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="309"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;double,<sp/>3&gt;&quot;.</highlight></codeline>
+<codeline lineno="310"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="311"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="312"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="313"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="314"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="315"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight><highlight class="comment">//typedef<sp/>BasicImage&lt;TinyVector&lt;double,<sp/>3&gt;<sp/>&gt;<sp/>DVector3Image;<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="317" refid="group__StandardImageTypes_1ga16c2b279961911253eeccc9ec8011ef3" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;double, 3&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1ga16c2b279961911253eeccc9ec8011ef3" kindref="member">DVector3Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="318"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="319"><highlight class="comment"><sp/><sp/><sp/><sp/>/**<sp/>Floating-point<sp/>TinyVector<sp/>image.</highlight></codeline>
+<codeline lineno="320"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>pixel<sp/>type<sp/>is<sp/>\ref<sp/>vigra::TinyVector<sp/>&quot;vigra::TinyVector&lt;double,<sp/>4&gt;&quot;.</highlight></codeline>
+<codeline lineno="321"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>It<sp/>uses<sp/>\ref<sp/>vigra::BasicImageIterator<sp/>and<sp/>\ref<sp/>vigra::VectorAccessor<sp/>and<sp/></highlight></codeline>
+<codeline lineno="322"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>their<sp/>const<sp/>counterparts<sp/>to<sp/>access<sp/>the<sp/>data.</highlight></codeline>
+<codeline lineno="323"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="324"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/stdimage.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="325"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="326"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="327" refid="group__StandardImageTypes_1gaffa1c30fa8eafa80431421c3e82dcd8a" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">BasicImage&lt;TinyVector&lt;double, 4&gt;</ref><sp/>&gt;<sp/><ref refid="group__StandardImageTypes_1gaffa1c30fa8eafa80431421c3e82dcd8a" kindref="member">DVector4Image</ref>;<sp/></highlight></codeline>
+<codeline lineno="328"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="329"><highlight class="comment">//@}</highlight></codeline>
+<codeline lineno="330"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="331"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="332"><highlight class="normal"></highlight></codeline>
+<codeline lineno="333"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>VIGRA_STDIMAGE_HXX</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx"/>
+  </compounddef>
+</doxygen>

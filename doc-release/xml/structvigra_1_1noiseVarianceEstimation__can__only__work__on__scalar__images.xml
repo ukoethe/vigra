@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1noiseVarianceEstimation__can__only__work__on__scalar__images" kind="struct" prot="public">
+    <compoundname>vigra::noiseVarianceEstimation_can_only_work_on_scalar_images</compoundname>
+    <templateparamlist>
+      <param>
+        <type>bool</type>
+        <declname>P</declname>
+        <defname>P</defname>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="947" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="945" bodyend="947"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

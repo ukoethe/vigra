@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MultiImageAccessor2" kind="class" prot="public">
+    <compoundname>vigra::MultiImageAccessor2</compoundname>
+    <includes refid="accessor_8hxx" local="no">vigra/accessor.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Iter1</type>
+      </param>
+      <param>
+        <type>class Acc1</type>
+      </param>
+      <param>
+        <type>class Iter2</type>
+      </param>
+      <param>
+        <type>class Acc2</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1MultiImageAccessor2_1a8270d04923edabf5d08cc7b355d3abda" prot="public" static="no">
+        <type>pair&lt; typename Acc1::value_type, typename Acc2::value_type &gt;</type>
+        <definition>typedef pair&lt;typename Acc1::value_type, typename Acc2::value_type&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The accessors value_type: construct a pair that contains the corresponding image values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="877" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="877" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MultiImageAccessor2_1a7c97fffb70d2653548189214aab0c6a4" prot="private" static="no" mutable="no">
+        <type>Acc1</type>
+        <definition>Acc1 a1_</definition>
+        <argsstring></argsstring>
+        <name>a1_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="904" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="904" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiImageAccessor2_1a0f837a45c43f37cfe903c228da7ebb41" prot="private" static="no" mutable="no">
+        <type>Acc2</type>
+        <definition>Acc2 a2_</definition>
+        <argsstring></argsstring>
+        <name>a2_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="906" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="906" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiImageAccessor2_1ad0f5cb690009726f2ab31c6e975e7b45" prot="private" static="no" mutable="no">
+        <type>Iter1</type>
+        <definition>Iter1 i1_</definition>
+        <argsstring></argsstring>
+        <name>i1_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="903" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="903" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiImageAccessor2_1a2adcd269c2f73a52669cffe05d4462bb" prot="private" static="no" mutable="no">
+        <type>Iter2</type>
+        <definition>Iter2 i2_</definition>
+        <argsstring></argsstring>
+        <name>i2_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="905" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="905" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1MultiImageAccessor2_1a601559ab1bee550eb46665e8136122fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiImageAccessor2</definition>
+        <argsstring>(Iter1 i1, Acc1 a1, Iter2 i2, Acc2 a2)</argsstring>
+        <name>MultiImageAccessor2</name>
+        <param>
+          <type>Iter1</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>Acc1</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>Iter2</type>
+          <declname>i2</declname>
+        </param>
+        <param>
+          <type>Acc2</type>
+          <declname>a2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from two image iterators and associated accessors. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="883" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="881" bodyend="883"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiImageAccessor2_1a55a82d2222382cab8d2dcd9fd820c7a4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1MultiImageAccessor2_1a8270d04923edabf5d08cc7b355d3abda" kindref="member">value_type</ref></type>
+        <definition>value_type operator()</definition>
+        <argsstring>(DIFFERENCE const &amp;d) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the current data item </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="889" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="888" bodyend="891"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiImageAccessor2_1af8b544ffe24090e6ed49777755be650a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DIFFERENCE1</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE2</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1MultiImageAccessor2_1a8270d04923edabf5d08cc7b355d3abda" kindref="member">value_type</ref></type>
+        <definition>value_type operator()</definition>
+        <argsstring>(DIFFERENCE1 d1, DIFFERENCE2 const &amp;d2) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>DIFFERENCE1</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE2 const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the data item at an offset </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="897" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="896" bodyend="900"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Access two images simultaneously. </para>    </briefdescription>
+    <detaileddescription>
+<para>This accessor is used when two images need to be treated as one because an algorithm accepts only one image. For example, <ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref> uses only one image two calculate the cost for aggregating each pixel into a region. Sometimes, we need more information to calculate this cost, for example gray value and local gradient magnitude. These values can be stored in two images, which appear as only one when we pass a <computeroutput><ref refid="classvigra_1_1MultiImageAccessor2" kindref="compound">MultiImageAccessor2</ref></computeroutput> to the algorithms. Of course, the cost functor must accept a <computeroutput>pair</computeroutput> of values for this to work. Instead of an actual image iterator, we pass a <ulink url="CoordinateIterator.html">CoordinateIterator</ulink> which selects the right pixels form both images.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="accessor_8hxx_source" kindref="compound">vigra/accessor.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">vigra;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">FImage</ref><sp/>gray_values(w,h),<sp/>gradient_magnitude(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">IImage</ref><sp/>seeds(w,h),<sp/>labels(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member" tooltip="Region Segmentation by means of Seeded Region Growing.">seededRegionGrowing</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>srcIterRange(<ref refid="group__ImageIterators_1ga110ba64ad5460bac151be32b748da74b" kindref="member" tooltip="Simulate an image where each pixel contains its coordinate.">CoordinateIterator</ref>(),<sp/><ref refid="group__ImageIterators_1ga110ba64ad5460bac151be32b748da74b" kindref="member" tooltip="Simulate an image where each pixel contains its coordinate.">CoordinateIterator</ref>(w,h),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1MultiImageAccessor2" kindref="compound" tooltip="Access two images simultaneously.">MultiImageAccessor2</ref>&lt;<ref refid="classvigra_1_1BasicImage_1aec0a79fed66fd9e64551d0750fe95ada" kindref="member">FImage::iterator</ref>,<sp/><ref refid="classvigra_1_1StandardAccessor" kindref="compound" tooltip="Encapsulate access to the values an iterator points to.">FImage::Accessor</ref>,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1aec0a79fed66fd9e64551d0750fe95ada" kindref="member">FImage::iterator</ref>,<sp/><ref refid="classvigra_1_1StandardAccessor" kindref="compound" tooltip="Encapsulate access to the values an iterator points to.">FImage::Accessor</ref>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(gray_values.upperLeft(),<sp/>gray_values.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gradient_magnitude.upperLeft(),<sp/>gradient_magnitude.accessor())),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>srcImage(seeds),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>destImage(labels),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>SomeCostFunctor());</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="871" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="870" bodyend="907"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a7c97fffb70d2653548189214aab0c6a4" prot="private" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>a1_</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a0f837a45c43f37cfe903c228da7ebb41" prot="private" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>a2_</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1ad0f5cb690009726f2ab31c6e975e7b45" prot="private" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>i1_</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a2adcd269c2f73a52669cffe05d4462bb" prot="private" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>i2_</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a601559ab1bee550eb46665e8136122fb" prot="public" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>MultiImageAccessor2</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a55a82d2222382cab8d2dcd9fd820c7a4" prot="public" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1af8b544ffe24090e6ed49777755be650a" prot="public" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1MultiImageAccessor2_1a8270d04923edabf5d08cc7b355d3abda" prot="public" virt="non-virtual"><scope>vigra::MultiImageAccessor2</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

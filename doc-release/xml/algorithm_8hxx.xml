@@ -1,0 +1,1980 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="algorithm_8hxx" kind="file">
+    <compoundname>algorithm.hxx</compoundname>
+    <includes refid="sized__int_8hxx" local="yes">sized_int.hxx</includes>
+    <includes refid="numerictraits_8hxx" local="yes">numerictraits.hxx</includes>
+    <includes refid="inspector__passes_8hxx" local="yes">inspector_passes.hxx</includes>
+    <includes local="no">algorithm</includes>
+    <includes local="no">functional</includes>
+    <includes local="no">iterator</includes>
+    <includedby refid="mathutil_8hxx" local="yes">vigra/mathutil.hxx</includedby>
+    <includedby refid="axistags_8hxx" local="yes">vigra/axistags.hxx</includedby>
+    <includedby refid="multi__convolution_8hxx" local="yes">vigra/multi_convolution.hxx</includedby>
+    <includedby refid="object__features_8hxx" local="yes">vigra/object_features.hxx</includedby>
+    <incdepgraph>
+      <node id="272">
+        <label>functional</label>
+      </node>
+      <node id="265">
+        <label>limits</label>
+      </node>
+      <node id="259">
+        <label>sized_int.hxx</label>
+        <link refid="sized__int_8hxx_source"/>
+        <childnode refid="260" relation="include">
+        </childnode>
+        <childnode refid="265" relation="include">
+        </childnode>
+      </node>
+      <node id="273">
+        <label>iterator</label>
+      </node>
+      <node id="271">
+        <label>inspector_passes.hxx</label>
+        <link refid="inspector__passes_8hxx_source"/>
+        <childnode refid="260" relation="include">
+        </childnode>
+      </node>
+      <node id="270">
+        <label>promote_traits.hxx</label>
+        <link refid="promote__traits_8hxx_source"/>
+      </node>
+      <node id="258">
+        <label>vigra/algorithm.hxx</label>
+        <link refid="algorithm.hxx"/>
+        <childnode refid="259" relation="include">
+        </childnode>
+        <childnode refid="267" relation="include">
+        </childnode>
+        <childnode refid="271" relation="include">
+        </childnode>
+        <childnode refid="266" relation="include">
+        </childnode>
+        <childnode refid="272" relation="include">
+        </childnode>
+        <childnode refid="273" relation="include">
+        </childnode>
+      </node>
+      <node id="263">
+        <label>stdexcept</label>
+      </node>
+      <node id="268">
+        <label>cfloat</label>
+      </node>
+      <node id="262">
+        <label>vigra/configVersion.hxx</label>
+        <link refid="configVersion_8hxx_source"/>
+      </node>
+      <node id="261">
+        <label>config.hxx</label>
+        <link refid="config_8hxx_source"/>
+        <childnode refid="262" relation="include">
+        </childnode>
+        <childnode refid="263" relation="include">
+        </childnode>
+      </node>
+      <node id="267">
+        <label>numerictraits.hxx</label>
+        <link refid="numerictraits_8hxx_source"/>
+        <childnode refid="264" relation="include">
+        </childnode>
+        <childnode refid="265" relation="include">
+        </childnode>
+        <childnode refid="268" relation="include">
+        </childnode>
+        <childnode refid="269" relation="include">
+        </childnode>
+        <childnode refid="260" relation="include">
+        </childnode>
+        <childnode refid="259" relation="include">
+        </childnode>
+        <childnode refid="270" relation="include">
+        </childnode>
+      </node>
+      <node id="264">
+        <label>climits</label>
+      </node>
+      <node id="260">
+        <label>metaprogramming.hxx</label>
+        <link refid="metaprogramming_8hxx_source"/>
+        <childnode refid="261" relation="include">
+        </childnode>
+        <childnode refid="264" relation="include">
+        </childnode>
+        <childnode refid="265" relation="include">
+        </childnode>
+        <childnode refid="266" relation="include">
+        </childnode>
+      </node>
+      <node id="269">
+        <label>complex</label>
+      </node>
+      <node id="266">
+        <label>algorithm</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="314">
+        <label>vigra/splineimageview.hxx</label>
+        <link refid="splineimageview_8hxx_source"/>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="292" relation="include">
+        </childnode>
+      </node>
+      <node id="296">
+        <label>vigra/quaternion.hxx</label>
+        <link refid="quaternion_8hxx_source"/>
+        <childnode refid="295" relation="include">
+        </childnode>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="276">
+        <label>vigra/affine_registration.hxx</label>
+        <link refid="affine__registration_8hxx_source"/>
+      </node>
+      <node id="304">
+        <label>vigra/multi_pointoperators.hxx</label>
+        <link refid="multi__pointoperators_8hxx_source"/>
+        <childnode refid="279" relation="include">
+        </childnode>
+        <childnode refid="305" relation="include">
+        </childnode>
+        <childnode refid="307" relation="include">
+        </childnode>
+        <childnode refid="308" relation="include">
+        </childnode>
+        <childnode refid="309" relation="include">
+        </childnode>
+        <childnode refid="310" relation="include">
+        </childnode>
+        <childnode refid="311" relation="include">
+        </childnode>
+        <childnode refid="312" relation="include">
+        </childnode>
+      </node>
+      <node id="375">
+        <label>vigra/contourcirculator.hxx</label>
+        <link refid="contourcirculator_8hxx_source"/>
+      </node>
+      <node id="338">
+        <label>vigra/symmetry.hxx</label>
+        <link refid="symmetry_8hxx_source"/>
+      </node>
+      <node id="359">
+        <label>vigra/python_utility.hxx</label>
+        <link refid="python__utility_8hxx_source"/>
+        <childnode refid="323" relation="include">
+        </childnode>
+        <childnode refid="360" relation="include">
+        </childnode>
+      </node>
+      <node id="369">
+        <label>vigra/basicimage.hxx</label>
+        <link refid="basicimage_8hxx_source"/>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="346" relation="include">
+        </childnode>
+        <childnode refid="335" relation="include">
+        </childnode>
+        <childnode refid="370" relation="include">
+        </childnode>
+        <childnode refid="337" relation="include">
+        </childnode>
+      </node>
+      <node id="356">
+        <label>vigra/box.hxx</label>
+        <link refid="box_8hxx_source"/>
+      </node>
+      <node id="349">
+        <label>vigra/orientedtensorfilters.hxx</label>
+        <link refid="orientedtensorfilters_8hxx_source"/>
+      </node>
+      <node id="341">
+        <label>vigra/resizeimage.hxx</label>
+        <link refid="resizeimage_8hxx_source"/>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="342" relation="include">
+        </childnode>
+      </node>
+      <node id="377">
+        <label>vigra/tensorutilities.hxx</label>
+        <link refid="tensorutilities_8hxx_source"/>
+      </node>
+      <node id="378">
+        <label>vigra/splines.hxx</label>
+        <link refid="splines_8hxx_source"/>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="341" relation="include">
+        </childnode>
+      </node>
+      <node id="347">
+        <label>vigra/basicgeometry.hxx</label>
+        <link refid="basicgeometry_8hxx_source"/>
+        <childnode refid="282" relation="include">
+        </childnode>
+      </node>
+      <node id="278">
+        <label>vigra/multi_array.hxx</label>
+        <link refid="multi__array_8hxx_source"/>
+        <childnode refid="279" relation="include">
+        </childnode>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="315" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+        <childnode refid="306" relation="include">
+        </childnode>
+        <childnode refid="305" relation="include">
+        </childnode>
+        <childnode refid="317" relation="include">
+        </childnode>
+        <childnode refid="307" relation="include">
+        </childnode>
+        <childnode refid="308" relation="include">
+        </childnode>
+        <childnode refid="321" relation="include">
+        </childnode>
+        <childnode refid="319" relation="include">
+        </childnode>
+        <childnode refid="322" relation="include">
+        </childnode>
+        <childnode refid="309" relation="include">
+        </childnode>
+        <childnode refid="323" relation="include">
+        </childnode>
+        <childnode refid="325" relation="include">
+        </childnode>
+        <childnode refid="326" relation="include">
+        </childnode>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="328" relation="include">
+        </childnode>
+        <childnode refid="329" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="295">
+        <label>vigra/invariant_features3D.hxx</label>
+        <link refid="invariant__features3D_8hxx_source"/>
+      </node>
+      <node id="374">
+        <label>vigra/pixelneighborhood.hxx</label>
+        <link refid="pixelneighborhood_8hxx_source"/>
+        <childnode refid="370" relation="include">
+        </childnode>
+        <childnode refid="375" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="357" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="339" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+      </node>
+      <node id="292">
+        <label>vigra/affinegeometry.hxx</label>
+        <link refid="affinegeometry_8hxx_source"/>
+      </node>
+      <node id="284">
+        <label>vigra/noise_normalization.hxx</label>
+        <link refid="noise__normalization_8hxx_source"/>
+      </node>
+      <node id="364">
+        <label>vigra/initimage.hxx</label>
+        <link refid="initimage_8hxx_source"/>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="349" relation="include">
+        </childnode>
+      </node>
+      <node id="285">
+        <label>vigra/quadprog.hxx</label>
+        <link refid="quadprog_8hxx_source"/>
+      </node>
+      <node id="384">
+        <label>vigra/clebsch-gordan.hxx</label>
+        <link refid="clebsch-gordan_8hxx_source"/>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="274">
+        <label>vigra/algorithm.hxx</label>
+        <link refid="algorithm.hxx"/>
+        <childnode refid="275" relation="include">
+        </childnode>
+        <childnode refid="372" relation="include">
+        </childnode>
+        <childnode refid="307" relation="include">
+        </childnode>
+        <childnode refid="385" relation="include">
+        </childnode>
+      </node>
+      <node id="385">
+        <label>vigra/object_features.hxx</label>
+        <link refid="object__features_8hxx_source"/>
+      </node>
+      <node id="383">
+        <label>vigra/rational.hxx</label>
+        <link refid="rational_8hxx_source"/>
+        <childnode refid="340" relation="include">
+        </childnode>
+      </node>
+      <node id="302">
+        <label>vigra/random_forest/rf_region.hxx</label>
+        <link refid="rf__region_8hxx_source"/>
+        <childnode refid="301" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="360">
+        <label>vigra/numpy_array_taggedshape.hxx</label>
+        <link refid="numpy__array__taggedshape_8hxx_source"/>
+        <childnode refid="325" relation="include">
+        </childnode>
+        <childnode refid="323" relation="include">
+        </childnode>
+      </node>
+      <node id="342">
+        <label>vigra/multi_resize.hxx</label>
+        <link refid="multi__resize_8hxx_source"/>
+      </node>
+      <node id="283">
+        <label>vigra/linear_algebra.hxx</label>
+        <link refid="linear__algebra_8hxx_source"/>
+      </node>
+      <node id="373">
+        <label>vigra/separableconvolution.hxx</label>
+        <link refid="separableconvolution_8hxx_source"/>
+        <childnode refid="348" relation="include">
+        </childnode>
+        <childnode refid="334" relation="include">
+        </childnode>
+        <childnode refid="341" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="307" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="318">
+        <label>vigra/localminmax.hxx</label>
+        <link refid="localminmax_8hxx_source"/>
+        <childnode refid="319" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+      </node>
+      <node id="365">
+        <label>vigra/copyimage.hxx</label>
+        <link refid="copyimage_8hxx_source"/>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="366" relation="include">
+        </childnode>
+        <childnode refid="347" relation="include">
+        </childnode>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="343" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+        <childnode refid="321" relation="include">
+        </childnode>
+      </node>
+      <node id="301">
+        <label>vigra/random_forest/rf_split.hxx</label>
+        <link refid="rf__split_8hxx_source"/>
+        <childnode refid="287" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="363">
+        <label>vigra/basicimageview.hxx</label>
+        <link refid="basicimageview_8hxx_source"/>
+        <childnode refid="278" relation="include">
+        </childnode>
+        <childnode refid="305" relation="include">
+        </childnode>
+      </node>
+      <node id="366">
+        <label>vigra/imagecontainer.hxx</label>
+        <link refid="imagecontainer_8hxx_source"/>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="340" relation="include">
+        </childnode>
+        <childnode refid="343" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+      </node>
+      <node id="344">
+        <label>vigra/gaborfilter.hxx</label>
+        <link refid="gaborfilter_8hxx_source"/>
+      </node>
+      <node id="317">
+        <label>vigra/labelvolume.hxx</label>
+        <link refid="labelvolume_8hxx_source"/>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="289">
+        <label>vigra/random_forest_hdf5_impex.hxx</label>
+        <link refid="random__forest__hdf5__impex_8hxx_source"/>
+      </node>
+      <node id="332">
+        <label>vigra/stdimagefunctions.hxx</label>
+        <link refid="stdimagefunctions_8hxx_source"/>
+        <childnode refid="333" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="339" relation="include">
+        </childnode>
+        <childnode refid="312" relation="include">
+        </childnode>
+      </node>
+      <node id="280">
+        <label>vigra/linear_solve.hxx</label>
+        <link refid="linear__solve_8hxx_source"/>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="283" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="285" relation="include">
+        </childnode>
+        <childnode refid="286" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+      </node>
+      <node id="368">
+        <label>vigra/recursiveconvolution.hxx</label>
+        <link refid="recursiveconvolution_8hxx_source"/>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="334" relation="include">
+        </childnode>
+        <childnode refid="341" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+      </node>
+      <node id="328">
+        <label>vigra/random_forest/rf_online_prediction_set.hxx</label>
+        <link refid="rf__online__prediction__set_8hxx_source"/>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="313">
+        <label>vigra/watersheds3d.hxx</label>
+        <link refid="watersheds3d_8hxx_source"/>
+      </node>
+      <node id="322">
+        <label>vigra/multi_math.hxx</label>
+        <link refid="multi__math_8hxx_source"/>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="290">
+        <label>vigra/singular_value_decomposition.hxx</label>
+        <link refid="singular__value__decomposition_8hxx_source"/>
+        <childnode refid="280" relation="include">
+        </childnode>
+        <childnode refid="286" relation="include">
+        </childnode>
+        <childnode refid="291" relation="include">
+        </childnode>
+      </node>
+      <node id="351">
+        <label>vigra/labelimage.hxx</label>
+        <link refid="labelimage_8hxx_source"/>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+      </node>
+      <node id="361">
+        <label>vigra/utilities.hxx</label>
+        <link refid="utilities_8hxx_source"/>
+        <childnode refid="362" relation="include">
+        </childnode>
+        <childnode refid="364" relation="include">
+        </childnode>
+        <childnode refid="365" relation="include">
+        </childnode>
+        <childnode refid="331" relation="include">
+        </childnode>
+        <childnode refid="345" relation="include">
+        </childnode>
+        <childnode refid="367" relation="include">
+        </childnode>
+        <childnode refid="368" relation="include">
+        </childnode>
+        <childnode refid="369" relation="include">
+        </childnode>
+        <childnode refid="366" relation="include">
+        </childnode>
+        <childnode refid="372" relation="include">
+        </childnode>
+        <childnode refid="335" relation="include">
+        </childnode>
+        <childnode refid="373" relation="include">
+        </childnode>
+        <childnode refid="348" relation="include">
+        </childnode>
+        <childnode refid="341" relation="include">
+        </childnode>
+        <childnode refid="374" relation="include">
+        </childnode>
+        <childnode refid="336" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="351" relation="include">
+        </childnode>
+        <childnode refid="376" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+        <childnode refid="337" relation="include">
+        </childnode>
+        <childnode refid="306" relation="include">
+        </childnode>
+        <childnode refid="295" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="310" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="349" relation="include">
+        </childnode>
+        <childnode refid="339" relation="include">
+        </childnode>
+        <childnode refid="312" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+        <childnode refid="338" relation="include">
+        </childnode>
+        <childnode refid="377" relation="include">
+        </childnode>
+        <childnode refid="353" relation="include">
+        </childnode>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="335">
+        <label>vigra/boundarytensor.hxx</label>
+        <link refid="boundarytensor_8hxx_source"/>
+      </node>
+      <node id="382">
+        <label>vigra/gaussians.hxx</label>
+        <link refid="gaussians_8hxx_source"/>
+        <childnode refid="373" relation="include">
+        </childnode>
+      </node>
+      <node id="281">
+        <label>vigra/edgedetection.hxx</label>
+        <link refid="edgedetection_8hxx_source"/>
+        <childnode refid="282" relation="include">
+        </childnode>
+      </node>
+      <node id="297">
+        <label>vigra/wigner-matrix.hxx</label>
+        <link refid="wigner-matrix_8hxx_source"/>
+      </node>
+      <node id="331">
+        <label>vigra/transformimage.hxx</label>
+        <link refid="transformimage_8hxx_source"/>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="340" relation="include">
+        </childnode>
+        <childnode refid="343" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+      </node>
+      <node id="321">
+        <label>vigra/multi_fft.hxx</label>
+        <link refid="multi__fft_8hxx_source"/>
+      </node>
+      <node id="381">
+        <label>vigra/bessel.hxx</label>
+        <link refid="bessel_8hxx_source"/>
+      </node>
+      <node id="334">
+        <label>vigra/convolution.hxx</label>
+        <link refid="convolution_8hxx_source"/>
+        <childnode refid="335" relation="include">
+        </childnode>
+        <childnode refid="336" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="337" relation="include">
+        </childnode>
+        <childnode refid="338" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="333">
+        <label>vigra/nonlineardiffusion.hxx</label>
+        <link refid="nonlineardiffusion_8hxx_source"/>
+        <childnode refid="334" relation="include">
+        </childnode>
+      </node>
+      <node id="324">
+        <label>vigra/numpy_array_converters.hxx</label>
+        <link refid="numpy__array__converters_8hxx_source"/>
+      </node>
+      <node id="350">
+        <label>vigra/distancetransform.hxx</label>
+        <link refid="distancetransform_8hxx_source"/>
+      </node>
+      <node id="277">
+        <label>vigra/tinyvector.hxx</label>
+        <link refid="tinyvector_8hxx_source"/>
+        <childnode refid="278" relation="include">
+        </childnode>
+        <childnode refid="330" relation="include">
+        </childnode>
+        <childnode refid="354" relation="include">
+        </childnode>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="292" relation="include">
+        </childnode>
+        <childnode refid="356" relation="include">
+        </childnode>
+        <childnode refid="315" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+        <childnode refid="295" relation="include">
+        </childnode>
+        <childnode refid="296" relation="include">
+        </childnode>
+        <childnode refid="357" relation="include">
+        </childnode>
+        <childnode refid="358" relation="include">
+        </childnode>
+        <childnode refid="307" relation="include">
+        </childnode>
+        <childnode refid="322" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="359" relation="include">
+        </childnode>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="340">
+        <label>vigra/resampling_convolution.hxx</label>
+        <link refid="resampling__convolution_8hxx_source"/>
+        <childnode refid="341" relation="include">
+        </childnode>
+      </node>
+      <node id="282">
+        <label>vigra/slanted_edge_mtf.hxx</label>
+        <link refid="slanted__edge__mtf_8hxx_source"/>
+      </node>
+      <node id="307">
+        <label>vigra/multi_convolution.hxx</label>
+        <link refid="multi__convolution_8hxx_source"/>
+      </node>
+      <node id="346">
+        <label>vigra/stdimage.hxx</label>
+        <link refid="stdimage_8hxx_source"/>
+        <childnode refid="347" relation="include">
+        </childnode>
+        <childnode refid="348" relation="include">
+        </childnode>
+        <childnode refid="333" relation="include">
+        </childnode>
+        <childnode refid="341" relation="include">
+        </childnode>
+        <childnode refid="340" relation="include">
+        </childnode>
+        <childnode refid="336" relation="include">
+        </childnode>
+        <childnode refid="350" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="351" relation="include">
+        </childnode>
+        <childnode refid="343" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+        <childnode refid="339" relation="include">
+        </childnode>
+        <childnode refid="312" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+        <childnode refid="338" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+      </node>
+      <node id="345">
+        <label>vigra/inspectimage.hxx</label>
+        <link refid="inspectimage_8hxx_source"/>
+        <childnode refid="331" relation="include">
+        </childnode>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
+      </node>
+      <node id="303">
+        <label>vigra/random_forest_deprec.hxx</label>
+        <link refid="random__forest__deprec_8hxx_source"/>
+      </node>
+      <node id="329">
+        <label>vigra/sifImport.hxx</label>
+        <link refid="sifImport_8hxx_source"/>
+      </node>
+      <node id="287">
+        <label>vigra/random_forest/rf_ridge_split.hxx</label>
+        <link refid="rf__ridge__split_8hxx_source"/>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="300">
+        <label>vigra/random_forest/rf_nodeproxy.hxx</label>
+        <link refid="rf__nodeproxy_8hxx_source"/>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="301" relation="include">
+        </childnode>
+        <childnode refid="287" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="357">
+        <label>vigra/voxelneighborhood.hxx</label>
+        <link refid="voxelneighborhood_8hxx_source"/>
+        <childnode refid="317" relation="include">
+        </childnode>
+        <childnode refid="318" relation="include">
+        </childnode>
+        <childnode refid="312" relation="include">
+        </childnode>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="275">
+        <label>vigra/mathutil.hxx</label>
+        <link refid="mathutil_8hxx_source"/>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="277" relation="include">
+        </childnode>
+        <childnode refid="361" relation="include">
+        </childnode>
+        <childnode refid="278" relation="include">
+        </childnode>
+        <childnode refid="279" relation="include">
+        </childnode>
+        <childnode refid="280" relation="include">
+        </childnode>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="378" relation="include">
+        </childnode>
+        <childnode refid="379" relation="include">
+        </childnode>
+        <childnode refid="380" relation="include">
+        </childnode>
+        <childnode refid="292" relation="include">
+        </childnode>
+        <childnode refid="381" relation="include">
+        </childnode>
+        <childnode refid="382" relation="include">
+        </childnode>
+        <childnode refid="383" relation="include">
+        </childnode>
+        <childnode refid="384" relation="include">
+        </childnode>
+        <childnode refid="352" relation="include">
+        </childnode>
+        <childnode refid="281" relation="include">
+        </childnode>
+        <childnode refid="295" relation="include">
+        </childnode>
+        <childnode refid="296" relation="include">
+        </childnode>
+        <childnode refid="322" relation="include">
+        </childnode>
+        <childnode refid="310" relation="include">
+        </childnode>
+        <childnode refid="385" relation="include">
+        </childnode>
+        <childnode refid="285" relation="include">
+        </childnode>
+        <childnode refid="386" relation="include">
+        </childnode>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="300" relation="include">
+        </childnode>
+        <childnode refid="302" relation="include">
+        </childnode>
+        <childnode refid="301" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+        <childnode refid="303" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+        <childnode refid="377" relation="include">
+        </childnode>
+        <childnode refid="291" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="291">
+        <label>vigra/unsupervised_decomposition.hxx</label>
+        <link refid="unsupervised__decomposition_8hxx_source"/>
+      </node>
+      <node id="327">
+        <label>vigra/random_forest/rf_algorithm.hxx</label>
+        <link refid="rf__algorithm_8hxx_source"/>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="362">
+        <label>vigra/imageiterator.hxx</label>
+        <link refid="imageiterator_8hxx_source"/>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="278" relation="include">
+        </childnode>
+      </node>
+      <node id="288">
+        <label>vigra/random_forest.hxx</label>
+        <link refid="random__forest_8hxx_source"/>
+        <childnode refid="289" relation="include">
+        </childnode>
+      </node>
+      <node id="353">
+        <label>vigra/tiff.hxx</label>
+        <link refid="tiff_8hxx_source"/>
+      </node>
+      <node id="355">
+        <label>vigra/imageinfo.hxx</label>
+        <link refid="imageinfo_8hxx_source"/>
+        <childnode refid="316" relation="include">
+        </childnode>
+      </node>
+      <node id="286">
+        <label>vigra/regression.hxx</label>
+        <link refid="regression_8hxx_source"/>
+        <childnode refid="287" relation="include">
+        </childnode>
+      </node>
+      <node id="298">
+        <label>vigra/matlab.hxx</label>
+        <link refid="matlab_8hxx_source"/>
+      </node>
+      <node id="376">
+        <label>vigra/flatmorphology.hxx</label>
+        <link refid="flatmorphology_8hxx_source"/>
+      </node>
+      <node id="370">
+        <label>vigra/cellimage.hxx</label>
+        <link refid="cellimage_8hxx_source"/>
+        <childnode refid="371" relation="include">
+        </childnode>
+      </node>
+      <node id="372">
+        <label>vigra/axistags.hxx</label>
+        <link refid="axistags_8hxx_source"/>
+        <childnode refid="360" relation="include">
+        </childnode>
+      </node>
+      <node id="330">
+        <label>vigra/rgbvalue.hxx</label>
+        <link refid="rgbvalue_8hxx_source"/>
+        <childnode refid="278" relation="include">
+        </childnode>
+        <childnode refid="331" relation="include">
+        </childnode>
+        <childnode refid="345" relation="include">
+        </childnode>
+        <childnode refid="346" relation="include">
+        </childnode>
+        <childnode refid="352" relation="include">
+        </childnode>
+        <childnode refid="322" relation="include">
+        </childnode>
+        <childnode refid="353" relation="include">
+        </childnode>
+      </node>
+      <node id="386">
+        <label>vigra/random.hxx</label>
+        <link refid="random_8hxx_source"/>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="300" relation="include">
+        </childnode>
+        <childnode refid="302" relation="include">
+        </childnode>
+        <childnode refid="387" relation="include">
+        </childnode>
+        <childnode refid="301" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+        <childnode refid="303" relation="include">
+        </childnode>
+        <childnode refid="291" relation="include">
+        </childnode>
+      </node>
+      <node id="299">
+        <label>vigra/random_forest/rf_decisionTree.hxx</label>
+        <link refid="rf__decisionTree_8hxx_source"/>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="308">
+        <label>vigra/multi_distance.hxx</label>
+        <link refid="multi__distance_8hxx_source"/>
+        <childnode refid="309" relation="include">
+        </childnode>
+      </node>
+      <node id="294">
+        <label>vigra/tv_filter.hxx</label>
+        <link refid="tv__filter_8hxx_source"/>
+      </node>
+      <node id="358">
+        <label>vigra/meshgrid.hxx</label>
+        <link refid="meshgrid_8hxx_source"/>
+      </node>
+      <node id="354">
+        <label>vigra/multi_iterator.hxx</label>
+        <link refid="multi__iterator_8hxx_source"/>
+        <childnode refid="278" relation="include">
+        </childnode>
+        <childnode refid="315" relation="include">
+        </childnode>
+        <childnode refid="355" relation="include">
+        </childnode>
+      </node>
+      <node id="316">
+        <label>vigra/impex.hxx</label>
+        <link refid="impex_8hxx"/>
+        <childnode refid="306" relation="include">
+        </childnode>
+        <childnode refid="305" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="309">
+        <label>vigra/multi_morphology.hxx</label>
+        <link refid="multi__morphology_8hxx_source"/>
+      </node>
+      <node id="387">
+        <label>vigra/sampling.hxx</label>
+        <link refid="sampling_8hxx_source"/>
+        <childnode refid="287" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="339">
+        <label>vigra/seededregiongrowing.hxx</label>
+        <link refid="seededregiongrowing_8hxx_source"/>
+        <childnode refid="312" relation="include">
+        </childnode>
+        <childnode refid="320" relation="include">
+        </childnode>
+      </node>
+      <node id="326">
+        <label>vigra/random_forest/splices.hxx</label>
+        <link refid="splices_8hxx_source"/>
+        <childnode refid="327" relation="include">
+        </childnode>
+      </node>
+      <node id="319">
+        <label>vigra/multi_localminmax.hxx</label>
+        <link refid="multi__localminmax_8hxx_source"/>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="312">
+        <label>vigra/seededregiongrowing3d.hxx</label>
+        <link refid="seededregiongrowing3d_8hxx_source"/>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="337">
+        <label>vigra/gradient_energy_tensor.hxx</label>
+        <link refid="gradient__energy__tensor_8hxx_source"/>
+      </node>
+      <node id="325">
+        <label>vigra/numpy_array_traits.hxx</label>
+        <link refid="numpy__array__traits_8hxx_source"/>
+        <childnode refid="323" relation="include">
+        </childnode>
+      </node>
+      <node id="371">
+        <label>vigra/cellconfigurations.hxx</label>
+        <link refid="cellconfigurations_8hxx_source"/>
+      </node>
+      <node id="348">
+        <label>vigra/stdconvolution.hxx</label>
+        <link refid="stdconvolution_8hxx_source"/>
+        <childnode refid="334" relation="include">
+        </childnode>
+        <childnode refid="349" relation="include">
+        </childnode>
+      </node>
+      <node id="320">
+        <label>vigra/watersheds.hxx</label>
+        <link refid="watersheds_8hxx_source"/>
+        <childnode refid="313" relation="include">
+        </childnode>
+      </node>
+      <node id="293">
+        <label>vigra/eigensystem.hxx</label>
+        <link refid="eigensystem_8hxx_source"/>
+        <childnode refid="283" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="367">
+        <label>vigra/combineimages.hxx</label>
+        <link refid="combineimages_8hxx_source"/>
+        <childnode refid="304" relation="include">
+        </childnode>
+        <childnode refid="335" relation="include">
+        </childnode>
+        <childnode refid="332" relation="include">
+        </childnode>
+        <childnode refid="334" relation="include">
+        </childnode>
+        <childnode refid="336" relation="include">
+        </childnode>
+        <childnode refid="343" relation="include">
+        </childnode>
+        <childnode refid="344" relation="include">
+        </childnode>
+        <childnode refid="337" relation="include">
+        </childnode>
+        <childnode refid="284" relation="include">
+        </childnode>
+      </node>
+      <node id="336">
+        <label>vigra/cornerdetection.hxx</label>
+        <link refid="cornerdetection_8hxx_source"/>
+      </node>
+      <node id="310">
+        <label>vigra/multi_tensorutilities.hxx</label>
+        <link refid="multi__tensorutilities_8hxx_source"/>
+      </node>
+      <node id="352">
+        <label>vigra/colorconversions.hxx</label>
+        <link refid="colorconversions_8hxx_source"/>
+      </node>
+      <node id="315">
+        <label>vigra/coordinate_iterator.hxx</label>
+        <link refid="coordinate__iterator_8hxx_source"/>
+      </node>
+      <node id="279">
+        <label>vigra/matrix.hxx</label>
+        <link refid="matrix_8hxx_source"/>
+        <childnode refid="276" relation="include">
+        </childnode>
+        <childnode refid="280" relation="include">
+        </childnode>
+        <childnode refid="290" relation="include">
+        </childnode>
+        <childnode refid="292" relation="include">
+        </childnode>
+        <childnode refid="293" relation="include">
+        </childnode>
+        <childnode refid="295" relation="include">
+        </childnode>
+        <childnode refid="296" relation="include">
+        </childnode>
+        <childnode refid="283" relation="include">
+        </childnode>
+        <childnode refid="298" relation="include">
+        </childnode>
+        <childnode refid="285" relation="include">
+        </childnode>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="300" relation="include">
+        </childnode>
+        <childnode refid="302" relation="include">
+        </childnode>
+        <childnode refid="301" relation="include">
+        </childnode>
+        <childnode refid="286" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+        <childnode refid="303" relation="include">
+        </childnode>
+        <childnode refid="291" relation="include">
+        </childnode>
+        <childnode refid="297" relation="include">
+        </childnode>
+      </node>
+      <node id="380">
+        <label>vigra/fixedpoint.hxx</label>
+        <link refid="fixedpoint_8hxx_source"/>
+        <childnode refid="378" relation="include">
+        </childnode>
+        <childnode refid="314" relation="include">
+        </childnode>
+        <childnode refid="294" relation="include">
+        </childnode>
+      </node>
+      <node id="311">
+        <label>vigra/random_forest/rf_visitors.hxx</label>
+        <link refid="rf__visitors_8hxx_source"/>
+        <childnode refid="299" relation="include">
+        </childnode>
+        <childnode refid="288" relation="include">
+        </childnode>
+      </node>
+      <node id="306">
+        <label>vigra/hdf5impex.hxx</label>
+        <link refid="hdf5impex_8hxx_source"/>
+        <childnode refid="289" relation="include">
+        </childnode>
+      </node>
+      <node id="305">
+        <label>vigra/multi_impex.hxx</label>
+        <link refid="multi__impex_8hxx_source"/>
+        <childnode refid="306" relation="include">
+        </childnode>
+      </node>
+      <node id="379">
+        <label>vigra/polynomial.hxx</label>
+        <link refid="polynomial_8hxx_source"/>
+        <childnode refid="378" relation="include">
+        </childnode>
+        <childnode refid="293" relation="include">
+        </childnode>
+      </node>
+      <node id="323">
+        <label>vigra/numpy_array.hxx</label>
+        <link refid="numpy__array_8hxx_source"/>
+        <childnode refid="324" relation="include">
+        </childnode>
+      </node>
+      <node id="343">
+        <label>vigra/fftw3.hxx</label>
+        <link refid="fftw3_8hxx_source"/>
+        <childnode refid="321" relation="include">
+        </childnode>
+        <childnode refid="282" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacevigra">vigra</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Copyright<sp/>2010-2011<sp/>by<sp/>Ullrich<sp/>Koethe<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>This<sp/>file<sp/>is<sp/>part<sp/>of<sp/>the<sp/>VIGRA<sp/>computer<sp/>vision<sp/>library.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>VIGRA<sp/>Website<sp/>is<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>http://hci.iwr.uni-heidelberg.de/vigra/<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Please<sp/>direct<sp/>questions,<sp/>bug<sp/>reports,<sp/>and<sp/>contributions<sp/>to<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ullrich.koethe@iwr.uni-heidelberg.de<sp/><sp/><sp/><sp/>or<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra@informatik.uni-hamburg.de<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Permission<sp/>is<sp/>hereby<sp/>granted,<sp/>free<sp/>of<sp/>charge,<sp/>to<sp/>any<sp/>person<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>obtaining<sp/>a<sp/>copy<sp/>of<sp/>this<sp/>software<sp/>and<sp/>associated<sp/>documentation<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>files<sp/>(the<sp/>&quot;Software&quot;),<sp/>to<sp/>deal<sp/>in<sp/>the<sp/>Software<sp/>without<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>restriction,<sp/>including<sp/>without<sp/>limitation<sp/>the<sp/>rights<sp/>to<sp/>use,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>copy,<sp/>modify,<sp/>merge,<sp/>publish,<sp/>distribute,<sp/>sublicense,<sp/>and/or<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>sell<sp/>copies<sp/>of<sp/>the<sp/>Software,<sp/>and<sp/>to<sp/>permit<sp/>persons<sp/>to<sp/>whom<sp/>the<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software<sp/>is<sp/>furnished<sp/>to<sp/>do<sp/>so,<sp/>subject<sp/>to<sp/>the<sp/>following<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>conditions:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>The<sp/>above<sp/>copyright<sp/>notice<sp/>and<sp/>this<sp/>permission<sp/>notice<sp/>shall<sp/>be<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>included<sp/>in<sp/>all<sp/>copies<sp/>or<sp/>substantial<sp/>portions<sp/>of<sp/>the<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>Software.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>THE<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>&quot;AS<sp/>IS&quot;,<sp/>WITHOUT<sp/>WARRANTY<sp/>OF<sp/>ANY<sp/>KIND<sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>EXPRESS<sp/>OR<sp/>IMPLIED,<sp/>INCLUDING<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO<sp/>THE<sp/>WARRANTIES<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OF<sp/>MERCHANTABILITY,<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE<sp/>AND<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>NONINFRINGEMENT.<sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHORS<sp/>OR<sp/>COPYRIGHT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>HOLDERS<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY<sp/>CLAIM,<sp/>DAMAGES<sp/>OR<sp/>OTHER<sp/>LIABILITY,<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>WHETHER<sp/>IN<sp/>AN<sp/>ACTION<sp/>OF<sp/>CONTRACT,<sp/>TORT<sp/>OR<sp/>OTHERWISE,<sp/>ARISING<sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>FROM,<sp/>OUT<sp/>OF<sp/>OR<sp/>IN<sp/>CONNECTION<sp/>WITH<sp/>THE<sp/>SOFTWARE<sp/>OR<sp/>THE<sp/>USE<sp/>OR<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/>OTHER<sp/>DEALINGS<sp/>IN<sp/>THE<sp/>SOFTWARE.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>VIGRA_ALGORITHM_HXX</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>VIGRA_ALGORITHM_HXX</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;sized_int.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;numerictraits.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;inspector_passes.hxx&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;functional&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iterator&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment">/**<sp/>\addtogroup<sp/>MathFunctions</highlight></codeline>
+<codeline lineno="49"><highlight class="comment">*/</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="50"><highlight class="comment">//@{</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"></highlight><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Find<sp/>the<sp/>minimum<sp/>element<sp/>in<sp/>a<sp/>sequence.</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>function<sp/>returns<sp/>the<sp/>iterator<sp/>referring<sp/>to<sp/>the<sp/>minimum<sp/>element.</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>This<sp/>is<sp/>identical<sp/>to<sp/>the<sp/>function<sp/>&lt;tt&gt;std::min_element()&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>is<sp/>a<sp/>standard<sp/>forward<sp/>iterator.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>f<sp/>=<sp/>*first<sp/>&lt;<sp/>NumericTraits&lt;typename<sp/>std::iterator_traits&lt;Iterator&gt;::value_type&gt;::max();</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator&gt;</highlight></codeline>
+<codeline lineno="68" refid="group__MathFunctions_1gad84c74edbd392ac2035df2a6d583fc05" refkind="member"><highlight class="normal">Iterator<sp/><ref refid="group__MathFunctions_1gad84c74edbd392ac2035df2a6d583fc05" kindref="member">argMin</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>Iterator<sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(*first<sp/>&lt;<sp/>*best)</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>best;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Find<sp/>the<sp/>maximum<sp/>element<sp/>in<sp/>a<sp/>sequence.</highlight></codeline>
+<codeline lineno="80"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>function<sp/>returns<sp/>the<sp/>iterator<sp/>referring<sp/>to<sp/>the<sp/>maximum<sp/>element.</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>This<sp/>is<sp/>identical<sp/>to<sp/>the<sp/>function<sp/>&lt;tt&gt;std::max_element()&lt;/tt&gt;.</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>is<sp/>a<sp/>standard<sp/>forward<sp/>iterator.</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>f<sp/>=<sp/>NumericTraits&lt;typename<sp/>std::iterator_traits&lt;Iterator&gt;::value_type&gt;::min()<sp/>&lt;<sp/>*first;</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"></highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator&gt;</highlight></codeline>
+<codeline lineno="96" refid="group__MathFunctions_1gaf658d43400902a049a289c4e5ded84d9" refkind="member"><highlight class="normal">Iterator<sp/><ref refid="group__MathFunctions_1gaf658d43400902a049a289c4e5ded84d9" kindref="member">argMax</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last)</highlight></codeline>
+<codeline lineno="97"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>Iterator<sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(*best<sp/>&lt;<sp/>*first)</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>best;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Find<sp/>the<sp/>minimum<sp/>element<sp/>in<sp/>a<sp/>sequence<sp/>conforming<sp/>to<sp/>a<sp/>condition.</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>function<sp/>returns<sp/>the<sp/>iterator<sp/>referring<sp/>to<sp/>the<sp/>minimum<sp/>element,</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>where<sp/>only<sp/>elements<sp/>conforming<sp/>to<sp/>the<sp/>condition<sp/>(i.e.<sp/>where<sp/></highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;tt&gt;condition(*iterator)&lt;/tt&gt;<sp/>evaluates<sp/>to<sp/>&lt;tt&gt;true&lt;/tt&gt;)<sp/>are<sp/>considered.</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>If<sp/>no<sp/>element<sp/>conforms<sp/>to<sp/>the<sp/>condition,<sp/>or<sp/>the<sp/>sequence<sp/>is<sp/>empty,</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>the<sp/>end<sp/>iterator<sp/>\a<sp/>last<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>is<sp/>a<sp/>standard<sp/>forward<sp/>iterator.</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>c<sp/>=<sp/>condition(*first);</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>f<sp/>=<sp/>*first<sp/>&lt;<sp/>NumericTraits&lt;typename<sp/>std::iterator_traits&lt;Iterator&gt;::value_type&gt;::max();</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"></highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>UnaryFunctor&gt;</highlight></codeline>
+<codeline lineno="129" refid="group__MathFunctions_1ga45d791e8c9cac48509aa4e1557ecf676" refkind="member"><highlight class="normal">Iterator<sp/><ref refid="group__MathFunctions_1ga45d791e8c9cac48509aa4e1557ecf676" kindref="member">argMinIf</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>UnaryFunctor<sp/>condition)</highlight></codeline>
+<codeline lineno="130"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(condition(*first))</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/>Iterator<sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(condition(*first)<sp/>&amp;&amp;<sp/>*first<sp/>&lt;<sp/>*best)</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>best;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Find<sp/>the<sp/>maximum<sp/>element<sp/>in<sp/>a<sp/>sequence<sp/>conforming<sp/>to<sp/>a<sp/>condition.</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="145"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>function<sp/>returns<sp/>the<sp/>iterator<sp/>referring<sp/>to<sp/>the<sp/>maximum<sp/>element,</highlight></codeline>
+<codeline lineno="146"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>where<sp/>only<sp/>elements<sp/>conforming<sp/>to<sp/>the<sp/>condition<sp/>(i.e.<sp/>where<sp/></highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;tt&gt;condition(*iterator)&lt;/tt&gt;<sp/>evaluates<sp/>to<sp/>&lt;tt&gt;true&lt;/tt&gt;)<sp/>are<sp/>considered.</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>If<sp/>no<sp/>element<sp/>conforms<sp/>to<sp/>the<sp/>condition,<sp/>or<sp/>the<sp/>sequence<sp/>is<sp/>empty,</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>the<sp/>end<sp/>iterator<sp/>\a<sp/>last<sp/>is<sp/>returned.</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="152"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="153"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="154"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>is<sp/>a<sp/>standard<sp/>forward<sp/>iterator.</highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>c<sp/>=<sp/>condition(*first);</highlight></codeline>
+<codeline lineno="157"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="158"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>f<sp/>=<sp/>NumericTraits&lt;typename<sp/>std::iterator_traits&lt;Iterator&gt;::value_type&gt;::min()<sp/>&lt;<sp/>*first;</highlight></codeline>
+<codeline lineno="159"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"></highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="163"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>UnaryFunctor&gt;</highlight></codeline>
+<codeline lineno="165" refid="group__MathFunctions_1gafe67abfb62abdfc09a8e1e47a87485ea" refkind="member"><highlight class="normal">Iterator<sp/><ref refid="group__MathFunctions_1gafe67abfb62abdfc09a8e1e47a87485ea" kindref="member">argMaxIf</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>UnaryFunctor<sp/>condition)</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(condition(*first))</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/>Iterator<sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(condition(*first)<sp/>&amp;&amp;<sp/>*best<sp/>&lt;<sp/>*first)</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>best<sp/>=<sp/>first;</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>best;</highlight></codeline>
+<codeline lineno="177"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="179"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Fill<sp/>an<sp/>array<sp/>with<sp/>a<sp/>sequence<sp/>of<sp/>numbers.</highlight></codeline>
+<codeline lineno="180"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="181"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>sequence<sp/>starts<sp/>at<sp/>\a<sp/>start<sp/>and<sp/>is<sp/>incremented<sp/>with<sp/>\a<sp/>step.<sp/>Default<sp/>start</highlight></codeline>
+<codeline lineno="182"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>and<sp/>stepsize<sp/>are<sp/>0<sp/>and<sp/>1<sp/>respectively.</highlight></codeline>
+<codeline lineno="183"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="184"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declaration:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="185"><highlight class="comment"></highlight></codeline>
+<codeline lineno="186"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="187"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="188"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>Iterator,<sp/>class<sp/>Value&gt;</highlight></codeline>
+<codeline lineno="189"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>linearSequence(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/></highlight></codeline>
+<codeline lineno="190"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Value<sp/>const<sp/>&amp;<sp/>start<sp/>=<sp/>0,<sp/>Value<sp/>const<sp/>&amp;<sp/>step<sp/>=<sp/>1);</highlight></codeline>
+<codeline lineno="191"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="192"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="193"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="194"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="195"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="196"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="197"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>is<sp/>a<sp/>standard<sp/>forward<sp/>iterator.</highlight></codeline>
+<codeline lineno="198"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="199"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*first<sp/>=<sp/>start;</highlight></codeline>
+<codeline lineno="200"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>start<sp/>+=<sp/>step;</highlight></codeline>
+<codeline lineno="201"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="202"><highlight class="comment"></highlight></codeline>
+<codeline lineno="203"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="204"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="205"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Value&gt;</highlight></codeline>
+<codeline lineno="207" refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>Value<sp/>start,<sp/>Value<sp/>step)</highlight></codeline>
+<codeline lineno="208"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first,<sp/>start<sp/>+=<sp/>step)</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*first<sp/>=<sp/>start;</highlight></codeline>
+<codeline lineno="211"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Value&gt;</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>Value<sp/>start)</highlight></codeline>
+<codeline lineno="215"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first,<sp/>++start)</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*first<sp/>=<sp/>start;</highlight></codeline>
+<codeline lineno="218"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator&gt;</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last)</highlight></codeline>
+<codeline lineno="222"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>std::iterator_traits&lt;Iterator&gt;::value_type<sp/>Value;</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence</ref>(first,<sp/>last,<sp/>NumericTraits&lt;Value&gt;::zero());</highlight></codeline>
+<codeline lineno="226"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="228"><highlight class="comment">/**<sp/>\brief<sp/>Call<sp/>an<sp/>analyzing<sp/>functor<sp/>at<sp/>every<sp/>element<sp/>of<sp/>a<sp/>sequence.</highlight></codeline>
+<codeline lineno="229"><highlight class="comment"></highlight></codeline>
+<codeline lineno="230"><highlight class="comment"><sp/><sp/><sp/><sp/>This<sp/>function<sp/>can<sp/>be<sp/>used<sp/>to<sp/>collect<sp/>statistics<sp/>of<sp/>the<sp/>sequence</highlight></codeline>
+<codeline lineno="231"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;tt&gt;[first,<sp/>last)&lt;/tt&gt;<sp/>defined<sp/>by<sp/>these<sp/>two<sp/>input<sp/>interators.</highlight></codeline>
+<codeline lineno="232"><highlight class="comment"><sp/><sp/><sp/><sp/>The<sp/>results<sp/>must<sp/>be<sp/>stored<sp/>in<sp/>the<sp/>functor,<sp/>which<sp/>serves<sp/>as<sp/>a<sp/>return</highlight></codeline>
+<codeline lineno="233"><highlight class="comment"><sp/><sp/><sp/><sp/>value.</highlight></codeline>
+<codeline lineno="234"><highlight class="comment"></highlight></codeline>
+<codeline lineno="235"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declarations:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="236"><highlight class="comment"></highlight></codeline>
+<codeline lineno="237"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="238"><highlight class="comment"><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="239"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>InputIterator,<sp/>class<sp/>Functor&gt;</highlight></codeline>
+<codeline lineno="240"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void</highlight></codeline>
+<codeline lineno="241"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inspectSequence(InputIterator<sp/>first,<sp/>InputIterator<sp/>last,<sp/>Functor<sp/>&amp;<sp/>f);</highlight></codeline>
+<codeline lineno="242"><highlight class="comment"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="243"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="244"><highlight class="comment"></highlight></codeline>
+<codeline lineno="245"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Usage:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="246"><highlight class="comment"></highlight></codeline>
+<codeline lineno="247"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="248"><highlight class="comment"><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="249"><highlight class="comment"></highlight></codeline>
+<codeline lineno="250"><highlight class="comment"><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="251"><highlight class="comment"><sp/><sp/><sp/><sp/>std::vector<sp/>array(100);</highlight></codeline>
+<codeline lineno="252"><highlight class="comment"></highlight></codeline>
+<codeline lineno="253"><highlight class="comment"><sp/><sp/><sp/><sp/>//<sp/>init<sp/>functor</highlight></codeline>
+<codeline lineno="254"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::FindMinMax&lt;int&gt;<sp/>minmax;</highlight></codeline>
+<codeline lineno="255"><highlight class="comment"></highlight></codeline>
+<codeline lineno="256"><highlight class="comment"><sp/><sp/><sp/><sp/>vigra::inspectSequence(array.begin(),<sp/>array.end(),<sp/>minmax);</highlight></codeline>
+<codeline lineno="257"><highlight class="comment"></highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/><sp/><sp/><sp/>cout<sp/>&lt;&lt;<sp/>&quot;Min:<sp/>&quot;<sp/>&lt;&lt;<sp/>minmax.min<sp/>&lt;&lt;<sp/>&quot;<sp/>Max:<sp/>&quot;<sp/>&lt;&lt;<sp/>minmax.max;</highlight></codeline>
+<codeline lineno="259"><highlight class="comment"></highlight></codeline>
+<codeline lineno="260"><highlight class="comment"><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="261"><highlight class="comment"></highlight></codeline>
+<codeline lineno="262"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="263"><highlight class="normal">doxygen_overloaded_function(template<sp/>&lt;...&gt;<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1gaf26349c51c03a24f22baab0138374c77" kindref="member" tooltip="Call an analyzing functor at every element of a sequence.">inspectSequence</ref>)</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">detail<sp/>{</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"></highlight></codeline>
+<codeline lineno="267"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InputIterator&gt;</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">inspectSequence_binder</highlight></codeline>
+<codeline lineno="269"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/>InputIterator<sp/>first;</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/>InputIterator<sp/>last;</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/>inspectSequence_binder(InputIterator<sp/>first_,<sp/>InputIterator<sp/>last_)</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>first(first_),<sp/>last(last_)<sp/>{}</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Functor&gt;</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(InputIterator<sp/>i<sp/>=<sp/>first;<sp/>i<sp/>!=<sp/>last;<sp/>++i)</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>f(*i);</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="280"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"></highlight></codeline>
+<codeline lineno="282"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>detail</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="283"><highlight class="normal"></highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InputIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Functor&gt;</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><ref refid="group__MathFunctions_1gaf26349c51c03a24f22baab0138374c77" kindref="member" tooltip="Call an analyzing functor at every element of a sequence.">inspectSequence</ref>(InputIterator<sp/>first,<sp/>InputIterator<sp/>last,<sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline lineno="287"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/>detail::inspectSequence_binder&lt;InputIterator&gt;<sp/>g(first,<sp/>last);</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/>detail::extra_passes_select(g,<sp/>f);</highlight></codeline>
+<codeline lineno="290"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">detail<sp/>{</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"></highlight></codeline>
+<codeline lineno="294"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Compare&gt;</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">IndexCompare</highlight></codeline>
+<codeline lineno="296"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/>Iterator<sp/>i_;</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/>Compare<sp/>c_;</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/>IndexCompare(Iterator<sp/>i,<sp/>Compare<sp/>c)</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>i_(i),</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>c_(c)</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"></highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Index&gt;</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>operator()(Index<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>l,<sp/>Index<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>r)</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline lineno="307"><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>c_(i_[l],<sp/>i_[r]);</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="310"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"></highlight></codeline>
+<codeline lineno="312"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>detail</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="313"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="314"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Return<sp/>the<sp/>index<sp/>permutation<sp/>that<sp/>would<sp/>sort<sp/>the<sp/>input<sp/>array.</highlight></codeline>
+<codeline lineno="315"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="316"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>To<sp/>actually<sp/>sort<sp/>an<sp/>array<sp/>according<sp/>to<sp/>the<sp/>ordering<sp/>thus<sp/>determined,<sp/>use<sp/></highlight></codeline>
+<codeline lineno="317"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\ref<sp/>applyPermutation().</highlight></codeline>
+<codeline lineno="318"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="319"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declarations:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="320"><highlight class="comment"></highlight></codeline>
+<codeline lineno="321"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="322"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="323"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>compare<sp/>using<sp/>std::less</highlight></codeline>
+<codeline lineno="324"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>Iterator,<sp/>class<sp/>IndexIterator&gt;</highlight></codeline>
+<codeline lineno="325"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>indexSort(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>IndexIterator<sp/>index_first);</highlight></codeline>
+<codeline lineno="326"><highlight class="comment"></highlight></codeline>
+<codeline lineno="327"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>compare<sp/>using<sp/>functor<sp/>Compare</highlight></codeline>
+<codeline lineno="328"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>Iterator,<sp/>class<sp/>IndexIterator,<sp/>class<sp/>Compare&gt;</highlight></codeline>
+<codeline lineno="329"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>indexSort(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>IndexIterator<sp/>index_first,<sp/>Compare<sp/>compare);</highlight></codeline>
+<codeline lineno="330"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="331"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="332"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="333"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="334"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="335"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="336"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Iterator<sp/>and<sp/>IndexIterators<sp/>are<sp/>random<sp/>access<sp/>iterators.</highlight></codeline>
+<codeline lineno="337"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="338"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>res<sp/>=<sp/>compare(first[*index_first],<sp/>first[*index_first]);</highlight></codeline>
+<codeline lineno="339"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="340"><highlight class="comment"></highlight></codeline>
+<codeline lineno="341"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="342"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="343"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="344"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>IndexIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Compare&gt;</highlight></codeline>
+<codeline lineno="345" refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" kindref="member">indexSort</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>IndexIterator<sp/>index_first,<sp/>Compare<sp/>c)</highlight></codeline>
+<codeline lineno="346"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="347"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>size<sp/>=<sp/>last<sp/>-<sp/>first;</highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" kindref="member">linearSequence</ref>(index_first,<sp/>index_first+size);</highlight></codeline>
+<codeline lineno="349"><highlight class="normal"><sp/><sp/><sp/><sp/>std::sort(index_first,<sp/>index_first+size,<sp/></highlight></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>detail::IndexCompare&lt;Iterator,<sp/>Compare&gt;(first,<sp/>c));</highlight></codeline>
+<codeline lineno="351"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"></highlight></codeline>
+<codeline lineno="353"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Iterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>IndexIterator&gt;</highlight></codeline>
+<codeline lineno="354"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" kindref="member">indexSort</ref>(Iterator<sp/>first,<sp/>Iterator<sp/>last,<sp/>IndexIterator<sp/>index_first)</highlight></codeline>
+<codeline lineno="355"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>std::iterator_traits&lt;Iterator&gt;::value_type<sp/>Value;</highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" kindref="member">indexSort</ref>(first,<sp/>last,<sp/>index_first,<sp/>std::less&lt;Value&gt;());</highlight></codeline>
+<codeline lineno="358"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="359"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="360"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Sort<sp/>an<sp/>array<sp/>according<sp/>to<sp/>the<sp/>given<sp/>index<sp/>permutation.</highlight></codeline>
+<codeline lineno="361"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="362"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>The<sp/>iterators<sp/>\a<sp/>in<sp/>and<sp/>\a<sp/>out<sp/>may<sp/>not<sp/>refer<sp/>to<sp/>the<sp/>same<sp/>array,<sp/>as</highlight></codeline>
+<codeline lineno="363"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>this<sp/>would<sp/>overwrite<sp/>the<sp/>input<sp/>prematurely.</highlight></codeline>
+<codeline lineno="364"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="365"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declaration:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="366"><highlight class="comment"></highlight></codeline>
+<codeline lineno="367"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="368"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="369"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>IndexIterator,<sp/>class<sp/>InIterator,<sp/>class<sp/>OutIterator&gt;</highlight></codeline>
+<codeline lineno="370"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>applyPermutation(IndexIterator<sp/>index_first,<sp/>IndexIterator<sp/>index_last,<sp/></highlight></codeline>
+<codeline lineno="371"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>InIterator<sp/>in,<sp/>OutIterator<sp/>out);</highlight></codeline>
+<codeline lineno="372"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="373"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="374"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="375"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="376"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="377"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="378"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OutIterator<sp/>and<sp/>IndexIterators<sp/>are<sp/>forward<sp/>iterators.</highlight></codeline>
+<codeline lineno="379"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>InIterator<sp/>is<sp/>a<sp/>random<sp/>access<sp/>iterator.</highlight></codeline>
+<codeline lineno="380"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="381"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*out<sp/>=<sp/>in[*index_first];</highlight></codeline>
+<codeline lineno="382"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="383"><highlight class="comment"></highlight></codeline>
+<codeline lineno="384"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="385"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="386"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="387"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>IndexIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OutIterator&gt;</highlight></codeline>
+<codeline lineno="388" refid="group__MathFunctions_1ga8686fee88c6f46f3e19a76f00826dc10" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1ga8686fee88c6f46f3e19a76f00826dc10" kindref="member">applyPermutation</ref>(IndexIterator<sp/>index_first,<sp/>IndexIterator<sp/>index_last,<sp/></highlight></codeline>
+<codeline lineno="389"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>InIterator<sp/>in,<sp/>OutIterator<sp/>out)</highlight></codeline>
+<codeline lineno="390"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="391"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>index_first<sp/>!=<sp/>index_last;<sp/>++index_first,<sp/>++out)</highlight></codeline>
+<codeline lineno="392"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*out<sp/>=<sp/>in[*index_first];</highlight></codeline>
+<codeline lineno="393"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="394"><highlight class="normal"></highlight></codeline>
+<codeline lineno="395"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="396"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Compute<sp/>the<sp/>inverse<sp/>of<sp/>a<sp/>given<sp/>permutation.</highlight></codeline>
+<codeline lineno="397"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="398"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>This<sp/>is<sp/>just<sp/>another<sp/>name<sp/>for<sp/>\ref<sp/>indexSort(),<sp/>referring<sp/>to</highlight></codeline>
+<codeline lineno="399"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>another<sp/>semantics.</highlight></codeline>
+<codeline lineno="400"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="401"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;<sp/>Declaration:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="402"><highlight class="comment"></highlight></codeline>
+<codeline lineno="403"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="404"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>namespace<sp/>vigra<sp/>{</highlight></codeline>
+<codeline lineno="405"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template<sp/>&lt;class<sp/>InIterator,<sp/>class<sp/>OutIterator&gt;</highlight></codeline>
+<codeline lineno="406"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>inversePermutation(InIterator<sp/>first,<sp/>InIterator<sp/>last,<sp/></highlight></codeline>
+<codeline lineno="407"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OutIterator<sp/>out);</highlight></codeline>
+<codeline lineno="408"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="409"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="410"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="411"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;Required<sp/>Interface:&lt;/b&gt;</highlight></codeline>
+<codeline lineno="412"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="413"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\code</highlight></codeline>
+<codeline lineno="414"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>InIterator<sp/>and<sp/>OutIterator<sp/>are<sp/>random<sp/>access<sp/>iterators.</highlight></codeline>
+<codeline lineno="415"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="416"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*out<sp/>=<sp/>in[*index_first];</highlight></codeline>
+<codeline lineno="417"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\endcode</highlight></codeline>
+<codeline lineno="418"><highlight class="comment"></highlight></codeline>
+<codeline lineno="419"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;b&gt;\#include&lt;/b&gt;<sp/>\&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;</highlight></codeline>
+<codeline lineno="420"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Namespace:<sp/>vigra</highlight></codeline>
+<codeline lineno="421"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="422"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>OutIterator&gt;</highlight></codeline>
+<codeline lineno="423" refid="group__MathFunctions_1ga89c0801ae0f386bade8dbc77fa485301" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1ga89c0801ae0f386bade8dbc77fa485301" kindref="member">inversePermutation</ref>(InIterator<sp/>first,<sp/>InIterator<sp/>last,<sp/></highlight></codeline>
+<codeline lineno="424"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OutIterator<sp/>out)</highlight></codeline>
+<codeline lineno="425"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="426"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" kindref="member">indexSort</ref>(first,<sp/>last,<sp/>out);</highlight></codeline>
+<codeline lineno="427"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="428"><highlight class="normal"></highlight></codeline>
+<codeline lineno="429"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">detail<sp/>{</highlight></codeline>
+<codeline lineno="430"><highlight class="normal"></highlight></codeline>
+<codeline lineno="431"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isLittleEndian()</highlight></codeline>
+<codeline lineno="432"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="433"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1ga777bb6d03e37c030dd58d64e781cdff6" kindref="member" tooltip="the biggest unsigned integer type of the system">UIntBiggest</ref><sp/>testint<sp/>=<sp/>0x01;</highlight></codeline>
+<codeline lineno="434"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>((<ref refid="group__FixedSizeInt_1ga7332da5f8bfdbeecdfd09d4ed602288d" kindref="member" tooltip="8-bit unsigned int">UInt8</ref><sp/>*)&amp;testint)[0]<sp/>==<sp/>0x01;</highlight></codeline>
+<codeline lineno="435"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="436"><highlight class="normal"></highlight></codeline>
+<codeline lineno="437"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InIterator&gt;</highlight></codeline>
+<codeline lineno="438"><highlight class="normal"><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>checksumImpl(InIterator<sp/>i,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>size,<sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>crc<sp/>=<sp/>0xFFFFFFFF)</highlight></codeline>
+<codeline lineno="439"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="440"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>table[256]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="441"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x0U,<sp/>0x77073096U,<sp/>0xee0e612cU,<sp/>0x990951baU,<sp/>0x76dc419U,<sp/>0x706af48fU,<sp/></highlight></codeline>
+<codeline lineno="442"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe963a535U,<sp/>0x9e6495a3U,<sp/>0xedb8832U,<sp/>0x79dcb8a4U,<sp/>0xe0d5e91eU,<sp/>0x97d2d988U,<sp/></highlight></codeline>
+<codeline lineno="443"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9b64c2bU,<sp/>0x7eb17cbdU,<sp/>0xe7b82d07U,<sp/>0x90bf1d91U,<sp/>0x1db71064U,<sp/>0x6ab020f2U,<sp/></highlight></codeline>
+<codeline lineno="444"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf3b97148U,<sp/>0x84be41deU,<sp/>0x1adad47dU,<sp/>0x6ddde4ebU,<sp/>0xf4d4b551U,<sp/>0x83d385c7U,<sp/></highlight></codeline>
+<codeline lineno="445"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x136c9856U,<sp/>0x646ba8c0U,<sp/>0xfd62f97aU,<sp/>0x8a65c9ecU,<sp/>0x14015c4fU,<sp/>0x63066cd9U,<sp/></highlight></codeline>
+<codeline lineno="446"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfa0f3d63U,<sp/>0x8d080df5U,<sp/>0x3b6e20c8U,<sp/>0x4c69105eU,<sp/>0xd56041e4U,<sp/>0xa2677172U,<sp/></highlight></codeline>
+<codeline lineno="447"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x3c03e4d1U,<sp/>0x4b04d447U,<sp/>0xd20d85fdU,<sp/>0xa50ab56bU,<sp/>0x35b5a8faU,<sp/>0x42b2986cU,<sp/></highlight></codeline>
+<codeline lineno="448"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xdbbbc9d6U,<sp/>0xacbcf940U,<sp/>0x32d86ce3U,<sp/>0x45df5c75U,<sp/>0xdcd60dcfU,<sp/>0xabd13d59U,<sp/></highlight></codeline>
+<codeline lineno="449"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x26d930acU,<sp/>0x51de003aU,<sp/>0xc8d75180U,<sp/>0xbfd06116U,<sp/>0x21b4f4b5U,<sp/>0x56b3c423U,<sp/></highlight></codeline>
+<codeline lineno="450"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xcfba9599U,<sp/>0xb8bda50fU,<sp/>0x2802b89eU,<sp/>0x5f058808U,<sp/>0xc60cd9b2U,<sp/>0xb10be924U,<sp/></highlight></codeline>
+<codeline lineno="451"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2f6f7c87U,<sp/>0x58684c11U,<sp/>0xc1611dabU,<sp/>0xb6662d3dU,<sp/>0x76dc4190U,<sp/>0x1db7106U,<sp/></highlight></codeline>
+<codeline lineno="452"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x98d220bcU,<sp/>0xefd5102aU,<sp/>0x71b18589U,<sp/>0x6b6b51fU,<sp/>0x9fbfe4a5U,<sp/>0xe8b8d433U,<sp/></highlight></codeline>
+<codeline lineno="453"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7807c9a2U,<sp/>0xf00f934U,<sp/>0x9609a88eU,<sp/>0xe10e9818U,<sp/>0x7f6a0dbbU,<sp/>0x86d3d2dU,<sp/></highlight></codeline>
+<codeline lineno="454"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x91646c97U,<sp/>0xe6635c01U,<sp/>0x6b6b51f4U,<sp/>0x1c6c6162U,<sp/>0x856530d8U,<sp/>0xf262004eU,<sp/></highlight></codeline>
+<codeline lineno="455"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6c0695edU,<sp/>0x1b01a57bU,<sp/>0x8208f4c1U,<sp/>0xf50fc457U,<sp/>0x65b0d9c6U,<sp/>0x12b7e950U,<sp/></highlight></codeline>
+<codeline lineno="456"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x8bbeb8eaU,<sp/>0xfcb9887cU,<sp/>0x62dd1ddfU,<sp/>0x15da2d49U,<sp/>0x8cd37cf3U,<sp/>0xfbd44c65U,<sp/></highlight></codeline>
+<codeline lineno="457"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4db26158U,<sp/>0x3ab551ceU,<sp/>0xa3bc0074U,<sp/>0xd4bb30e2U,<sp/>0x4adfa541U,<sp/>0x3dd895d7U,<sp/></highlight></codeline>
+<codeline lineno="458"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa4d1c46dU,<sp/>0xd3d6f4fbU,<sp/>0x4369e96aU,<sp/>0x346ed9fcU,<sp/>0xad678846U,<sp/>0xda60b8d0U,<sp/></highlight></codeline>
+<codeline lineno="459"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x44042d73U,<sp/>0x33031de5U,<sp/>0xaa0a4c5fU,<sp/>0xdd0d7cc9U,<sp/>0x5005713cU,<sp/>0x270241aaU,<sp/></highlight></codeline>
+<codeline lineno="460"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbe0b1010U,<sp/>0xc90c2086U,<sp/>0x5768b525U,<sp/>0x206f85b3U,<sp/>0xb966d409U,<sp/>0xce61e49fU,<sp/></highlight></codeline>
+<codeline lineno="461"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x5edef90eU,<sp/>0x29d9c998U,<sp/>0xb0d09822U,<sp/>0xc7d7a8b4U,<sp/>0x59b33d17U,<sp/>0x2eb40d81U,<sp/></highlight></codeline>
+<codeline lineno="462"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb7bd5c3bU,<sp/>0xc0ba6cadU,<sp/>0xedb88320U,<sp/>0x9abfb3b6U,<sp/>0x3b6e20cU,<sp/>0x74b1d29aU,<sp/></highlight></codeline>
+<codeline lineno="463"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xead54739U,<sp/>0x9dd277afU,<sp/>0x4db2615U,<sp/>0x73dc1683U,<sp/>0xe3630b12U,<sp/>0x94643b84U,<sp/></highlight></codeline>
+<codeline lineno="464"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd6d6a3eU,<sp/>0x7a6a5aa8U,<sp/>0xe40ecf0bU,<sp/>0x9309ff9dU,<sp/>0xa00ae27U,<sp/>0x7d079eb1U,<sp/></highlight></codeline>
+<codeline lineno="465"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf00f9344U,<sp/>0x8708a3d2U,<sp/>0x1e01f268U,<sp/>0x6906c2feU,<sp/>0xf762575dU,<sp/>0x806567cbU,<sp/></highlight></codeline>
+<codeline lineno="466"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x196c3671U,<sp/>0x6e6b06e7U,<sp/>0xfed41b76U,<sp/>0x89d32be0U,<sp/>0x10da7a5aU,<sp/>0x67dd4accU,<sp/></highlight></codeline>
+<codeline lineno="467"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf9b9df6fU,<sp/>0x8ebeeff9U,<sp/>0x17b7be43U,<sp/>0x60b08ed5U,<sp/>0xd6d6a3e8U,<sp/>0xa1d1937eU,<sp/></highlight></codeline>
+<codeline lineno="468"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x38d8c2c4U,<sp/>0x4fdff252U,<sp/>0xd1bb67f1U,<sp/>0xa6bc5767U,<sp/>0x3fb506ddU,<sp/>0x48b2364bU,<sp/></highlight></codeline>
+<codeline lineno="469"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd80d2bdaU,<sp/>0xaf0a1b4cU,<sp/>0x36034af6U,<sp/>0x41047a60U,<sp/>0xdf60efc3U,<sp/>0xa867df55U,<sp/></highlight></codeline>
+<codeline lineno="470"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x316e8eefU,<sp/>0x4669be79U,<sp/>0xcb61b38cU,<sp/>0xbc66831aU,<sp/>0x256fd2a0U,<sp/>0x5268e236U,<sp/></highlight></codeline>
+<codeline lineno="471"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xcc0c7795U,<sp/>0xbb0b4703U,<sp/>0x220216b9U,<sp/>0x5505262fU,<sp/>0xc5ba3bbeU,<sp/>0xb2bd0b28U,<sp/></highlight></codeline>
+<codeline lineno="472"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2bb45a92U,<sp/>0x5cb36a04U,<sp/>0xc2d7ffa7U,<sp/>0xb5d0cf31U,<sp/>0x2cd99e8bU,<sp/>0x5bdeae1dU,<sp/></highlight></codeline>
+<codeline lineno="473"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9b64c2b0U,<sp/>0xec63f226U,<sp/>0x756aa39cU,<sp/>0x26d930aU,<sp/>0x9c0906a9U,<sp/>0xeb0e363fU,<sp/></highlight></codeline>
+<codeline lineno="474"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x72076785U,<sp/>0x5005713U,<sp/>0x95bf4a82U,<sp/>0xe2b87a14U,<sp/>0x7bb12baeU,<sp/>0xcb61b38U,<sp/></highlight></codeline>
+<codeline lineno="475"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x92d28e9bU,<sp/>0xe5d5be0dU,<sp/>0x7cdcefb7U,<sp/>0xbdbdf21U,<sp/>0x86d3d2d4U,<sp/>0xf1d4e242U,<sp/></highlight></codeline>
+<codeline lineno="476"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x68ddb3f8U,<sp/>0x1fda836eU,<sp/>0x81be16cdU,<sp/>0xf6b9265bU,<sp/>0x6fb077e1U,<sp/>0x18b74777U,<sp/></highlight></codeline>
+<codeline lineno="477"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x88085ae6U,<sp/>0xff0f6a70U,<sp/>0x66063bcaU,<sp/>0x11010b5cU,<sp/>0x8f659effU,<sp/>0xf862ae69U,<sp/></highlight></codeline>
+<codeline lineno="478"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x616bffd3U,<sp/>0x166ccf45U,<sp/>0xa00ae278U,<sp/>0xd70dd2eeU,<sp/>0x4e048354U,<sp/>0x3903b3c2U,<sp/></highlight></codeline>
+<codeline lineno="479"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa7672661U,<sp/>0xd06016f7U,<sp/>0x4969474dU,<sp/>0x3e6e77dbU,<sp/>0xaed16a4aU,<sp/>0xd9d65adcU,<sp/></highlight></codeline>
+<codeline lineno="480"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x40df0b66U,<sp/>0x37d83bf0U,<sp/>0xa9bcae53U,<sp/>0xdebb9ec5U,<sp/>0x47b2cf7fU,<sp/>0x30b5ffe9U,<sp/></highlight></codeline>
+<codeline lineno="481"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbdbdf21cU,<sp/>0xcabac28aU,<sp/>0x53b39330U,<sp/>0x24b4a3a6U,<sp/>0xbad03605U,<sp/>0xcdd70693U,<sp/></highlight></codeline>
+<codeline lineno="482"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x54de5729U,<sp/>0x23d967bfU,<sp/>0xb3667a2eU,<sp/>0xc4614ab8U,<sp/>0x5d681b02U,<sp/>0x2a6f2b94U,<sp/></highlight></codeline>
+<codeline lineno="483"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb40bbe37U,<sp/>0xc30c8ea1U,<sp/>0x5a05df1bU,<sp/>0x2d02ef8dU<sp/>};<sp/></highlight></codeline>
+<codeline lineno="484"><highlight class="normal"></highlight></codeline>
+<codeline lineno="485"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>table1[256]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="486"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x00000000U,<sp/>0x191b3141U,<sp/>0x32366282U,<sp/>0x2b2d53c3U,<sp/>0x646cc504U,</highlight></codeline>
+<codeline lineno="487"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7d77f445U,<sp/>0x565aa786U,<sp/>0x4f4196c7U,<sp/>0xc8d98a08U,<sp/>0xd1c2bb49U,</highlight></codeline>
+<codeline lineno="488"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfaefe88aU,<sp/>0xe3f4d9cbU,<sp/>0xacb54f0cU,<sp/>0xb5ae7e4dU,<sp/>0x9e832d8eU,</highlight></codeline>
+<codeline lineno="489"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x87981ccfU,<sp/>0x4ac21251U,<sp/>0x53d92310U,<sp/>0x78f470d3U,<sp/>0x61ef4192U,</highlight></codeline>
+<codeline lineno="490"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2eaed755U,<sp/>0x37b5e614U,<sp/>0x1c98b5d7U,<sp/>0x05838496U,<sp/>0x821b9859U,</highlight></codeline>
+<codeline lineno="491"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9b00a918U,<sp/>0xb02dfadbU,<sp/>0xa936cb9aU,<sp/>0xe6775d5dU,<sp/>0xff6c6c1cU,</highlight></codeline>
+<codeline lineno="492"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd4413fdfU,<sp/>0xcd5a0e9eU,<sp/>0x958424a2U,<sp/>0x8c9f15e3U,<sp/>0xa7b24620U,</highlight></codeline>
+<codeline lineno="493"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbea97761U,<sp/>0xf1e8e1a6U,<sp/>0xe8f3d0e7U,<sp/>0xc3de8324U,<sp/>0xdac5b265U,</highlight></codeline>
+<codeline lineno="494"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x5d5daeaaU,<sp/>0x44469febU,<sp/>0x6f6bcc28U,<sp/>0x7670fd69U,<sp/>0x39316baeU,</highlight></codeline>
+<codeline lineno="495"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x202a5aefU,<sp/>0x0b07092cU,<sp/>0x121c386dU,<sp/>0xdf4636f3U,<sp/>0xc65d07b2U,</highlight></codeline>
+<codeline lineno="496"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xed705471U,<sp/>0xf46b6530U,<sp/>0xbb2af3f7U,<sp/>0xa231c2b6U,<sp/>0x891c9175U,</highlight></codeline>
+<codeline lineno="497"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9007a034U,<sp/>0x179fbcfbU,<sp/>0x0e848dbaU,<sp/>0x25a9de79U,<sp/>0x3cb2ef38U,</highlight></codeline>
+<codeline lineno="498"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x73f379ffU,<sp/>0x6ae848beU,<sp/>0x41c51b7dU,<sp/>0x58de2a3cU,<sp/>0xf0794f05U,</highlight></codeline>
+<codeline lineno="499"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe9627e44U,<sp/>0xc24f2d87U,<sp/>0xdb541cc6U,<sp/>0x94158a01U,<sp/>0x8d0ebb40U,</highlight></codeline>
+<codeline lineno="500"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa623e883U,<sp/>0xbf38d9c2U,<sp/>0x38a0c50dU,<sp/>0x21bbf44cU,<sp/>0x0a96a78fU,</highlight></codeline>
+<codeline lineno="501"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x138d96ceU,<sp/>0x5ccc0009U,<sp/>0x45d73148U,<sp/>0x6efa628bU,<sp/>0x77e153caU,</highlight></codeline>
+<codeline lineno="502"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbabb5d54U,<sp/>0xa3a06c15U,<sp/>0x888d3fd6U,<sp/>0x91960e97U,<sp/>0xded79850U,</highlight></codeline>
+<codeline lineno="503"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xc7cca911U,<sp/>0xece1fad2U,<sp/>0xf5facb93U,<sp/>0x7262d75cU,<sp/>0x6b79e61dU,</highlight></codeline>
+<codeline lineno="504"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4054b5deU,<sp/>0x594f849fU,<sp/>0x160e1258U,<sp/>0x0f152319U,<sp/>0x243870daU,</highlight></codeline>
+<codeline lineno="505"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x3d23419bU,<sp/>0x65fd6ba7U,<sp/>0x7ce65ae6U,<sp/>0x57cb0925U,<sp/>0x4ed03864U,</highlight></codeline>
+<codeline lineno="506"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x0191aea3U,<sp/>0x188a9fe2U,<sp/>0x33a7cc21U,<sp/>0x2abcfd60U,<sp/>0xad24e1afU,</highlight></codeline>
+<codeline lineno="507"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb43fd0eeU,<sp/>0x9f12832dU,<sp/>0x8609b26cU,<sp/>0xc94824abU,<sp/>0xd05315eaU,</highlight></codeline>
+<codeline lineno="508"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfb7e4629U,<sp/>0xe2657768U,<sp/>0x2f3f79f6U,<sp/>0x362448b7U,<sp/>0x1d091b74U,</highlight></codeline>
+<codeline lineno="509"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x04122a35U,<sp/>0x4b53bcf2U,<sp/>0x52488db3U,<sp/>0x7965de70U,<sp/>0x607eef31U,</highlight></codeline>
+<codeline lineno="510"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe7e6f3feU,<sp/>0xfefdc2bfU,<sp/>0xd5d0917cU,<sp/>0xcccba03dU,<sp/>0x838a36faU,</highlight></codeline>
+<codeline lineno="511"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9a9107bbU,<sp/>0xb1bc5478U,<sp/>0xa8a76539U,<sp/>0x3b83984bU,<sp/>0x2298a90aU,</highlight></codeline>
+<codeline lineno="512"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x09b5fac9U,<sp/>0x10aecb88U,<sp/>0x5fef5d4fU,<sp/>0x46f46c0eU,<sp/>0x6dd93fcdU,</highlight></codeline>
+<codeline lineno="513"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x74c20e8cU,<sp/>0xf35a1243U,<sp/>0xea412302U,<sp/>0xc16c70c1U,<sp/>0xd8774180U,</highlight></codeline>
+<codeline lineno="514"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9736d747U,<sp/>0x8e2de606U,<sp/>0xa500b5c5U,<sp/>0xbc1b8484U,<sp/>0x71418a1aU,</highlight></codeline>
+<codeline lineno="515"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x685abb5bU,<sp/>0x4377e898U,<sp/>0x5a6cd9d9U,<sp/>0x152d4f1eU,<sp/>0x0c367e5fU,</highlight></codeline>
+<codeline lineno="516"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x271b2d9cU,<sp/>0x3e001cddU,<sp/>0xb9980012U,<sp/>0xa0833153U,<sp/>0x8bae6290U,</highlight></codeline>
+<codeline lineno="517"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x92b553d1U,<sp/>0xddf4c516U,<sp/>0xc4eff457U,<sp/>0xefc2a794U,<sp/>0xf6d996d5U,</highlight></codeline>
+<codeline lineno="518"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xae07bce9U,<sp/>0xb71c8da8U,<sp/>0x9c31de6bU,<sp/>0x852aef2aU,<sp/>0xca6b79edU,</highlight></codeline>
+<codeline lineno="519"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd37048acU,<sp/>0xf85d1b6fU,<sp/>0xe1462a2eU,<sp/>0x66de36e1U,<sp/>0x7fc507a0U,</highlight></codeline>
+<codeline lineno="520"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x54e85463U,<sp/>0x4df36522U,<sp/>0x02b2f3e5U,<sp/>0x1ba9c2a4U,<sp/>0x30849167U,</highlight></codeline>
+<codeline lineno="521"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x299fa026U,<sp/>0xe4c5aeb8U,<sp/>0xfdde9ff9U,<sp/>0xd6f3cc3aU,<sp/>0xcfe8fd7bU,</highlight></codeline>
+<codeline lineno="522"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x80a96bbcU,<sp/>0x99b25afdU,<sp/>0xb29f093eU,<sp/>0xab84387fU,<sp/>0x2c1c24b0U,</highlight></codeline>
+<codeline lineno="523"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x350715f1U,<sp/>0x1e2a4632U,<sp/>0x07317773U,<sp/>0x4870e1b4U,<sp/>0x516bd0f5U,</highlight></codeline>
+<codeline lineno="524"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7a468336U,<sp/>0x635db277U,<sp/>0xcbfad74eU,<sp/>0xd2e1e60fU,<sp/>0xf9ccb5ccU,</highlight></codeline>
+<codeline lineno="525"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe0d7848dU,<sp/>0xaf96124aU,<sp/>0xb68d230bU,<sp/>0x9da070c8U,<sp/>0x84bb4189U,</highlight></codeline>
+<codeline lineno="526"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x03235d46U,<sp/>0x1a386c07U,<sp/>0x31153fc4U,<sp/>0x280e0e85U,<sp/>0x674f9842U,</highlight></codeline>
+<codeline lineno="527"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7e54a903U,<sp/>0x5579fac0U,<sp/>0x4c62cb81U,<sp/>0x8138c51fU,<sp/>0x9823f45eU,</highlight></codeline>
+<codeline lineno="528"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb30ea79dU,<sp/>0xaa1596dcU,<sp/>0xe554001bU,<sp/>0xfc4f315aU,<sp/>0xd7626299U,</highlight></codeline>
+<codeline lineno="529"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xce7953d8U,<sp/>0x49e14f17U,<sp/>0x50fa7e56U,<sp/>0x7bd72d95U,<sp/>0x62cc1cd4U,</highlight></codeline>
+<codeline lineno="530"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2d8d8a13U,<sp/>0x3496bb52U,<sp/>0x1fbbe891U,<sp/>0x06a0d9d0U,<sp/>0x5e7ef3ecU,</highlight></codeline>
+<codeline lineno="531"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4765c2adU,<sp/>0x6c48916eU,<sp/>0x7553a02fU,<sp/>0x3a1236e8U,<sp/>0x230907a9U,</highlight></codeline>
+<codeline lineno="532"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x0824546aU,<sp/>0x113f652bU,<sp/>0x96a779e4U,<sp/>0x8fbc48a5U,<sp/>0xa4911b66U,</highlight></codeline>
+<codeline lineno="533"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbd8a2a27U,<sp/>0xf2cbbce0U,<sp/>0xebd08da1U,<sp/>0xc0fdde62U,<sp/>0xd9e6ef23U,</highlight></codeline>
+<codeline lineno="534"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x14bce1bdU,<sp/>0x0da7d0fcU,<sp/>0x268a833fU,<sp/>0x3f91b27eU,<sp/>0x70d024b9U,</highlight></codeline>
+<codeline lineno="535"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x69cb15f8U,<sp/>0x42e6463bU,<sp/>0x5bfd777aU,<sp/>0xdc656bb5U,<sp/>0xc57e5af4U,</highlight></codeline>
+<codeline lineno="536"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xee530937U,<sp/>0xf7483876U,<sp/>0xb809aeb1U,<sp/>0xa1129ff0U,<sp/>0x8a3fcc33U,</highlight></codeline>
+<codeline lineno="537"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9324fd72U<sp/>};</highlight></codeline>
+<codeline lineno="538"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="539"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>table2[256]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="540"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x00000000U,<sp/>0x01c26a37U,<sp/>0x0384d46eU,<sp/>0x0246be59U,<sp/>0x0709a8dcU,</highlight></codeline>
+<codeline lineno="541"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x06cbc2ebU,<sp/>0x048d7cb2U,<sp/>0x054f1685U,<sp/>0x0e1351b8U,<sp/>0x0fd13b8fU,</highlight></codeline>
+<codeline lineno="542"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x0d9785d6U,<sp/>0x0c55efe1U,<sp/>0x091af964U,<sp/>0x08d89353U,<sp/>0x0a9e2d0aU,</highlight></codeline>
+<codeline lineno="543"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x0b5c473dU,<sp/>0x1c26a370U,<sp/>0x1de4c947U,<sp/>0x1fa2771eU,<sp/>0x1e601d29U,</highlight></codeline>
+<codeline lineno="544"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x1b2f0bacU,<sp/>0x1aed619bU,<sp/>0x18abdfc2U,<sp/>0x1969b5f5U,<sp/>0x1235f2c8U,</highlight></codeline>
+<codeline lineno="545"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x13f798ffU,<sp/>0x11b126a6U,<sp/>0x10734c91U,<sp/>0x153c5a14U,<sp/>0x14fe3023U,</highlight></codeline>
+<codeline lineno="546"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x16b88e7aU,<sp/>0x177ae44dU,<sp/>0x384d46e0U,<sp/>0x398f2cd7U,<sp/>0x3bc9928eU,</highlight></codeline>
+<codeline lineno="547"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x3a0bf8b9U,<sp/>0x3f44ee3cU,<sp/>0x3e86840bU,<sp/>0x3cc03a52U,<sp/>0x3d025065U,</highlight></codeline>
+<codeline lineno="548"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x365e1758U,<sp/>0x379c7d6fU,<sp/>0x35dac336U,<sp/>0x3418a901U,<sp/>0x3157bf84U,</highlight></codeline>
+<codeline lineno="549"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x3095d5b3U,<sp/>0x32d36beaU,<sp/>0x331101ddU,<sp/>0x246be590U,<sp/>0x25a98fa7U,</highlight></codeline>
+<codeline lineno="550"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x27ef31feU,<sp/>0x262d5bc9U,<sp/>0x23624d4cU,<sp/>0x22a0277bU,<sp/>0x20e69922U,</highlight></codeline>
+<codeline lineno="551"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2124f315U,<sp/>0x2a78b428U,<sp/>0x2bbade1fU,<sp/>0x29fc6046U,<sp/>0x283e0a71U,</highlight></codeline>
+<codeline lineno="552"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2d711cf4U,<sp/>0x2cb376c3U,<sp/>0x2ef5c89aU,<sp/>0x2f37a2adU,<sp/>0x709a8dc0U,</highlight></codeline>
+<codeline lineno="553"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7158e7f7U,<sp/>0x731e59aeU,<sp/>0x72dc3399U,<sp/>0x7793251cU,<sp/>0x76514f2bU,</highlight></codeline>
+<codeline lineno="554"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7417f172U,<sp/>0x75d59b45U,<sp/>0x7e89dc78U,<sp/>0x7f4bb64fU,<sp/>0x7d0d0816U,</highlight></codeline>
+<codeline lineno="555"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7ccf6221U,<sp/>0x798074a4U,<sp/>0x78421e93U,<sp/>0x7a04a0caU,<sp/>0x7bc6cafdU,</highlight></codeline>
+<codeline lineno="556"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6cbc2eb0U,<sp/>0x6d7e4487U,<sp/>0x6f38fadeU,<sp/>0x6efa90e9U,<sp/>0x6bb5866cU,</highlight></codeline>
+<codeline lineno="557"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6a77ec5bU,<sp/>0x68315202U,<sp/>0x69f33835U,<sp/>0x62af7f08U,<sp/>0x636d153fU,</highlight></codeline>
+<codeline lineno="558"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x612bab66U,<sp/>0x60e9c151U,<sp/>0x65a6d7d4U,<sp/>0x6464bde3U,<sp/>0x662203baU,</highlight></codeline>
+<codeline lineno="559"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x67e0698dU,<sp/>0x48d7cb20U,<sp/>0x4915a117U,<sp/>0x4b531f4eU,<sp/>0x4a917579U,</highlight></codeline>
+<codeline lineno="560"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4fde63fcU,<sp/>0x4e1c09cbU,<sp/>0x4c5ab792U,<sp/>0x4d98dda5U,<sp/>0x46c49a98U,</highlight></codeline>
+<codeline lineno="561"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4706f0afU,<sp/>0x45404ef6U,<sp/>0x448224c1U,<sp/>0x41cd3244U,<sp/>0x400f5873U,</highlight></codeline>
+<codeline lineno="562"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4249e62aU,<sp/>0x438b8c1dU,<sp/>0x54f16850U,<sp/>0x55330267U,<sp/>0x5775bc3eU,</highlight></codeline>
+<codeline lineno="563"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x56b7d609U,<sp/>0x53f8c08cU,<sp/>0x523aaabbU,<sp/>0x507c14e2U,<sp/>0x51be7ed5U,</highlight></codeline>
+<codeline lineno="564"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x5ae239e8U,<sp/>0x5b2053dfU,<sp/>0x5966ed86U,<sp/>0x58a487b1U,<sp/>0x5deb9134U,</highlight></codeline>
+<codeline lineno="565"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x5c29fb03U,<sp/>0x5e6f455aU,<sp/>0x5fad2f6dU,<sp/>0xe1351b80U,<sp/>0xe0f771b7U,</highlight></codeline>
+<codeline lineno="566"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe2b1cfeeU,<sp/>0xe373a5d9U,<sp/>0xe63cb35cU,<sp/>0xe7fed96bU,<sp/>0xe5b86732U,</highlight></codeline>
+<codeline lineno="567"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe47a0d05U,<sp/>0xef264a38U,<sp/>0xeee4200fU,<sp/>0xeca29e56U,<sp/>0xed60f461U,</highlight></codeline>
+<codeline lineno="568"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe82fe2e4U,<sp/>0xe9ed88d3U,<sp/>0xebab368aU,<sp/>0xea695cbdU,<sp/>0xfd13b8f0U,</highlight></codeline>
+<codeline lineno="569"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfcd1d2c7U,<sp/>0xfe976c9eU,<sp/>0xff5506a9U,<sp/>0xfa1a102cU,<sp/>0xfbd87a1bU,</highlight></codeline>
+<codeline lineno="570"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf99ec442U,<sp/>0xf85cae75U,<sp/>0xf300e948U,<sp/>0xf2c2837fU,<sp/>0xf0843d26U,</highlight></codeline>
+<codeline lineno="571"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf1465711U,<sp/>0xf4094194U,<sp/>0xf5cb2ba3U,<sp/>0xf78d95faU,<sp/>0xf64fffcdU,</highlight></codeline>
+<codeline lineno="572"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd9785d60U,<sp/>0xd8ba3757U,<sp/>0xdafc890eU,<sp/>0xdb3ee339U,<sp/>0xde71f5bcU,</highlight></codeline>
+<codeline lineno="573"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xdfb39f8bU,<sp/>0xddf521d2U,<sp/>0xdc374be5U,<sp/>0xd76b0cd8U,<sp/>0xd6a966efU,</highlight></codeline>
+<codeline lineno="574"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd4efd8b6U,<sp/>0xd52db281U,<sp/>0xd062a404U,<sp/>0xd1a0ce33U,<sp/>0xd3e6706aU,</highlight></codeline>
+<codeline lineno="575"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xd2241a5dU,<sp/>0xc55efe10U,<sp/>0xc49c9427U,<sp/>0xc6da2a7eU,<sp/>0xc7184049U,</highlight></codeline>
+<codeline lineno="576"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xc25756ccU,<sp/>0xc3953cfbU,<sp/>0xc1d382a2U,<sp/>0xc011e895U,<sp/>0xcb4dafa8U,</highlight></codeline>
+<codeline lineno="577"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xca8fc59fU,<sp/>0xc8c97bc6U,<sp/>0xc90b11f1U,<sp/>0xcc440774U,<sp/>0xcd866d43U,</highlight></codeline>
+<codeline lineno="578"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xcfc0d31aU,<sp/>0xce02b92dU,<sp/>0x91af9640U,<sp/>0x906dfc77U,<sp/>0x922b422eU,</highlight></codeline>
+<codeline lineno="579"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x93e92819U,<sp/>0x96a63e9cU,<sp/>0x976454abU,<sp/>0x9522eaf2U,<sp/>0x94e080c5U,</highlight></codeline>
+<codeline lineno="580"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9fbcc7f8U,<sp/>0x9e7eadcfU,<sp/>0x9c381396U,<sp/>0x9dfa79a1U,<sp/>0x98b56f24U,</highlight></codeline>
+<codeline lineno="581"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x99770513U,<sp/>0x9b31bb4aU,<sp/>0x9af3d17dU,<sp/>0x8d893530U,<sp/>0x8c4b5f07U,</highlight></codeline>
+<codeline lineno="582"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x8e0de15eU,<sp/>0x8fcf8b69U,<sp/>0x8a809decU,<sp/>0x8b42f7dbU,<sp/>0x89044982U,</highlight></codeline>
+<codeline lineno="583"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x88c623b5U,<sp/>0x839a6488U,<sp/>0x82580ebfU,<sp/>0x801eb0e6U,<sp/>0x81dcdad1U,</highlight></codeline>
+<codeline lineno="584"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x8493cc54U,<sp/>0x8551a663U,<sp/>0x8717183aU,<sp/>0x86d5720dU,<sp/>0xa9e2d0a0U,</highlight></codeline>
+<codeline lineno="585"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa820ba97U,<sp/>0xaa6604ceU,<sp/>0xaba46ef9U,<sp/>0xaeeb787cU,<sp/>0xaf29124bU,</highlight></codeline>
+<codeline lineno="586"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xad6fac12U,<sp/>0xacadc625U,<sp/>0xa7f18118U,<sp/>0xa633eb2fU,<sp/>0xa4755576U,</highlight></codeline>
+<codeline lineno="587"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa5b73f41U,<sp/>0xa0f829c4U,<sp/>0xa13a43f3U,<sp/>0xa37cfdaaU,<sp/>0xa2be979dU,</highlight></codeline>
+<codeline lineno="588"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb5c473d0U,<sp/>0xb40619e7U,<sp/>0xb640a7beU,<sp/>0xb782cd89U,<sp/>0xb2cddb0cU,</highlight></codeline>
+<codeline lineno="589"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb30fb13bU,<sp/>0xb1490f62U,<sp/>0xb08b6555U,<sp/>0xbbd72268U,<sp/>0xba15485fU,</highlight></codeline>
+<codeline lineno="590"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb853f606U,<sp/>0xb9919c31U,<sp/>0xbcde8ab4U,<sp/>0xbd1ce083U,<sp/>0xbf5a5edaU,</highlight></codeline>
+<codeline lineno="591"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbe9834edU<sp/>};</highlight></codeline>
+<codeline lineno="592"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="593"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>table3[256]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="594"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x00000000U,<sp/>0xb8bc6765U,<sp/>0xaa09c88bU,<sp/>0x12b5afeeU,<sp/>0x8f629757U,</highlight></codeline>
+<codeline lineno="595"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x37def032U,<sp/>0x256b5fdcU,<sp/>0x9dd738b9U,<sp/>0xc5b428efU,<sp/>0x7d084f8aU,</highlight></codeline>
+<codeline lineno="596"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6fbde064U,<sp/>0xd7018701U,<sp/>0x4ad6bfb8U,<sp/>0xf26ad8ddU,<sp/>0xe0df7733U,</highlight></codeline>
+<codeline lineno="597"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x58631056U,<sp/>0x5019579fU,<sp/>0xe8a530faU,<sp/>0xfa109f14U,<sp/>0x42acf871U,</highlight></codeline>
+<codeline lineno="598"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xdf7bc0c8U,<sp/>0x67c7a7adU,<sp/>0x75720843U,<sp/>0xcdce6f26U,<sp/>0x95ad7f70U,</highlight></codeline>
+<codeline lineno="599"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2d111815U,<sp/>0x3fa4b7fbU,<sp/>0x8718d09eU,<sp/>0x1acfe827U,<sp/>0xa2738f42U,</highlight></codeline>
+<codeline lineno="600"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb0c620acU,<sp/>0x087a47c9U,<sp/>0xa032af3eU,<sp/>0x188ec85bU,<sp/>0x0a3b67b5U,</highlight></codeline>
+<codeline lineno="601"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb28700d0U,<sp/>0x2f503869U,<sp/>0x97ec5f0cU,<sp/>0x8559f0e2U,<sp/>0x3de59787U,</highlight></codeline>
+<codeline lineno="602"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x658687d1U,<sp/>0xdd3ae0b4U,<sp/>0xcf8f4f5aU,<sp/>0x7733283fU,<sp/>0xeae41086U,</highlight></codeline>
+<codeline lineno="603"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x525877e3U,<sp/>0x40edd80dU,<sp/>0xf851bf68U,<sp/>0xf02bf8a1U,<sp/>0x48979fc4U,</highlight></codeline>
+<codeline lineno="604"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x5a22302aU,<sp/>0xe29e574fU,<sp/>0x7f496ff6U,<sp/>0xc7f50893U,<sp/>0xd540a77dU,</highlight></codeline>
+<codeline lineno="605"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6dfcc018U,<sp/>0x359fd04eU,<sp/>0x8d23b72bU,<sp/>0x9f9618c5U,<sp/>0x272a7fa0U,</highlight></codeline>
+<codeline lineno="606"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbafd4719U,<sp/>0x0241207cU,<sp/>0x10f48f92U,<sp/>0xa848e8f7U,<sp/>0x9b14583dU,</highlight></codeline>
+<codeline lineno="607"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x23a83f58U,<sp/>0x311d90b6U,<sp/>0x89a1f7d3U,<sp/>0x1476cf6aU,<sp/>0xaccaa80fU,</highlight></codeline>
+<codeline lineno="608"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbe7f07e1U,<sp/>0x06c36084U,<sp/>0x5ea070d2U,<sp/>0xe61c17b7U,<sp/>0xf4a9b859U,</highlight></codeline>
+<codeline lineno="609"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4c15df3cU,<sp/>0xd1c2e785U,<sp/>0x697e80e0U,<sp/>0x7bcb2f0eU,<sp/>0xc377486bU,</highlight></codeline>
+<codeline lineno="610"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xcb0d0fa2U,<sp/>0x73b168c7U,<sp/>0x6104c729U,<sp/>0xd9b8a04cU,<sp/>0x446f98f5U,</highlight></codeline>
+<codeline lineno="611"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfcd3ff90U,<sp/>0xee66507eU,<sp/>0x56da371bU,<sp/>0x0eb9274dU,<sp/>0xb6054028U,</highlight></codeline>
+<codeline lineno="612"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa4b0efc6U,<sp/>0x1c0c88a3U,<sp/>0x81dbb01aU,<sp/>0x3967d77fU,<sp/>0x2bd27891U,</highlight></codeline>
+<codeline lineno="613"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x936e1ff4U,<sp/>0x3b26f703U,<sp/>0x839a9066U,<sp/>0x912f3f88U,<sp/>0x299358edU,</highlight></codeline>
+<codeline lineno="614"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb4446054U,<sp/>0x0cf80731U,<sp/>0x1e4da8dfU,<sp/>0xa6f1cfbaU,<sp/>0xfe92dfecU,</highlight></codeline>
+<codeline lineno="615"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x462eb889U,<sp/>0x549b1767U,<sp/>0xec277002U,<sp/>0x71f048bbU,<sp/>0xc94c2fdeU,</highlight></codeline>
+<codeline lineno="616"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xdbf98030U,<sp/>0x6345e755U,<sp/>0x6b3fa09cU,<sp/>0xd383c7f9U,<sp/>0xc1366817U,</highlight></codeline>
+<codeline lineno="617"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x798a0f72U,<sp/>0xe45d37cbU,<sp/>0x5ce150aeU,<sp/>0x4e54ff40U,<sp/>0xf6e89825U,</highlight></codeline>
+<codeline lineno="618"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xae8b8873U,<sp/>0x1637ef16U,<sp/>0x048240f8U,<sp/>0xbc3e279dU,<sp/>0x21e91f24U,</highlight></codeline>
+<codeline lineno="619"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x99557841U,<sp/>0x8be0d7afU,<sp/>0x335cb0caU,<sp/>0xed59b63bU,<sp/>0x55e5d15eU,</highlight></codeline>
+<codeline lineno="620"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x47507eb0U,<sp/>0xffec19d5U,<sp/>0x623b216cU,<sp/>0xda874609U,<sp/>0xc832e9e7U,</highlight></codeline>
+<codeline lineno="621"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x708e8e82U,<sp/>0x28ed9ed4U,<sp/>0x9051f9b1U,<sp/>0x82e4565fU,<sp/>0x3a58313aU,</highlight></codeline>
+<codeline lineno="622"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xa78f0983U,<sp/>0x1f336ee6U,<sp/>0x0d86c108U,<sp/>0xb53aa66dU,<sp/>0xbd40e1a4U,</highlight></codeline>
+<codeline lineno="623"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x05fc86c1U,<sp/>0x1749292fU,<sp/>0xaff54e4aU,<sp/>0x322276f3U,<sp/>0x8a9e1196U,</highlight></codeline>
+<codeline lineno="624"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x982bbe78U,<sp/>0x2097d91dU,<sp/>0x78f4c94bU,<sp/>0xc048ae2eU,<sp/>0xd2fd01c0U,</highlight></codeline>
+<codeline lineno="625"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6a4166a5U,<sp/>0xf7965e1cU,<sp/>0x4f2a3979U,<sp/>0x5d9f9697U,<sp/>0xe523f1f2U,</highlight></codeline>
+<codeline lineno="626"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x4d6b1905U,<sp/>0xf5d77e60U,<sp/>0xe762d18eU,<sp/>0x5fdeb6ebU,<sp/>0xc2098e52U,</highlight></codeline>
+<codeline lineno="627"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x7ab5e937U,<sp/>0x680046d9U,<sp/>0xd0bc21bcU,<sp/>0x88df31eaU,<sp/>0x3063568fU,</highlight></codeline>
+<codeline lineno="628"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x22d6f961U,<sp/>0x9a6a9e04U,<sp/>0x07bda6bdU,<sp/>0xbf01c1d8U,<sp/>0xadb46e36U,</highlight></codeline>
+<codeline lineno="629"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x15080953U,<sp/>0x1d724e9aU,<sp/>0xa5ce29ffU,<sp/>0xb77b8611U,<sp/>0x0fc7e174U,</highlight></codeline>
+<codeline lineno="630"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x9210d9cdU,<sp/>0x2aacbea8U,<sp/>0x38191146U,<sp/>0x80a57623U,<sp/>0xd8c66675U,</highlight></codeline>
+<codeline lineno="631"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x607a0110U,<sp/>0x72cfaefeU,<sp/>0xca73c99bU,<sp/>0x57a4f122U,<sp/>0xef189647U,</highlight></codeline>
+<codeline lineno="632"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xfdad39a9U,<sp/>0x45115eccU,<sp/>0x764dee06U,<sp/>0xcef18963U,<sp/>0xdc44268dU,</highlight></codeline>
+<codeline lineno="633"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x64f841e8U,<sp/>0xf92f7951U,<sp/>0x41931e34U,<sp/>0x5326b1daU,<sp/>0xeb9ad6bfU,</highlight></codeline>
+<codeline lineno="634"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb3f9c6e9U,<sp/>0x0b45a18cU,<sp/>0x19f00e62U,<sp/>0xa14c6907U,<sp/>0x3c9b51beU,</highlight></codeline>
+<codeline lineno="635"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x842736dbU,<sp/>0x96929935U,<sp/>0x2e2efe50U,<sp/>0x2654b999U,<sp/>0x9ee8defcU,</highlight></codeline>
+<codeline lineno="636"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x8c5d7112U,<sp/>0x34e11677U,<sp/>0xa9362eceU,<sp/>0x118a49abU,<sp/>0x033fe645U,</highlight></codeline>
+<codeline lineno="637"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xbb838120U,<sp/>0xe3e09176U,<sp/>0x5b5cf613U,<sp/>0x49e959fdU,<sp/>0xf1553e98U,</highlight></codeline>
+<codeline lineno="638"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6c820621U,<sp/>0xd43e6144U,<sp/>0xc68bceaaU,<sp/>0x7e37a9cfU,<sp/>0xd67f4138U,</highlight></codeline>
+<codeline lineno="639"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x6ec3265dU,<sp/>0x7c7689b3U,<sp/>0xc4caeed6U,<sp/>0x591dd66fU,<sp/>0xe1a1b10aU,</highlight></codeline>
+<codeline lineno="640"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xf3141ee4U,<sp/>0x4ba87981U,<sp/>0x13cb69d7U,<sp/>0xab770eb2U,<sp/>0xb9c2a15cU,</highlight></codeline>
+<codeline lineno="641"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x017ec639U,<sp/>0x9ca9fe80U,<sp/>0x241599e5U,<sp/>0x36a0360bU,<sp/>0x8e1c516eU,</highlight></codeline>
+<codeline lineno="642"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x866616a7U,<sp/>0x3eda71c2U,<sp/>0x2c6fde2cU,<sp/>0x94d3b949U,<sp/>0x090481f0U,</highlight></codeline>
+<codeline lineno="643"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xb1b8e695U,<sp/>0xa30d497bU,<sp/>0x1bb12e1eU,<sp/>0x43d23e48U,<sp/>0xfb6e592dU,</highlight></codeline>
+<codeline lineno="644"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xe9dbf6c3U,<sp/>0x516791a6U,<sp/>0xccb0a91fU,<sp/>0x740cce7aU,<sp/>0x66b96194U,</highlight></codeline>
+<codeline lineno="645"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xde0506f1U<sp/>};</highlight></codeline>
+<codeline lineno="646"><highlight class="normal"></highlight></codeline>
+<codeline lineno="647"><highlight class="normal"><sp/><sp/><sp/><sp/>InIterator<sp/>end<sp/>=<sp/>i<sp/>+<sp/>size;</highlight></codeline>
+<codeline lineno="648"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="649"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(isLittleEndian()<sp/>&amp;&amp;<sp/>size<sp/>&gt;<sp/>3)</highlight></codeline>
+<codeline lineno="650"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="651"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>take<sp/>care<sp/>of<sp/>alignment</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="652"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>(std::size_t)i<sp/>%<sp/>4<sp/>!=<sp/>0;<sp/>++i)</highlight></codeline>
+<codeline lineno="653"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="654"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>crc<sp/>=<sp/>(crc<sp/>&gt;&gt;<sp/>8)<sp/>^<sp/>table[(crc<sp/>^<sp/>*i)<sp/>&amp;<sp/>0xFF];</highlight></codeline>
+<codeline lineno="655"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="656"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>i<sp/>&lt;<sp/>end-3;<sp/>i+=4)</highlight></codeline>
+<codeline lineno="657"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="658"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>crc<sp/>^=<sp/>*((<ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/>*)i);</highlight></codeline>
+<codeline lineno="659"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>crc<sp/>=<sp/>table3[crc<sp/>&amp;<sp/>0xFF]<sp/>^</highlight></codeline>
+<codeline lineno="660"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>table2[(crc<sp/>&gt;&gt;<sp/>8)<sp/>&amp;<sp/>0xFF]<sp/>^</highlight></codeline>
+<codeline lineno="661"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>table1[(crc<sp/>&gt;&gt;<sp/>16)<sp/>&amp;<sp/>0xFF]<sp/>^</highlight></codeline>
+<codeline lineno="662"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>table[crc<sp/>&gt;&gt;<sp/>24];</highlight></codeline>
+<codeline lineno="663"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="664"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="665"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>i<sp/>&lt;<sp/>end;<sp/>++i)</highlight></codeline>
+<codeline lineno="666"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="667"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>crc<sp/>=<sp/>(crc<sp/>&gt;&gt;<sp/>8)<sp/>^<sp/>table[(crc<sp/>^<sp/>*i)<sp/>&amp;<sp/>0xFF];</highlight></codeline>
+<codeline lineno="668"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="669"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>~crc;</highlight></codeline>
+<codeline lineno="670"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="671"><highlight class="normal"></highlight></codeline>
+<codeline lineno="672"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>detail</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="673"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="674"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Compute<sp/>the<sp/>CRC-32<sp/>checksum<sp/>of<sp/>a<sp/>byte<sp/>array.</highlight></codeline>
+<codeline lineno="675"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="676"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Implementation<sp/>note:<sp/>This<sp/>function<sp/>is<sp/>slower<sp/>on<sp/>big-endian<sp/>machines</highlight></codeline>
+<codeline lineno="677"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>because<sp/>the<sp/>&quot;4<sp/>bytes<sp/>at<sp/>a<sp/>time&quot;<sp/>optimization<sp/>is<sp/>only<sp/>implemented<sp/>for<sp/></highlight></codeline>
+<codeline lineno="678"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>little-endian.</highlight></codeline>
+<codeline lineno="679"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="680" refid="group__MathFunctions_1ga482d2e82f374a8758cd516d19f4c3424" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/><ref refid="group__MathFunctions_1ga482d2e82f374a8758cd516d19f4c3424" kindref="member">checksum</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>data,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>size)</highlight></codeline>
+<codeline lineno="681"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="682"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::checksumImpl(data,<sp/>size);</highlight></codeline>
+<codeline lineno="683"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="684"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="685"><highlight class="comment"><sp/><sp/><sp/><sp/>/*!<sp/>Concatenate<sp/>a<sp/>byte<sp/>array<sp/>to<sp/>an<sp/>existing<sp/>CRC-32<sp/>checksum.</highlight></codeline>
+<codeline lineno="686"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="687" refid="group__MathFunctions_1ga46be68464b972df67e1396fd3a398de7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/><ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/><ref refid="group__MathFunctions_1ga46be68464b972df67e1396fd3a398de7" kindref="member">concatenateChecksum</ref>(<ref refid="group__FixedSizeInt_1gad055e2244a667a1a5a5c1ee4397c07f9" kindref="member" tooltip="32-bit unsigned int">UInt32</ref><sp/><ref refid="group__MathFunctions_1ga482d2e82f374a8758cd516d19f4c3424" kindref="member">checksum</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>data,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>size)</highlight></codeline>
+<codeline lineno="688"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="689"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="690"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>detail::checksumImpl(data,<sp/>size,<sp/>~checksum);</highlight></codeline>
+<codeline lineno="691"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="692"><highlight class="normal"></highlight></codeline>
+<codeline lineno="693"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="694"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateMin(T<sp/>&amp;<sp/>x,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T<sp/>&amp;<sp/>y)</highlight></codeline>
+<codeline lineno="695"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="696"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" kindref="member" tooltip="element-wise minimum">std::min</ref>;</highlight></codeline>
+<codeline lineno="697"><highlight class="normal"><sp/><sp/><sp/><sp/>x<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga22d93f30188e8ad29c37bd614b26b510" kindref="member" tooltip="element-wise minimum">min</ref>(x,<sp/>y);</highlight></codeline>
+<codeline lineno="698"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="699"><highlight class="normal"></highlight></codeline>
+<codeline lineno="700"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="701"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateMax(T<sp/>&amp;<sp/>x,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T<sp/>&amp;<sp/>y)</highlight></codeline>
+<codeline lineno="702"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="703"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">std::max</ref>;</highlight></codeline>
+<codeline lineno="704"><highlight class="normal"><sp/><sp/><sp/><sp/>x<sp/>=<sp/><ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member" tooltip="element-wise maximum">max</ref>(x,<sp/>y);</highlight></codeline>
+<codeline lineno="705"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="706"><highlight class="normal"></highlight></codeline>
+<codeline lineno="707"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="708"><highlight class="comment">//@}</highlight></codeline>
+<codeline lineno="709"><highlight class="comment"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="710"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vigra</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="711"><highlight class="normal"></highlight></codeline>
+<codeline lineno="712"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>VIGRA_ALGORITHM_HXX<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx"/>
+  </compounddef>
+</doxygen>

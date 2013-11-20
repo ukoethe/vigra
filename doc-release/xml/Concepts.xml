@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="Concepts" kind="page">
+    <compoundname>Concepts</compoundname>
+    <title>Concepts</title>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term>Description of the generic interface concepts used within VIGRA. </term></varlistentry>
+<listitem><para><itemizedlist>
+<listitem>
+<para><ref refid="AlgebraicConcepts" kindref="compound">Algebraic Concepts</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Requirements for types that implement arithmetic operations</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ImageIterators" kindref="compound">Image Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Requirements for 2D iterators</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MultiIteratorPage" kindref="compound">Multi-dimensional Array Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Iterators for multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__DataAccessors" kindref="compound">Data Accessors</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Requirements for data accessors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1FunctorTraits" kindref="compound">vigra::FunctorTraits</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Requirements for functor traits</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="CrackEdgeImage" kindref="compound">Crack Edge Image</ref> </para></listitem>
+</itemizedlist>
+</para></listitem>
+</variablelist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

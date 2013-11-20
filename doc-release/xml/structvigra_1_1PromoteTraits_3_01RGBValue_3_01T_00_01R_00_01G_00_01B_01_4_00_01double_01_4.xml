@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_00_01double_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; RGBValue&lt; T, R, G, B &gt;, double &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>R</declname>
+        <defname>R</defname>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>G</declname>
+        <defname>G</defname>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>B</declname>
+        <defname>B</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_00_01double_01_4_1ae46f81061ca7422836cb4191305fea3c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>&lt; typename NumericTraits&lt; T &gt;::RealPromote, R, G, B &gt;</type>
+        <definition>typedef RGBValue&lt;typename NumericTraits&lt;T&gt;::RealPromote, R, G, B&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="535" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" line="534" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rgbvalue.hxx" bodystart="533" bodyend="536"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01RGBValue_3_01T_00_01R_00_01G_00_01B_01_4_00_01double_01_4_1ae46f81061ca7422836cb4191305fea3c" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; RGBValue&lt; T, R, G, B &gt;, double &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

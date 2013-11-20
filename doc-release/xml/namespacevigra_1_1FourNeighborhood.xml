@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1FourNeighborhood" kind="namespace">
+    <compoundname>vigra::FourNeighborhood</compoundname>
+    <innerclass refid="classvigra_1_1FourNeighborhood_1_1NeighborCode" prot="public">vigra::FourNeighborhood::NeighborCode</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacevigra_1_1FourNeighborhood_1a988d19830b1f9d64837a9bcd86cbabed" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">NeighborCode::Direction</ref></type>
+        <definition>typedef NeighborCode::Direction Direction</definition>
+        <argsstring></argsstring>
+        <name>Direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">NeighborCode::Direction</ref> into the scope of namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="338" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1a98d59141d0f0e36a994f6b6a080cc158" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction DirectionCount</definition>
+        <argsstring></argsstring>
+        <name>DirectionCount</name>
+        <initializer> NeighborCode::DirectionCount</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa412bddbd66ec635d9afe1fa212063b0b" kindref="member">NeighborCode::DirectionCount</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="345" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="345" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1a39b52e52410a4873e32dabc34427da5c" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction East</definition>
+        <argsstring></argsstring>
+        <name>East</name>
+        <initializer> NeighborCode::East</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa66183dce5a3b8d48fbdfe1f8ede7fcc2" kindref="member">NeighborCode::East</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="341" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1a8663612bdce13b746836ab556e346a01" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction Error</definition>
+        <argsstring></argsstring>
+        <name>Error</name>
+        <initializer> NeighborCode::Error</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaa4dfd42ec49d09d8c6555c218301cc30f" kindref="member">NeighborCode::Error</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="340" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="340" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1ab8ee2b5353b7807a8934045eae3099c2" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction North</definition>
+        <argsstring></argsstring>
+        <name>North</name>
+        <initializer> NeighborCode::North</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaaeb9634ef4d4fd4a5297ada06f89c3fe" kindref="member">NeighborCode::North</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="342" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="342" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1a5235cd5ca104c4410040db428892af8f" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction South</definition>
+        <argsstring></argsstring>
+        <name>South</name>
+        <initializer> NeighborCode::South</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaac15660611b40cfc69e36003c8607311a" kindref="member">NeighborCode::South</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="344" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1FourNeighborhood_1a0ed7ae90898438bcd62c59b2d267e219" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction West</definition>
+        <argsstring></argsstring>
+        <name>West</name>
+        <initializer> NeighborCode::West</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" kindref="member">NeighborCode::West</ref> to namespace <ref refid="namespacevigra_1_1FourNeighborhood" kindref="compound">FourNeighborhood</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="343" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1FourNeighborhood_1ae2bdd6d1a379c60507f07cff05e98046" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>Diff2D const&amp; vigra::FourNeighborhood::east</definition>
+        <argsstring>()</argsstring>
+        <name>east</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the east neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="347" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="347" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1FourNeighborhood_1abea2f942551bcbeae683aadd54ffa997" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>Diff2D const&amp; vigra::FourNeighborhood::north</definition>
+        <argsstring>()</argsstring>
+        <name>north</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the north neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="348" bodyend="347"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1FourNeighborhood_1ade92c02fcbdce37bafb4d296d70e29fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>Diff2D const&amp; vigra::FourNeighborhood::south</definition>
+        <argsstring>()</argsstring>
+        <name>south</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the south neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="350" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="350" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1FourNeighborhood_1a6bffbcc9f832cc1dba7ef6ef4b1b14b3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>Diff2D const&amp; vigra::FourNeighborhood::west</definition>
+        <argsstring>()</argsstring>
+        <name>west</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Offset to the west neighbor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="349" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="349" bodyend="348"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Utilities for 4-neighborhood. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="133"/>
+  </compounddef>
+</doxygen>

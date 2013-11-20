@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__VoxelNeighborhood" kind="group">
+    <compoundname>VoxelNeighborhood</compoundname>
+    <title>Utilities to manage voxel neighborhoods</title>
+    <innernamespace refid="namespacevigra_1_1Neighborhood3DSix">vigra::Neighborhood3DSix</innernamespace>
+    <innernamespace refid="namespacevigra_1_1Neighborhood3DTwentySix">vigra::Neighborhood3DTwentySix</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__VoxelNeighborhood_1ga4cc579294aeb92b2639e0f4d8744fc58" prot="public" static="no">
+        <type>AtImageBorder</type>
+        <definition>typedef AtImageBorder AtVolumeBorder</definition>
+        <argsstring></argsstring>
+        <name>AtVolumeBorder</name>
+        <briefdescription>
+<para>Encode whether a voxel is near the volume border. </para>        </briefdescription>
+        <detaileddescription>
+<para>This enum is used with <ref refid="group__VoxelNeighborhood_1gac33681b57ef0dbc13a5ca592e899c619" kindref="member">isAtVolumeBorder()</ref> and <ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">vigra::RestrictedNeighborhoodCirculator</ref>.</para><para><bold>#include</bold> &lt;<ref refid="voxelneighborhood_8hxx_source" kindref="compound">vigra/voxelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__VoxelNeighborhood_1gac81aa87ff25f08b0c7cf06bab1eddd13" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref>&lt; int, 3 &gt;</type>
+        <definition>typedef vigra::TinyVector&lt;int, 3&gt; Diff3D</definition>
+        <argsstring></argsstring>
+        <name>Diff3D</name>
+        <briefdescription>
+<para>3-dimensional difference vector </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="55" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__VoxelNeighborhood_1gaae23891fb489f969e6deff00b8d76b8a" prot="public" static="no">
+        <type>Neighborhood3DSix::NeighborCode3D</type>
+        <definition>typedef Neighborhood3DSix::NeighborCode3D NeighborCode3DSix</definition>
+        <argsstring></argsstring>
+        <name>NeighborCode3DSix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1Neighborhood3DSix_1_1NeighborCode3D" kindref="compound">vigra::Neighborhood3DSix::NeighborCode3D</ref> into the scope of namespace vigra. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="468" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__VoxelNeighborhood_1ga89b6c2a18b23d145b3bc2fe983803f08" prot="public" static="no">
+        <type>Neighborhood3DTwentySix::NeighborCode3D</type>
+        <definition>typedef Neighborhood3DTwentySix::NeighborCode3D NeighborCode3DTwentySix</definition>
+        <argsstring></argsstring>
+        <name>NeighborCode3DTwentySix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D" kindref="compound">vigra::Neighborhood3DTwentySix::NeighborCode3D</ref> into the scope of namespace vigra. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1602" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1602" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__VoxelNeighborhood_1gac33681b57ef0dbc13a5ca592e899c619" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AtVolumeBorder</type>
+        <definition>AtVolumeBorder vigra::isAtVolumeBorder</definition>
+        <argsstring>(int x, int y, int z, int width, int height, int depth)</argsstring>
+        <name>isAtVolumeBorder</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>depth</declname>
+        </param>
+        <briefdescription>
+<para>Find out whether a voxel is at the volume border. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function checks if <emphasis>x</emphasis> == 0 or <emphasis>x</emphasis> == <emphasis>width</emphasis> - 1 and <emphasis>y</emphasis> == 0 or <emphasis>y</emphasis> == <emphasis>height</emphasis> - 1 and so on and returns the appropriate value of <ref refid="group__VoxelNeighborhood_1ga4cc579294aeb92b2639e0f4d8744fc58" kindref="member">vigra::AtVolumeBorder</ref>, or zero when the voxel is not at te volume border. The behavior of the function is undefined if (x,y,z) is not inside the volume. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="82" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VoxelNeighborhood_1ga31007036430e09cfe56aa71eee724e28" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AtVolumeBorder</type>
+        <definition>AtVolumeBorder vigra::isAtVolumeBorder</definition>
+        <argsstring>(Diff3D const &amp;p, Diff3D const &amp;shape)</argsstring>
+        <name>isAtVolumeBorder</name>
+        <param>
+          <type>Diff3D const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>Diff3D const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="101" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VoxelNeighborhood_1gadd905565288fd29d2228179f4f5971a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AtVolumeBorder</type>
+        <definition>AtVolumeBorder vigra::isAtVolumeBorderAntiCausal</definition>
+        <argsstring>(int x, int y, int z, int width, int height, int depth)</argsstring>
+        <name>isAtVolumeBorderAntiCausal</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>depth</declname>
+        </param>
+        <briefdescription>
+<para>Find out whether a voxel is at a scan-order relevant volume border. This function checks if <emphasis>x</emphasis> == 0 or <emphasis>y</emphasis> == 0 or <emphasis>z</emphasis> == <emphasis>0</emphasis> and returns the appropriate value of <ref refid="group__VoxelNeighborhood_1ga4cc579294aeb92b2639e0f4d8744fc58" kindref="member">vigra::AtVolumeBorder</ref>, or zero when the voxel is not at te volume border. The behavior of the function is undefined if (x,y,z) is not inside the volume. </para>        </briefdescription>
+        <detaileddescription>
+<para>TODO: Write new comment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="134" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VoxelNeighborhood_1ga3d76dcc3681ef0aab964c49657283fa6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AtVolumeBorder</type>
+        <definition>AtVolumeBorder vigra::isAtVolumeBorderCausal</definition>
+        <argsstring>(int x, int y, int z, int width, int height, int)</argsstring>
+        <name>isAtVolumeBorderCausal</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+<para>Find out whether a voxel is at a scan-order relevant volume border. This function checks if <emphasis>x</emphasis> == 0 or <emphasis>y</emphasis> == 0 or <emphasis>z</emphasis> == <emphasis>0</emphasis> and returns the appropriate value of <ref refid="group__VoxelNeighborhood_1ga4cc579294aeb92b2639e0f4d8744fc58" kindref="member">vigra::AtVolumeBorder</ref>, or zero when the voxel is not at te volume border. The behavior of the function is undefined if (x,y,z) is not inside the volume. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="112" bodyend="127"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>6- and 26-neighborhood definitions and circulators.</para><para><bold>#include</bold> &lt;<ref refid="voxelneighborhood_8hxx_source" kindref="compound">vigra/voxelneighborhood.hxx</ref>&gt;<linebreak/>
+</para><para><bold>See also:</bold> <ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">vigra::NeighborhoodCirculator</ref> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

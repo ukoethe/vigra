@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01FFTWComplex_3_01Real_01_4_00_01FFTWComplex_3_01Real_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; FFTWComplex&lt; Real &gt;, FFTWComplex&lt; Real &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Real</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01FFTWComplex_3_01Real_01_4_00_01FFTWComplex_3_01Real_01_4_01_4_1abd032106ceb1fbe31d44a525151b0fce" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;</type>
+        <definition>typedef FFTWComplex&lt;Real&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="594" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="593" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="592" bodyend="595"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01FFTWComplex_3_01Real_01_4_00_01FFTWComplex_3_01Real_01_4_01_4_1abd032106ceb1fbe31d44a525151b0fce" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; FFTWComplex&lt; Real &gt;, FFTWComplex&lt; Real &gt; &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

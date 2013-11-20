@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn" kind="class" prot="public">
+    <compoundname>vigra::rf::split::RandomSplitOfColumn</compoundname>
+    <includes refid="rf__split_8hxx" local="no">vigra/random_forest/rf_split.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1abd2b6e09453ca75351e3d02b9b1536f4" prot="public" static="no">
+        <type><ref refid="classvigra_1_1GiniCriterion" kindref="compound">GiniCriterion</ref></type>
+        <definition>typedef GiniCriterion LineSearchLossTag</definition>
+        <argsstring></argsstring>
+        <name>LineSearchLossTag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1266" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a2e4a730a1b41115e65ff37b13c8ddad1" prot="public" static="no">
+        <type><ref refid="group__RandomNumberGeneration_1gac1184f48edbce638f79fcb5d8074984d" kindref="member">RandomMT19937</ref></type>
+        <definition>typedef RandomMT19937 Random_t</definition>
+        <argsstring></argsstring>
+        <name>Random_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1273" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a00849ef9aa434f78600709ec7247f568" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; bestCurrentCounts[2]</definition>
+        <argsstring>[2]</argsstring>
+        <name>bestCurrentCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1aaa06197a3f3ce3a0ac5744a275934b06" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; class_weights_</definition>
+        <argsstring></argsstring>
+        <name>class_weights_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1267" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1267" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a99db359c49053ebe05644db4810bba24" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref></type>
+        <definition>ProblemSpec ext_param_</definition>
+        <argsstring></argsstring>
+        <name>ext_param_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1272" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1272" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a13f16be79905b7016a6884012956734a" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double min_gini_</definition>
+        <argsstring></argsstring>
+        <name>min_gini_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1269" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1269" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a3a7079be2fd237164a2a607f671b77f7" prot="public" static="no" mutable="no">
+        <type>std::ptrdiff_t</type>
+        <definition>std::ptrdiff_t min_index_</definition>
+        <argsstring></argsstring>
+        <name>min_index_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1270" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ab79735b653e853681f38d4a996bd9e76" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double min_threshold_</definition>
+        <argsstring></argsstring>
+        <name>min_threshold_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1271" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1271" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a6587af041d2bf7288f56f4e3f3806519" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1RandomNumberGenerator" kindref="compound">Random_t</ref></type>
+        <definition>Random_t random</definition>
+        <argsstring></argsstring>
+        <name>random</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1274" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1274" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a7a43181a5b8f2657685341f05be9d604" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DataSource_t</type>
+          </param>
+          <param>
+            <type>class Iter</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double loss_of_region</definition>
+        <argsstring>(DataSource_t const &amp;labels, Iter &amp;begin, Iter &amp;end, Array const &amp;region_response) const </argsstring>
+        <name>loss_of_region</name>
+        <param>
+          <type>DataSource_t const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>Iter &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>Iter &amp;</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>region_response</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1364" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1360" bodyend="1370"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ab89086b04416197b21525390b360a768" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DataSourceF_t</type>
+          </param>
+          <param>
+            <type>class DataSource_t</type>
+          </param>
+          <param>
+            <type>class I_Iter</type>
+          </param>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(DataSourceF_t const &amp;column, DataSource_t const &amp;labels, I_Iter &amp;begin, I_Iter &amp;end, Array const &amp;region_response)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>DataSourceF_t const &amp;</type>
+          <declname>column</declname>
+        </param>
+        <param>
+          <type>DataSource_t const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>I_Iter &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>I_Iter &amp;</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>region_response</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1319" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1314" bodyend="1357"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a19664f4ed9b1f27fa2fbc3f1c1305bba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomSplitOfColumn</definition>
+        <argsstring>()</argsstring>
+        <name>RandomSplitOfColumn</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1277" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1276" bodyend="1277"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a88906ba7bcb16854e571def13ecab7a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>RandomSplitOfColumn</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;ext)</argsstring>
+        <name>RandomSplitOfColumn</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1285" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1280" bodyend="1288"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1aca6bc2da8a22be1c7a4b3bbe206eae9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>RandomSplitOfColumn</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;ext, Random_t &amp;random_)</argsstring>
+        <name>RandomSplitOfColumn</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RandomNumberGenerator" kindref="compound">Random_t</ref> &amp;</type>
+          <declname>random_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1291" bodyend="1299"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ae845159051e744858982c02a84763f74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_external_parameters</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;ext)</argsstring>
+        <name>set_external_parameters</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>ext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1302" bodyend="1308"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>This Functor chooses a random value of a column </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="2128">
+        <label>RandomNumberGenerator&lt; Engine &gt;</label>
+        <link refid="classvigra_1_1RandomNumberGenerator"/>
+      </node>
+      <node id="2127">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2123">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="2124" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2126" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="2124">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2125" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2122">
+        <label>RandomSplitOfColumn</label>
+        <link refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn"/>
+        <childnode refid="2123" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+        <childnode refid="2124" relation="usage">
+          <edgelabel>bestCurrentCounts</edgelabel>
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2128" relation="usage">
+          <edgelabel>random</edgelabel>
+        </childnode>
+      </node>
+      <node id="2125">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2126">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2127" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="1263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="1262" bodyend="1372"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a00849ef9aa434f78600709ec7247f568" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>bestCurrentCounts</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1aaa06197a3f3ce3a0ac5744a275934b06" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>class_weights_</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a99db359c49053ebe05644db4810bba24" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1abd2b6e09453ca75351e3d02b9b1536f4" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>LineSearchLossTag</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a7a43181a5b8f2657685341f05be9d604" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>loss_of_region</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a13f16be79905b7016a6884012956734a" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>min_gini_</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a3a7079be2fd237164a2a607f671b77f7" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>min_index_</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ab79735b653e853681f38d4a996bd9e76" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>min_threshold_</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ab89086b04416197b21525390b360a768" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a6587af041d2bf7288f56f4e3f3806519" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>random</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a2e4a730a1b41115e65ff37b13c8ddad1" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>Random_t</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a19664f4ed9b1f27fa2fbc3f1c1305bba" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>RandomSplitOfColumn</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1a88906ba7bcb16854e571def13ecab7a9" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>RandomSplitOfColumn</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1aca6bc2da8a22be1c7a4b3bbe206eae9f" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>RandomSplitOfColumn</name></member>
+      <member refid="classvigra_1_1rf_1_1split_1_1RandomSplitOfColumn_1ae845159051e744858982c02a84763f74" prot="public" virt="non-virtual"><scope>vigra::rf::split::RandomSplitOfColumn</scope><name>set_external_parameters</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

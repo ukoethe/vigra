@@ -1,0 +1,347 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumericTraits&lt; short unsigned int &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a1d7d684f09e9e03cac7c79562aac3d70" prot="public" static="no">
+        <type>std::complex&lt; RealPromote &gt;</type>
+        <definition>typedef std::complex&lt;RealPromote&gt; ComplexPromote</definition>
+        <argsstring></argsstring>
+        <name>ComplexPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="698" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="698" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a6f400777082ea27fd6fd847e1740b3b5" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isComplex</definition>
+        <argsstring></argsstring>
+        <name>isComplex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="705" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="705" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1abeab56672ec9762cf4f6792cda196120" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isIntegral</definition>
+        <argsstring></argsstring>
+        <name>isIntegral</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="701" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="701" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a702c46b01244e0b09557cc08f4bd9490" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isOrdered</definition>
+        <argsstring></argsstring>
+        <name>isOrdered</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="704" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="704" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a7d731991b3f7a35b598c201d56741081" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isScalar</definition>
+        <argsstring></argsstring>
+        <name>isScalar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="702" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="702" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a135fe99099ed1acc5dc13db9d3d01596" prot="public" static="no">
+        <type>VigraFalseType</type>
+        <definition>typedef VigraFalseType isSigned</definition>
+        <argsstring></argsstring>
+        <name>isSigned</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="703" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="703" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a83bcf67e89d0886fc9f2735db21fe6ba" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="695" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="695" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a860b5af19bcab8f9e8704ed34bfffcce" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double RealPromote</definition>
+        <argsstring></argsstring>
+        <name>RealPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="697" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="697" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a6381729fd188426b0ba38df00e3b9837" prot="public" static="no">
+        <type>short unsigned int</type>
+        <definition>typedef short unsigned int Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="694" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="694" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a04e5afc86df98c020289a320144ec758" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>typedef unsigned int UnsignedPromote</definition>
+        <argsstring></argsstring>
+        <name>UnsignedPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="696" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="696" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a66d801799378dee5cda55a8199f11f21" prot="public" static="no">
+        <type>Type</type>
+        <definition>typedef Type ValueType</definition>
+        <argsstring></argsstring>
+        <name>ValueType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="699" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="699" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ad506eaa5b43dc574f1d525821247c711" prot="public" static="yes" mutable="no">
+        <type>const short unsigned int</type>
+        <definition>const short unsigned int maxConst</definition>
+        <argsstring></argsstring>
+        <name>maxConst</name>
+        <initializer> USHRT_MAX</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="717" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="717" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a212a6f8650b1a046e87d1f07d8723002" prot="public" static="yes" mutable="no">
+        <type>const short unsigned int</type>
+        <definition>const short unsigned int minConst</definition>
+        <argsstring></argsstring>
+        <name>minConst</name>
+        <initializer> 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="716" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="716" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1aca086e1a7048e83f26848b036ceba38b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int fromPromote</definition>
+        <argsstring>(Promote v)</argsstring>
+        <name>fromPromote</name>
+        <param>
+          <type>Promote</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="722" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="722" bodyend="728"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a68615f938b663e66da3a0158962067cd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int fromRealPromote</definition>
+        <argsstring>(RealPromote v)</argsstring>
+        <name>fromRealPromote</name>
+        <param>
+          <type>RealPromote</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="729" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="729" bodyend="735"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a60b91a71638b4094530a82de811ff251" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int max</definition>
+        <argsstring>()</argsstring>
+        <name>max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="711" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="711" bodyend="711"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a06b2c472f5b1267be6878ed2840c6f0d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int min</definition>
+        <argsstring>()</argsstring>
+        <name>min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="710" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="710" bodyend="710"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ae232dccdc681c2a0a2b91e1349f1142a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int nonZero</definition>
+        <argsstring>()</argsstring>
+        <name>nonZero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="709" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="709" bodyend="709"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ae523534f0b4a94728f2931ebf1f0fc5f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int one</definition>
+        <argsstring>()</argsstring>
+        <name>one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="708" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="708" bodyend="708"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ad62e047d53e8eeeb7323617c9e9ed44a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Promote</type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(short unsigned int v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type>short unsigned int</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="720" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="720" bodyend="720"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a20edde4399554242cf7b8900f01486f2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RealPromote</type>
+        <definition>static RealPromote toRealPromote</definition>
+        <argsstring>(short unsigned int v)</argsstring>
+        <name>toRealPromote</name>
+        <param>
+          <type>short unsigned int</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="721" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="721" bodyend="721"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a5a80dbf0d1d08b50e5e6fefcdd9efad0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>short unsigned int</type>
+        <definition>static short unsigned int zero</definition>
+        <argsstring>()</argsstring>
+        <name>zero</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="707" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="707" bodyend="707"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="693" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="692" bodyend="736"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a1d7d684f09e9e03cac7c79562aac3d70" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>ComplexPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1aca086e1a7048e83f26848b036ceba38b" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>fromPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a68615f938b663e66da3a0158962067cd" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>fromRealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a6f400777082ea27fd6fd847e1740b3b5" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>isComplex</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1abeab56672ec9762cf4f6792cda196120" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>isIntegral</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a702c46b01244e0b09557cc08f4bd9490" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>isOrdered</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a7d731991b3f7a35b598c201d56741081" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>isScalar</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a135fe99099ed1acc5dc13db9d3d01596" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>isSigned</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a60b91a71638b4094530a82de811ff251" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>max</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ad506eaa5b43dc574f1d525821247c711" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>maxConst</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a06b2c472f5b1267be6878ed2840c6f0d" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>min</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a212a6f8650b1a046e87d1f07d8723002" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>minConst</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ae232dccdc681c2a0a2b91e1349f1142a" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>nonZero</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ae523534f0b4a94728f2931ebf1f0fc5f" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>one</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a83bcf67e89d0886fc9f2735db21fe6ba" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a860b5af19bcab8f9e8704ed34bfffcce" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>RealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1ad62e047d53e8eeeb7323617c9e9ed44a" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>toPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a20edde4399554242cf7b8900f01486f2" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>toRealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a6381729fd188426b0ba38df00e3b9837" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>Type</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a04e5afc86df98c020289a320144ec758" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>UnsignedPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a66d801799378dee5cda55a8199f11f21" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>ValueType</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01short_01unsigned_01int_01_4_1a5a80dbf0d1d08b50e5e6fefcdd9efad0" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; short unsigned int &gt;</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

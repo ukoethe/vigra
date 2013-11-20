@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1binder__1" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::binder_1</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class A</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1binder__1_1a643cecb10ab46d74dcc9d06c8d72588b" prot="public" static="no" mutable="no">
+        <type>A</type>
+        <definition>A v</definition>
+        <argsstring></argsstring>
+        <name>v</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1052" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1052" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1binder__1_1a805492d9cda58625198c5b66403019e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>binder_1</definition>
+        <argsstring>(A v_)</argsstring>
+        <name>binder_1</name>
+        <param>
+          <type>A</type>
+          <declname>v_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1053" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1053" bodyend="1053"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1binder__1_1aab628e2c9d6350bbfe0b30c60ddfb8d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class F</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void call</definition>
+        <argsstring>(F &amp;first)</argsstring>
+        <name>call</name>
+        <param>
+          <type>F &amp;</type>
+          <declname>first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1061" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1060" bodyend="1063"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1binder__1_1af6bbe05ab718015c28aefa4f7d9ab89b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class F</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(F &amp;first)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>F &amp;</type>
+          <declname>first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1056" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1055" bodyend="1058"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1051" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1050" bodyend="1064"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1binder__1_1a805492d9cda58625198c5b66403019e5" prot="public" virt="non-virtual"><scope>vigra::type_lists::binder_1</scope><name>binder_1</name></member>
+      <member refid="structvigra_1_1type__lists_1_1binder__1_1aab628e2c9d6350bbfe0b30c60ddfb8d2" prot="public" virt="non-virtual"><scope>vigra::type_lists::binder_1</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1binder__1_1af6bbe05ab718015c28aefa4f7d9ab89b" prot="public" virt="non-virtual"><scope>vigra::type_lists::binder_1</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1type__lists_1_1binder__1_1a643cecb10ab46d74dcc9d06c8d72588b" prot="public" virt="non-virtual"><scope>vigra::type_lists::binder_1</scope><name>v</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,455 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1GaborFilterFamily" kind="class" prot="public">
+    <compoundname>vigra::GaborFilterFamily</compoundname>
+    <basecompoundref refid="classvigra_1_1ImageArray" prot="public" virt="non-virtual">vigra::ImageArray&lt; ImageType, Alloc &gt;</basecompoundref>
+    <includes refid="gaborfilter_8hxx" local="no">vigra/gaborfilter.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class ImageType</type>
+      </param>
+      <param>
+        <type>class Alloc</type>
+        <defval>typename ImageType::allocator_type::template rebind&lt;ImageType&gt;::other</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600" prot="public" static="no">
+        <name>@8</name>
+        <enumvalue id="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600ab87dcf540204e5c3bcdbdb39ee55206b" prot="public">
+          <name>stdFilterSize</name>
+          <initializer> 128</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600a41db54d4d9d5442ba42973013f1cb202" prot="public">
+          <name>stdDirectionCount</name>
+          <initializer> 6</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600a1137989b411b4b375748b0b9cf1de170" prot="public">
+          <name>stdScaleCount</name>
+          <initializer> 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="313" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="313" bodyend="313"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1GaborFilterFamily_1a491b27d1ad7af5a7dd9152afd86e0ec2" prot="private" static="no">
+        <type><ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>&lt; ImageType, Alloc &gt;</type>
+        <definition>typedef ImageArray&lt;ImageType, Alloc&gt; ParentClass</definition>
+        <argsstring></argsstring>
+        <name>ParentClass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="292" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1GaborFilterFamily_1af2a2a69a5fd994331af69243241041d8" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int directionCount_</definition>
+        <argsstring></argsstring>
+        <name>directionCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="293" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="293" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GaborFilterFamily_1a08bdaab47f3fdeb5860decb8e6069700" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double maxCenterFrequency_</definition>
+        <argsstring></argsstring>
+        <name>maxCenterFrequency_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="294" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="294" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GaborFilterFamily_1a5718bf1a21772277a43fafd388f49862" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int scaleCount_</definition>
+        <argsstring></argsstring>
+        <name>scaleCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="293" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="293" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a2deffc5b57ae773bc38edb096be31bd6" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void initFilters</definition>
+        <argsstring>()</argsstring>
+        <name>initFilters</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="298" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="297" bodyend="310"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a6995ff4d2c42ae53b8a62616783d715f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int directionCount</definition>
+        <argsstring>() const </argsstring>
+        <name>directionCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the number of filter directions available. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="391" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1af2d2577092db6cd4414017333e2ac1a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int filterIndex</definition>
+        <argsstring>(int direction, int scale) const </argsstring>
+        <name>filterIndex</name>
+        <param>
+          <type>int</type>
+          <declname>direction</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the index of the filter with the given direction and scale in this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>. direction must in the range 0..<ref refid="classvigra_1_1GaborFilterFamily_1a6995ff4d2c42ae53b8a62616783d715f" kindref="member">directionCount()</ref>-1 and scale in the range 0..rangeCount()-1. This is useful for example if you used <ref refid="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" kindref="member">applyFourierFilterFamily()</ref> and got a resulting <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref> which still has the same order of images, but no <ref refid="classvigra_1_1GaborFilterFamily_1aaa17bc95f71099ce02edcc662560679e" kindref="member">getFilter()</ref> method anymore. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="360" bodyend="363"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a426b8f8cd74743b85e2c85e4e949fd36" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GaborFilterFamily</definition>
+        <argsstring>(const Diff2D &amp;size, int directionCount=stdDirectionCount, int scaleCount=stdScaleCount, double maxCenterFrequency=3.0/8.0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>GaborFilterFamily</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>directionCount</declname>
+          <defval>stdDirectionCount</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>scaleCount</declname>
+          <defval>stdScaleCount</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>maxCenterFrequency</declname>
+          <defval>3.0/8.0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructs a family of gabor filters in frequency space. The filters will be calculated on construction, so it makes sense to provide good parameters right now although they can be changed later, too. If you leave them out, the defaults are a <ref refid="classvigra_1_1GaborFilterFamily_1a6995ff4d2c42ae53b8a62616783d715f" kindref="member">directionCount</ref> of 6, a <ref refid="classvigra_1_1GaborFilterFamily_1abf04f1dc10cde85de5cbe53dc63633a0" kindref="member">scaleCount</ref> of 4 and a <ref refid="classvigra_1_1GaborFilterFamily_1a3df5139dfe25fbd099b70916b7c9f8b4" kindref="member">maxCenterFrequency</ref> of 3/8(=0.375). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="323" bodyend="333"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1ac059b2dad7b6b663425e6ef52c1890be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GaborFilterFamily</definition>
+        <argsstring>(int width=stdFilterSize, int height=-1, int directionCount=stdDirectionCount, int scaleCount=stdScaleCount, double maxCenterFrequency=3.0/8.0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>GaborFilterFamily</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+          <defval>stdFilterSize</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+          <defval>-1</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>directionCount</declname>
+          <defval>stdDirectionCount</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>scaleCount</declname>
+          <defval>stdScaleCount</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>maxCenterFrequency</declname>
+          <defval>3.0/8.0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Convenience variant of the above constructor taking width and height separately. Also, this one serves as default constructor constructing 128x128 pixel filters. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="339" bodyend="350"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1aaa17bc95f71099ce02edcc662560679e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ImageType const &amp;</type>
+        <definition>ImageType const&amp; getFilter</definition>
+        <argsstring>(int direction, int scale) const </argsstring>
+        <name>getFilter</name>
+        <param>
+          <type>int</type>
+          <declname>direction</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the filter with the given direction and scale. direction must in the range 0..<ref refid="classvigra_1_1GaborFilterFamily_1a6995ff4d2c42ae53b8a62616783d715f" kindref="member">directionCount()</ref>-1 and scale in the range 0..rangeCount()-1. <computeroutput>filters.getFilter(direction, scale)</computeroutput> is the same as <computeroutput>filters[filterIndex(direction, scale)]</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="371" bodyend="374"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a3df5139dfe25fbd099b70916b7c9f8b4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double maxCenterFrequency</definition>
+        <argsstring>()</argsstring>
+        <name>maxCenterFrequency</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the center frequency of the filter(s) with scale==0. Filters with scale&gt;0 will have a center frequency reduced in octaves: <computeroutput>centerFrequency= maxCenterFrequency / 2.0^scale</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="411" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="410" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a59b6e47c76f39f804bb5e5e979b76d03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void resizeImages</definition>
+        <argsstring>(const Diff2D &amp;newSize)</argsstring>
+        <name>resizeImages</name>
+        <reimplements refid="classvigra_1_1ImageArray_1a59b6e47c76f39f804bb5e5e979b76d03">resizeImages</reimplements>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>newSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize all filters (causing their recalculation). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="379" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="378" bodyend="382"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1abf04f1dc10cde85de5cbe53dc63633a0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int scaleCount</definition>
+        <argsstring>() const </argsstring>
+        <name>scaleCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the number of filter scales available. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="386" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1aafb25a40470704e38259551036109566" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setDirectionScaleCounts</definition>
+        <argsstring>(int directionCount, int scaleCount)</argsstring>
+        <name>setDirectionScaleCounts</name>
+        <param>
+          <type>int</type>
+          <declname>directionCount</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>scaleCount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change the number of directions / scales. This causes the recalculation of all filters. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="398" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="397" bodyend="403"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GaborFilterFamily_1a2c12d85a937ee71740cf7496ff8ecd3b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setMaxCenterFrequency</definition>
+        <argsstring>(double maxCenterFrequency)</argsstring>
+        <name>setMaxCenterFrequency</name>
+        <param>
+          <type>double</type>
+          <declname>maxCenterFrequency</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change the center frequency of the filter(s) with scale==0. See <ref refid="classvigra_1_1GaborFilterFamily_1a3df5139dfe25fbd099b70916b7c9f8b4" kindref="member">maxCenterFrequency()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="417" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="416" bodyend="420"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Family of gabor filters of different scale and direction. </para>    </briefdescription>
+    <detaileddescription>
+<para>A <ref refid="classvigra_1_1GaborFilterFamily" kindref="compound">GaborFilterFamily</ref> can be used to quickly create a whole family of gabor filters in frequency space. Especially useful in conjunction with <ref refid="group__FourierTransform_1ga615ea159a1ac4328600ee44cbaa9a343" kindref="member">applyFourierFilterFamily</ref>, since it&apos;s derived from <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>.</para><para>The filter parameters are chosen to make the center frequencies decrease in octaves with increasing scale indices, and to make the half-peak-magnitude ellipses touch each other to somewhat reduce redundancy in the filter answers. This is done by using <ref refid="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" kindref="member">angularGaborSigma()</ref> and <ref refid="group__GaborFilter_1ga13740f6096df3f546d5eeb6ebfbd3d8b" kindref="member">radialGaborSigma()</ref>, you&apos;ll find more information there.</para><para>The template parameter ImageType should be a scalar image type suitable for filling in</para><para><bold>#include</bold> &lt;<ref refid="gaborfilter_8hxx_source" kindref="compound">vigra/gaborfilter.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="722">
+        <label>ImageArray&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ImageArray"/>
+      </node>
+      <node id="721">
+        <label>GaborFilterFamily&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1GaborFilterFamily"/>
+        <childnode refid="722" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="726">
+        <label>ArrayVectorView&lt; ImageType &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="724">
+        <label>ImageArray&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ImageArray"/>
+        <childnode refid="725" relation="usage">
+          <edgelabel>images_</edgelabel>
+        </childnode>
+      </node>
+      <node id="725">
+        <label>ArrayVector&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="726" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="723">
+        <label>GaborFilterFamily&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1GaborFilterFamily"/>
+        <childnode refid="724" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="289" bodyend="421"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImageArray_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImageArray_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImageArray_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImageArray_1ab009512ed674371bda87b4a4a3fc7305" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>capacity</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>clear</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad8ab228799755cc66f3b8de921508690" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a92409f7d21a9c8bd7cdc84e873e0f03a" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1ImageArray_1ae95c98dfd41e66671cc48065e6b41dd4" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>const_reverse_iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a48236068431c0a239668e1b8c1fba4be" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a6995ff4d2c42ae53b8a62616783d715f" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>directionCount</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1af2a2a69a5fd994331af69243241041d8" prot="private" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>directionCount_</name></member>
+      <member refid="classvigra_1_1ImageArray_1a3f37b042a1e7cd4bd38fc564de81f0da" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>empty</name></member>
+      <member refid="classvigra_1_1ImageArray_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImageArray_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImageArray_1af7659d9799f06df763bf397101941dd7" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>erase</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad220964db436bf27e9ce52bec8d41a45" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>erase</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1af2d2577092db6cd4414017333e2ac1a2" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>filterIndex</name></member>
+      <member refid="classvigra_1_1ImageArray_1a6a48363b4355f6f5b441637774f79a59" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>front</name></member>
+      <member refid="classvigra_1_1ImageArray_1a1b5b57596df7e42e35dcd646906cb438" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>front</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a426b8f8cd74743b85e2c85e4e949fd36" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>GaborFilterFamily</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1ac059b2dad7b6b663425e6ef52c1890be" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>GaborFilterFamily</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1aaa17bc95f71099ce02edcc662560679e" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>getFilter</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac9776adb8a47cf8093312355c4ceb6f7" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1acafb6d1d0d25505c04a7ac0e34410dc7" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1a507730192389332f3a6fced59c550eb2" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac48f6c96fe91d5b269356ea0c4027fe6" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1ae219ae3c2604c7c029953dd0bfc040eb" prot="protected" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>images_</name></member>
+      <member refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>imageSize</name></member>
+      <member refid="classvigra_1_1ImageArray_1a935b2def8595c2a5c1ffc7270c378d4e" prot="protected" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ImageVector</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a2deffc5b57ae773bc38edb096be31bd6" prot="protected" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>initFilters</name></member>
+      <member refid="classvigra_1_1ImageArray_1a57f85fd1cc4b1445aa9f66d4c1cd2967" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1a19d396e629f6817330d2ec2a20d227a1" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1a8bddf58e8cc20663907a2c3cf4603189" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac5ff9ddf2faa16ab6b9ae40e157b96d0" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0ab5ce862c0331d9e45a6e1774fca131" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>max_size</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a3df5139dfe25fbd099b70916b7c9f8b4" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>maxCenterFrequency</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a08bdaab47f3fdeb5860decb8e6069700" prot="private" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>maxCenterFrequency_</name></member>
+      <member refid="classvigra_1_1ImageArray_1add0b6c04153235613d03222e223dbf6c" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ImageArray_1a97ebf4646d84d180bf682f7d5f042ca0" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0f85f0c43f6fa530133c3c7f49101d57" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a491b27d1ad7af5a7dd9152afd86e0ec2" prot="private" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>ParentClass</name></member>
+      <member refid="classvigra_1_1ImageArray_1a98888d2cbb7e7cedb9e52dcd308a5a6a" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ImageArray_1a058bda4957df6a97b1ea6c9fd783f672" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>pop_back</name></member>
+      <member refid="classvigra_1_1ImageArray_1a3cf3204cda8c85eb0e98ee4c71098ea1" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>push_back</name></member>
+      <member refid="classvigra_1_1ImageArray_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImageArray_1a04886aa70c34d66738e78bf70c675e66" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImageArray_1a56628b9fd214b563093a9bbff48c9d5b" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ImageArray_1a68c599ddcbfddc65170de524ac165e44" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImageArray_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImageArray_1a562f7b24b47d3e7632a9896935c14d8b" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>reserve</name></member>
+      <member refid="classvigra_1_1ImageArray_1a7f1d91e80478135d3b2f6a24ffd8f494" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ImageArray_1a2125049ce19f357e74bb2c3ae0905532" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>resize</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a59b6e47c76f39f804bb5e5e979b76d03" prot="public" virt="virtual"><scope>vigra::GaborFilterFamily</scope><name>resizeImages</name></member>
+      <member refid="classvigra_1_1ImageArray_1a80206f6d3bfed08587247572ef53a410" prot="public" virt="non-virtual" ambiguityscope="vigra::ImageArray::"><scope>vigra::GaborFilterFamily</scope><name>resizeImages</name></member>
+      <member refid="classvigra_1_1ImageArray_1a48ef57c91b97228cdad7a75053028d63" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>reverse_iterator</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1abf04f1dc10cde85de5cbe53dc63633a0" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>scaleCount</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a5718bf1a21772277a43fafd388f49862" prot="private" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>scaleCount_</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1aafb25a40470704e38259551036109566" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>setDirectionScaleCounts</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1a2c12d85a937ee71740cf7496ff8ecd3b" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>setMaxCenterFrequency</name></member>
+      <member refid="classvigra_1_1ImageArray_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>size</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0e9389736123e80492af446ae9de3ed6" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600a41db54d4d9d5442ba42973013f1cb202" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>stdDirectionCount</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600ab87dcf540204e5c3bcdbdb39ee55206b" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>stdFilterSize</name></member>
+      <member refid="classvigra_1_1GaborFilterFamily_1abed82baf7f470b522273a3e37c24c600a1137989b411b4b375748b0b9cf1de170" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>stdScaleCount</name></member>
+      <member refid="classvigra_1_1ImageArray_1a7611428da318d884d50c88f1a0fcccef" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>swap</name></member>
+      <member refid="classvigra_1_1ImageArray_1aa51d8837ec5025a0ab4e9f9ffadeb767" prot="public" virt="non-virtual"><scope>vigra::GaborFilterFamily</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1ImageArray_1a25d8a4623a2e0ced1f83ccfbd9951bc8" prot="public" virt="virtual"><scope>vigra::GaborFilterFamily</scope><name>~ImageArray</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

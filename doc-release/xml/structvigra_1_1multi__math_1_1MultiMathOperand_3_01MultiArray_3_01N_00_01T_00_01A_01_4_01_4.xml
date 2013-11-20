@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class A</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a6e6ff321faad3dcda63d9e8127241f21" prot="public" static="no">
+        <type>MultiMathOperand</type>
+        <definition>typedef MultiMathOperand AllowOverload</definition>
+        <argsstring></argsstring>
+        <name>AllowOverload</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="219" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1aec07304846c0d77b8ee73424552b07d0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiMathOperand</definition>
+        <argsstring>(MultiArray&lt; N, T, A &gt; const &amp;a)</argsstring>
+        <name>MultiMathOperand</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="221" bodyend="223"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="216" bodyend="224"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a6e6ff321faad3dcda63d9e8127241f21" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>AllowOverload</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a6b4a1cb35b4db995cd6e70f443def6cd" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>arg_</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1ab5c468eb2e4d15f5a452e465c98366c3" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>checkShape</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1accc388c814aa361008150cca507e3632" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>inc</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1aec07304846c0d77b8ee73424552b07d0" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>MultiMathOperand</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1af72e7e173ebafae63fdde7e8befc92dc" prot="public" virt="non-virtual" ambiguityscope="vigra::multi_math::MultiMathOperand::"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>MultiMathOperand</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a77c66c97503b5c80d04b38a78fba81f8" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>ndim</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1ad2efdacdb7457d0c4ecf8cfd706516a2" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>operator*</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a67694ed09d2aebfcc2f9097d64003cc6" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>operator[]</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1abe0bf4c19b4de79601338cd86bd2d926" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>reset</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a63c5e7ff46bc981ea76145bf27b4f519" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>result_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

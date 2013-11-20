@@ -1,0 +1,571 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1rf_1_1visitors" kind="namespace">
+    <compoundname>vigra::rf::visitors</compoundname>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1CompleteOOBInfo" prot="public">vigra::rf::visitors::CompleteOOBInfo</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1CorrelationVisitor" prot="public">vigra::rf::visitors::CorrelationVisitor</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor" prot="public">vigra::rf::visitors::OnlineLearnVisitor</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1OOB__Error" prot="public">vigra::rf::visitors::OOB_Error</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1OOB__PerTreeError" prot="public">vigra::rf::visitors::OOB_PerTreeError</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1RandomForestProgressVisitor" prot="public">vigra::rf::visitors::RandomForestProgressVisitor</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1StopVisiting" prot="public">vigra::rf::visitors::StopVisiting</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor" prot="public">vigra::rf::visitors::VariableImportanceVisitor</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase" prot="public">vigra::rf::visitors::VisitorBase</innerclass>
+    <innernamespace refid="namespacevigra_1_1rf_1_1visitors_1_1detail">vigra::rf::visitors::detail</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MachineLearning_1gafee5cad59894c439573770103eacfbc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A &gt;</type>
+        <definition>detail::VisitorNode&lt;A&gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="334" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga1dce33feda060f316c9a629200cd595a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B&gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="347" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="346" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gaf2acbad174f2838cb87965604a01a0f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C&gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="360" bodyend="369"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga58e4a960053285ee48ba63c86ffe4dd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D&gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="377" bodyend="388"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga2c777463415e56d7f988eb345bf49e72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E&gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="398" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="396" bodyend="410"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga65a28eb722429876459b7067d7c293ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+          <param>
+            <type>class F</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; F &gt; &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E, detail::VisitorNode&lt;F&gt; &gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e, F &amp;f)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>F &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="421" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="419" bodyend="435"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga597964fa099dc42046df99ca10df587d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+          <param>
+            <type>class F</type>
+          </param>
+          <param>
+            <type>class G</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; F, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; G &gt; &gt; &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E, detail::VisitorNode&lt;F, detail::VisitorNode&lt;G&gt; &gt; &gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e, F &amp;f, G &amp;g)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>F &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>G &amp;</type>
+          <declname>g</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="447" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="445" bodyend="463"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gae5fe6a588e964ed4fb049c1a7880b4ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+          <param>
+            <type>class F</type>
+          </param>
+          <param>
+            <type>class G</type>
+          </param>
+          <param>
+            <type>class H</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; F, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; G, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; H &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E, detail::VisitorNode&lt;F, detail::VisitorNode&lt;G, detail::VisitorNode&lt;H&gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e, F &amp;f, G &amp;g, H &amp;h)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>F &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>G &amp;</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>H &amp;</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="476" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="473" bodyend="494"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gad1084832eeb142bde98f01307ca847c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+          <param>
+            <type>class F</type>
+          </param>
+          <param>
+            <type>class G</type>
+          </param>
+          <param>
+            <type>class H</type>
+          </param>
+          <param>
+            <type>class I</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; F, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; G, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; H, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; I &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E, detail::VisitorNode&lt;F, detail::VisitorNode&lt;G, detail::VisitorNode&lt;H, detail::VisitorNode&lt;I&gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e, F &amp;f, G &amp;g, H &amp;h, I &amp;i)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>F &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>G &amp;</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>H &amp;</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type>I &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="507" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="504" bodyend="527"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga69a71a1a184e60e44d24d18dd67d8a60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+          <param>
+            <type>class E</type>
+          </param>
+          <param>
+            <type>class F</type>
+          </param>
+          <param>
+            <type>class G</type>
+          </param>
+          <param>
+            <type>class H</type>
+          </param>
+          <param>
+            <type>class I</type>
+          </param>
+          <param>
+            <type>class J</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; A, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; B, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; C, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; D, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; E, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; F, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; G, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; H, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; I, <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref>&lt; J &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt;</type>
+        <definition>detail::VisitorNode&lt;A, detail::VisitorNode&lt;B, detail::VisitorNode&lt;C, detail::VisitorNode&lt;D, detail::VisitorNode&lt;E, detail::VisitorNode&lt;F, detail::VisitorNode&lt;G, detail::VisitorNode&lt;H, detail::VisitorNode&lt;I, detail::VisitorNode&lt;J&gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; &gt; vigra::rf::visitors::create_visitor</definition>
+        <argsstring>(A &amp;a, B &amp;b, C &amp;c, D &amp;d, E &amp;e, F &amp;f, G &amp;g, H &amp;h, I &amp;i, J &amp;j)</argsstring>
+        <name>create_visitor</name>
+        <param>
+          <type>A &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>C &amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>D &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>E &amp;</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>F &amp;</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>G &amp;</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>H &amp;</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type>I &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>J &amp;</type>
+          <declname>j</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>factory method to to be used with <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="537" bodyend="563"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>This namespace contains all classes and methods related to extracting information during learning of the random forest. All Visitors share the same interface defined in <ref refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase" kindref="compound">visitors::VisitorBase</ref>. The member methods are invoked at certain points of the main code in the order they were supplied.</para><para>For the Random Forest the Visitor concept is implemented as a statically linked list (Using templates). Each Visitor object is encapsulated in a <ref refid="classvigra_1_1rf_1_1visitors_1_1detail_1_1VisitorNode" kindref="compound">detail::VisitorNode</ref> object. The VisitorNode object calls the Next Visitor after one of its visit() methods have terminated.</para><para>To simplify usage <ref refid="group__MachineLearning_1gafee5cad59894c439573770103eacfbc4" kindref="member">create_visitor()</ref> factory methods are supplied. Use the <ref refid="group__MachineLearning_1gafee5cad59894c439573770103eacfbc4" kindref="member">create_visitor()</ref> method to supply visitor objects to the <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> method. It is possible to supply more than one visitor. They will then be invoked in serial order.</para><para>The calculated information are stored as public data members of the class. - see documentation of the individual visitors</para><para>While creating a new visitor the new class should therefore publicly inherit from this class (i.e.: see <ref refid="classvigra_1_1rf_1_1visitors_1_1OOB__Error" kindref="compound">visitors::OOB_Error</ref>).</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>xxx<sp/>feature_t<sp/>\\<sp/>replace<sp/>xxx<sp/>with<sp/>whichever<sp/>type</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>yyy<sp/>label_t<sp/><sp/><sp/>\\<sp/>meme<sp/>chose.<sp/></highlight></codeline>
+<codeline><highlight class="normal">MultiArrayView&lt;2,<sp/>feature_t&gt;<sp/>f<sp/>=<sp/>get_some_features();</highlight></codeline>
+<codeline><highlight class="normal">MultiArrayView&lt;2,<sp/>label_t&gt;<sp/><sp/><sp/>l<sp/>=<sp/>get_some_labels();</highlight></codeline>
+<codeline><highlight class="normal">RandomForest&lt;&gt;<sp/>rf()</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//calculate<sp/>OOB<sp/>Error</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">visitors::OOB_Error<sp/>oob_v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//calculate<sp/>Variable<sp/>Importance</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">visitors::VariableImportanceVisitor<sp/>varimp_v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>oob_error<sp/>=<sp/>rf.learn(f,<sp/>l,<sp/>visitors::<ref refid="group__MachineLearning_1gafee5cad59894c439573770103eacfbc4" kindref="member">create_visitor</ref>(oob_v,<sp/>varimp_v);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//the<sp/>data<sp/>can<sp/>be<sp/>found<sp/>in<sp/>the<sp/>attributes<sp/>of<sp/>oob_v<sp/>and<sp/>varimp_v<sp/>now</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="95"/>
+  </compounddef>
+</doxygen>

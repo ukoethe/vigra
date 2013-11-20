@@ -1,0 +1,941 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FFTWComplexOperators" kind="group">
+    <compoundname>FFTWComplexOperators</compoundname>
+    <title>Functions for FFTWComplex</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga6f4ef274842b6153923f02a6cd264576" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;::NormType</type>
+        <definition>FFTWComplex&lt;R&gt;::NormType vigra::abs</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>absolute value (= magnitude) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1003" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1002" bodyend="1005"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gadde71f2f7d25b483924dedacc36b2b2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>R</type>
+        <definition>R vigra::arg</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>arg</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>pahse </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1010" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1009" bodyend="1012"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gae7a58f4547192b979f7f8cd565bdf45b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::conj</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>conj</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>complex conjugate </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1031" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1030" bodyend="1033"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga8a3bba029e1ba026bd968786cfcf4546" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>R</type>
+        <definition>R vigra::imag</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>imag</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>imaginary part </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1024" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1023" bodyend="1026"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;::NormType</type>
+        <definition>FFTWComplex&lt;R&gt;::NormType vigra::norm</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>norm</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>norm (= magnitude) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1037" bodyend="1040"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gab6fe0235404f2cfe54c027ce7cb1c048" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; const &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="841" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="841" bodyend="843"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga1eca0411f714d8579230c7b1b09004ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; const &amp;a, double b)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="847" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="847" bodyend="849"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga06c354606272eb026fb58c9ea104b929" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(double a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>not equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="853" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="853" bodyend="855"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gab55f8a693ead764f2f9a9c8cdd42be17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator*</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="965" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="965" bodyend="968"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga28d94b780c4e1e1af11a80e101231c5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator*</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, double b)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>right multiplication with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="972" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="972" bodyend="975"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gaa20f36e7c7609dcce4a2521c9c8584bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator*</definition>
+        <argsstring>(double a, FFTWComplex&lt; R &gt; b)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>left multiplication with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="979" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="979" bodyend="982"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gabf60a2bcc061ec2ab4d80373afb143f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator*=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>multiply-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="875" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="875" bodyend="880"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga33afa3caf66c8b99ec3336505b9f1685" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator*=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, double b)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>multiply-assignment with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="908" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="908" bodyend="912"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gaffaee579a6dd0df78e0b676f87fb8141" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator+</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>addition </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="924" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="924" bodyend="927"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga2b43aa3a355c72ca321a0f4586736947" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator+</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, double b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>right addition with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="931" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="931" bodyend="934"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga978fc1395d6135ec7e374d36ae3b8630" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator+</definition>
+        <argsstring>(double a, FFTWComplex&lt; R &gt; b)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>left addition with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="938" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="938" bodyend="941"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga23c9113f38123caf2ae30a59a1a5cfc5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator+=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>add-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="859" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="859" bodyend="863"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga44144b15946ebece5f01e534b9f19428" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator+=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, double b)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>add-assignment with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="894" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="894" bodyend="897"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga877385dc1d7333ce014514162cb3d640" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator-</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>subtraction </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="945" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="945" bodyend="948"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga01179d1bd47c2489c8e41f05b206da1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator-</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, double b)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>right subtraction with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="952" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="952" bodyend="955"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga6076134b0df86cbf145fe0580f818a18" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator-</definition>
+        <argsstring>(double a, FFTWComplex&lt; R &gt; const &amp;b)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>FFTWComplex&lt; R &gt; const &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>left subtraction with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="959" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="959" bodyend="961"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga5f4de017fa0a604ec08a41a1b12d9ae1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator-=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>subtract-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="867" bodyend="871"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga856da547ecd3c32c6fbec9ed770d1af6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator-=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, double b)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>subtract-assignment with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="901" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="901" bodyend="904"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga6157aa4812880790195e256ef851ea85" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator/</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="986" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="986" bodyend="989"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga6abb61c23f29b9d361c10e617361951c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::operator/</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; a, double b)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>right division with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="993" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="993" bodyend="996"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga2644cfc2c14bb28c5bb96a642abbd882" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator/=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>divide-assignment </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="884" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="884" bodyend="890"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gacb694b91843631ee19c5423300f7c901" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt; &amp;</type>
+        <definition>FFTWComplex&lt;R&gt;&amp; vigra::operator/=</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; &amp;a, double b)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>divide-assignment with scalar double </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="916" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="916" bodyend="920"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga51aa30ebec3e036cbd162a05d9a34f7f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; const &amp;a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+<para>equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="825" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="825" bodyend="827"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gaa3a51dd76a170a64f95d7dd524608bfe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(FFTWComplex&lt; R &gt; const &amp;a, double b)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>FFTWComplex&lt; R &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="830" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="830" bodyend="832"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gaf53a2ef007ddbf4ccb9a194236db79ea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(double a, const FFTWComplex&lt; R &gt; &amp;b)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="835" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="835" bodyend="837"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga47037fd299bbd10704ecf22c6e14be00" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::pow</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a, int e)</argsstring>
+        <name>pow</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1071" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1070" bodyend="1073"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga40b3a1bd66c14b38a46955b4b4b07ed7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::pow</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a, R const &amp;e)</argsstring>
+        <name>pow</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>R const &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1077" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1076" bodyend="1079"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gaffe1ba05575c6f2d74b31f9dce6ffd3c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::pow</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a, const FFTWComplex&lt; R &gt; &amp;e)</argsstring>
+        <name>pow</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1083" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1082" bodyend="1086"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga45c54151a46136ca127caaa9e07f12fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;</type>
+        <definition>FFTWComplex&lt;R&gt; vigra::pow</definition>
+        <argsstring>(R const &amp;a, const FFTWComplex&lt; R &gt; &amp;e)</argsstring>
+        <name>pow</name>
+        <param>
+          <type>R const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1090" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1089" bodyend="1092"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1gafa8d2d7496e4bdd96c42026a0ecbde1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>R</type>
+        <definition>R vigra::real</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>real</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>real part </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1017" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1016" bodyend="1019"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FFTWComplexOperators_1ga484df995dad9821aac02ec42cd58f7eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>FFTWComplex&lt; R &gt;::SquaredNormType</type>
+        <definition>FFTWComplex&lt;R&gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(const FFTWComplex&lt; R &gt; &amp;a)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>const FFTWComplex&lt; R &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+<para>squared norm (= squared magnitude) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1045" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1044" bodyend="1047"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__FFTWComplexOperators_1gadd11f2d463ff98d3fb1fc064981909fd" prot="public" static="no">
+        <name>VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION</name>
+        <param><defname>fct</defname></param>
+        <initializer>template &lt;class R&gt; \
+inline FFTWComplex&lt;R&gt; fct(const FFTWComplex&lt;R&gt; &amp;a) \
+{ \
+    return std::fct(reinterpret_cast&lt;std::complex&lt;R&gt; const &amp;&gt;(a)); \
+}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1054" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1049" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for FFTW 3) or<linebreak/>
+ <bold>#include</bold> &lt;vigra/fftw.hxx&gt; (for deprecated FFTW 2)<linebreak/>
+</para><para>These functions fulfill the requirements of an Algebraic Field. Return types are determined according to <ref refid="FFTWComplexTraits" kindref="compound">Numeric and Promote Traits of FFTWComplex</ref>.</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

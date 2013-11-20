@@ -1,0 +1,144 @@
+\form#0:\[ F_{\sigma}(r, \phi)=(i \cos \phi)^n (i \sin \phi)^m r^2 e^{-r^2 \sigma^2 / 2} \]
+\form#1:\[ C' = C_{max} \left(\frac{C_{RGB}}{C_{max}} \right)^{0.45} \qquad \]
+\form#2:$ C_{max} $
+\form#3:\[ C_{sRGB} = \left\{\begin{array}{ll} 12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\ C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise} \end{array} \right. \]
+\form#4:\[ R' = R_{max} \left(\frac{R}{R_{max}} \right)^{0.45} \qquad G' = G_{max} \left(\frac{G}{G_{max}} \right)^{0.45} \qquad B' = B_{max} \left(\frac{B}{B_{max}} \right)^{0.45} \]
+\form#5:$ R_{max} = G_{max} = B_{max} = 255 $
+\form#6:\[ C_{sRGB} = \left\{ \begin{array}{ll} 12.92\,C_{RGB} & \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.0031308 \\ C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) & \textrm{ otherwise} \end{array} \right. \]
+\form#7:$ C_{max} = 255 $
+\form#8:\[ R = R_{max} \left(\frac{R'}{R_{max}} \right)^{1/0.45} \qquad G = G_{max} \left(\frac{G'}{G_{max}} \right)^{1/0.45} \qquad B = B_{max} \left(\frac{B'}{B_{max}} \right)^{1/0.45} \]
+\form#9:\[ C_{RGB} = \left\{\begin{array}{ll} C_{sRGB} / 12.92 & \textrm{if }\frac{C_{sRGB}}{C_{max}} \le 0.04045 \\ C_{max}\left( \frac{C_{sRGB}/C_{max}+0.055}{1.055}\right)^{2.4} & \textrm{otherwise} \end{array}\right. \]
+\form#10:$ C_{max}$
+\form#11:\[ \begin{array}{rcl} X & = & 0.412453\enspace R / R_{max} + 0.357580\enspace G / G_{max} + 0.180423\enspace B / B_{max}\\ Y & = & 0.212671\enspace R / R_{max} + 0.715160\enspace G / G_{max} + 0.072169\enspace B / B_{max} \\ Z & = & 0.019334\enspace R / R_{max} + 0.119193\enspace G / G_{max} + 0.950227\enspace B / B_{max} \end{array} \]
+\form#12:\[ R'G'B' \Rightarrow RGB \Rightarrow XYZ \]
+\form#13:\[ \begin{array}{rcl} R & = & R_{max} (3.2404813432\enspace X - 1.5371515163\enspace Y - 0.4985363262\enspace Z) \\ G & = & G_{max} (-0.9692549500\enspace X + 1.8759900015\enspace Y + 0.0415559266\enspace Z) \\ B & = & B_{max} (0.0556466391\enspace X - 0.2040413384\enspace Y + 1.0573110696\enspace Z) \end{array} \]
+\form#14:\[ XYZ \Rightarrow RGB \Rightarrow R'G'B' \]
+\form#15:\[ \begin{array}{rcl} L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad 0.008856 < \frac{Y}{Y_n}\\ & & \\ L^{*} & = & 903.3\enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\ & & \\ u' & = & \frac{4 X}{X+15 Y + 3 Z}, \quad v' = \frac{9 Y}{X+15 Y + 3 Z}\\ & & \\ u^{*} & = & 13 L^{*} (u' - u_n'), \quad v^{*} = 13 L^{*} (v' - v_n') \end{array} \]
+\form#16:$(X_n, Y_n, Z_n) = (0.950456, 1.0, 1.088754)$
+\form#17:$u_n' = 0.197839, v_n'=0.468342$
+\form#18:$u', v'$
+\form#19:$L^{*}$
+\form#20:$u^{*}, v^{*}$
+\form#21:$\frac{216}{24389}$
+\form#22:$\frac{24389}{27}$
+\form#23:\[ \begin{array}{rcl} L^{*} & = & 116 \left( \frac{Y}{Y_n} \right)^\frac{1}{3}-16 \quad \mbox{if} \quad \frac{216}{24389} < \frac{Y}{Y_n}\\ & & \\ L^{*} & = & \frac{24389}{27} \enspace \frac{Y}{Y_n} \quad \mbox{otherwise} \\ & & \\ a^{*} & = & 500 \left[ \left( \frac{X}{X_n} \right)^\frac{1}{3} - \left( \frac{Y}{Y_n} \right)^\frac{1}{3} \right] \\ & & \\ b^{*} & = & 200 \left[ \left( \frac{Y}{Y_n} \right)^\frac{1}{3} - \left( \frac{Z}{Z_n} \right)^\frac{1}{3} \right] \\ \end{array} \]
+\form#24:$a^{*}, b^{*}$
+\form#25:\[ RGB \Rightarrow XYZ \Rightarrow L^*u^*v^* \]
+\form#26:\[ \begin{array}{rcl} 0 \leq & L^* & \leq 100 \\ -83.077 \leq & u^* & \leq 175.015 \\ -134.101 \leq & v^* & \leq 107.393 \end{array} \]
+\form#27:\[ RGB \Rightarrow XYZ \Rightarrow L^*a^*b^* \]
+\form#28:\[ \begin{array}{rcl} 0 \leq & L^* & \leq 100 \\ -86.1813 \leq & u^* & \leq 98.2352 \\ -107.862 \leq & v^* & \leq 94.4758 \end{array} \]
+\form#29:\[ R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*u^*v^* \]
+\form#30:\[ R'G'B' \Rightarrow RGB \Rightarrow XYZ \Rightarrow L^*a^*b^* \]
+\form#31:\[ \begin{array}{rcl} Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\ Pb & = & -0.1687358916\enspace R / R_{max} + 0.3312641084\enspace G / G_{max} + 0.5\enspace B / B_{max} \\ Pr & = & 0.5\enspace R / R_{max} + 0.4186875892\enspace G / G_{max} + 0.0813124108\enspace B / B_{max} \end{array} \]
+\form#32:\[ \begin{array}{rcl} 0 \leq & Y' & \leq 1 \\ -0.5 \leq & Pb & \leq 0.5 \\ -0.5 \leq & Pr & \leq 0.5 \end{array} \]
+\form#33:\[ \begin{array}{rcl} Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\ I & = & 0.596\enspace R / R_{max} - 0.274\enspace G / G_{max} - 0.322\enspace B / B_{max} \\ Q & = & 0.212\enspace R / R_{max} - 0.523\enspace G / G_{max} + 0.311\enspace B / B_{max} \end{array} \]
+\form#34:\[ \begin{array}{rcl} 0 \leq & Y' & \leq 1 \\ -0.596 \leq & I & \leq 0.596 \\ -0.523 \leq & Q & \leq 0.523 \end{array} \]
+\form#35:\[ \begin{array}{rcl} Y' & = & 0.299\enspace R / R_{max} + 0.587\enspace G / G_{max} + 0.114\enspace B / B_{max}\\ U & = & -0.147\enspace R / R_{max} - 0.289\enspace G / G_{max} + 0.436\enspace B / B_{max} \\ V & = & 0.615\enspace R / R_{max} - 0.515\enspace G / G_{max} - 0.100\enspace B / B_{max} \end{array} \]
+\form#36:\[ \begin{array}{rcl} 0 \leq & Y' & \leq 1 \\ -0.436 \leq & U & \leq 0.436 \\ -0.615 \leq & V & \leq 0.615 \end{array} \]
+\form#37:\[ \begin{array}{rcl} 16\leq & Y' & \leq 235 \\ 16 \leq & Cb & \leq 240 \\ 16 \leq & Cr & \leq 240 \end{array} \]
+\form#38:\[ \sqrt{|\nabla red|^2 + |\nabla green|^2 + |\nabla blue|^2} \]
+\form#39:$|\nabla red|^2$
+\form#40:\[ \mbox{\rm Hessian}(I) = \left( \begin{array}{cc} G_{xx} \ast I & G_{xy} \ast I \\ G_{xy} \ast I & G_{yy} \ast I \end{array} \right) \]
+\form#41:$G_{xx}, G_{xy}, G_{yy}$
+\form#42:$\ast$
+\form#43:\[ \mbox{\rm StructurTensor}(I) = \left( \begin{array}{cc} G \ast (I_x I_x) & G \ast (I_x I_y) \\ G \ast (I_x I_y) & G \ast (I_y I_y) \end{array} \right) = \left( \begin{array}{cc} A & C \\ C & B \end{array} \right) \]
+\form#44:$G$
+\form#45:$I_x, I_y$
+\form#46:$I_x I_x$
+\form#47:$G \ast (I_x I_x)$
+\form#48:$G \ast (I_x I_y)$
+\form#49:$G \ast (I_y I_y)$
+\form#50:\[ \mbox{\rm CornerResponse} = \mbox{\rm det(StructureTensor)} - 0.04 \mbox{\rm tr(StructureTensor)}^2 = A B - C^2 - 0.04 (A + B)^2 \]
+\form#51:\[ \mbox{\rm FoerstnerCornerStrength} = \frac{\mbox{\rm det(StructureTensor)}}{\mbox{\rm tr(StructureTensor)}} = \frac{A B - C^2}{A + B} \]
+\form#52:\[ \mbox{\rm RohrCornerStrength} = \mbox{\rm det(StructureTensor)} = A B - C^2 \]
+\form#53:\[ f_{\sigma,n}(x)=\frac{\partial^n}{\partial x^n} \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}} \]
+\form#54:\[ \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right) \]
+\form#55:\[ \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt \]
+\form#56:\[ \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt \]
+\form#57:$1/w^{n}$
+\form#58:$w$
+\form#59:$n$
+\form#60:$\sigma$
+\form#61:$\sqrt{\sigma_\mathrm{eff}^2 - \sigma_\mathrm{D}^2}\Big/w$
+\form#62:$\sigma_\mathrm{eff}$
+\form#63:$\sigma_\mathrm{D}$
+\form#64:${\rm stepSize}^{-n}$
+\form#65:$\sqrt{{\rm sigma}^{2} - {\rm resolutionStdDev}^{2}}$
+\form#66:\[ \frac{\partial}{\partial t} u = \frac{\partial}{\partial x} \left( g(|\nabla u|) \frac{\partial}{\partial x} u \right) \]
+\form#67:$t = s^2$
+\form#68:\[ g(|\nabla u|) = 1 - \exp{\left(\frac{-3.315}{(|\nabla u| / thresh)^4}\right)} \]
+\form#69:\begin{eqnarray*} \mbox{minimize } &\,& \frac{1}{2} \mbox{\bf x}'\,\mbox{\bf G}\, \mbox{\bf x} + \mbox{\bf g}'\,\mbox{\bf x} \\ \mbox{subject to} &\,& \mbox{\bf C}_E\, \mbox{\bf x} = \mbox{\bf c}_e \\ &\,& \mbox{\bf C}_I\,\mbox{\bf x} \ge \mbox{\bf c}_i \end{eqnarray*}
+\form#70:\[ \begin{array}{rcl} a_{i, causal} & = & source_i + b1 * a_{i-1, causal} + b2 * a_{i-2, causal} \\ a_{i, anticausal} & = & source_i + b1 * a_{i+1, anticausal} + b2 * a_{i+2, anticausal} \\ dest_i & = & \frac{1 - b1 - b2}{1 + b1 + b2}(a_{i, causal} + a_{i, anticausal} - source_i) \end{array} \]
+\form#71:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \]
+\form#72:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T \textrm{diag}(\textrm{\bf weights}) \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right) \]
+\form#73:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2 \]
+\form#74:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 + \lambda \textrm{\bf x}^T\textrm{\bf x} \]
+\form#75:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right)^T \textrm{diag}(\textrm{\bf weights}) \left(\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right) + \lambda \textrm{\bf x}^T\textrm{\bf x} \]
+\form#76:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{diag}(\textrm{\bf weights})^{1/2}\textrm{\bf A} \textrm{\bf x} - \textrm{diag}(\textrm{\bf weights})^{1/2} \textrm{\bf b}\right|\right|_2^2 + \lambda \textrm{\bf x}^T\textrm{\bf x} \]
+\form#77:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s \]
+\form#78:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \left|\left|\textrm{\bf x}\right|\right|_1\le s \textrm{ and } \textrm{\bf x}\ge \textrm{\bf 0} \]
+\form#79:$\textrm{\bf x}(s=0)$
+\form#80:$\textrm{\bf x}(s=\infty)$
+\form#81:\[ \tilde \textrm{\bf x} = \textrm{argmin} \left|\left|\textrm{\bf A} \textrm{\bf x} - \textrm{\bf b}\right|\right|_2^2 \textrm{ subject to } \textrm{\bf x} \ge \textrm{\bf 0} \]
+\form#82:\[ f_{m,h}(x) = \left\{ \begin{array}{ll} \frac{1}{2m}\sin(\pi x)\cot(\pi x / (2 m))(h + (1-h)\cos(\pi x/m)) & |x| \leq m \\ 0 & \mbox{otherwise} \end{array}\right. \]
+\form#83:\[ \sum_{i=left()}^{right()} \frac{(-i)^{order}kernel[i]}{order!} = norm \]
+\form#84:\[ B_0(x) = \left\{ \begin{array}{ll} 1 & -\frac{1}{2} \leq x < \frac{1}{2} \\ 0 & \mbox{otherwise} \end{array}\right. \]
+\form#85:\[ B_n(x) = B_0(x) * B_{n-1}(x) \]
+\form#86:\[ f(x) = \left\{ \begin{array}{ll} \frac{3}{2}x^3 - \frac{5}{2}x^2 + 1 & |x| \leq 1 \\ -\frac{1}{2}x^3 + \frac{5}{2}x^2 -4x + 2 & |x| \leq 2 \\ 0 & \mbox{otherwise} \end{array}\right. \]
+\form#87:\[ \begin{array}{rcl} V_1 & = & \frac{PixelValue - min}{max - min} \\ V_2 & = & V_1^\frac{1}{brightness} \\ V_3 & = & 2 V_2 - 1 \\ V_4 & = & \left\lbrace \begin{array}{l} V_3^\frac{1}{contrast} \mbox{\rm \quad if } V_3 \ge 0 \\ - (-V_3)^\frac{1}{contrast} \mbox{\rm \quad otherwise} \end{array} \right. \\ Result & = & \frac{V_4 + 1}{2} (max - min) + min \end{array} \]
+\form#88:\[ \begin{array}{rcl} V_1 & = & \frac{PixelValue - min}{max - min} \\ V_2 & = & V_1^{gamma} \\ Result & = & V_2 (max - min) + min \end{array} \]
+\form#89:\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2\;dx + \alpha TV(u)\qquad\qquad (1) \]
+\form#90:$ f=f(x)$
+\form#91:$ u=u(x)$
+\form#92:$ \alpha \ge 0 $
+\form#93:$ TV(u)$
+\form#94:$ \ge 0 $
+\form#95:$ v $
+\form#96:$ \varphi $
+\form#97:$ v(x)=(\cos(\varphi(x)),\sin(\varphi(x)))^\top $
+\form#98:$ \alpha $
+\form#99:$ \beta $
+\form#100:$ \alpha_{par}$
+\form#101:$ \beta_{par}$
+\form#102:$ \alpha(x)= \alpha_{par}$
+\form#103:$ \alpha(x)= \beta_{par}$
+\form#104:$ \beta(x)=\beta_{par}$
+\form#105:\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2 + \sqrt{\nabla u^\top A \nabla u}\;dx\qquad\qquad(2) \]
+\form#106:$ \nabla u $
+\form#107:$ A $
+\form#108:$ \phi $
+\form#109:$ \alpha>0 $
+\form#110:$ \beta>0 $
+\form#111:$ \phi,\alpha,\beta $
+\form#112:$ A=A(u)$
+\form#113:\[ \min_u \int_\Omega \frac{1}{2} (u-f)^2 + \sqrt{\nabla u^\top A \nabla u} + \gamma |Hu|_F\;dx \qquad\qquad (3) \]
+\form#114:$ |Hu|_F $
+\form#115:$ u $
+\form#116:$ \phi,\alpha, \beta $
+\form#117:$ \gamma>0 $
+\form#118:$ \ge 0$
+\form#119:$ A$
+\form#120:$ Hu$
+\form#121:\[ \mathrm{features} \approx \mathrm{fz} * \mathrm{zv} \]
+\form#122:$ \sum_i x_i^N $
+\form#123:$ \sum_i |x_i|^N $
+\form#124:$ \frac{ \frac{1}{n}\sum_i (x_i-\hat{x})^3 }{ (\frac{1}{n}\sum_i (x_i-\hat{x})^2)^{3/2} } $
+\form#125:$ \frac{ \frac{1}{n}\sum_i (x_i-\bar{x})^4 }{ (\frac{1}{n} \sum_i(x_i-\bar{x})^2)^2 } - 3 $
+\form#126:\[ \left( \begin{array}{ccc} x_{11} & x_{12} & x_{13} \\ x_{21} & x_{22} & x_{23} \\ x_{31} & x_{32} & x_{33} \end{array} \right) \]
+\form#127:$ \widehat{x_{22}}$
+\form#128:\[ \sum_{i=1}^3 \frac{1}{3}\widetilde{x_{i2}} = \sum_{i=1}^3 \frac{1}{3} \sum_{j=1}^3 \frac{1}{3}x_{ij} = \sum_{i,j=1}^3 \frac{1}{9}x_{ij} \]
+\form#129:$f_{ij}$
+\form#130:$h_i$
+\form#131:$c_j$
+\form#132:\[ f_{ij} = h_i \cdot c_j \]
+\form#133:\[ \left( \begin{array}{ccc} \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\ \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\ \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \end{array} \right) = \left( \begin{array}{ccc} \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \end{array} \right) \cdot \left( \begin{array}{c} \frac{1}{3} \\ \frac{1}{3} \\ \frac{1}{3} \end{array} \right) \]
+\form#134:\[ \left( \begin{array}{ccc} \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \end{array} \right) = \left( \begin{array}{c} \frac{1}{3} \\[1ex] \frac{1}{3} \\[1ex] \frac{1}{3} \end{array} \right) \cdot \left( \begin{array}{ccc} \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \end{array} \right) \]
+\form#135:\[ \tilde \textrm{\bf p} = \textrm{argmin}_{\textrm{\bf p}} \sum_i \left( y_i - f(\textrm{\bf x}_i; \textrm{\bf p}) \right)^2 \]
+\form#136:$f(\textrm{\bf x}; \textrm{\bf p})$
+\form#137:$(\textrm{\bf x}_i; y_i)$
+\form#138:\[ f(x ; a, s, b) = a \exp\left(-\frac{x^2}{2 s^2}\right) + b \]
+\form#139:$(x_i, y_i)$
+\form#140:$a, s, b$
+\form#141:$\sum_i \left(y_i - f(x_i; a,s,b)\right)^2$
+\form#142:$\textrm{\bf x}$
+\form#143:$\textrm{\bf p}$

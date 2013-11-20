@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__tuple__entry" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_tuple_entry</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::type_lists::tuple_entry&lt; ACX, T, Z, V &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class ACX</type>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class Z</type>
+      </param>
+      <param>
+        <type>class V</type>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>pos</declname>
+        <defname>pos</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__tuple__entry_1ad020690e162ecacc7570ffa63dc838c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void reassign</definition>
+        <argsstring>(TUPLE &amp;tuple)</argsstring>
+        <name>reassign</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="954" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="953" bodyend="957"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__tuple__entry_1a92ca9a12e17c599f031ca38239cb5d0e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(TUPLE &amp;tuple)</argsstring>
+        <name>set</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="948" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="947" bodyend="951"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__tuple__entry_1a0c24995c43baa4476992f3c72b4cbfc8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(const V &amp;v, TUPLE &amp;tuple)</argsstring>
+        <name>set</name>
+        <param>
+          <type>const V &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="960" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="959" bodyend="963"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="945" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="944" bodyend="964"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1a8b83f00306723dea0ac6346ba60bc761" prot="protected" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>assign</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1a6d4cd769a700830bcc4722b950c9d19a" prot="protected" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>check_pointer</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1a99a6557823394981857525cf45fe8ef6" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>is_set</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1affbdbe7d7bf5b2c2ab7888f2edfd2f4c" prot="protected" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>make_load</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1af21f862f15f6f2f8c4c00466e6090a44" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>operator const V &amp;</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1a4da45d573d4d53c01425a9474ae90011" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>operator V &amp;</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1a273f820979ff1aa6a098f02a14ab9bee" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1af9515145e83e0695816565e604d6d4e6" prot="protected" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>p</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__tuple__entry_1ad020690e162ecacc7570ffa63dc838c2" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>reassign</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__tuple__entry_1a92ca9a12e17c599f031ca38239cb5d0e" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__tuple__entry_1a0c24995c43baa4476992f3c72b4cbfc8" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>set</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1af0ed7b5ee747cfa5737d11eb5dbe99d9" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>tuple_entry</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1aa923993ec0112a24fbd21a1dc6052a16" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>tuple_entry</name></member>
+      <member refid="classvigra_1_1type__lists_1_1tuple__entry_1af26687b0878304a2ba9fcb8e00b4bc11" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_tuple_entry</scope><name>~tuple_entry</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

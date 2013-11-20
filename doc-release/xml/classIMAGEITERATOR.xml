@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classIMAGEITERATOR" kind="class" prot="public">
+    <compoundname>IMAGEITERATOR</compoundname>
+    <derivedcompoundref refid="classvigra_1_1NeighborhoodCirculator" prot="private" virt="non-virtual">NeighborhoodCirculator&lt; IMAGEITERATOR, EightNeighborCode &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1NeighborhoodCirculator" prot="private" virt="non-virtual">NeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="841">
+        <label>IMAGEITERATOR</label>
+      </node>
+      <node id="843">
+        <label>NeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1NeighborhoodCirculator"/>
+        <childnode refid="841" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="842">
+        <label>NeighborhoodCirculator&lt; IMAGEITERATOR, EightNeighborCode &gt;</label>
+        <link refid="classvigra_1_1NeighborhoodCirculator"/>
+        <childnode refid="841" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="844">
+        <label>RestrictedNeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1RestrictedNeighborhoodCirculator"/>
+        <childnode refid="843" relation="private-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="995"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

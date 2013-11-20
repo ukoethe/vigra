@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="TupleTypes" kind="page">
+    <compoundname>TupleTypes</compoundname>
+    <title>Tuple Types</title>
+    <detaileddescription>
+<para>pair, triple, tuple4, tuple5</para><para><bold>#include</bold> &lt;<ref refid="utilities_8hxx_source" kindref="compound">vigra/utilities.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>VIGRA defines tuple types <computeroutput>vigra::triple</computeroutput>, <computeroutput>vigra::tuple4</computeroutput>, <computeroutput>vigra::tuple5</computeroutput>. In addition, <computeroutput>std::pair</computeroutput> is imported into namespace vigra from the C++ standard library. All these types are defined similarly:</para><para><itemizedlist>
+<listitem>
+<para>They are parameterized by the respective number of types. For each tuple, a constructor is defined that takes that many arguments, e.g.: <programlisting><codeline><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>First,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Second,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Third&gt;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Triple<sp/>{<sp/>...<sp/>};</highlight></codeline>
+</programlisting>  </para></listitem>
+<listitem>
+<para>A number of <computeroutput>typedef&apos;s</computeroutput> tells the types stored in the tuple:</para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>first_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>second_type;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>third_type;<sp/><sp/></highlight><highlight class="comment">//<sp/>triple,<sp/>tuple4,<sp/>tuple5<sp/>only</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>forth_type;<sp/><sp/></highlight><highlight class="comment">//<sp/>tuple4,<sp/>tuple5<sp/>only</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>...<sp/>fifth_type;<sp/><sp/></highlight><highlight class="comment">//<sp/>tuple5<sp/>only</highlight></codeline>
+</programlisting>  </para></listitem>
+<listitem>
+<para>Items are stored in the following public attributes:</para><para><programlisting><codeline><highlight class="normal">first;</highlight></codeline>
+<codeline><highlight class="normal">second;</highlight></codeline>
+<codeline><highlight class="normal">third;<sp/><sp/></highlight><highlight class="comment">//<sp/>triple,<sp/>tuple4,<sp/>tuple5<sp/>only</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">forth;<sp/><sp/></highlight><highlight class="comment">//<sp/>tuple4,<sp/>tuple5<sp/>only</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">fifth;<sp/><sp/></highlight><highlight class="comment">//<sp/>tuple5<sp/>only</highlight></codeline>
+</programlisting>  </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

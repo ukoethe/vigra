@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1plain__chooser_1_1exec__op" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::plain_chooser::exec_op</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::type_lists::exec_op_plain&lt; TEST &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1136" bodyend="1136"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1exec__op__plain_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" virt="non-virtual"><scope>vigra::type_lists::plain_chooser::exec_op</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1exec__op__plain_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" virt="non-virtual"><scope>vigra::type_lists::plain_chooser::exec_op</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

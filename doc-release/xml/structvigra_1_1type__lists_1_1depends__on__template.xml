@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1depends__on__template" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::depends_on_template</compoundname>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1uses__template" prot="public" virt="non-virtual">uses_template&lt; T_u, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T_</declname>
+        <defname>T_</defname>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>A</declname>
+        <defname>A</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>B</declname>
+        <defname>B</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>C</declname>
+        <defname>C</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>D</declname>
+        <defname>D</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>E</declname>
+        <defname>E</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>F</declname>
+        <defname>F</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>G</declname>
+        <defname>G</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>H</declname>
+        <defname>H</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>I</declname>
+        <defname>I</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>J</declname>
+        <defname>J</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>K</declname>
+        <defname>K</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>L</declname>
+        <defname>L</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>M</declname>
+        <defname>M</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>N</declname>
+        <defname>N</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>O</declname>
+        <defname>O</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>P</declname>
+        <defname>P</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>Q</declname>
+        <defname>Q</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>R</declname>
+        <defname>R</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>S</declname>
+        <defname>S</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>U</declname>
+        <defname>U</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>V</declname>
+        <defname>V</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>W</declname>
+        <defname>W</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>X</declname>
+        <defname>X</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>Y</declname>
+        <defname>Y</defname>
+        <defval>nil_t</defval>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>Z</declname>
+        <defname>Z</defname>
+        <defval>nil_t</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1depends__on__template_1a31936c5575553ca86f5f4982ba01d154" prot="public" static="no">
+        <type>make_list_template&lt; T_, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z &gt;::type</type>
+        <definition>typedef make_list_template&lt;T_, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z&gt;::type depends_on</definition>
+        <argsstring></argsstring>
+        <name>depends_on</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="427" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="424" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="423" bodyend="428"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1depends__on__template_1a31936c5575553ca86f5f4982ba01d154" prot="public" virt="non-virtual"><scope>vigra::type_lists::depends_on_template</scope><name>depends_on</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

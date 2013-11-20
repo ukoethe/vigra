@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Threshold" kind="class" prot="public">
+    <compoundname>vigra::Threshold</compoundname>
+    <includes refid="transformimage_8hxx" local="no">vigra/transformimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class SrcValueType</type>
+      </param>
+      <param>
+        <type>class DestValueType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" prot="public" static="no">
+        <type>SrcValueType</type>
+        <definition>typedef SrcValueType argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="867" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" prot="public" static="no">
+        <type>DestValueType</type>
+        <definition>typedef DestValueType result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="871" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="871" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Threshold_1a50c500388a014cd9069356c08339f803" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" kindref="member">argument_type</ref></type>
+        <definition>argument_type higher_</definition>
+        <argsstring></argsstring>
+        <name>higher_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="890" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="890" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Threshold_1aad93862a9d501fcc7c674af3029427f5" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" kindref="member">argument_type</ref></type>
+        <definition>argument_type lower_</definition>
+        <argsstring></argsstring>
+        <name>lower_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="890" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="890" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Threshold_1a87d6f6d0242ce963373e31274bd04d80" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" kindref="member">result_type</ref></type>
+        <definition>result_type noresult_</definition>
+        <argsstring></argsstring>
+        <name>noresult_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="891" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="891" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Threshold_1ac0f2493c77d0d2c0e86e0913511743ae" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" kindref="member">result_type</ref></type>
+        <definition>result_type yesresult_</definition>
+        <argsstring></argsstring>
+        <name>yesresult_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="891" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="891" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Threshold_1a5bc46e4bea49fb28e053089a6d115731" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(argument_type s) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" kindref="member">argument_type</ref></type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate transform </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="884" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="883" bodyend="886"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Threshold_1a14eb0c1c28ddc1202074e2800d625afc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Threshold</definition>
+        <argsstring>(argument_type lower, argument_type higher, result_type noresult, result_type yesresult)</argsstring>
+        <name>Threshold</name>
+        <param>
+          <type><ref refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" kindref="member">argument_type</ref></type>
+          <declname>lower</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" kindref="member">argument_type</ref></type>
+          <declname>higher</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" kindref="member">result_type</ref></type>
+          <declname>noresult</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" kindref="member">result_type</ref></type>
+          <declname>yesresult</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init thresholds and return values </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="879" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="875" bodyend="879"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classvigra_1_1Threshold" kindref="compound">Threshold</ref> an image. </para>    </briefdescription>
+    <detaileddescription>
+<para>If a source pixel is above or equal the lower and below or equal the higher threshold (i.e. within the closed interval [lower, higher]) the destination pixel is set to &apos;yesresult&apos;, otherwise to &apos;noresult&apos;.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryFunctor</computeroutput> is true (<computeroutput>VigraTrueType</computeroutput>)</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/transformimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(width,<sp/>height),<sp/>dest(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::transformImage(src.upperLeft(),<sp/>src.lowerRight(),<sp/>src.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>dest.upperLeft(),<sp/>dest.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="classvigra_1_1Threshold" kindref="compound" tooltip="Threshold an image.">vigra::Threshold</ref>&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>vigra::BImage::PixelType,<sp/>vigra::BImage::PixelType&gt;(10,<sp/>100,<sp/>0,<sp/>255));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcValueType<sp/><sp/><sp/>src;</highlight></codeline>
+<codeline><highlight class="normal">DestValueType<sp/><sp/>dest,<sp/>yesresult,<sp/>noresult;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest<sp/>=<sp/>((src<sp/>&lt;<sp/>lower)<sp/>||<sp/>(higher<sp/>&lt;<sp/>src))<sp/>?<sp/>noresult<sp/>:<sp/>yesresult;</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="862" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="861" bodyend="892"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Threshold_1a6df5df72cf21bb83f87a4d52cd5493bc" prot="public" virt="non-virtual"><scope>vigra::Threshold</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1Threshold_1a50c500388a014cd9069356c08339f803" prot="private" virt="non-virtual"><scope>vigra::Threshold</scope><name>higher_</name></member>
+      <member refid="classvigra_1_1Threshold_1aad93862a9d501fcc7c674af3029427f5" prot="private" virt="non-virtual"><scope>vigra::Threshold</scope><name>lower_</name></member>
+      <member refid="classvigra_1_1Threshold_1a87d6f6d0242ce963373e31274bd04d80" prot="private" virt="non-virtual"><scope>vigra::Threshold</scope><name>noresult_</name></member>
+      <member refid="classvigra_1_1Threshold_1a5bc46e4bea49fb28e053089a6d115731" prot="public" virt="non-virtual"><scope>vigra::Threshold</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1Threshold_1a3031bd1500c1260d3a41ca18a761c142" prot="public" virt="non-virtual"><scope>vigra::Threshold</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1Threshold_1a14eb0c1c28ddc1202074e2800d625afc" prot="public" virt="non-virtual"><scope>vigra::Threshold</scope><name>Threshold</name></member>
+      <member refid="classvigra_1_1Threshold_1ac0f2493c77d0d2c0e86e0913511743ae" prot="private" virt="non-virtual"><scope>vigra::Threshold</scope><name>yesresult_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

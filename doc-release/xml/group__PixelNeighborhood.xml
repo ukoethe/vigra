@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__PixelNeighborhood" kind="group">
+    <compoundname>PixelNeighborhood</compoundname>
+    <title>Utilities to manage pixel neighborhoods</title>
+    <innerclass refid="classvigra_1_1NeighborOffsetCirculator" prot="public">vigra::NeighborOffsetCirculator</innerclass>
+    <innernamespace refid="namespacevigra_1_1EightNeighborhood">vigra::EightNeighborhood</innernamespace>
+    <innernamespace refid="namespacevigra_1_1FourNeighborhood">vigra::FourNeighborhood</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" prot="public" static="no">
+        <name>AtImageBorder</name>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efadd0b3930f6439e66289c9faf2dfc3d8a" prot="public">
+          <name>NotAtBorder</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa134b66be3b1cd3774594b53e45804429" prot="public">
+          <name>RightBorder</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa34316511ca3c7190e9ae57111dc6d485" prot="public">
+          <name>LeftBorder</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa3967342e24cebf96b6de2d2ffedd0894" prot="public">
+          <name>TopBorder</name>
+          <initializer> 4</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efaeb17e250de21fa5677f2b5ed49767e13" prot="public">
+          <name>BottomBorder</name>
+          <initializer> 8</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efadeb1b7c0231daf2ff4fb325be1272053" prot="public">
+          <name>FrontBorder</name>
+          <initializer> 16</initializer>
+          <briefdescription>
+<para><nonbreakablespace/> </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa0a87829577715f37d857e5f9ffa70f52" prot="public">
+          <name>RearBorder</name>
+          <initializer> 32</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa6f2dab12d926fead97be5ac7b09d0fdc" prot="public">
+          <name>TopRightBorder</name>
+          <initializer> TopBorder    | RightBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa96696e936ae2989c9bac884cc65c1e25" prot="public">
+          <name>TopLeftBorder</name>
+          <initializer> TopBorder    | LeftBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa0eae7e06a220e87436ab199773659f85" prot="public">
+          <name>TopFrontBorder</name>
+          <initializer> TopBorder    | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efafac3c29409628964f8f5777fe206c9a1" prot="public">
+          <name>TopRearBorder</name>
+          <initializer> TopBorder    | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa8c0e45ed2852705311a0df46621c8ad6" prot="public">
+          <name>BottomLeftBorder</name>
+          <initializer> BottomBorder | LeftBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efad3c2f1e634e13c250f68992bf15e01bd" prot="public">
+          <name>BottomRightBorder</name>
+          <initializer> BottomBorder | RightBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efab73a747b56fdc81dc86ced8e1c178a57" prot="public">
+          <name>BottomFrontBorder</name>
+          <initializer> BottomBorder | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa7f6c0d1f39b28cd5be00359308eb1a07" prot="public">
+          <name>BottomRearBorder</name>
+          <initializer> BottomBorder | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efaf067ec08b5556a60bd5472093aae3d3b" prot="public">
+          <name>FrontLeftBorder</name>
+          <initializer> FrontBorder  | LeftBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa055165b3372654cbb353e97270a7068d" prot="public">
+          <name>FrontRightBorder</name>
+          <initializer> FrontBorder  | RightBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa4f61455a7718aa06fb27701d9c46be0f" prot="public">
+          <name>RearLeftBorder</name>
+          <initializer> RearBorder   | LeftBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa2fc6526c0e212367fc30dfb7277438b5" prot="public">
+          <name>RearRightBorder</name>
+          <initializer> RearBorder   | RightBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa9343d5272ccd67284c6a0cefb93834ed" prot="public">
+          <name>TopRightFrontBorder</name>
+          <initializer> TopBorder    | RightBorder | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa04827cbc02a0234afd675046d6d0e933" prot="public">
+          <name>TopLeftFrontBorder</name>
+          <initializer> TopBorder    | LeftBorder  | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efada6b184a04938f96231088cdb8e863d2" prot="public">
+          <name>BottomLeftFrontBorder</name>
+          <initializer> BottomBorder | LeftBorder  | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa57b01a307a022bc3d905add7e6d5cf2b" prot="public">
+          <name>BottomRightFrontBorder</name>
+          <initializer> BottomBorder | RightBorder | FrontBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa87d71c273c2994636d9c45a46de4db7f" prot="public">
+          <name>TopRightRearBorder</name>
+          <initializer> TopBorder    | RightBorder | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efaad6e68292d255914b7626927994746e9" prot="public">
+          <name>TopLeftRearBorder</name>
+          <initializer> TopBorder    | LeftBorder  | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efa06bce3b2ee37196b9a897df6c1b0b342" prot="public">
+          <name>BottomLeftRearBorder</name>
+          <initializer> BottomBorder | LeftBorder  | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efabae49d7c7a88173bfa3e6d6bc7badaa6" prot="public">
+          <name>BottomRightRearBorder</name>
+          <initializer> BottomBorder | RightBorder | RearBorder</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Encode whether a point is near the image border. </para>        </briefdescription>
+        <detaileddescription>
+<para>This enum is used with <ref refid="group__PixelNeighborhood_1gafb116a5d0d69abccd640856eb742f639" kindref="member">isAtImageBorder()</ref> and <ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">vigra::RestrictedNeighborhoodCirculator</ref>.</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="69" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="68" bodyend="98"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" prot="public" static="no">
+        <type>EightNeighborhood::NeighborCode</type>
+        <definition>typedef EightNeighborhood::NeighborCode EightNeighborCode</definition>
+        <argsstring></argsstring>
+        <name>EightNeighborCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1EightNeighborhood_1_1NeighborCode" kindref="compound">vigra::EightNeighborhood::NeighborCode</ref> into the scope of namespace vigra. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="644" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="644" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__PixelNeighborhood_1gaf3f9a7308ef28b8e19b4eae7eee9c13d" prot="public" static="no">
+        <type>NeighborOffsetCirculator&lt; EightNeighborCode &gt;</type>
+        <definition>typedef NeighborOffsetCirculator&lt;EightNeighborCode&gt; EightNeighborOffsetCirculator</definition>
+        <argsstring></argsstring>
+        <name>EightNeighborOffsetCirculator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Specialization of <ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> for 8-neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="933" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="933" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__PixelNeighborhood_1ga58cb45fb133eb7c1d63fd14f65b8320f" prot="public" static="no">
+        <type>FourNeighborhood::NeighborCode</type>
+        <definition>typedef FourNeighborhood::NeighborCode FourNeighborCode</definition>
+        <argsstring></argsstring>
+        <name>FourNeighborCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode" kindref="compound">vigra::FourNeighborhood::NeighborCode</ref> into the scope of namespace vigra. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="356" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="356" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__PixelNeighborhood_1ga3b3e5a92f6776e041fb4687aac2764ec" prot="public" static="no">
+        <type>NeighborOffsetCirculator&lt; FourNeighborCode &gt;</type>
+        <definition>typedef NeighborOffsetCirculator&lt;FourNeighborCode&gt; FourNeighborOffsetCirculator</definition>
+        <argsstring></argsstring>
+        <name>FourNeighborOffsetCirculator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Specialization of <ref refid="classvigra_1_1NeighborOffsetCirculator" kindref="compound">NeighborOffsetCirculator</ref> for 4-neighborhood. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="937" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="937" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__PixelNeighborhood_1gafb116a5d0d69abccd640856eb742f639" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AtImageBorder</type>
+        <definition>AtImageBorder vigra::isAtImageBorder</definition>
+        <argsstring>(int x, int y, int width, int height)</argsstring>
+        <name>isAtImageBorder</name>
+        <param>
+          <type>int</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+<para>Find out whether a point is at the image border. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function checks if <emphasis>x</emphasis> == 0 or <emphasis>x</emphasis> == <emphasis>width</emphasis> - 1 and <emphasis>y</emphasis> == 0 or <emphasis>y</emphasis> == <emphasis>height</emphasis> - 1 and returns the appropriate value of <ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">vigra::AtImageBorder</ref>, or zero when the point is not at the image border. The behavior of the function is undefined if (x,y) is not inside the image.</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="112" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="111" bodyend="123"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>4- and 8-neighborhood definitions and circulators.</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+</para><para><bold>See also:</bold> <ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">vigra::NeighborhoodCirculator</ref> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

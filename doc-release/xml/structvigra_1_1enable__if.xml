@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1enable__if" kind="struct" prot="public">
+    <compoundname>vigra::enable_if</compoundname>
+    <derivedcompoundref refid="structvigra_1_1EnableBitArray" prot="public" virt="non-virtual">EnableBitArray&lt; X &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1EnableMetaLog2" prot="public" virt="non-virtual">EnableMetaLog2&lt; X &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>bool</type>
+      </param>
+      <param>
+        <type>class T</type>
+        <defval>void</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="444" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="444" bodyend="444"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

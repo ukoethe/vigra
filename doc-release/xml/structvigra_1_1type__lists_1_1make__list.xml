@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1make__list" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::make_list</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class A</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class B</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class C</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class D</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class E</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class F</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class G</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class H</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class I</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class J</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class K</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class L</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class M</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class N</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class O</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class P</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class Q</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class R</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class S</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class T</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class U</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class V</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class W</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class X</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class Y</type>
+        <defval>nil</defval>
+      </param>
+      <param>
+        <type>class Z</type>
+        <defval>nil</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1make__list_1ada3b39beccc0054c9d8dd6e1c415d61c" prot="public" static="no">
+        <type>make_list_nil&lt; nil, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z &gt;::type</type>
+        <definition>typedef make_list_nil&lt;nil, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z &gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="86" bodyend="91"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1make__list_1ada3b39beccc0054c9d8dd6e1c415d61c" prot="public" virt="non-virtual"><scope>vigra::type_lists::make_list</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

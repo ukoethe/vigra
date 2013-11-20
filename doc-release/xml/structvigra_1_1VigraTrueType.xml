@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1VigraTrueType" kind="struct" prot="public">
+    <compoundname>vigra::VigraTrueType</compoundname>
+    <derivedcompoundref refid="structvigra_1_1true__test" prot="public" virt="non-virtual">true_test&lt; class &gt;</derivedcompoundref>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1VigraTrueType_1aef9eb6d815388fe525cd6256878ebfe9" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool asBool</definition>
+        <argsstring></argsstring>
+        <name>asBool</name>
+        <initializer> true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1VigraTrueType_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="73" bodyend="76"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1VigraTrueType_1aef9eb6d815388fe525cd6256878ebfe9" prot="public" virt="non-virtual"><scope>vigra::VigraTrueType</scope><name>asBool</name></member>
+      <member refid="structvigra_1_1VigraTrueType_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::VigraTrueType</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

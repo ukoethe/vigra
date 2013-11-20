@@ -1,0 +1,861 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Quaternion" kind="class" prot="public">
+    <compoundname>vigra::Quaternion</compoundname>
+    <includes refid="quaternion_8hxx" local="no">vigra/quaternion.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ValueType</declname>
+        <defname>ValueType</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1a55487d8b90967a54c3f3526d72ead3a0" prot="public" static="no">
+        <type>ValueType const &amp;</type>
+        <definition>typedef ValueType const&amp; const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const reference (return of operator[] const). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1ab4f2b922972cbdeaac3a144a579f4203" prot="public" static="no">
+        <type>NormTraits&lt; ValueType &gt;::<ref refid="classvigra_1_1Quaternion_1ab4f2b922972cbdeaac3a144a579f4203" kindref="member">NormType</ref></type>
+        <definition>typedef NormTraits&lt;ValueType&gt;::NormType NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the quaternion&apos;s norm type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1ac256e1f9c3225ab8440751ea1c02d88e" prot="public" static="no">
+        <type>ValueType &amp;</type>
+        <definition>typedef ValueType&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>reference (return of operator[]). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="71" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1a7d65b21c64f29185eed37114c8c5e422" prot="public" static="no">
+        <type>NormTraits&lt; ValueType &gt;::<ref refid="classvigra_1_1Quaternion_1a7d65b21c64f29185eed37114c8c5e422" kindref="member">SquaredNormType</ref></type>
+        <definition>typedef NormTraits&lt;ValueType&gt;::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the quaternion&apos;s squared norm type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="79" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" prot="public" static="no">
+        <type>ValueType</type>
+        <definition>typedef ValueType value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the quaternion&apos;s valuetype </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Quaternion_1a91722aa9a28df54e846c6de0efea7aeb" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; ValueType, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;ValueType, 3&gt; Vector</definition>
+        <argsstring></argsstring>
+        <name>Vector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="63" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Quaternion_1a8a3bb217b18d047d976903397eba0bbd" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref></type>
+        <definition>Vector v_</definition>
+        <argsstring></argsstring>
+        <name>v_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="381" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="381" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Quaternion_1ab0331a79f43b5298fd678b8067bbdce1" prot="protected" static="no" mutable="no">
+        <type>ValueType</type>
+        <definition>ValueType w_</definition>
+        <argsstring></argsstring>
+        <name>w_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="380" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="380" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a8f25990863ce302d5294a33b3f137ef0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MatrixType</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void fillRotationMatrix</definition>
+        <argsstring>(MatrixType &amp;matrix) const </argsstring>
+        <name>fillRotationMatrix</name>
+        <param>
+          <type>MatrixType &amp;</type>
+          <declname>matrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Fill the first 3x3 elements of the given matrix with a rotation matrix performing the same 3D rotation as this quaternion. If matrix is in column-major format, it should be pre-multiplied with the vectors to be rotated, i.e. matrix[0][0-3] will be the rotated X axis. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="324" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="323" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a6d44b826f07df8c41c5eae1f706af37a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void fillRotationMatrix</definition>
+        <argsstring>(Matrix&lt; value_type &gt; &amp;matrix) const </argsstring>
+        <name>fillRotationMatrix</name>
+        <param>
+          <type>Matrix&lt; <ref refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" kindref="member">value_type</ref> &gt; &amp;</type>
+          <declname>matrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="351" bodyend="377"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion_1ab4f2b922972cbdeaac3a144a579f4203" kindref="member">NormType</ref></type>
+        <definition>NormType magnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>magnitude</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Magnitude. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="197" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="196" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a33ec15ee6b2c2ce8b7816add792c3acb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(Quaternion const &amp;other) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Not equal. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="310" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a3593b088c1c5baa9566840dfebfe6408" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator*=</definition>
+        <argsstring>(Quaternion const &amp;other)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Multiply assignment.</para><para>If the quaternions represent rotations, the rotations of <computeroutput>this</computeroutput> and <emphasis>other</emphasis> are concatenated. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="267" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a65ccfcfb4aed5747b006815b2346f0b8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator*=</definition>
+        <argsstring>(double scale)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Multiply all entries with the scalar <emphasis>scale</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="277" bodyend="282"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1ab28b4dd08c729d0f6929881d91580e00" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref></type>
+        <definition>Quaternion operator+</definition>
+        <argsstring>() const </argsstring>
+        <name>operator+</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Addition. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="250" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a8ff59833a64a06ab3388f0f625e2321c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator+=</definition>
+        <argsstring>(value_type const &amp;w)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" kindref="member">value_type</ref> const &amp;</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add <emphasis>w</emphasis> to the real part.</para><para>If the quaternion represents a rotation, the rotation angle is increased by <emphasis>w</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="213" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a2d00b7efb2fe59ab0a910e4de5ccf335" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator+=</definition>
+        <argsstring>(Quaternion const &amp;other)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add assigment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="221" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1ae85b936e2d8dca54b72361a6c9209e5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref></type>
+        <definition>Quaternion operator-</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtraction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="257" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1abe1b872c8ba3562be4dddea9f38e5ced" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator-=</definition>
+        <argsstring>(value_type const &amp;w)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" kindref="member">value_type</ref> const &amp;</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtract <emphasis>w</emphasis> from the real part.</para><para>If the quaternion represents a rotation, the rotation angle is decreased by <emphasis>w</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="233" bodyend="237"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a540f27fdf31035b54ff2d10ce68dcb14" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator-=</definition>
+        <argsstring>(Quaternion const &amp;other)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subtract assigment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="241" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a9ba41169f4a4444d77f3c1ae9325cbb8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator/=</definition>
+        <argsstring>(Quaternion const &amp;other)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Divide assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="286" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1ad5a6adf1aad5922f301c0a80bed19259" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator/=</definition>
+        <argsstring>(double scale)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Devide all entries by the scalar <emphasis>scale</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="294" bodyend="299"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1afb4e9563a31cb23b8bcff31dc8815775" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator=</definition>
+        <argsstring>(Quaternion const &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="107" bodyend="112"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1acf141a86abe9ce9d4f82d4d4438ffa44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+        <definition>Quaternion&amp; operator=</definition>
+        <argsstring>(ValueType w)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>ValueType</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assign <emphasis>w</emphasis> to the real part and set the imaginary part to zero. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="116" bodyend="121"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aaa976f49a5ddde746a2eb946d54849f4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(Quaternion const &amp;other) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equal. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="304" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="303" bodyend="306"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1adf1ae425cfd352b76361a8372b7db160" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" kindref="member">value_type</ref> &amp;</type>
+        <definition>value_type&amp; operator[]</definition>
+        <argsstring>(int index)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access entry at index (0 &lt;=&gt; <ref refid="classvigra_1_1Quaternion_1a740f9686433edf3ac1e34690cfbd5459" kindref="member">w()</ref>, 1 &lt;=&gt; v[0] etc.). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="183" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="182" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a4711e1a0900bc03706044d1e99971242" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" kindref="member">value_type</ref></type>
+        <definition>value_type operator[]</definition>
+        <argsstring>(int index) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read entry at index (0 &lt;=&gt; <ref refid="classvigra_1_1Quaternion_1a740f9686433edf3ac1e34690cfbd5459" kindref="member">w()</ref>, 1 &lt;=&gt; v[0] etc.). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="189" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a907659a1b669701f3ea3d05ec81f4ed4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Quaternion</definition>
+        <argsstring>(ValueType w=0, ValueType x=0, ValueType y=0, ValueType z=0)</argsstring>
+        <name>Quaternion</name>
+        <param>
+          <type>ValueType</type>
+          <declname>w</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>x</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>y</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>z</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a quaternion with explicit values for the real and imaginary parts. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="87" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a7b6a326549d88659dab6914de2f20c08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Quaternion</definition>
+        <argsstring>(ValueType w, const Vector &amp;v)</argsstring>
+        <name>Quaternion</name>
+        <param>
+          <type>ValueType</type>
+          <declname>w</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct a quaternion with real value and imaginary vector.</para><para>Equivalent to <computeroutput>Quaternion(w, v[0], v[1], v[2])</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="95" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aa917f943b94e1b3c96a0252f4aae4949" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Quaternion</definition>
+        <argsstring>(const Quaternion &amp;q)</argsstring>
+        <name>Quaternion</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="101" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a76bbfaf8b7a456ab4e841c049b88d60c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setV</definition>
+        <argsstring>(const Vector &amp;v)</argsstring>
+        <name>setV</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set imaginary part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="160" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aa7f33963cd3f2c2580d97a75f1c1d4c0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setV</definition>
+        <argsstring>(ValueType x, ValueType y, ValueType z)</argsstring>
+        <name>setV</name>
+        <param>
+          <type>ValueType</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>ValueType</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set imaginary part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="163" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a1a090eda387399c660c939741073040c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setW</definition>
+        <argsstring>(ValueType w)</argsstring>
+        <name>setW</name>
+        <param>
+          <type>ValueType</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set real part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="150" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a700b667504d92cb67dfdc40b92ba277b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setX</definition>
+        <argsstring>(ValueType x)</argsstring>
+        <name>setX</name>
+        <param>
+          <type>ValueType</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="176" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="176" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a96773592b932b4345c592f4ad318b2ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setY</definition>
+        <argsstring>(ValueType y)</argsstring>
+        <name>setY</name>
+        <param>
+          <type>ValueType</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="177" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a4c8f317ac408fe1f55ac15453b02d09f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setZ</definition>
+        <argsstring>(ValueType z)</argsstring>
+        <name>setZ</name>
+        <param>
+          <type>ValueType</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="178" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion_1a7d65b21c64f29185eed37114c8c5e422" kindref="member">SquaredNormType</ref></type>
+        <definition>SquaredNormType squaredMagnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>squaredMagnitude</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Squared magnitude. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="203" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aa921efc49256b8f62c7e4f3166e1a5dc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref> &amp;</type>
+        <definition>const Vector&amp; v</definition>
+        <argsstring>() const </argsstring>
+        <name>v</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read imaginary part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="154" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a2d60487cd02fee4de2bb8f4706d62c23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref> &amp;</type>
+        <definition>Vector&amp; v</definition>
+        <argsstring>()</argsstring>
+        <name>v</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access imaginary part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="157" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a7aee07ae2b3f33339e47998ba10c9c2d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType</type>
+        <definition>ValueType w</definition>
+        <argsstring>() const </argsstring>
+        <name>w</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read real part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="144" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a740f9686433edf3ac1e34690cfbd5459" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType &amp;</type>
+        <definition>ValueType&amp; w</definition>
+        <argsstring>()</argsstring>
+        <name>w</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access real part. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="147" bodyend="147"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a02ef2b0c2e70d9a3e673f7f64b171a50" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType</type>
+        <definition>ValueType x</definition>
+        <argsstring>() const </argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="170" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a6372d89a3af3dbdbd470ea3c0bd9a3e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType &amp;</type>
+        <definition>ValueType&amp; x</definition>
+        <argsstring>()</argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="173" bodyend="173"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1aa25c7e63ec74c739ea0b0a027831aa60" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType</type>
+        <definition>ValueType y</definition>
+        <argsstring>() const </argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="171" bodyend="171"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a9afabe530d39b0d3dd91afc7efb6f271" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType &amp;</type>
+        <definition>ValueType&amp; y</definition>
+        <argsstring>()</argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="174" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="174" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a08ff0e5eb848ec193230d4971a799c64" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType</type>
+        <definition>ValueType z</definition>
+        <argsstring>() const </argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="172" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a5e19dacb7768380365d426b8ce9940f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ValueType &amp;</type>
+        <definition>ValueType&amp; z</definition>
+        <argsstring>()</argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="175" bodyend="175"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1Quaternion_1a233cd2e0607873e7203fa1b25dfff923" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref></type>
+        <definition>static Quaternion createRotation</definition>
+        <argsstring>(double angle, const Vector &amp;rotationAxis)</argsstring>
+        <name>createRotation</name>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>rotationAxis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Creates a <ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> which represents the operation of rotating around the given axis by the given angle.</para><para>The angle should be in the range -pi..3*pi for sensible results. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="131" bodyend="140"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref> class.</para><para>Quaternions are mainly used as a compact representation for 3D rotations because they are much less prone to round-off errors than rotation matrices, especially when many rotations are concatenated. In addition, the angle/axis interpretation of normalized quaternions is very intuitive. Read the <ulink url="http://en.wikipedia.org/wiki/Quaternion">Wikipedia entry on quaternions</ulink> for more information on the mathematics.</para><para>See also: <ref refid="group__QuaternionOperations" kindref="compound">Quaternion Operations</ref> </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="2085">
+        <label>TinyVector&lt; ValueType, 3 &gt;</label>
+        <link refid="classvigra_1_1TinyVector"/>
+        <childnode refid="2086" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2086">
+        <label>TinyVectorBase&lt; ValueType, SIZE, ValueType[SIZE], TinyVector&lt; ValueType, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+      <node id="2084">
+        <label>Quaternion&lt; ValueType &gt;</label>
+        <link refid="classvigra_1_1Quaternion"/>
+        <childnode refid="2085" relation="usage">
+          <edgelabel>v_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="61" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="61" bodyend="382"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Quaternion_1a55487d8b90967a54c3f3526d72ead3a0" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1Quaternion_1a233cd2e0607873e7203fa1b25dfff923" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>createRotation</name></member>
+      <member refid="classvigra_1_1Quaternion_1a8f25990863ce302d5294a33b3f137ef0" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>fillRotationMatrix</name></member>
+      <member refid="classvigra_1_1Quaternion_1a6d44b826f07df8c41c5eae1f706af37a" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>fillRotationMatrix</name></member>
+      <member refid="classvigra_1_1Quaternion_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1Quaternion_1ab4f2b922972cbdeaac3a144a579f4203" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>NormType</name></member>
+      <member refid="classvigra_1_1Quaternion_1a33ec15ee6b2c2ce8b7816add792c3acb" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1Quaternion_1a3593b088c1c5baa9566840dfebfe6408" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Quaternion_1a65ccfcfb4aed5747b006815b2346f0b8" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Quaternion_1ab28b4dd08c729d0f6929881d91580e00" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1Quaternion_1a8ff59833a64a06ab3388f0f625e2321c" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Quaternion_1a2d00b7efb2fe59ab0a910e4de5ccf335" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Quaternion_1ae85b936e2d8dca54b72361a6c9209e5a" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1Quaternion_1abe1b872c8ba3562be4dddea9f38e5ced" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1Quaternion_1a540f27fdf31035b54ff2d10ce68dcb14" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1Quaternion_1a9ba41169f4a4444d77f3c1ae9325cbb8" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Quaternion_1ad5a6adf1aad5922f301c0a80bed19259" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Quaternion_1afb4e9563a31cb23b8bcff31dc8815775" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Quaternion_1acf141a86abe9ce9d4f82d4d4438ffa44" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Quaternion_1aaa976f49a5ddde746a2eb946d54849f4" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1Quaternion_1adf1ae425cfd352b76361a8372b7db160" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Quaternion_1a4711e1a0900bc03706044d1e99971242" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Quaternion_1a907659a1b669701f3ea3d05ec81f4ed4" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>Quaternion</name></member>
+      <member refid="classvigra_1_1Quaternion_1a7b6a326549d88659dab6914de2f20c08" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>Quaternion</name></member>
+      <member refid="classvigra_1_1Quaternion_1aa917f943b94e1b3c96a0252f4aae4949" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>Quaternion</name></member>
+      <member refid="classvigra_1_1Quaternion_1ac256e1f9c3225ab8440751ea1c02d88e" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>reference</name></member>
+      <member refid="classvigra_1_1Quaternion_1a76bbfaf8b7a456ab4e841c049b88d60c" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setV</name></member>
+      <member refid="classvigra_1_1Quaternion_1aa7f33963cd3f2c2580d97a75f1c1d4c0" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setV</name></member>
+      <member refid="classvigra_1_1Quaternion_1a1a090eda387399c660c939741073040c" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setW</name></member>
+      <member refid="classvigra_1_1Quaternion_1a700b667504d92cb67dfdc40b92ba277b" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setX</name></member>
+      <member refid="classvigra_1_1Quaternion_1a96773592b932b4345c592f4ad318b2ee" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setY</name></member>
+      <member refid="classvigra_1_1Quaternion_1a4c8f317ac408fe1f55ac15453b02d09f" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>setZ</name></member>
+      <member refid="classvigra_1_1Quaternion_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1Quaternion_1a7d65b21c64f29185eed37114c8c5e422" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1Quaternion_1aa921efc49256b8f62c7e4f3166e1a5dc" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>v</name></member>
+      <member refid="classvigra_1_1Quaternion_1a2d60487cd02fee4de2bb8f4706d62c23" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>v</name></member>
+      <member refid="classvigra_1_1Quaternion_1a8a3bb217b18d047d976903397eba0bbd" prot="protected" virt="non-virtual"><scope>vigra::Quaternion</scope><name>v_</name></member>
+      <member refid="classvigra_1_1Quaternion_1a7e925095614a18db84f21a0de507edb5" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1Quaternion_1a91722aa9a28df54e846c6de0efea7aeb" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>Vector</name></member>
+      <member refid="classvigra_1_1Quaternion_1a7aee07ae2b3f33339e47998ba10c9c2d" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>w</name></member>
+      <member refid="classvigra_1_1Quaternion_1a740f9686433edf3ac1e34690cfbd5459" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>w</name></member>
+      <member refid="classvigra_1_1Quaternion_1ab0331a79f43b5298fd678b8067bbdce1" prot="protected" virt="non-virtual"><scope>vigra::Quaternion</scope><name>w_</name></member>
+      <member refid="classvigra_1_1Quaternion_1a02ef2b0c2e70d9a3e673f7f64b171a50" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>x</name></member>
+      <member refid="classvigra_1_1Quaternion_1a6372d89a3af3dbdbd470ea3c0bd9a3e0" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>x</name></member>
+      <member refid="classvigra_1_1Quaternion_1aa25c7e63ec74c739ea0b0a027831aa60" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>y</name></member>
+      <member refid="classvigra_1_1Quaternion_1a9afabe530d39b0d3dd91afc7efb6f271" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>y</name></member>
+      <member refid="classvigra_1_1Quaternion_1a08ff0e5eb848ec193230d4971a799c64" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>z</name></member>
+      <member refid="classvigra_1_1Quaternion_1a5e19dacb7768380365d426b8ce9940f5" prot="public" virt="non-virtual"><scope>vigra::Quaternion</scope><name>z</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1acc_1_1Count" kind="struct" prot="public">
+    <compoundname>vigra::acc::Count</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">collector_base&lt; T, double &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1acc_1_1Count_1aaf1f2933b05cbc41244c4a8fcdde4861" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ACX</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void merge</definition>
+        <argsstring>(const ACX &amp;z, const ACX &amp;x, const ACX &amp;y)</argsstring>
+        <name>merge</name>
+        <param>
+          <type>const ACX &amp;</type>
+          <declname>z</declname>
+        </param>
+        <param>
+          <type>const ACX &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const ACX &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>merge two statistics: z === *this &lt;- (x, y) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="359" bodyend="362"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1acc_1_1Count_1a567b35a512e4253143ce96b2dc5ca251" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ACX</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void updatePass1</definition>
+        <argsstring>(ACX &amp;, const T &amp;)</argsstring>
+        <name>updatePass1</name>
+        <param>
+          <type>ACX &amp;</type>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>update </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="345" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1acc_1_1Count_1ac143f2a3c6221819873a72dcf661a01a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ACX</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void updatePass1</definition>
+        <argsstring>(ACX &amp;x, const T &amp;, double weight)</argsstring>
+        <name>updatePass1</name>
+        <param>
+          <type>ACX &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>weight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>update using weighted input </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="352" bodyend="355"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" bodystart="340" bodyend="363"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1acc_1_1Count_1aaf1f2933b05cbc41244c4a8fcdde4861" prot="public" virt="non-virtual"><scope>vigra::acc::Count</scope><name>merge</name></member>
+      <member refid="structvigra_1_1acc_1_1Count_1a567b35a512e4253143ce96b2dc5ca251" prot="public" virt="non-virtual"><scope>vigra::acc::Count</scope><name>updatePass1</name></member>
+      <member refid="structvigra_1_1acc_1_1Count_1ac143f2a3c6221819873a72dcf661a01a" prot="public" virt="non-virtual"><scope>vigra::acc::Count</scope><name>updatePass1</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

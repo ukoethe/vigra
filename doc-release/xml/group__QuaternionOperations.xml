@@ -1,0 +1,391 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__QuaternionOperations" kind="group">
+    <compoundname>QuaternionOperations</compoundname>
+    <title>Quaternion Operations</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__QuaternionOperations_1gabf091b1364939ab599de2c976da41760" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;::NormType</type>
+        <definition>Quaternion&lt;Type&gt;::NormType vigra::abs</definition>
+        <argsstring>(Quaternion&lt; Type &gt; const &amp;q)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>Quaternion&lt; Type &gt; const &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+<para>norm </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="525" bodyend="528"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga3f67ca45fd95f03638346b605c26b755" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ValueType</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; ValueType &gt;</type>
+        <definition>Quaternion&lt;ValueType&gt; vigra::conj</definition>
+        <argsstring>(Quaternion&lt; ValueType &gt; const &amp;q)</argsstring>
+        <name>conj</name>
+        <param>
+          <type>Quaternion&lt; ValueType &gt; const &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+<para>Create conjugate quaternion. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="399" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gacb9a134a0b55404cacccfa0184957ce0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator*</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Multiplication. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="463" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="461" bodyend="465"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gafaf0b3495a12470fed33a0b4be1dc726" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator*</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, double t2)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Multiplication with a scalar on the right. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="472" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="470" bodyend="474"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga7baf712a64500ab621dbfef7e867d01d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator*</definition>
+        <argsstring>(double t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>double</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Multiplication with a scalar on the left. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="479" bodyend="483"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga5c5a2e62c1e2be530e47c445cea50f5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator+</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Addition. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="409" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="407" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga44f40bb9de51c68a79819837269854db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator+</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Type &amp;t2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Type &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Addition of a scalar on the right. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="416" bodyend="420"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gae5d5ba66a0302d5c9f04beb913ddfb86" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator+</definition>
+        <argsstring>(const Type &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>const Type &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Addition of a scalar on the left. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="425" bodyend="429"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gaa7a03fac9fd41f7d29a4c7ee8a93c1a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator-</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Subtraction. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="436" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="434" bodyend="438"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga84042eeb1c416570b41830cdf1a3332b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator-</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Type &amp;t2)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Type &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Subtraction of a scalar on the right. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="445" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="443" bodyend="447"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gab30f374d9d31ad2b8e9549d892db326b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator-</definition>
+        <argsstring>(const Type &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>const Type &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Subtraction of a scalar on the left. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="454" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="452" bodyend="456"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga7ae7b34c5f22d9f6a275e733949b7f0c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator/</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Division. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="488" bodyend="492"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga401bda47b1b931d0391e6e12c88ba0a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator/</definition>
+        <argsstring>(const Quaternion&lt; Type &gt; &amp;t1, double t2)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Division by a scalar. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="497" bodyend="501"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1ga8f28681aa28041cfd29a5b23e7ab7d62" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;</type>
+        <definition>Quaternion&lt;Type&gt; vigra::operator/</definition>
+        <argsstring>(double t1, const Quaternion&lt; Type &gt; &amp;t2)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>double</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>const Quaternion&lt; Type &gt; &amp;</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+<para>Division of a scalar by a <ref refid="classvigra_1_1Quaternion" kindref="compound">Quaternion</ref>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="508" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="506" bodyend="510"/>
+      </memberdef>
+      <memberdef kind="function" id="group__QuaternionOperations_1gaf3b531ba4abcbbc431075c7f3dbc000a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Type</type>
+          </param>
+        </templateparamlist>
+        <type>Quaternion&lt; Type &gt;::SquaredNormType</type>
+        <definition>Quaternion&lt;Type&gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(Quaternion&lt; Type &gt; const &amp;q)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>Quaternion&lt; Type &gt; const &amp;</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+<para>squared norm </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" line="517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/quaternion.hxx" bodystart="516" bodyend="519"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

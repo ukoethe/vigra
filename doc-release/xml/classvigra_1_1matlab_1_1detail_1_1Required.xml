@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1detail_1_1Required" kind="class" prot="public">
+    <compoundname>vigra::matlab::detail::Required</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1detail_1_1Required_1a643ddb61388bddab82d84d6e80d650aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void argumentWasProvided</definition>
+        <argsstring>() const </argsstring>
+        <name>argumentWasProvided</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="545" bodyend="545"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="543" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="542" bodyend="546"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1Required_1a643ddb61388bddab82d84d6e80d650aa" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::Required</scope><name>argumentWasProvided</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

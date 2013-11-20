@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FunctorTraits_3_01FindMinMax_3_01VALUETYPE_01_4_01_4" kind="class" prot="public">
+    <compoundname>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::FunctorTraitsBase&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class VALUETYPE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraits_3_01FindMinMax_3_01VALUETYPE_01_4_01_4_1a22fde25fca5f1fbf0894d6e407ce1f1b" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType isUnaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isUnaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="901" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="901" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="899" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="897" bodyend="902"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a6cb018a9f1b095d1ba43901fe0981978" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isBinaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1ad3a8945ee6ab942c5797bfe970c4c6e2" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isBinaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a3c2cbe5667a896d68567fd1695e157ce" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isInitializer</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a9be0a8f594fdc60755f535c5dee13549" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isTernaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a5e8ed03bf2c875398b4f632054647ac9" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isTernaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraits_3_01FindMinMax_3_01VALUETYPE_01_4_01_4_1a22fde25fca5f1fbf0894d6e407ce1f1b" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isUnaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a82f794272cb17400bc48e187420698e8" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>isUnaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a565429e62c1d4fd084335146ba778e17" prot="public" virt="non-virtual"><scope>vigra::FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

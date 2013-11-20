@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1get__independent" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::get_independent</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class XL</type>
+      </param>
+      <param>
+        <type>class YL</type>
+        <defval>XL</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1get__independent_1ad41d03be7083d7fe302f79bc93a9ff84" prot="public" static="no">
+        <type>IfBool&lt; is_independent_on&lt; YL_first, XL &gt;::value, YL_first, typename get_independent&lt; XL, typename YL::rest &gt;::type &gt;::type</type>
+        <definition>typedef IfBool&lt;is_independent_on&lt;YL_first, XL&gt;::value, YL_first, typename get_independent&lt;XL, typename YL::rest&gt;::type &gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="690" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1get__independent_1ac5e58d13c52572a3387d0655788d0737" prot="public" static="no">
+        <type>YL::first</type>
+        <definition>typedef YL::first YL_first</definition>
+        <argsstring></argsstring>
+        <name>YL_first</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="685" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="684" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="683" bodyend="691"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1get__independent_1ad41d03be7083d7fe302f79bc93a9ff84" prot="public" virt="non-virtual"><scope>vigra::type_lists::get_independent</scope><name>type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1get__independent_1ac5e58d13c52572a3387d0655788d0737" prot="public" virt="non-virtual"><scope>vigra::type_lists::get_independent</scope><name>YL_first</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

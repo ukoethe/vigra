@@ -1,0 +1,1841 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__CommonConvolutionFilters" kind="group">
+    <compoundname>CommonConvolutionFilters</compoundname>
+    <title>Common Filters</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImage</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, Kernel1D&lt; T &gt; const &amp;kx, Kernel1D&lt; T &gt; const &amp;ky)</argsstring>
+        <name>convolveImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>kx</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>ky</declname>
+        </param>
+        <briefdescription>
+<para>Apply two separable filters successively, the first in x-direction, the second in y-direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is a shorthand for the concatenation of a call to <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with the given kernels.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">convolveImage</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kx,<sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ky);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">convolveImage</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>kx,<sp/>Kernel1D&lt;T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>ky);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>implement<sp/>sobel<sp/>filter<sp/>in<sp/>x-direction</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Kernel1D&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;<sp/>kx,<sp/>ky;</highlight></codeline>
+<codeline><highlight class="normal">kx.initSymmetricGradient();</highlight></codeline>
+<codeline><highlight class="normal">ky.initBinomial(1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member" tooltip="Apply two separable filters successively, the first in x-direction, the second in y-direction...">vigra::convolveImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>kx,<sp/>ky);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="257" bodyend="271"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga15c9a9d6221ca5f9e80258f6d0401e98" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveImage</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Kernel1D&lt; T &gt; const &amp;kx, Kernel1D&lt; T &gt; const &amp;ky)</argsstring>
+        <name>convolveImage</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>kx</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; T &gt; const &amp;</type>
+          <declname>ky</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="280" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="277" bodyend="283"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradient</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianGradient</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the gradient vector by means of a 1st derivatives of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is a shorthand for the concatenation of a call to <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with the appropriate kernels at the given scale. Note that this function can either produce two separate result images for the x- and y-components of the gradient, or write into a vector valued image (with at least two components).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>write<sp/>x<sp/>and<sp/>y<sp/>component<sp/>of<sp/>the<sp/>gradient<sp/>into<sp/>separate<sp/>images</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorX<sp/>dupperleftx,<sp/>DestAccessorX<sp/>dax,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorY<sp/>dupperlefty,<sp/>DestAccessorY<sp/>day,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>write<sp/>x<sp/>and<sp/>y<sp/>component<sp/>of<sp/>the<sp/>gradient<sp/>into<sp/>a<sp/>vector-valued<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>write<sp/>x<sp/>and<sp/>y<sp/>component<sp/>of<sp/>the<sp/>gradient<sp/>into<sp/>separate<sp/>images</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorX,<sp/>DestAccessorX&gt;<sp/>destx,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorY,<sp/>DestAccessorY&gt;<sp/>desty,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>write<sp/>x<sp/>and<sp/>y<sp/>component<sp/>of<sp/>the<sp/>gradient<sp/>into<sp/>a<sp/>vector-valued<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>gradx(w,h),<sp/>grady(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>gradient<sp/>vector<sp/>at<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::gaussianGradient(srcImageRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(gradx),<sp/>destImage(grady),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="699"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gaf65c0e897808d3bbc33d277548009efa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradient</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIteratorX dupperleftx, DestAccessorX dax, DestIteratorY dupperlefty, DestAccessorY day, double scale)</argsstring>
+        <name>gaussianGradient</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIteratorX</type>
+          <declname>dupperleftx</declname>
+        </param>
+        <param>
+          <type>DestAccessorX</type>
+          <declname>dax</declname>
+        </param>
+        <param>
+          <type>DestIteratorY</type>
+          <declname>dupperlefty</declname>
+        </param>
+        <param>
+          <type>DestAccessorY</type>
+          <declname>day</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="709" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="704" bodyend="727"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gad3a654ddd3a25b723e7072c4e991639e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradient</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double scale)</argsstring>
+        <name>gaussianGradient</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="735" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="731" bodyend="739"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gaf9ac0dbc6fa206c4d30900ecf097573b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradient</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIteratorX, DestAccessorX &gt; destx, pair&lt; DestIteratorY, DestAccessorY &gt; desty, double scale)</argsstring>
+        <name>gaussianGradient</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorX, DestAccessorX &gt;</type>
+          <declname>destx</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorY, DestAccessorY &gt;</type>
+          <declname>desty</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="749" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="745" bodyend="752"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga6001cf02f952ca375d1a23ddcfca5408" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradient</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>gaussianGradient</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="760" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="757" bodyend="763"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMagnitude</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianGradientMagnitude</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the gradient magnitude by means of a 1st derivatives of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function calls <ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member">gaussianGradient()</ref> and returns the pixel-wise magnitude of the resulting gradient vectors. If the original image has multiple bands, the squared gradient magnitude is computed for each band separately, and the return value is the square root of the sum of these squared magnitudes.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member" tooltip="Calculate the gradient magnitude by means of a 1st derivatives of Gaussian filter.">gaussianGradientMagnitude</ref>(SrcIterator<sp/>sul,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1gab80e356fa487f97d718ed815a3cf4855" kindref="member" tooltip="Calculate the gradient magnitude by means of a 1st derivatives of Gaussian filter.">gaussianGradientMagnitude</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>grad(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>gradient<sp/>magnitude<sp/>at<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::gaussianGradientMagnitude(srcImageRange(src),<sp/>destImage(grad),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="815"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga647b190535f78a3c98453c12ffb01f83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMagnitude</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double scale)</argsstring>
+        <name>gaussianGradientMagnitude</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="823" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="819" bodyend="831"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga22b0bbac5e21c8843804d96d4f07e57d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianGradientMagnitude</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>gaussianGradientMagnitude</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="839" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="836" bodyend="842"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gaca082340d8a747dd9784e2b896db9a30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSharpening</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianSharpening</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Perform sharpening function with gaussian filter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function uses <ref refid="group__CommonConvolutionFilters_1ga187dd5c94b6113dbd3578001fee70113" kindref="member">gaussianSmoothing()</ref> at the given scale to create a temporary image &apos;smooth&apos; and than blends the original and smoothed image according to the formula</para><para><programlisting><codeline><highlight class="normal">dest<sp/>=<sp/>(1<sp/>+<sp/>sharpening_factor)*src<sp/>-<sp/>sharpening_factor*smooth</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold> <programlisting><codeline><highlight class="normal">1.<sp/>sharpening_factor<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">2.<sp/>scale<sp/>&gt;=<sp/>0</highlight></codeline>
+</programlisting></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1gaca082340d8a747dd9784e2b896db9a30" kindref="member" tooltip="Perform sharpening function with gaussian filter.">gaussianSharpening</ref>(SrcIterator<sp/>src_ul,<sp/>SrcIterator<sp/>src_lr,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_ul,<sp/>DestAccessor<sp/>dest_acc,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sharpening_factor,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1gaca082340d8a747dd9784e2b896db9a30" kindref="member" tooltip="Perform sharpening function with gaussian filter.">gaussianSharpening</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sharpening_factor,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>sharpening<sp/>with<sp/>sharpening_factor<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>smoothing<sp/>with<sp/>scale<sp/>=<sp/>0.5</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::gaussianSmoothing(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0,<sp/>0.5);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="453"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga1f445a317fbd50eff53b38c531c57047" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSharpening</definition>
+        <argsstring>(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc, DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor, double scale)</argsstring>
+        <name>gaussianSharpening</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_ul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sharpening_factor</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="460" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="457" bodyend="488"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga7aa243971b4224a0c6bf8c1fc4746efa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSharpening</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double sharpening_factor, double scale)</argsstring>
+        <name>gaussianSharpening</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sharpening_factor</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="492" bodyend="499"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga187dd5c94b6113dbd3578001fee70113" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothing</definition>
+        <argsstring>(...)</argsstring>
+        <name>gaussianSmoothing</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Perform isotropic <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> convolution. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is a shorthand for the concatenation of a call to <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with a <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> kernel of the given scale. If two scales are provided, smoothing in x and y direction will have different strength. The function uses <computeroutput>BORDER_TREATMENT_REFLECT</computeroutput>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga187dd5c94b6113dbd3578001fee70113" kindref="member" tooltip="Perform isotropic Gaussian convolution.">gaussianSmoothing</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale_x,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale_y<sp/>=<sp/>scale_x);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga187dd5c94b6113dbd3578001fee70113" kindref="member" tooltip="Perform isotropic Gaussian convolution.">gaussianSmoothing</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale_x,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale_y<sp/>=<sp/>scale_x);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>smooth<sp/>with<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::gaussianSmoothing(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="559"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga4c66bb091529b6bff2fb5a5097d31716" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothing</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, double scale_x, double scale_y)</argsstring>
+        <name>gaussianSmoothing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale_x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale_y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="567" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="564" bodyend="583"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gada0a653c569fc43d6b4a5dd66ba641c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothing</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, double scale)</argsstring>
+        <name>gaussianSmoothing</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="588" bodyend="595"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gab16dd160c2dd5f6e88ce67265a53a0f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale_x, double scale_y)</argsstring>
+        <name>gaussianSmoothing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale_x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale_y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="603" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="600" bodyend="606"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga234d6ec67ae5f32d47dcad343cf448c2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gaussianSmoothing</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>gaussianSmoothing</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="611" bodyend="617"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gada2a320ba52c347f03c02ef173e346cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianMatrixOfGaussian</definition>
+        <argsstring>(...)</argsstring>
+        <name>hessianMatrixOfGaussian</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Filter image with the 2nd derivatives of the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> at the given scale to get the Hessian matrix. </para>        </briefdescription>
+        <detaileddescription>
+<para>The Hessian matrix is a symmetric matrix defined as:</para><para><formula id="40">\[ \mbox{\rm Hessian}(I) = \left( \begin{array}{cc} G_{xx} \ast I &amp; G_{xy} \ast I \\ G_{xy} \ast I &amp; G_{yy} \ast I \end{array} \right) \]</formula></para><para>where <formula id="41">$G_{xx}, G_{xy}, G_{yy}$</formula> denote 2nd derivatives of Gaussians at the given scale, and <formula id="42">$\ast$</formula> is the convolution symbol. This function calls <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with the appropriate 2nd derivative of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> kernels and puts the results in the three destination images. The first destination image will contain the second derivative in x-direction, the second one the mixed derivative, and the third one holds the derivative in y-direction.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorXY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorXY,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1gada2a320ba52c347f03c02ef173e346cd" kindref="member" tooltip="Filter image with the 2nd derivatives of the Gaussian at the given scale to get the Hessian matrix...">hessianMatrixOfGaussian</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorX<sp/>dupperleftx,<sp/>DestAccessorX<sp/>dax,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorXY<sp/>dupperleftxy,<sp/>DestAccessorXY<sp/>daxy,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorY<sp/>dupperlefty,<sp/>DestAccessorY<sp/>day,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorXY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorXY,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1gada2a320ba52c347f03c02ef173e346cd" kindref="member" tooltip="Filter image with the 2nd derivatives of the Gaussian at the given scale to get the Hessian matrix...">hessianMatrixOfGaussian</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorX,<sp/>DestAccessorX&gt;<sp/>destx,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorXY,<sp/>DestAccessorXY&gt;<sp/>destxy,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorY,<sp/>DestAccessorY&gt;<sp/>desty,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>hxx(w,h),<sp/>hxy(w,h),<sp/>hyy(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>Hessian<sp/>of<sp/>Gaussian<sp/>at<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::hessianMatrixOfGaussian(srcImageRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>destImage(hxx),<sp/>destImage(hxy),<sp/>destImage(hyy),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1022"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga8d876c84808e9df94c9870a983afc1d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorXY</type>
+          </param>
+          <param>
+            <type>class DestAccessorXY</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianMatrixOfGaussian</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIteratorX dupperleftx, DestAccessorX dax, DestIteratorXY dupperleftxy, DestAccessorXY daxy, DestIteratorY dupperlefty, DestAccessorY day, double scale)</argsstring>
+        <name>hessianMatrixOfGaussian</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIteratorX</type>
+          <declname>dupperleftx</declname>
+        </param>
+        <param>
+          <type>DestAccessorX</type>
+          <declname>dax</declname>
+        </param>
+        <param>
+          <type>DestIteratorXY</type>
+          <declname>dupperleftxy</declname>
+        </param>
+        <param>
+          <type>DestAccessorXY</type>
+          <declname>daxy</declname>
+        </param>
+        <param>
+          <type>DestIteratorY</type>
+          <declname>dupperlefty</declname>
+        </param>
+        <param>
+          <type>DestAccessorY</type>
+          <declname>day</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1034" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1028" bodyend="1057"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gab0be3a3aed97576bd0537651c4ec4fb4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorXY</type>
+          </param>
+          <param>
+            <type>class DestAccessorXY</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hessianMatrixOfGaussian</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIteratorX, DestAccessorX &gt; destx, pair&lt; DestIteratorXY, DestAccessorXY &gt; destxy, pair&lt; DestIteratorY, DestAccessorY &gt; desty, double scale)</argsstring>
+        <name>hessianMatrixOfGaussian</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorX, DestAccessorX &gt;</type>
+          <declname>destx</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorXY, DestAccessorXY &gt;</type>
+          <declname>destxy</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorY, DestAccessorY &gt;</type>
+          <declname>desty</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1069" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1064" bodyend="1075"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gabf286ebb8c18843d9989f624b187ec30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussian</definition>
+        <argsstring>(...)</argsstring>
+        <name>laplacianOfGaussian</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Filter image with the Laplacian of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> operator at the given scale. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function calls <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with the appropriate 2nd derivative of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> kernels in x- and y-direction and then sums the results to get the Laplacian.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1gabf286ebb8c18843d9989f624b187ec30" kindref="member" tooltip="Filter image with the Laplacian of Gaussian operator at the given scale.">laplacianOfGaussian</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1gabf286ebb8c18843d9989f624b187ec30" kindref="member" tooltip="Filter image with the Laplacian of Gaussian operator at the given scale.">laplacianOfGaussian</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>Laplacian<sp/>of<sp/>Gaussian<sp/>at<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::laplacianOfGaussian(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="899"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga36ec575633724df33512da5aa9b5075f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussian</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, double scale)</argsstring>
+        <name>laplacianOfGaussian</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="907" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="903" bodyend="929"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gadce28b2059296da3771d67850b768001" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::laplacianOfGaussian</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>laplacianOfGaussian</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="937" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="934" bodyend="940"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga1725cf1cffa836093e343d85ed6cc684" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rieszTransformOfLOG</definition>
+        <argsstring>(...)</argsstring>
+        <name>rieszTransformOfLOG</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate Riesz transforms of the Laplacian of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>The Riesz transforms of the Laplacian of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> have the following transfer functions (defined in a polar coordinate representation of the frequency domain):</para><para><formula id="0">\[ F_{\sigma}(r, \phi)=(i \cos \phi)^n (i \sin \phi)^m r^2 e^{-r^2 \sigma^2 / 2} \]</formula></para><para>where <emphasis>n</emphasis> = <computeroutput>xorder</computeroutput> and <emphasis>m</emphasis> = <computeroutput>yorder</computeroutput> determine th e order of the transform, and <computeroutput>sigma &gt; 0</computeroutput> is the scale of the Laplacian of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>. This function computes a good spatial domain approximation of these transforms for <computeroutput>xorder + yorder &lt;= 2</computeroutput>. The filter responses may be used to calculate the monogenic signal or the boundary tensor.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1725cf1cffa836093e343d85ed6cc684" kindref="member" tooltip="Calculate Riesz transforms of the Laplacian of Gaussian.">rieszTransformOfLOG</ref>(SrcIterator<sp/>supperleft,<sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xorder,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yorder);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1725cf1cffa836093e343d85ed6cc684" kindref="member" tooltip="Calculate Riesz transforms of the Laplacian of Gaussian.">rieszTransformOfLOG</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>xorder,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>yorder);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="boundarytensor_8hxx_source" kindref="compound">vigra/boundarytensor.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>impulse(17,17),<sp/>res(17,<sp/>17);</highlight></codeline>
+<codeline><highlight class="normal">impulse(8,8)<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>the<sp/>impulse<sp/>response<sp/>of<sp/>the<sp/>first<sp/>order<sp/>Riesz<sp/>transform<sp/>in<sp/>x-direction</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga1725cf1cffa836093e343d85ed6cc684" kindref="member" tooltip="Calculate Riesz transforms of the Laplacian of Gaussian.">rieszTransformOfLOG</ref>(srcImageRange(impulse),<sp/>destImage(res),<sp/>2.0,<sp/>1,<sp/>0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="421"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga13a12cb01d3ad1f7c6c602a9cb551900" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rieszTransformOfLOG</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double scale, unsigned int xorder, unsigned int yorder)</argsstring>
+        <name>rieszTransformOfLOG</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>xorder</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>yorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="428" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="425" bodyend="520"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga4d4890b30a401f9fae73a257f9c7e87d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rieszTransformOfLOG</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale, unsigned int xorder, unsigned int yorder)</argsstring>
+        <name>rieszTransformOfLOG</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>xorder</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>yorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="525" bodyend="531"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga036bfcbd28303db0c41d32d292af3bb3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::simpleSharpening</definition>
+        <argsstring>(...)</argsstring>
+        <name>simpleSharpening</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Perform simple sharpening function. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function uses <ref refid="group__CommonConvolutionFilters_1ga6977fd2904ae0ee5168fedc3312ec6b0" kindref="member">convolveImage()</ref> with the following filter:</para><para><programlisting><codeline><highlight class="normal">-sharpening_factor/16.0,<sp/><sp/><sp/><sp/>-sharpening_factor/8.0,<sp/><sp/><sp/><sp/>-sharpening_factor/16.0,</highlight></codeline>
+<codeline><highlight class="normal">-sharpening_factor/8.0,<sp/><sp/><sp/>1.0+sharpening_factor*0.75,<sp/><sp/>-sharpening_factor/8.0,</highlight></codeline>
+<codeline><highlight class="normal">-sharpening_factor/16.0,<sp/><sp/><sp/><sp/>-sharpening_factor/8.0,<sp/><sp/><sp/><sp/>-sharpening_factor/16.0;<sp/><sp/><sp/><sp/></highlight></codeline>
+</programlisting></para><para>and uses <computeroutput>BORDER_TREATMENT_REFLECT</computeroutput> as border treatment mode.</para><para><bold> Preconditions:</bold> <programlisting><codeline><highlight class="normal">1.<sp/>sharpening_factor<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">2.<sp/>scale<sp/>&gt;=<sp/>0</highlight></codeline>
+</programlisting></para><para><bold> Declarations:</bold></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga036bfcbd28303db0c41d32d292af3bb3" kindref="member" tooltip="Perform simple sharpening function.">simpleSharpening</ref>(SrcIterator<sp/>src_ul,<sp/>SrcIterator<sp/>src_lr,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_ul,<sp/>DestAccessor<sp/>dest_acc,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sharpening_factor)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga036bfcbd28303db0c41d32d292af3bb3" kindref="member" tooltip="Perform simple sharpening function.">simpleSharpening</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sharpening_factor)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga036bfcbd28303db0c41d32d292af3bb3" kindref="member" tooltip="Perform simple sharpening function.">simpleSharpening</ref>(src.first,<sp/>src.second,<sp/>src.third,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.first,<sp/>dest.second,<sp/>sharpening_factor);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>sharpening<sp/>with<sp/>sharpening_factor<sp/>=<sp/>0.1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::simpleSharpening(srcImageRange(src),<sp/>destImage(dest),<sp/>0.1);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="356"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga53fee357a95eaa453d599211649a3a94" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::simpleSharpening</definition>
+        <argsstring>(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc, DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)</argsstring>
+        <name>simpleSharpening</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_ul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_lr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_ul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sharpening_factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="360" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga10cc0f74a568aee3b3444c5170cbe771" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::simpleSharpening</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double sharpening_factor)</argsstring>
+        <name>simpleSharpening</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sharpening_factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="381" bodyend="386"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensor</definition>
+        <argsstring>(...)</argsstring>
+        <name>structureTensor</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the Structure Tensor for each pixel of and image, using <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> (derivative) filters. </para>        </briefdescription>
+        <detaileddescription>
+<para>The Structure Tensor is is a smoothed version of the Euclidean product of the gradient vector with itself. I.e. it&apos;s a symmetric matrix defined as:</para><para><formula id="43">\[ \mbox{\rm StructurTensor}(I) = \left( \begin{array}{cc} G \ast (I_x I_x) &amp; G \ast (I_x I_y) \\ G \ast (I_x I_y) &amp; G \ast (I_y I_y) \end{array} \right) = \left( \begin{array}{cc} A &amp; C \\ C &amp; B \end{array} \right) \]</formula></para><para>where <formula id="44">$G$</formula> denotes <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing at the <emphasis>outer scale</emphasis>, <formula id="45">$I_x, I_y$</formula> are the gradient components taken at the <emphasis>inner scale</emphasis>, <formula id="42">$\ast$</formula> is the convolution symbol, and <formula id="46">$I_x I_x$</formula> etc. are pixelwise products of the 1st derivative images. This function calls <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref> with the appropriate <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> kernels and puts the results in the three separate destination images (where the first one will contain <formula id="47">$G \ast (I_x I_x)$</formula>, the second one <formula id="48">$G \ast (I_x I_y)$</formula>, and the third one holds <formula id="49">$G \ast (I_y I_y)$</formula>), or into a single 3-band image (where the bands hold the result in the same order as above). The latter form is also applicable when the source image is a multi-band image (e.g. RGB). In this case, tensors are first computed for each band separately, and then summed up to get a single result tensor.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>three<sp/>separate<sp/>destination<sp/>images</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorXY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorXY,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member" tooltip="Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters...">structureTensor</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorX<sp/>dupperleftx,<sp/>DestAccessorX<sp/>dax,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorXY<sp/>dupperleftxy,<sp/>DestAccessorXY<sp/>daxy,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIteratorY<sp/>dupperlefty,<sp/>DestAccessorY<sp/>day,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>inner_scale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outer_scale);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>single<sp/>3-band<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member" tooltip="Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters...">structureTensor</ref>(SrcIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>inner_scale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outer_scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>three<sp/>separate<sp/>destination<sp/>images</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorX,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorX,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorXY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorXY,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIteratorY,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessorY&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member" tooltip="Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters...">structureTensor</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorX,<sp/>DestAccessorX&gt;<sp/>destx,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorXY,<sp/>DestAccessorXY&gt;<sp/>destxy,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIteratorY,<sp/>DestAccessorY&gt;<sp/>desty,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>nner_scale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outer_scale);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>single<sp/>3-band<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member" tooltip="Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters...">structureTensor</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>nner_scale,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>outer_scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="convolution_8hxx_source" kindref="compound">vigra/convolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>stxx(w,h),<sp/>stxy(w,h),<sp/>styy(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BasicImage&lt;TinyVector&lt;float, 3&gt;</ref><sp/>&gt;<sp/>st(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>Structure<sp/>Tensor<sp/>at<sp/>inner<sp/>scale<sp/>=<sp/>1.0<sp/>and<sp/>outer<sp/>scale<sp/>=<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::structureTensor(srcImageRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>destImage(stxx),<sp/>destImage(stxy),<sp/>destImage(styy),<sp/>1.0,<sp/>3.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dto.<sp/>with<sp/>a<sp/>single<sp/>3-band<sp/>destination<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member" tooltip="Calculate the Structure Tensor for each pixel of and image, using Gaussian (derivative) filters...">vigra::structureTensor</ref>(srcImageRange(src),<sp/>destImage(st),<sp/>1.0,<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1187"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gafa9157b59c5081f07cb138ae74f9ab45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorXY</type>
+          </param>
+          <param>
+            <type>class DestAccessorXY</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensor</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIteratorX dupperleftx, DestAccessorX dax, DestIteratorXY dupperleftxy, DestAccessorXY daxy, DestIteratorY dupperlefty, DestAccessorY day, double inner_scale, double outer_scale)</argsstring>
+        <name>structureTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIteratorX</type>
+          <declname>dupperleftx</declname>
+        </param>
+        <param>
+          <type>DestAccessorX</type>
+          <declname>dax</declname>
+        </param>
+        <param>
+          <type>DestIteratorXY</type>
+          <declname>dupperleftxy</declname>
+        </param>
+        <param>
+          <type>DestAccessorXY</type>
+          <declname>daxy</declname>
+        </param>
+        <param>
+          <type>DestIteratorY</type>
+          <declname>dupperlefty</declname>
+        </param>
+        <param>
+          <type>DestAccessorY</type>
+          <declname>day</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>inner_scale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outer_scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1199" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1193" bodyend="1221"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga0f9364ef67eedbc043e077fa8dd831c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorX</type>
+          </param>
+          <param>
+            <type>class DestAccessorX</type>
+          </param>
+          <param>
+            <type>class DestIteratorXY</type>
+          </param>
+          <param>
+            <type>class DestAccessorXY</type>
+          </param>
+          <param>
+            <type>class DestIteratorY</type>
+          </param>
+          <param>
+            <type>class DestAccessorY</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIteratorX, DestAccessorX &gt; destx, pair&lt; DestIteratorXY, DestAccessorXY &gt; destxy, pair&lt; DestIteratorY, DestAccessorY &gt; desty, double inner_scale, double outer_scale)</argsstring>
+        <name>structureTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorX, DestAccessorX &gt;</type>
+          <declname>destx</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorXY, DestAccessorXY &gt;</type>
+          <declname>destxy</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorY, DestAccessorY &gt;</type>
+          <declname>desty</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>inner_scale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outer_scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1233" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1228" bodyend="1239"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1ga92330cc24822c7bc9e1b2219367729ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensor</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double inner_scale, double outer_scale)</argsstring>
+        <name>structureTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>inner_scale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outer_scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1291" bodyend="1300"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CommonConvolutionFilters_1gaf13b2cdf27c431541c232e1be73b9311" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::structureTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double inner_scale, double outer_scale)</argsstring>
+        <name>structureTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>inner_scale</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>outer_scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" line="1308" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/convolution.hxx" bodystart="1305" bodyend="1312"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>These functions calculate common filters by appropriate sequences of calls to <ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member">separableConvolveX()</ref> and <ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member">separableConvolveY()</ref>. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

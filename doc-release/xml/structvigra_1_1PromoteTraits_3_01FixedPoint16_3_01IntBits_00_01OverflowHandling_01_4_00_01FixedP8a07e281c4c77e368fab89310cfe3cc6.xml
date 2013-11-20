@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_00_01FixedP8a07e281c4c77e368fab89310cfe3cc6" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt;, FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>IntBits</declname>
+        <defname>IntBits</defname>
+      </param>
+      <param>
+        <type>FPOverflowHandling</type>
+        <declname>OverflowHandling</declname>
+        <defname>OverflowHandling</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_00_01FixedP8a07e281c4c77e368fab89310cfe3cc6_1a82e8f9d9635695c8b62be39964b89d82" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">FixedPoint16</ref>&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>typedef FixedPoint16&lt;IntBits, OverflowHandling&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="914" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="914" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1PromoteTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_00_01FixedP8a07e281c4c77e368fab89310cfe3cc6_1a497071b860561c26537524091d0bb00c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">Promote</ref></type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(FixedPoint16&lt; IntBits, OverflowHandling &gt; v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">FixedPoint16</ref>&lt; IntBits, OverflowHandling &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="915" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="915" bodyend="915"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="913" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="911" bodyend="916"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_00_01FixedP8a07e281c4c77e368fab89310cfe3cc6_1a82e8f9d9635695c8b62be39964b89d82" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt;, FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1PromoteTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_00_01FixedP8a07e281c4c77e368fab89310cfe3cc6_1a497071b860561c26537524091d0bb00c" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt;, FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</scope><name>toPromote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

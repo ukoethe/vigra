@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1at__finder" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::at_finder</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>pos</declname>
+        <defname>pos</defname>
+      </param>
+      <param>
+        <type>class X</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1at__finder_1ad55da56eddc6bd137503e6dcc8e0316d" prot="public" static="no">
+        <type>at_finder&lt; pos-1, typename X::rest_type &gt;</type>
+        <definition>typedef at_finder&lt;pos - 1, typename X::rest_type&gt; next_type</definition>
+        <argsstring></argsstring>
+        <name>next_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="971" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="971" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1at__finder_1a9f0a0dc4cde28c046ebe56816e1ebeb6" prot="public" static="no">
+        <type>next_type::type</type>
+        <definition>typedef next_type::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="972" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="972" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1at__finder_1ac036b78b8f30b073c74fc15ee821e6b2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>type &amp;</type>
+        <definition>static type&amp; at</definition>
+        <argsstring>(X &amp;x)</argsstring>
+        <name>at</name>
+        <param>
+          <type>X &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="975" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="974" bodyend="977"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="970" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="969" bodyend="978"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1at__finder_1ac036b78b8f30b073c74fc15ee821e6b2" prot="public" virt="non-virtual"><scope>vigra::type_lists::at_finder</scope><name>at</name></member>
+      <member refid="structvigra_1_1type__lists_1_1at__finder_1ad55da56eddc6bd137503e6dcc8e0316d" prot="public" virt="non-virtual"><scope>vigra::type_lists::at_finder</scope><name>next_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1at__finder_1a9f0a0dc4cde28c046ebe56816e1ebeb6" prot="public" virt="non-virtual"><scope>vigra::type_lists::at_finder</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

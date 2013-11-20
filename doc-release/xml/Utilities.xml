@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="Utilities" kind="page">
+    <compoundname>Utilities</compoundname>
+    <title>Utilities</title>
+    <detaileddescription>
+<para>Basic helper functionality needed throughout.</para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1ArrayVector" kindref="compound">vigra::ArrayVector</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>replacement for std::vector (always uses consecutive memory)</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1BucketQueue" kindref="compound">vigra::BucketQueue</ref> and <ref refid="classvigra_1_1MappedBucketQueue" kindref="compound">vigra::MappedBucketQueue</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>efficient priority queues for integer priorities</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__RangesAndPoints" kindref="compound">Ranges and Points</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>2-D and N-D positions, extents, and boxes</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__PixelNeighborhood" kindref="compound">Utilities to manage pixel neighborhoods</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>4- and 8-neighborhood definitions and circulators</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VoxelNeighborhood" kindref="compound">Utilities to manage voxel neighborhoods</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>6- and 26-neighborhood definitions and circulators</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1IteratorAdaptor" kindref="compound">vigra::IteratorAdaptor</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Quickly create STL-compatible 1D iterator adaptors</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="TupleTypes" kindref="compound">Tuple Types</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>pair, triple, tuple4, tuple5</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MathConstants" kindref="compound">Mathematical Constants</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>M_PI, M_SQRT2</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="TimingMacros" kindref="compound">Timing macros for runtime measurements</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Macros for taking execution speed measurements</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

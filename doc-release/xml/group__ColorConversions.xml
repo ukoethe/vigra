@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__ColorConversions" kind="group">
+    <compoundname>ColorConversions</compoundname>
+    <title>Color Space Conversions</title>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Lab2RGBFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Lab2RGBFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Lab2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Lab2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Lab2XYZFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Lab2XYZFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Luv2RGBFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Luv2RGBFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Luv2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Luv2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01Luv2XYZFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; Luv2XYZFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGB2LabFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGB2LabFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGB2LuvFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGB2LuvFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGB2RGBPrimeFunctor_3_01From_00_01To_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGB2RGBPrimeFunctor&lt; From, To &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGB2sRGBFunctor_3_01From_00_01To_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGB2sRGBFunctor&lt; From, To &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGB2XYZFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGB2XYZFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2LabFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2LabFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2LuvFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2LuvFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2RGBFunctor_3_01From_00_01To_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2RGBFunctor&lt; From, To &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2XYZFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2XYZFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeCbCrFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2YPrimeCbCrFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeIQFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2YPrimeIQFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimePbPrFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2YPrimePbPrFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeUVFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RGBPrime2YPrimeUVFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01sRGB2RGBFunctor_3_01From_00_01To_01_4_01_4" prot="public">vigra::FunctorTraits&lt; sRGB2RGBFunctor&lt; From, To &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01XYZ2LabFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; XYZ2LabFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01XYZ2LuvFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; XYZ2LuvFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01XYZ2RGBFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; XYZ2RGBFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01XYZ2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; XYZ2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01YPrimeCbCr2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; YPrimeCbCr2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01YPrimeIQ2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; YPrimeIQ2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01YPrimePbPr2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; YPrimePbPr2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01YPrimeUV2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public">vigra::FunctorTraits&lt; YPrimeUV2RGBPrimeFunctor&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1Lab2RGBFunctor" prot="public">vigra::Lab2RGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1Lab2RGBPrimeFunctor" prot="public">vigra::Lab2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1Lab2XYZFunctor" prot="public">vigra::Lab2XYZFunctor</innerclass>
+    <innerclass refid="classvigra_1_1Luv2RGBFunctor" prot="public">vigra::Luv2RGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1Luv2RGBPrimeFunctor" prot="public">vigra::Luv2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1Luv2XYZFunctor" prot="public">vigra::Luv2XYZFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGB2LabFunctor" prot="public">vigra::RGB2LabFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGB2LuvFunctor" prot="public">vigra::RGB2LuvFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGB2RGBPrimeFunctor" prot="public">vigra::RGB2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGB2RGBPrimeFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4" prot="public">vigra::RGB2RGBPrimeFunctor&lt; unsigned char, unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1RGB2sRGBFunctor" prot="public">vigra::RGB2sRGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGB2sRGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4" prot="public">vigra::RGB2sRGBFunctor&lt; unsigned char, unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1RGB2XYZFunctor" prot="public">vigra::RGB2XYZFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2LabFunctor" prot="public">vigra::RGBPrime2LabFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2LuvFunctor" prot="public">vigra::RGBPrime2LuvFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2RGBFunctor" prot="public">vigra::RGBPrime2RGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4" prot="public">vigra::RGBPrime2RGBFunctor&lt; unsigned char, unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2XYZFunctor" prot="public">vigra::RGBPrime2XYZFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2YPrimeCbCrFunctor" prot="public">vigra::RGBPrime2YPrimeCbCrFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2YPrimeIQFunctor" prot="public">vigra::RGBPrime2YPrimeIQFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2YPrimePbPrFunctor" prot="public">vigra::RGBPrime2YPrimePbPrFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RGBPrime2YPrimeUVFunctor" prot="public">vigra::RGBPrime2YPrimeUVFunctor</innerclass>
+    <innerclass refid="classvigra_1_1sRGB2RGBFunctor" prot="public">vigra::sRGB2RGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4" prot="public">vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</innerclass>
+    <innerclass refid="classvigra_1_1XYZ2LabFunctor" prot="public">vigra::XYZ2LabFunctor</innerclass>
+    <innerclass refid="classvigra_1_1XYZ2LuvFunctor" prot="public">vigra::XYZ2LuvFunctor</innerclass>
+    <innerclass refid="classvigra_1_1XYZ2RGBFunctor" prot="public">vigra::XYZ2RGBFunctor</innerclass>
+    <innerclass refid="classvigra_1_1XYZ2RGBPrimeFunctor" prot="public">vigra::XYZ2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1YPrimeCbCr2RGBPrimeFunctor" prot="public">vigra::YPrimeCbCr2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1YPrimeIQ2RGBPrimeFunctor" prot="public">vigra::YPrimeIQ2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1YPrimePbPr2RGBPrimeFunctor" prot="public">vigra::YPrimePbPr2RGBPrimeFunctor</innerclass>
+    <innerclass refid="classvigra_1_1YPrimeUV2RGBPrimeFunctor" prot="public">vigra::YPrimeUV2RGBPrimeFunctor</innerclass>
+    <innergroup refid="group__PolarColors">Polar Color Coordinates</innergroup>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Convert between RGB, sRGB, R&apos;G&apos;B&apos;, XYZ, L*a*b*, L*u*v*, Y&apos;PbPr, Y&apos;CbCr, Y&apos;IQ, and Y&apos;UV color spaces.</para><para><bold>#include</bold> &lt;<ref refid="colorconversions_8hxx_source" kindref="compound">vigra/colorconversions.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><itemizedlist>
+<listitem>
+<para><bold>RGB/sRGB/R&apos;G&apos;B&apos;</bold><linebreak/>
+ <emphasis>linear and non-linear (gamma corrected) additive color</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGB2sRGBFunctor" kindref="compound">vigra::RGB2sRGBFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1sRGB2RGBFunctor" kindref="compound">vigra::sRGB2RGBFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGB2RGBPrimeFunctor" kindref="compound">vigra::RGB2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2RGBFunctor" kindref="compound">vigra::RGBPrime2RGBFunctor</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para><bold>XYZ</bold><linebreak/>
+ <emphasis>device independent color representation (according to Publication CIE No 15.2 &quot;Colorimetry&quot; and ITU-R Recommendation BT.709)</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGB2XYZFunctor" kindref="compound">vigra::RGB2XYZFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2XYZFunctor" kindref="compound">vigra::RGBPrime2XYZFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1XYZ2RGBFunctor" kindref="compound">vigra::XYZ2RGBFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1XYZ2RGBPrimeFunctor" kindref="compound">vigra::XYZ2RGBPrimeFunctor</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para><bold>L*a*b* </bold><linebreak/>
+ <emphasis>perceptually uniform color representation (according to Publication CIE No 15.2 &quot;Colorimetry&quot; and ITU-R Recommendation BT.709)</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGB2LabFunctor" kindref="compound">vigra::RGB2LabFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2LabFunctor" kindref="compound">vigra::RGBPrime2LabFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1XYZ2LabFunctor" kindref="compound">vigra::XYZ2LabFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Lab2RGBFunctor" kindref="compound">vigra::Lab2RGBFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Lab2RGBPrimeFunctor" kindref="compound">vigra::Lab2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Lab2XYZFunctor" kindref="compound">vigra::Lab2XYZFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gafdec7ac4d8ba3ec5a076372eea278c66" kindref="member">polar2Lab()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga7ac70bee121e35247722c80fa20a9232" kindref="member">lab2Polar()</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para><bold>L*u*v* </bold><linebreak/>
+ <emphasis>perceptually uniform color representation (according to Publication CIE No 15.2 &quot;Colorimetry&quot; and ITU-R Recommendation BT.709)</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGB2LuvFunctor" kindref="compound">vigra::RGB2LuvFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2LuvFunctor" kindref="compound">vigra::RGBPrime2LuvFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1XYZ2LuvFunctor" kindref="compound">vigra::XYZ2LuvFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Luv2RGBFunctor" kindref="compound">vigra::Luv2RGBFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Luv2RGBPrimeFunctor" kindref="compound">vigra::Luv2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Luv2XYZFunctor" kindref="compound">vigra::Luv2XYZFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gacda9420225ef2bb0075597549fc493e2" kindref="member">polar2Luv()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga66419f33a9597d249c04c4e52e92fa00" kindref="member">luv2Polar()</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para><bold>Y&apos;PbPr and Y&apos;CbCr </bold><linebreak/>
+ <emphasis>color difference coding (according to ITU-R Recommendation BT. 601)</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2YPrimePbPrFunctor" kindref="compound">vigra::RGBPrime2YPrimePbPrFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1YPrimePbPr2RGBPrimeFunctor" kindref="compound">vigra::YPrimePbPr2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gaaed05183ac67f4ce6a88bce59be43d47" kindref="member">polar2YPrimePbPr()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga46c5522efdc3fc857675fcee909e4110" kindref="member">yPrimePbPr2Polar()</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2YPrimeCbCrFunctor" kindref="compound">vigra::RGBPrime2YPrimeCbCrFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1YPrimeCbCr2RGBPrimeFunctor" kindref="compound">vigra::YPrimeCbCr2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gadb4ecbf1f3cd03559da19f5930bf308e" kindref="member">polar2YPrimeCbCr()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga789ff96bd5b7fbcf75100307dcd4617d" kindref="member">yPrimeCbCr2Polar()</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<listitem>
+<para><bold>Y&apos;UV and Y&apos;IQ </bold><linebreak/>
+ <emphasis>analog video coding according to NTSC and PAL standards</emphasis> </para><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2YPrimeUVFunctor" kindref="compound">vigra::RGBPrime2YPrimeUVFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1YPrimeUV2RGBPrimeFunctor" kindref="compound">vigra::YPrimeUV2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga04dfa11029f88093e78cd5b8c620a928" kindref="member">polar2YPrimeUV()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1ga2976f7502ebf84fc190a6f02ee3b46e8" kindref="member">yPrimeUV2Polar()</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1RGBPrime2YPrimeIQFunctor" kindref="compound">vigra::RGBPrime2YPrimeIQFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1YPrimeIQ2RGBPrimeFunctor" kindref="compound">vigra::YPrimeIQ2RGBPrimeFunctor</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gaeb7ea17d644d4bb1c9a11f5298e96c97" kindref="member">polar2YPrimeIQ()</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__PolarColors_1gaf75e5be718b502797ecece452fac99a1" kindref="member">yPrimeIQ2Polar()</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+</itemizedlist>
+</para><para><anchor id="index_1_details"/>This module provides conversion from RGB/R&apos;G&apos;B&apos; into more perceptually uniform color spaces. In image analysis, colors are usually converted into another color space in order to get good estimates of perceived color differences by just calculating Euclidean distances between the transformed colors. The L*a*b* and L*u*v* were designed with exactly this application in mind and thus give the best results. But these conversions are also the most computationally demanding. The Y&apos;PbPr color difference space (designed for coding digital video) is computationally much cheaper, and almost as good. Y&apos;CbCr represents essentially the same transformation, but the color values are scaled so that they can be stored with 8 bits per channel with minimal loss of information. The other transformations are of lesser interest here: XYZ is a device independent (but not perceptually uniform) color representation, and Y&apos;IQ and Y&apos;UV are the color spaces used by the PAL and NTSC analog video standards. Detailed information about these color spaces and their transformations can be found in <ulink url="http://www.poynton.com/ColorFAQ.html">Charles Poynton&apos;s Color FAQ</ulink></para><para>When you want to perform a color conversion, you must first know in which color space the data are given. Although this sounds trivial, it is quite often done wrong, because the distinction between RGB and sRGB (still images) or R&apos;G&apos;B&apos; (digital video) is frequently overlooked: nowadays, most still images are stored in sRGB space, and treating them as RGB leads to wrong results (although the color primaries are named the same). RGB and R&apos;G&apos;B&apos; are related by a so called <emphasis>gamma correction</emphasis>:</para><para><formula id="1">\[ C&apos; = C_{max} \left(\frac{C_{RGB}}{C_{max}} \right)^{0.45} \qquad \]</formula></para><para>where C represents one of the color channels R, G, and B, and <formula id="2">$ C_{max} $</formula> usually equals 255. The sRGB color space realizes a slight enhancement of this definition:</para><para><formula id="3">\[ C_{sRGB} = \left\{\begin{array}{ll} 12.92\,C_{RGB} &amp; \textrm{ if }\frac{C_{RGB}}{C_{max}} \le 0.00304 \\ C_{max}\left( 1.055 \left(\frac{C_{RGB}}{C_{max}}\right)^{1/2.4}-0.055\right) &amp; \textrm{ otherwise} \end{array} \right. \]</formula></para><para>sRGB has now become a widely accepted international standard (IEC 61966-2.1) which is used by most consumer products (digital cameras, printers, and screens). In practice, you can distinguish between linear and gamma-corrected red, green, and blue by displaying the images: if they look too dark, they are probably RGB, if they are OK, they are likely sRGB. (However, there are still a few older graphics cards and display programs which silently apply an additional gamma correction to every image, so that RGB appears correct and sRGB is too bright.) Whether or not the data are represented in the sRGB color space can also be seen in the color space tag of an image&apos;s EXIF data, if available.</para><para>The distinction between RGB and R&apos;G&apos;B&apos; is important because some conversions start at RGB (XYZ, L*a*b*, L*u*v*), while others start at R&apos;G&apos;B&apos; (Y&apos;PbPr, Y&apos;CbCr, Y&apos;IQ, and Y&apos;UV). The names of VIGRA&apos;s color conversion functors always make clear to which color space they must be applied.</para><para>In addition VIGRA provides a <emphasis><ref refid="group__PolarColors" kindref="compound">polar coordinate interface</ref></emphasis> to several color spaces (L*a*b*, L*u*v*, Y&apos;PbPr, Y&apos;CbCr, Y&apos;IQ, and Y&apos;UV). This interface makes use of the fact that these color spaces are conceptually similar: they represent colors by a &quot;brightness&quot; coordinate (L* or Y&apos;) and a pair of &quot;chromaticity&quot; coordinates that span a plane of colors with equal brightness. The polar representation transforms chroma coordinates into a color &quot;angle&quot; (similar to hue in the HSV system) and a &quot;saturation&quot;. The polar coordinates are normalized so that a color angle of 0 degrees is always associated with red (green is at about 120 degrees, blue at about 240 degrees - exact values differ between color spaces). A saturation of 1 is the highest saturation that any RGB color in the unit cube can have after transformation into the respective color space, and saturation 0 corresponds to gray. Polar coordinates provide a more intuitive interface to color specification by users and make different color spaces somewhat comparable. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

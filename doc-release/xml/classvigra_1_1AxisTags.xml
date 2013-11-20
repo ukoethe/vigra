@@ -1,0 +1,1235 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1AxisTags" kind="class" prot="public">
+    <compoundname>vigra::AxisTags</compoundname>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1AxisTags_1ad2ab415df0a12b7e94c1e9c1668e39aa" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; AxisInfo &gt;</type>
+        <definition>ArrayVector&lt;AxisInfo&gt; axes_</definition>
+        <argsstring></argsstring>
+        <name>axes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="805" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="805" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a9db7ac8b355d1505f635c5a14731cf0c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>()</argsstring>
+        <name>AxisTags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="298" bodyend="299"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ab5bac251fdcc68435de86fdc85fea360" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(int size)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="301" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a556cad7c26f33bf8cfff97b0607a9001" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(AxisInfo const &amp;i1)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="306" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="305" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aba4933aa1e40f588f69318e7ed9c6bab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(AxisInfo const &amp;i1, AxisInfo const &amp;i2)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="310" bodyend="314"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ae350215f961d4ce5cbb837eabd2755f9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(AxisInfo const &amp;i1, AxisInfo const &amp;i2, AxisInfo const &amp;i3)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i2</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i3</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="316" bodyend="321"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1afe6a8542562b9e74bf681010e179e3f1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(AxisInfo const &amp;i1, AxisInfo const &amp;i2, AxisInfo const &amp;i3, AxisInfo const &amp;i4)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i2</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i3</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i4</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="325" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="323" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a348be61e1df563abbd9bb040d9751062" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AxisTags</definition>
+        <argsstring>(AxisInfo const &amp;i1, AxisInfo const &amp;i2, AxisInfo const &amp;i3, AxisInfo const &amp;i4, AxisInfo const &amp;i5)</argsstring>
+        <name>AxisTags</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i2</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i3</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i4</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i5</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="332" bodyend="340"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ae7876362ff16ddf96c6d243774c03db9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int axisTypeCount</definition>
+        <argsstring>(AxisInfo::AxisType type) const </argsstring>
+        <name>axisTypeCount</name>
+        <param>
+          <type>AxisInfo::AxisType</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="370" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="369" bodyend="376"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1adf86652556265fb7fc259a1ea1ebbdba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int channelIndex</definition>
+        <argsstring>() const </argsstring>
+        <name>channelIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="566" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="565" bodyend="571"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a0a957a233467df253b296e0e76726d91" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool compatible</definition>
+        <argsstring>(AxisTags const &amp;other) const </argsstring>
+        <name>compatible</name>
+        <param>
+          <type>AxisTags const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="753" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="752" bodyend="762"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ac9ad22fd94b33967635d490d7b719932" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string description</definition>
+        <argsstring>(int k) const </argsstring>
+        <name>description</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="513" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="512" bodyend="515"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a090aee3cd1d0ae86fde4880ac1acda24" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string description</definition>
+        <argsstring>(std::string const &amp;key) const </argsstring>
+        <name>description</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="517" bodyend="520"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a55ccf97663b240c5fb5632dc04ca293b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dropAxis</definition>
+        <argsstring>(int k)</argsstring>
+        <name>dropAxis</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="454" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="453" bodyend="460"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a5f3c3566368aa094282c410acca5f8c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dropAxis</definition>
+        <argsstring>(std::string const &amp;key)</argsstring>
+        <name>dropAxis</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="463" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="462" bodyend="465"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a385617d1b6ba159e6a8d8083333cf591" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void dropChannelAxis</definition>
+        <argsstring>()</argsstring>
+        <name>dropChannelAxis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="467" bodyend="472"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a325a3fa2653c5aefd1aac568ec8ae121" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void fromFrequencyDomain</definition>
+        <argsstring>(int k, int size=0)</argsstring>
+        <name>fromFrequencyDomain</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="549" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aae223e877f8c4bf8345d36675494f940" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void fromFrequencyDomain</definition>
+        <argsstring>(std::string const &amp;key, int size=0)</argsstring>
+        <name>fromFrequencyDomain</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="554" bodyend="557"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aa6cbff1e8f7b8000a198fff73005a86c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AxisInfo &amp;</type>
+        <definition>AxisInfo&amp; get</definition>
+        <argsstring>(int k)</argsstring>
+        <name>get</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="391" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a65d777459efb60a527682a300e6f8955" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AxisInfo &amp;</type>
+        <definition>AxisInfo&amp; get</definition>
+        <argsstring>(std::string const &amp;key)</argsstring>
+        <name>get</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="399" bodyend="402"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a9c5a1c71a80613313079fc3099c0bd59" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>AxisInfo const &amp;</type>
+        <definition>AxisInfo const&amp; get</definition>
+        <argsstring>(int k) const </argsstring>
+        <name>get</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="404" bodyend="410"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a72f1a9c1fb1084ab093c71f8ff04e6d5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>AxisInfo const &amp;</type>
+        <definition>AxisInfo const&amp; get</definition>
+        <argsstring>(std::string const &amp;key) const </argsstring>
+        <name>get</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="413" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="412" bodyend="415"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ab42ca379e0454eccf39ec72ace7ab51f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasChannelAxis</definition>
+        <argsstring>() const </argsstring>
+        <name>hasChannelAxis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="559" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a119673b857a6c9436409ded16e05b770" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int index</definition>
+        <argsstring>(std::string const &amp;key) const </argsstring>
+        <name>index</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="475" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="474" bodyend="480"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ac3adf6ef88aa07ad472d879783da10aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int innerNonchannelIndex</definition>
+        <argsstring>() const </argsstring>
+        <name>innerNonchannelIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="573" bodyend="587"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aec294bf2a57899e129f65c2ddee49ba6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void insert</definition>
+        <argsstring>(int k, AxisInfo const &amp;i)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="432" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="431" bodyend="445"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a94a03187c6152af5fedd5558afcf4e7d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(AxisTags const &amp;other) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>AxisTags const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="772" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="771" bodyend="774"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a2c5828d5cf5dcc6c6e1a5a60ed69755e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(AxisTags const &amp;other) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>AxisTags const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="765" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="764" bodyend="769"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ae63e20109f15417a72f8d755981881f1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationFromNormalOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;inverse_permutation) const </argsstring>
+        <name>permutationFromNormalOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>inverse_permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="645" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="644" bodyend="650"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a92fc20618549b24d79572dda6e3645a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationFromNormalOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;inverse_permutation, AxisInfo::AxisType types) const </argsstring>
+        <name>permutationFromNormalOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>inverse_permutation</declname>
+        </param>
+        <param>
+          <type>AxisInfo::AxisType</type>
+          <declname>types</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="655" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="654" bodyend="660"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a7ddb3557d08f43a4537e196d7181ef08" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationFromNumpyOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;inverse_permutation) const </argsstring>
+        <name>permutationFromNumpyOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>inverse_permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="670" bodyend="676"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a2f4f03fdd0fca6e6479c87b9c25cf0ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationFromVigraOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;inverse_permutation) const </argsstring>
+        <name>permutationFromVigraOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>inverse_permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="694" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="693" bodyend="699"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ae98391feb6c463d7282575e3d81b6892" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationToNormalOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;permutation) const </argsstring>
+        <name>permutationToNormalOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="624" bodyend="628"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a2b848a057ade3dfca5dead4a90ccee58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationToNormalOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;permutation, AxisInfo::AxisType types) const </argsstring>
+        <name>permutationToNormalOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <param>
+          <type>AxisInfo::AxisType</type>
+          <declname>types</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="633" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="632" bodyend="640"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a70a2105be2a3c8d7cc764455e2ec807c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationToNumpyOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;permutation) const </argsstring>
+        <name>permutationToNumpyOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="664" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="663" bodyend="667"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a0bf7041f83504080f1bac55aa3e2cf84" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationToOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;permutation, std::string const &amp;order) const </argsstring>
+        <name>permutationToOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="703" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="702" bodyend="726"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ad40df5fbd2ed4e8ba6e29f311803d8d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void permutationToVigraOrder</definition>
+        <argsstring>(ArrayVector&lt; T &gt; &amp;permutation) const </argsstring>
+        <name>permutationToVigraOrder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="680" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="679" bodyend="690"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1abcf5f8a4732752b6d6aa50e2b771522f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void push_back</definition>
+        <argsstring>(AxisInfo const &amp;i)</argsstring>
+        <name>push_back</name>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="448" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="447" bodyend="451"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ae28c1d45d869ba62183d96271d4cb906" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string repr</definition>
+        <argsstring>() const </argsstring>
+        <name>repr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="379" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="378" bodyend="389"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ab01b1740c2d59920bf81ac5cf9925ee0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double resolution</definition>
+        <argsstring>(int k) const </argsstring>
+        <name>resolution</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="483" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="482" bodyend="485"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1abe40548cb31a0e845d8a0f3a0505eeca" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double resolution</definition>
+        <argsstring>(std::string const &amp;key) const </argsstring>
+        <name>resolution</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="488" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="487" bodyend="490"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aee5e1682412026c60c3620795c1e3558" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void scaleResolution</definition>
+        <argsstring>(int k, double factor)</argsstring>
+        <name>scaleResolution</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="503" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="502" bodyend="505"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a960cc37d420f1702216eee7656973348" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void scaleResolution</definition>
+        <argsstring>(std::string const &amp;key, double factor)</argsstring>
+        <name>scaleResolution</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="508" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="507" bodyend="510"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a838bcda72c4af8d3ff81211e4fb1708d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(int k, AxisInfo const &amp;info)</argsstring>
+        <name>set</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="417" bodyend="424"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1aa1e0b5c9b3fa13e4bebd61330aa2b1ab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(std::string const &amp;key, AxisInfo const &amp;info)</argsstring>
+        <name>set</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="426" bodyend="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a76de6ee1e8f908ca9e1f946bface4ac1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setChannelDescription</definition>
+        <argsstring>(std::string const &amp;description)</argsstring>
+        <name>setChannelDescription</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="532" bodyend="537"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ab436d9b8649a636048e8e1c50057cf89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setDescription</definition>
+        <argsstring>(int k, std::string const &amp;d)</argsstring>
+        <name>setDescription</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="523" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="522" bodyend="525"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a2f8a703f721fc1fbeee4874b62fa2bee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setDescription</definition>
+        <argsstring>(std::string const &amp;key, std::string const &amp;d)</argsstring>
+        <name>setDescription</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="527" bodyend="530"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a0ca20ebe7f9661d598b7b456986ad317" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setResolution</definition>
+        <argsstring>(int k, double r)</argsstring>
+        <name>setResolution</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="493" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="492" bodyend="495"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a23bc09e885ea6f6fe91c524aec4f2434" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setResolution</definition>
+        <argsstring>(std::string const &amp;key, double r)</argsstring>
+        <name>setResolution</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="497" bodyend="500"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="365" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="364" bodyend="367"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a5975aed0648c6e2f66ebc5a6d1d50dce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void swapaxes</definition>
+        <argsstring>(int i1, int i2)</argsstring>
+        <name>swapaxes</name>
+        <param>
+          <type>int</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>i2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="590" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="589" bodyend="598"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a52a0ca82509770a4fcec148dcf027ee7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void toFrequencyDomain</definition>
+        <argsstring>(int k, int size=0, int sign=1)</argsstring>
+        <name>toFrequencyDomain</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sign</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="539" bodyend="542"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a59ddb758df1128323d9c9e77a82a43e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void toFrequencyDomain</definition>
+        <argsstring>(std::string const &amp;key, int size=0, int sign=1)</argsstring>
+        <name>toFrequencyDomain</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>size</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sign</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="544" bodyend="547"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a8d84aae9c5667c1303c9594973fb433c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string toJSON</definition>
+        <argsstring>() const </argsstring>
+        <name>toJSON</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="345" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="344" bodyend="362"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a6e1427c6ac167b967b10ec7eb8d01e60" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void transpose</definition>
+        <argsstring>(ArrayVector&lt; T &gt; const &amp;permutation)</argsstring>
+        <name>transpose</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; const &amp;</type>
+          <declname>permutation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="602" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="601" bodyend="615"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1af3a99ffb20127be48232d12260e934dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void transpose</definition>
+        <argsstring>()</argsstring>
+        <name>transpose</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="617" bodyend="620"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1a595ce60507c731e63cd72c18879bfaf5" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void checkDuplicates</definition>
+        <argsstring>(int i, AxisInfo const &amp;info)</argsstring>
+        <name>checkDuplicates</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>AxisInfo const &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="785" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="784" bodyend="803"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AxisTags_1ac7c194124b78bc49bca830154b1ae275" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void checkIndex</definition>
+        <argsstring>(int k) const </argsstring>
+        <name>checkIndex</name>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="779" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="778" bodyend="782"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="54">
+        <label>ArrayVector&lt; AxisInfo &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="55" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="53">
+        <label>AxisTags</label>
+        <childnode refid="54" relation="usage">
+          <edgelabel>axes_</edgelabel>
+        </childnode>
+      </node>
+      <node id="55">
+        <label>ArrayVectorView&lt; AxisInfo &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" line="295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/axistags.hxx" bodystart="294" bodyend="806"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1AxisTags_1ad2ab415df0a12b7e94c1e9c1668e39aa" prot="protected" virt="non-virtual"><scope>vigra::AxisTags</scope><name>axes_</name></member>
+      <member refid="classvigra_1_1AxisTags_1a9db7ac8b355d1505f635c5a14731cf0c" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1ab5bac251fdcc68435de86fdc85fea360" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1a556cad7c26f33bf8cfff97b0607a9001" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1aba4933aa1e40f588f69318e7ed9c6bab" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1ae350215f961d4ce5cbb837eabd2755f9" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1afe6a8542562b9e74bf681010e179e3f1" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1a348be61e1df563abbd9bb040d9751062" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>AxisTags</name></member>
+      <member refid="classvigra_1_1AxisTags_1ae7876362ff16ddf96c6d243774c03db9" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>axisTypeCount</name></member>
+      <member refid="classvigra_1_1AxisTags_1adf86652556265fb7fc259a1ea1ebbdba" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>channelIndex</name></member>
+      <member refid="classvigra_1_1AxisTags_1a595ce60507c731e63cd72c18879bfaf5" prot="protected" virt="non-virtual"><scope>vigra::AxisTags</scope><name>checkDuplicates</name></member>
+      <member refid="classvigra_1_1AxisTags_1ac7c194124b78bc49bca830154b1ae275" prot="protected" virt="non-virtual"><scope>vigra::AxisTags</scope><name>checkIndex</name></member>
+      <member refid="classvigra_1_1AxisTags_1a0a957a233467df253b296e0e76726d91" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>compatible</name></member>
+      <member refid="classvigra_1_1AxisTags_1ac9ad22fd94b33967635d490d7b719932" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>description</name></member>
+      <member refid="classvigra_1_1AxisTags_1a090aee3cd1d0ae86fde4880ac1acda24" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>description</name></member>
+      <member refid="classvigra_1_1AxisTags_1a55ccf97663b240c5fb5632dc04ca293b" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>dropAxis</name></member>
+      <member refid="classvigra_1_1AxisTags_1a5f3c3566368aa094282c410acca5f8c9" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>dropAxis</name></member>
+      <member refid="classvigra_1_1AxisTags_1a385617d1b6ba159e6a8d8083333cf591" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>dropChannelAxis</name></member>
+      <member refid="classvigra_1_1AxisTags_1a325a3fa2653c5aefd1aac568ec8ae121" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>fromFrequencyDomain</name></member>
+      <member refid="classvigra_1_1AxisTags_1aae223e877f8c4bf8345d36675494f940" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>fromFrequencyDomain</name></member>
+      <member refid="classvigra_1_1AxisTags_1aa6cbff1e8f7b8000a198fff73005a86c" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>get</name></member>
+      <member refid="classvigra_1_1AxisTags_1a65d777459efb60a527682a300e6f8955" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>get</name></member>
+      <member refid="classvigra_1_1AxisTags_1a9c5a1c71a80613313079fc3099c0bd59" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>get</name></member>
+      <member refid="classvigra_1_1AxisTags_1a72f1a9c1fb1084ab093c71f8ff04e6d5" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>get</name></member>
+      <member refid="classvigra_1_1AxisTags_1ab42ca379e0454eccf39ec72ace7ab51f" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>hasChannelAxis</name></member>
+      <member refid="classvigra_1_1AxisTags_1a119673b857a6c9436409ded16e05b770" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>index</name></member>
+      <member refid="classvigra_1_1AxisTags_1ac3adf6ef88aa07ad472d879783da10aa" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>innerNonchannelIndex</name></member>
+      <member refid="classvigra_1_1AxisTags_1aec294bf2a57899e129f65c2ddee49ba6" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>insert</name></member>
+      <member refid="classvigra_1_1AxisTags_1a94a03187c6152af5fedd5558afcf4e7d" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1AxisTags_1a2c5828d5cf5dcc6c6e1a5a60ed69755e" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1AxisTags_1ae63e20109f15417a72f8d755981881f1" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationFromNormalOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a92fc20618549b24d79572dda6e3645a2" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationFromNormalOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a7ddb3557d08f43a4537e196d7181ef08" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationFromNumpyOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a2f4f03fdd0fca6e6479c87b9c25cf0ea" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationFromVigraOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1ae98391feb6c463d7282575e3d81b6892" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationToNormalOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a2b848a057ade3dfca5dead4a90ccee58" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationToNormalOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a70a2105be2a3c8d7cc764455e2ec807c" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationToNumpyOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1a0bf7041f83504080f1bac55aa3e2cf84" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationToOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1ad40df5fbd2ed4e8ba6e29f311803d8d0" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>permutationToVigraOrder</name></member>
+      <member refid="classvigra_1_1AxisTags_1abcf5f8a4732752b6d6aa50e2b771522f" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>push_back</name></member>
+      <member refid="classvigra_1_1AxisTags_1ae28c1d45d869ba62183d96271d4cb906" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>repr</name></member>
+      <member refid="classvigra_1_1AxisTags_1ab01b1740c2d59920bf81ac5cf9925ee0" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>resolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1abe40548cb31a0e845d8a0f3a0505eeca" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>resolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1aee5e1682412026c60c3620795c1e3558" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>scaleResolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1a960cc37d420f1702216eee7656973348" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>scaleResolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1a838bcda72c4af8d3ff81211e4fb1708d" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>set</name></member>
+      <member refid="classvigra_1_1AxisTags_1aa1e0b5c9b3fa13e4bebd61330aa2b1ab" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>set</name></member>
+      <member refid="classvigra_1_1AxisTags_1a76de6ee1e8f908ca9e1f946bface4ac1" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>setChannelDescription</name></member>
+      <member refid="classvigra_1_1AxisTags_1ab436d9b8649a636048e8e1c50057cf89" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>setDescription</name></member>
+      <member refid="classvigra_1_1AxisTags_1a2f8a703f721fc1fbeee4874b62fa2bee" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>setDescription</name></member>
+      <member refid="classvigra_1_1AxisTags_1a0ca20ebe7f9661d598b7b456986ad317" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>setResolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1a23bc09e885ea6f6fe91c524aec4f2434" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>setResolution</name></member>
+      <member refid="classvigra_1_1AxisTags_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>size</name></member>
+      <member refid="classvigra_1_1AxisTags_1a5975aed0648c6e2f66ebc5a6d1d50dce" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>swapaxes</name></member>
+      <member refid="classvigra_1_1AxisTags_1a52a0ca82509770a4fcec148dcf027ee7" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>toFrequencyDomain</name></member>
+      <member refid="classvigra_1_1AxisTags_1a59ddb758df1128323d9c9e77a82a43e0" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>toFrequencyDomain</name></member>
+      <member refid="classvigra_1_1AxisTags_1a8d84aae9c5667c1303c9594973fb433c" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>toJSON</name></member>
+      <member refid="classvigra_1_1AxisTags_1a6e1427c6ac167b967b10ec7eb8d01e60" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>transpose</name></member>
+      <member refid="classvigra_1_1AxisTags_1af3a99ffb20127be48232d12260e934dc" prot="public" virt="non-virtual"><scope>vigra::AxisTags</scope><name>transpose</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1RegisterNumpyArrayConverters_3_01End_00_01End_01_4" kind="struct" prot="public">
+    <compoundname>vigra::RegisterNumpyArrayConverters&lt; End, End &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class End</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1RegisterNumpyArrayConverters_3_01End_00_01End_01_4_1af900e5d8c1caec7ee511b5ea9d549e41" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>()</argsstring>
+        <name>exec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="154" bodyend="155"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="152" bodyend="156"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1RegisterNumpyArrayConverters_3_01End_00_01End_01_4_1af900e5d8c1caec7ee511b5ea9d549e41" prot="public" virt="non-virtual"><scope>vigra::RegisterNumpyArrayConverters&lt; End, End &gt;</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ImageIterator" kind="class" prot="public">
+    <compoundname>vigra::ImageIterator</compoundname>
+    <basecompoundref refid="classvigra_1_1ImageIteratorBase" prot="public" virt="non-virtual">ImageIteratorBase&lt; ImageIterator&lt; PIXELTYPE &gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE * &gt;</basecompoundref>
+    <includes refid="imageiterator_8hxx" local="no">vigra/imageiterator.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>PIXELTYPE</declname>
+        <defname>PIXELTYPE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImageIterator_1a9ccddda8b8df1eba5dc7d089a0994b32" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase" kindref="compound">ImageIteratorBase</ref>&lt; <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref>&lt; PIXELTYPE &gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE * &gt;</type>
+        <definition>typedef ImageIteratorBase&lt;ImageIterator&lt;PIXELTYPE&gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE *&gt; Base</definition>
+        <argsstring></argsstring>
+        <name>Base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="856" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="856" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageIterator_1aa4336e7fd692b20bda7b7227fa9c9f55" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">Base::difference_type</ref></type>
+        <definition>typedef Base::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="859" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="859" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageIterator_1aa2158dc2d25210ef557a40d3b8a521e3" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ImageIteratorBase_1afe70b629b395bd93fb14c8300eabcb43" kindref="member">Base::pointer</ref></type>
+        <definition>typedef Base::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="858" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="858" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ImageIterator_1ad0ca3b13ef7282b5175a1da56be240f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImageIterator</definition>
+        <argsstring>(pointer base, int ystride)</argsstring>
+        <name>ImageIterator</name>
+        <param>
+          <type>pointer</type>
+          <declname>base</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ystride</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Construct from raw memory with a vertical stride of &lt;TT&gt;ystride&lt;/TT&gt;.
+</verbatim> <computeroutput>ystride</computeroutput> must equal the physical image width (row length), even if the iterator will only be used for a sub image. If the raw memory is encapsulated in an image object this object should have a factory function that constructs the iterator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="870" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="868" bodyend="870"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageIterator_1acb32ded5cd0c6fd4cf4a7b2e7aa7463d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImageIterator</definition>
+        <argsstring>()</argsstring>
+        <name>ImageIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default constructor </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="875" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="873" bodyend="875"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Standard 2D random access iterator for images that store the data in a linear array. </para>    </briefdescription>
+    <detaileddescription>
+<para>Most functions and local types are inherited from <ref refid="classvigra_1_1ImageIteratorBase" kindref="compound">ImageIteratorBase</ref>.</para><para>See the paper: U. Koethe: <ulink url="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</ulink> for a discussion of the concepts behind ImageIterators.</para><para><bold>#include</bold> &lt;<ref refid="imageiterator_8hxx_source" kindref="compound">vigra/imageiterator.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="837">
+        <label>ImageIterator&lt; PIXELTYPE &gt;</label>
+        <link refid="classvigra_1_1ImageIterator"/>
+        <childnode refid="838" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="838">
+        <label>ImageIteratorBase&lt; ImageIterator&lt; PIXELTYPE &gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE * &gt;</label>
+        <link refid="classvigra_1_1ImageIteratorBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="839">
+        <label>ImageIterator&lt; PIXELTYPE &gt;</label>
+        <link refid="classvigra_1_1ImageIterator"/>
+        <childnode refid="840" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="840">
+        <label>ImageIteratorBase&lt; ImageIterator&lt; PIXELTYPE &gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE * &gt;</label>
+        <link refid="classvigra_1_1ImageIteratorBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="853" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="850" bodyend="877"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImageIterator_1a9ccddda8b8df1eba5dc7d089a0994b32" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>Base</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1aa92bdd7ecc849908fd104c12a8c89360" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>column_iterator</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a54e53eb066a57f8b02249326e9529957" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>columnIterator</name></member>
+      <member refid="classvigra_1_1ImageIterator_1aa4336e7fd692b20bda7b7227fa9c9f55" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1ImageIterator_1ad0ca3b13ef7282b5175a1da56be240f2" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIterator</name></member>
+      <member refid="classvigra_1_1ImageIterator_1acb32ded5cd0c6fd4cf4a7b2e7aa7463d" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIterator</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a24864a3b37a33eeea9f49382f5a15e5d" prot="protected" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIteratorBase</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1aa9d952dbdd2a17d8d1b1fc5ec4f9c9e1" prot="protected" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIteratorBase</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a3ecdf0a4ac8c714e76e18f183bd86c0e" prot="protected" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIteratorBase</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ac33d81821bc103e1841ef021de3aa121" prot="protected" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>ImageIteratorBase</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1af499f8cb218354b4e846a233590c15da" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a93321121482225e0577a134820fc5c6b" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a90d38e8e631e426dc4e1e6c275b3ed69" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>MoveX</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a0063a159df3efb1a4d17a609a5b8e0d3" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>MoveY</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a63c0db7944f0106965c7a6cd62ec341f" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ad9d5ec3f82103f993fe7b35dbf3346b8" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a91590208a10d48db81ccb74392329d29" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ae93f33ab3cf9827b1863e7822e6195dd" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a81d1dd6d74bfcc1c8b3944a780557db9" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a8ea5334442906c31b12e6b72a48ac059" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a23672007872b0c3c5e0b50a003021f22" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a2fe77a77a51b0d3a0732d5d5bee1af1a" prot="protected" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a6ad6f52a11f62ac4fde56d8328d940cf" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a8f87e6a03fe3aabd782d1049c42a7d45" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a4733c2ff7c4bdc151649deef70ac7b16" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ac8456b73e94855de7203e3e337f2b872" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1ImageIterator_1aa2158dc2d25210ef557a40d3b8a521e3" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1aabedc6031d7df619a0c453c558af87a0" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>row_iterator</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1aa2bdf3366707a82f91662aa6be95c089" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>rowIterator</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1af843fc4cd1ee9d68176a258b3895b557" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>self_type</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ad618f240f2b743f553b20beac68bbaf8" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1a8d3fabc500cf613a26b37d7aea7fb0ac" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>x</name></member>
+      <member refid="classvigra_1_1ImageIteratorBase_1ab395c5487a74470d43492389e14ebd21" prot="public" virt="non-virtual"><scope>vigra::ImageIterator</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

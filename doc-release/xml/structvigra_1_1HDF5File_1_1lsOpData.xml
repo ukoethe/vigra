@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1HDF5File_1_1lsOpData" kind="struct" prot="private">
+    <compoundname>vigra::HDF5File::lsOpData</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">HDF5File::ls_closure</basecompoundref>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1HDF5File_1_1lsOpData_1a2369e6130e3e513d5f209fce35543171" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt; &amp;</type>
+        <definition>std::vector&lt;std::string&gt;&amp; objects</definition>
+        <argsstring></argsstring>
+        <name>objects</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="517" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1HDF5File_1_1lsOpData_1a21b1f5563438a9f011747671eb1a4ca3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void insert</definition>
+        <argsstring>(const std::string &amp;x)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="519" bodyend="522"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1HDF5File_1_1lsOpData_1a09e0af1abdc5c34560d6db5cb9b2fc64" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>lsOpData</definition>
+        <argsstring>(std::vector&lt; std::string &gt; &amp;o)</argsstring>
+        <name>lsOpData</name>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="518" bodyend="518"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="515" bodyend="523"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1HDF5File_1_1lsOpData_1a21b1f5563438a9f011747671eb1a4ca3" prot="public" virt="non-virtual"><scope>vigra::HDF5File::lsOpData</scope><name>insert</name></member>
+      <member refid="structvigra_1_1HDF5File_1_1lsOpData_1a09e0af1abdc5c34560d6db5cb9b2fc64" prot="public" virt="non-virtual"><scope>vigra::HDF5File::lsOpData</scope><name>lsOpData</name></member>
+      <member refid="structvigra_1_1HDF5File_1_1lsOpData_1a2369e6130e3e513d5f209fce35543171" prot="public" virt="non-virtual"><scope>vigra::HDF5File::lsOpData</scope><name>objects</name></member>
+      <member refid="structvigra_1_1HDF5File_1_1ls__closure_1aed7a603b0d202576dfbc2dfb6650f812" prot="public" virt="virtual"><scope>vigra::HDF5File::lsOpData</scope><name>~ls_closure</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

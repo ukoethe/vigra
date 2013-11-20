@@ -1,0 +1,797 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Registration" kind="group">
+    <compoundname>Registration</compoundname>
+    <title>Image Registration</title>
+    <innerclass refid="classvigra_1_1AffineMotionEstimationOptions" prot="public">vigra::AffineMotionEstimationOptions</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__Registration_1ga332c8027c4b52ab27d85f3eaac4639fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+        </templateparamlist>
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::affineMatrix2DFromCorrespondingPoints</definition>
+        <argsstring>(SrcIterator s, SrcIterator send, DestIterator d)</argsstring>
+        <name>affineMatrix2DFromCorrespondingPoints</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix that maps corresponding points onto each other. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. Since only two corresponding points are given, the matrix will not use a full affine transform, but only a similarity transform (translation, rotation, and uniform scaling). See \ </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="67" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga1925c4f671a63939ef8b0c0ad44c646c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateAffineTransform</definition>
+        <argsstring>(...)</argsstring>
+        <name>estimateAffineTransform</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Estimate the optical flow between two images according to an affine transform model (e.g. translation, rotation, non-uniform scaling, and shearing). </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="affine__registration_8hxx_source" kindref="compound">vigra/affine_registration.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1ga1925c4f671a63939ef8b0c0ad44c646c" kindref="member" tooltip="Estimate the optical flow between two images according to an affine transform model (e...">estimateAffineTransform</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1ga1925c4f671a63939ef8b0c0ad44c646c" kindref="member" tooltip="Estimate the optical flow between two images according to an affine transform model (e...">estimateAffineTransform</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="628"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gaf7540a8b574223ff4aed75e72c2d085c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateAffineTransform</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateAffineTransform</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="638" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="634" bodyend="641"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga9a1bf914ae223605ed8e4c92b17a9aaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateAffineTransform</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateAffineTransform</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="649" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="646" bodyend="652"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gaccc6906c04f8a85bdf084a16937687e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateAffineTransform</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateAffineTransform</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="662" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="658" bodyend="665"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga37e3be3816175346f0de8388951c8df7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateAffineTransform</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateAffineTransform</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="670" bodyend="676"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gab62f13083f74c790bce36b00d5d9bf4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateSimilarityTransform</definition>
+        <argsstring>(...)</argsstring>
+        <name>estimateSimilarityTransform</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Estimate the optical flow between two images according to a similarity transform model (e.g. translation, rotation, and uniform scaling). </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="affine__registration_8hxx_source" kindref="compound">vigra/affine_registration.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1gab62f13083f74c790bce36b00d5d9bf4e" kindref="member" tooltip="Estimate the optical flow between two images according to a similarity transform model (e...">estimateSimilarityTransform</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1gab62f13083f74c790bce36b00d5d9bf4e" kindref="member" tooltip="Estimate the optical flow between two images according to a similarity transform model (e...">estimateSimilarityTransform</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="531"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gae75d6ac05c436eb2de0951a72fdfaac4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateSimilarityTransform</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateSimilarityTransform</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="537" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga4998b2f2bef8f959af9d2bb78f0aaabb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateSimilarityTransform</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateSimilarityTransform</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="549" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga06f55a1792fa3981f83359741aa47a55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateSimilarityTransform</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateSimilarityTransform</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="561" bodyend="568"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gad137fd95ba4ee2e9af8e886a95173094" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateSimilarityTransform</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateSimilarityTransform</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="573" bodyend="579"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga30117911d58b1b31ac2249709b21edb4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateTranslation</definition>
+        <argsstring>(...)</argsstring>
+        <name>estimateTranslation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Estimate the optical flow between two images according to a translation model. </para>        </briefdescription>
+        <detaileddescription>
+<para>Sorry, no detailedDocumentation() available yet.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="affine__registration_8hxx_source" kindref="compound">vigra/affine_registration.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1ga30117911d58b1b31ac2249709b21edb4" kindref="member" tooltip="Estimate the optical flow between two images according to a translation model.">estimateTranslation</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SPLINEORDER<sp/>=<sp/>2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__Registration_1ga30117911d58b1b31ac2249709b21edb4" kindref="member" tooltip="Estimate the optical flow between two images according to a translation model.">estimateTranslation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Matrix&lt;double&gt;<sp/>&amp;<sp/>affineMatrix,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;SPLINEORDER&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>AffineMotionEstimationOptions&lt;&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="434"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga65460ae84fc8fab41155f9b972768146" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateTranslation</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateTranslation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="444" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="440" bodyend="447"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1gace306eb6b0640e57d94a59076f974070" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateTranslation</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestIterator dlr, DestAccessor dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateTranslation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="452" bodyend="458"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga43f3d3f456b0a0c02f83907ab7017399" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SPLINEORDER</declname>
+            <defname>SPLINEORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateTranslation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix, AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;options)</argsstring>
+        <name>estimateTranslation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; SPLINEORDER &gt; const &amp;</type>
+          <declname>options</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="468" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="464" bodyend="471"/>
+      </memberdef>
+      <memberdef kind="function" id="group__Registration_1ga4e204848ff8879f66097713d7c5c2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::estimateTranslation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, Matrix&lt; double &gt; &amp;affineMatrix)</argsstring>
+        <name>estimateTranslation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Matrix&lt; double &gt; &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="479" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="476" bodyend="482"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

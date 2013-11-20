@@ -1,0 +1,393 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1WignerMatrix" kind="class" prot="public">
+    <compoundname>vigra::WignerMatrix</compoundname>
+    <includes refid="wigner-matrix_8hxx" local="no">vigra/wigner-matrix.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Real</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1WignerMatrix_1ae71815a9f70bd1d668591ffd98814a01" prot="public" static="no">
+        <type>std::complex&lt; Real &gt;</type>
+        <definition>typedef std::complex&lt;Real&gt; Complex</definition>
+        <argsstring></argsstring>
+        <name>Complex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1WignerMatrix_1a295f4bb5336abe8542fca12691b8a2b0" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; Complex &gt; &gt; &gt;</type>
+        <definition>typedef ArrayVector&lt;ArrayVector&lt;ArrayVector&lt;Complex&gt; &gt; &gt; NestedArray</definition>
+        <argsstring></argsstring>
+        <name>NestedArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="69" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1WignerMatrix_1a46360e2f0d41b1f5846693f27dbc5607" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cg1cnt</definition>
+        <argsstring></argsstring>
+        <name>cg1cnt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="159" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="159" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WignerMatrix_1a6153f9db3002fdbf7738c850114f1078" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; CGcoeff</definition>
+        <argsstring></argsstring>
+        <name>CGcoeff</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WignerMatrix_1a6de1bdc6733d2a1e25c4363120c0ec89" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; Matrix&lt; Complex &gt; &gt;</type>
+        <definition>ArrayVector&lt;Matrix&lt;Complex&gt; &gt; D</definition>
+        <argsstring></argsstring>
+        <name>D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WignerMatrix_1a8b26ed13d8014367278ac46adcac60b6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int l_max</definition>
+        <argsstring></argsstring>
+        <name>l_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void compute_D</definition>
+        <argsstring>(int band)</argsstring>
+        <name>compute_D</name>
+        <param>
+          <type>int</type>
+          <declname>band</declname>
+        </param>
+        <briefdescription>
+<para>Compute D with fixed theta = pi/2, phi=0, psi=0. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>band</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>expansion band</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+FIXME: compute_D(l, 0.0, M_PI / 2.0, 0.0) creates the transposed matrix! </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="229" bodyend="287"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1ad75211db4bb11eb4fe8ce84879d61688" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void compute_D</definition>
+        <argsstring>(int l, Real phi, Real theta, Real psi)</argsstring>
+        <name>compute_D</name>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>phi</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>theta</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>psi</declname>
+        </param>
+        <briefdescription>
+<para>Compute D for arbitrary rotations. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>l</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>expansion band </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>phi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>theta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>psi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="195" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1ac61f9d6ea8bf722588f7981f64865dd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex</type>
+        <definition>Complex get_D</definition>
+        <argsstring>(int l, int n, int m) const </argsstring>
+        <name>get_D</name>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+<para>Get the (n,m) entry of D. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>l</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>expansion band </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="103" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1aabc6d54954d0c27b53753017bffb0536" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Matrix&lt; Complex &gt; const &amp;</type>
+        <definition>Matrix&lt;Complex&gt; const&amp; get_D</definition>
+        <argsstring>(int l) const </argsstring>
+        <name>get_D</name>
+        <param>
+          <type>int</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+<para>Return the rotation matrix D for the lth band. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>l</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>expansion band </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="125" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1a887891708f22c1874930a5f6a8adac8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rotatePH</definition>
+        <argsstring>(NestedArray const &amp;PH, Real phi, Real theta, Real psi, NestedArray &amp;PHresult)</argsstring>
+        <name>rotatePH</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">NestedArray</ref> const &amp;</type>
+          <declname>PH</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>phi</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>theta</declname>
+        </param>
+        <param>
+          <type>Real</type>
+          <declname>psi</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">NestedArray</ref> &amp;</type>
+          <declname>PHresult</declname>
+        </param>
+        <briefdescription>
+<para>Rotate in PH. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>PH</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>input PH expansion </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>phi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>theta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>psi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>rotation angle</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="retval"><parameteritem>
+<parameternamelist>
+<parametername>PHresult</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>PH expansion </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="291" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1a553568cc8e563a77157d0aca8dcd5527" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>WignerMatrix</definition>
+        <argsstring>(int l_max)</argsstring>
+        <name>WignerMatrix</name>
+        <param>
+          <type>int</type>
+          <declname>l_max</declname>
+        </param>
+        <briefdescription>
+<para>constructor </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>l_max</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>maximum expansion band (used to pre-compute the D matrix) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="165" bodyend="191"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1WignerMatrix_1a3ff730b847dd57508acfec102e813195" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; double, 3 &gt;</type>
+        <definition>TinyVector&lt;double,3&gt; rot</definition>
+        <argsstring>(TinyVector&lt; double, 3 &gt; const &amp;vec, TinyVector&lt; double, 3 &gt; const &amp;axis, double angle)</argsstring>
+        <name>rot</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; double, 3 &gt; const &amp;</type>
+          <declname>vec</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; double, 3 &gt; const &amp;</type>
+          <declname>axis</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="150" bodyend="156"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>computation of Wigner D matrix + rotation functions in SH,VH and R³ </para>    </briefdescription>
+    <detaileddescription>
+<para>All rotations in Euler zyz&apos; convention</para><para>WARNING: not thread safe! use a new instance of <ref refid="classvigra_1_1WignerMatrix" kindref="compound">WignerMatrix</ref> for each thread!!! </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" line="64" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/wigner-matrix.hxx" bodystart="63" bodyend="162"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1WignerMatrix_1a46360e2f0d41b1f5846693f27dbc5607" prot="private" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>cg1cnt</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a6153f9db3002fdbf7738c850114f1078" prot="private" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>CGcoeff</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1ae71815a9f70bd1d668591ffd98814a01" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>Complex</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1aec026c4b41dcb9dda121c03951f9a2cf" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>compute_D</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1ad75211db4bb11eb4fe8ce84879d61688" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>compute_D</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a6de1bdc6733d2a1e25c4363120c0ec89" prot="private" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>D</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1ac61f9d6ea8bf722588f7981f64865dd0" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>get_D</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1aabc6d54954d0c27b53753017bffb0536" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>get_D</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a8b26ed13d8014367278ac46adcac60b6" prot="private" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>l_max</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a295f4bb5336abe8542fca12691b8a2b0" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>NestedArray</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a3ff730b847dd57508acfec102e813195" prot="private" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>rot</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a887891708f22c1874930a5f6a8adac8e" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>rotatePH</name></member>
+      <member refid="classvigra_1_1WignerMatrix_1a553568cc8e563a77157d0aca8dcd5527" prot="public" virt="non-virtual"><scope>vigra::WignerMatrix</scope><name>WignerMatrix</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

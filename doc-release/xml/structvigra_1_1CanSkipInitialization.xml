@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CanSkipInitialization" kind="struct" prot="public">
+    <compoundname>vigra::CanSkipInitialization</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1CanSkipInitialization_1afddde9d8d17f86187e07c58458c96038" prot="public" static="no">
+        <type>TypeTraits&lt; T &gt;::isBuiltinType</type>
+        <definition>typedef TypeTraits&lt;T&gt;::isBuiltinType type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" line="48" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1CanSkipInitialization_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> type::asBool</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" line="49" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" line="47" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/memory.hxx" bodystart="46" bodyend="50"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CanSkipInitialization_1afddde9d8d17f86187e07c58458c96038" prot="public" virt="non-virtual"><scope>vigra::CanSkipInitialization</scope><name>type</name></member>
+      <member refid="structvigra_1_1CanSkipInitialization_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::CanSkipInitialization</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1reverse_3_01nil_00_01R_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::reverse&lt; nil, R &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class R</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1reverse_3_01nil_00_01R_01_4_1a7e269d8994a72edf4c77074b1d402980" prot="public" static="no">
+        <type>R</type>
+        <definition>typedef R type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="233" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="233" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="231" bodyend="234"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1reverse_3_01nil_00_01R_01_4_1a7e269d8994a72edf4c77074b1d402980" prot="public" virt="non-virtual"><scope>vigra::type_lists::reverse&lt; nil, R &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,595 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RestrictedNeighborhoodCirculator" kind="class" prot="public">
+    <compoundname>vigra::RestrictedNeighborhoodCirculator</compoundname>
+    <basecompoundref refid="classvigra_1_1NeighborhoodCirculator" prot="private" virt="non-virtual">vigra::NeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</basecompoundref>
+    <includes refid="pixelneighborhood_8hxx" local="no">vigra/pixelneighborhood.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class IMAGEITERATOR</type>
+      </param>
+      <param>
+        <type>class NEIGHBORCODE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a658a2c5392410ea6651069442c892477" prot="private" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">NeighborhoodCirculator</ref>&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</type>
+        <definition>typedef NeighborhoodCirculator&lt;IMAGEITERATOR, NEIGHBORCODE&gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1305" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1305" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a25a08d2280fb3d42a7769b425a223818" prot="public" static="no">
+        <type>IMAGEITERATOR</type>
+        <definition>typedef IMAGEITERATOR base_type</definition>
+        <argsstring></argsstring>
+        <name>base_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>type of the underlying image iterator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1310" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aa67da613c17b4ded61f92de19f1961cc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">BaseType::difference_type</ref></type>
+        <definition>typedef BaseType::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s difference type (argument type of <computeroutput>circ[diff]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1338" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a6d06d0d2d1dd81765777b1000f25e457" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">BaseType::Direction</ref></type>
+        <definition>typedef BaseType::Direction Direction</definition>
+        <argsstring></argsstring>
+        <name>Direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>type of the direction code </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1322" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1322" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1acd1cabb26b1ecb72bf5672dd485bedcc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1ad9e657b4f8b49dc308b23486aababe48" kindref="member">BaseType::index_reference</ref></type>
+        <definition>typedef BaseType::index_reference index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s index reference type (return type of <computeroutput>circ[n]</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1330" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a4ebfccfddc3854b7867ff83c3bc1e99c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a8c873846326e977834f923d9bbcb1f05" kindref="member">BaseType::iterator_category</ref></type>
+        <definition>typedef BaseType::iterator_category iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator tag (random_access_circulator_tag) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1342" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1342" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1af297c28d42b00c1325ee931bdb695b32" prot="public" static="no">
+        <type>NEIGHBORCODE</type>
+        <definition>typedef NEIGHBORCODE NeighborCode</definition>
+        <argsstring></argsstring>
+        <name>NeighborCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>type of the used neighbor code </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1314" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1314" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a71758dbf707427c37fd54148ad777d36" kindref="member">BaseType::pointer</ref></type>
+        <definition>typedef BaseType::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s pointer type (return type of <computeroutput>operator-&gt;</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1334" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a6553cf5e426582b760da93d2f1b7636d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a80f409c27526ee8b9ee23d09c71e56f2" kindref="member">BaseType::reference</ref></type>
+        <definition>typedef BaseType::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s reference type (return type of <computeroutput>*circ</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1326" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a15eabd051d5bcdcce478c0a509946fca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a8befe55d3ad20662a1a09f41d54ffd2e" kindref="member">BaseType::value_type</ref></type>
+        <definition>typedef BaseType::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1318" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1318" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a4294f11b3380a6b3b1a8ab6454fcf589" prot="private" static="no" mutable="no">
+        <type>signed char</type>
+        <definition>signed char count_</definition>
+        <argsstring></argsstring>
+        <name>count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1481" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aed0c9c5efe23f2a490ec392039b80306" prot="private" static="no" mutable="no">
+        <type>signed char</type>
+        <definition>signed char current_</definition>
+        <argsstring></argsstring>
+        <name>current_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1481" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aab10859e182fa9cf91520c556f89aabc" prot="private" static="no" mutable="no">
+        <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtImageBorder</ref></type>
+        <definition>AtImageBorder whichBorder_</definition>
+        <argsstring></argsstring>
+        <name>whichBorder_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1480" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a35f062b89af3b06091a0c9386929dd6b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a25a08d2280fb3d42a7769b425a223818" kindref="member">base_type</ref> const &amp;</type>
+        <definition>base_type const&amp; base</definition>
+        <argsstring>() const </argsstring>
+        <name>base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the base iterator for the current neighbor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1445" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1444" bodyend="1447"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a393b44946a0b1a100ca5fd01be52eca7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a25a08d2280fb3d42a7769b425a223818" kindref="member">base_type</ref></type>
+        <definition>base_type center</definition>
+        <argsstring>() const </argsstring>
+        <name>center</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the base iterator for the center of the circulator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1451" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1450" bodyend="1453"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1ab15ada2fd93ed3e113cf58a310eae622" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>NeighborCode::difference_type const &amp;</type>
+        <definition>NeighborCode::difference_type const&amp; diff</definition>
+        <argsstring>() const </argsstring>
+        <name>diff</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the difference vector (<ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref>) from the center to the current neighbor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1469" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1468" bodyend="1471"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1ae27d15312f61f9d7502d6e91e0351bb1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a5d21acfa2f943f62ac33fcf02ba4dc99" kindref="member">Direction</ref></type>
+        <definition>Direction direction</definition>
+        <argsstring>() const </argsstring>
+        <name>direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the current direction. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1457" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1456" bodyend="1459"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a64963c87370a61f18c4c46dc6b4d0783" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int directionBit</definition>
+        <argsstring>() const </argsstring>
+        <name>directionBit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the current direction bit. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1463" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1462" bodyend="1465"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a84c5b8f35866c567185c13806e4c854c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isDiagonal</definition>
+        <argsstring>() const </argsstring>
+        <name>isDiagonal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Is the current neighbor a diagonal neighbor? </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1475" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1474" bodyend="1477"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a4e1b3db2165453c73ead78c95af82637" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(RestrictedNeighborhoodCirculator const &amp;rhs) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>inequality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1421" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1420" bodyend="1423"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a80f409c27526ee8b9ee23d09c71e56f2" kindref="member">reference</ref></type>
+        <definition>reference operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>dereference </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1433" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1432" bodyend="1435"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aeec87e4a5a98a18f756df315a11610ce" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref></type>
+        <definition>RestrictedNeighborhoodCirculator operator+</definition>
+        <argsstring>(difference_type d) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>addition </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1399" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1398" bodyend="1403"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a35f9c513a5c2bcce49f725a547e26f48" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> &amp;</type>
+        <definition>RestrictedNeighborhoodCirculator&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>pre-increment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1357" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1356" bodyend="1359"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1aa0d4d0257f91ea54a403d296e604d5e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref></type>
+        <definition>RestrictedNeighborhoodCirculator operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>post-increment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1362" bodyend="1367"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a7de40018955a2f511cce399833ad65a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> &amp;</type>
+        <definition>RestrictedNeighborhoodCirculator&amp; operator+=</definition>
+        <argsstring>(difference_type d)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>add-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1385" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1384" bodyend="1389"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1ada66115e84f84212eaae55424f9c0288" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref></type>
+        <definition>RestrictedNeighborhoodCirculator operator-</definition>
+        <argsstring>(difference_type d) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtraction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1407" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1406" bodyend="1411"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1ac8b937114b17779a85458f6e0252d984" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">difference_type</ref></type>
+        <definition>difference_type operator-</definition>
+        <argsstring>(RestrictedNeighborhoodCirculator const &amp;rhs) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtraction </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1426" bodyend="1429"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1ac1a903a9b431f9a122b9b77eabd5aeed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> &amp;</type>
+        <definition>RestrictedNeighborhoodCirculator&amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>pre-decrement </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1371" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1370" bodyend="1373"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a0cd00973e6d9c7dd9f458aa8584a6268" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref></type>
+        <definition>RestrictedNeighborhoodCirculator operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>post-decrement </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1376" bodyend="1381"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a9a463d68779d103c4dae91c355466df5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> &amp;</type>
+        <definition>RestrictedNeighborhoodCirculator&amp; operator-=</definition>
+        <argsstring>(difference_type d)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborhoodCirculator_1acbd51f4f574960ac6823897232188569" kindref="member">difference_type</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>subtract-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1393" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1392" bodyend="1395"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator_1a71758dbf707427c37fd54148ad777d36" kindref="member">pointer</ref></type>
+        <definition>pointer operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>member access </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1439" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1438" bodyend="1441"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a55410d21c9adeb862393e22a4d71bd79" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(RestrictedNeighborhoodCirculator const &amp;rhs) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator" kindref="compound">RestrictedNeighborhoodCirculator</ref> const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>equality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1415" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1414" bodyend="1417"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RestrictedNeighborhoodCirculator_1a7f7600ee92228b96e859beb6ea0ff507" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RestrictedNeighborhoodCirculator</definition>
+        <argsstring>(IMAGEITERATOR const &amp;center=IMAGEITERATOR(), AtImageBorder atBorder=NotAtBorder)</argsstring>
+        <name>RestrictedNeighborhoodCirculator</name>
+        <param>
+          <type>IMAGEITERATOR const &amp;</type>
+          <declname>center</declname>
+          <defval>IMAGEITERATOR()</defval>
+        </param>
+        <param>
+          <type><ref refid="group__PixelNeighborhood_1ga745167948a746ad025601aff865383ef" kindref="member">AtImageBorder</ref></type>
+          <declname>atBorder</declname>
+          <defval><ref refid="group__PixelNeighborhood_1gga745167948a746ad025601aff865383efadd0b3930f6439e66289c9faf2dfc3d8a" kindref="member">NotAtBorder</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct circulator with given <computeroutput>center</computeroutput> pixel, using the restricted neighborhood given by <emphasis>atBorder</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1347" bodyend="1353"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Circulator that walks around a given location in a given image, using a restricted neighborhood. </para>    </briefdescription>
+    <detaileddescription>
+<para>This circulator behaves essentially like <ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">vigra::NeighborhoodCirculator</ref>, but can also be used near the image border, where some of the neighbor points would be outside the image und must not be accessed. The template parameters define the kind of neighborhood used (four or eight) and the underlying image, whereas the required neighborhood restriction is given by the last constructor argument. This below for typical usage.</para><para>The access functions return the value of the current neighbor pixel. Use <computeroutput><ref refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a393b44946a0b1a100ca5fd01be52eca7" kindref="member">center()</ref></computeroutput> to access the center pixel of the neighborhood.</para><para><bold>Usage:</bold><linebreak/>
+</para><para><bold>#include</bold> &lt;<ref refid="pixelneighborhood_8hxx_source" kindref="compound">vigra/pixelneighborhood.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage_1a94032047b4445f0822d7508a3ffff034" kindref="member">BImage::traverser</ref><sp/>upperleft(...),<sp/>lowerright(...);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>width<sp/><sp/>=<sp/>lowerright.x<sp/>-<sp/>upperleft.x;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>height<sp/>=<sp/>lowerright.y<sp/>-<sp/>upperleft.y;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y=0;<sp/>y&lt;height;<sp/>++y,<sp/>++upperleft.y)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1BasicImage_1a94032047b4445f0822d7508a3ffff034" kindref="member">BImage::traverser</ref><sp/>ix<sp/>=<sp/>upperleft;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x=0;<sp/>x&lt;width;<sp/>++x,<sp/>++ix.x)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>FourNeighborCode<sp/>instead<sp/>of<sp/>EightNeighborCode<sp/>for<sp/>4-neighborhood</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>RestrictedNeighborhoodCirculator&lt;BImage::traverser,<sp/>EightNeighborCode&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>circulator(ix,<sp/><ref refid="group__PixelNeighborhood_1gafb116a5d0d69abccd640856eb742f639" kindref="member" tooltip="Find out whether a point is at the image border.">isAtImageBorder</ref>(x,<sp/>y,<sp/>width,<sp/>height)),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>end(circulator);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">do</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>...<sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>with<sp/>the<sp/>circulator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(++circulator<sp/>!=<sp/>end);<sp/></highlight><highlight class="comment">//<sp/>out-of-range<sp/>pixels<sp/>will<sp/>be<sp/>automatically<sp/>skipped</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2177">
+        <label>RestrictedNeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1RestrictedNeighborhoodCirculator"/>
+        <childnode refid="2178" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="2178">
+        <label>NeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1NeighborhoodCirculator"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2179">
+        <label>RestrictedNeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1RestrictedNeighborhoodCirculator"/>
+        <childnode refid="2180" relation="private-inheritance">
+        </childnode>
+      </node>
+      <node id="2180">
+        <label>NeighborhoodCirculator&lt; IMAGEITERATOR, NEIGHBORCODE &gt;</label>
+        <link refid="classvigra_1_1NeighborhoodCirculator"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" line="1304" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/pixelneighborhood.hxx" bodystart="1302" bodyend="1482"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a35f062b89af3b06091a0c9386929dd6b" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>base</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a25a08d2280fb3d42a7769b425a223818" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>base_type</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a658a2c5392410ea6651069442c892477" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a393b44946a0b1a100ca5fd01be52eca7" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>center</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a4294f11b3380a6b3b1a8ab6454fcf589" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>count_</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aed0c9c5efe23f2a490ec392039b80306" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>current_</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1ab15ada2fd93ed3e113cf58a310eae622" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>diff</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aa67da613c17b4ded61f92de19f1961cc" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a6d06d0d2d1dd81765777b1000f25e457" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>Direction</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1ae27d15312f61f9d7502d6e91e0351bb1" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>direction</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a64963c87370a61f18c4c46dc6b4d0783" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>directionBit</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1acd1cabb26b1ecb72bf5672dd485bedcc" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a84c5b8f35866c567185c13806e4c854c" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>isDiagonal</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a4ebfccfddc3854b7867ff83c3bc1e99c" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a3f89e6c99ec53e79ed82d194058766d5" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>moveCenterToNeighbor</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1af297c28d42b00c1325ee931bdb695b32" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>NeighborCode</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a5227fb962106e5acb722fc619e0c3980" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>NeighborhoodCirculator</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a4e1b3db2165453c73ead78c95af82637" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a36b6d97d5f2be20619d83a083ffb08db" prot="private" virt="non-virtual" ambiguityscope="vigra::NeighborhoodCirculator::"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aeec87e4a5a98a18f756df315a11610ce" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a35f9c513a5c2bcce49f725a547e26f48" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aa0d4d0257f91ea54a403d296e604d5e5" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a7de40018955a2f511cce399833ad65a0" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1ada66115e84f84212eaae55424f9c0288" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1ac8b937114b17779a85458f6e0252d984" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1af74b8d51e84eb7f1fb5054a159fb5553" prot="private" virt="non-virtual" ambiguityscope="vigra::NeighborhoodCirculator::"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1ac1a903a9b431f9a122b9b77eabd5aeed" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a0cd00973e6d9c7dd9f458aa8584a6268" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a9a463d68779d103c4dae91c355466df5" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a55410d21c9adeb862393e22a4d71bd79" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a0f3c2084551fdf7e0abaa53c47390156" prot="private" virt="non-virtual" ambiguityscope="vigra::NeighborhoodCirculator::"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a2f1b4e51938edae47e2317f7635e6c08" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a518b7f47100da54e5e198ee54b9c2eca" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a6553cf5e426582b760da93d2f1b7636d" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a7f7600ee92228b96e859beb6ea0ff507" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>RestrictedNeighborhoodCirculator</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a06c328da7ea3ef3ac968c165b9bafbac" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>swapCenterNeighbor</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1ab6db202e088b7c4423398ba01ea2b60d" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>turnLeft</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1aad5068d17f69c301a19bf35813791092" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>turnRight</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1a9a840289ef1282c80bee50d92d847934" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>turnRound</name></member>
+      <member refid="classvigra_1_1NeighborhoodCirculator_1ae457a87eb7e4625ef2684ac0418e2903" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>turnTo</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1a15eabd051d5bcdcce478c0a509946fca" prot="public" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1RestrictedNeighborhoodCirculator_1aab10859e182fa9cf91520c556f89aabc" prot="private" virt="non-virtual"><scope>vigra::RestrictedNeighborhoodCirculator</scope><name>whichBorder_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

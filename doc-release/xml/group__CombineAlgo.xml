@@ -1,0 +1,878 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__CombineAlgo" kind="group">
+    <compoundname>CombineAlgo</compoundname>
+    <title>Algorithms to Combine Images</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__CombineAlgo_1ga9bbc3b2f05707a6d4734f5f63c3884e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineThreeImages</definition>
+        <argsstring>(...)</argsstring>
+        <name>combineThreeImages</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Combine three source images into destination image. </para>        </briefdescription>
+        <detaileddescription>
+<para>The transformation given by the functor is applied to the source pixels and the result written into the corresponding destination pixel. The function uses accessors to access the pixel data. Creation of new functors is easiest by using <ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator3,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor3,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1ga9bbc3b2f05707a6d4734f5f63c3884e2" kindref="member" tooltip="Combine three source images into destination image.">combineThreeImages</ref>(SrcImageIterator1<sp/>src1_upperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator1<sp/>src1_lowerright,<sp/>SrcAccessor1<sp/>sa1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator2<sp/>src2_upperleft,<sp/>SrcAccessor2<sp/>sa2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator3<sp/>src2_upperleft,<sp/>SrcAccessor3<sp/>sa3,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator3,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor3,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1ga9bbc3b2f05707a6d4734f5f63c3884e2" kindref="member" tooltip="Combine three source images into destination image.">combineThreeImages</ref>(triple&lt;SrcImageIterator1,<sp/>SrcImageIterator1,<sp/>SrcAccessor1&gt;<sp/>src1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SrcImageIterator2,<sp/>SrcAccessor2&gt;<sp/>src2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SrcImageIterator3,<sp/>SrcAccessor3&gt;<sp/>src3,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/combineimages.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="group__CombineAlgo_1ga9bbc3b2f05707a6d4734f5f63c3884e2" kindref="member" tooltip="Combine three source images into destination image.">vigra::combineThreeImages</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIterRange(src1.upperLeft(),<sp/>src1.lowerRight()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIter(src2.upperLeft()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIter(src3.upperLeft()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destIter(dest.upperLeft()),<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SomeThreeArgumentFunctor());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator1<sp/>src1_upperleft,<sp/>src1_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2<sp/>src2_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator3<sp/>src3_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator1::row_iterator<sp/>sx1<sp/>=<sp/>src1_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2::row_iterator<sp/>sx2<sp/>=<sp/>src2_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator3::row_iterator<sp/>sx3<sp/>=<sp/>src3_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor1<sp/>src1_accessor;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor2<sp/>src2_accessor;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor3<sp/>src3_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>functor(src1_accessor(sx1),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src2_accessor(sx2),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src3_accessor(sx3)),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dx);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="490"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gad2e2ad2f6ce7d955c5d279ab837fb7bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator3</type>
+          </param>
+          <param>
+            <type>class SrcAccessor3</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineThreeImages</definition>
+        <argsstring>(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1, SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2, SrcImageIterator3 src3_upperleft, SrcAccessor3 sa3, DestImageIterator dest_upperleft, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>combineThreeImages</name>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>sa1</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator2</type>
+          <declname>src2_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>sa2</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator3</type>
+          <declname>src3_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcAccessor3</type>
+          <declname>sa3</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="498" bodyend="517"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gaa132d516549be9611d672d19120ee53a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator3</type>
+          </param>
+          <param>
+            <type>class SrcAccessor3</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineThreeImages</definition>
+        <argsstring>(triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt; src1, pair&lt; SrcImageIterator2, SrcAccessor2 &gt; src2, pair&lt; SrcImageIterator3, SrcAccessor3 &gt; src3, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;f)</argsstring>
+        <name>combineThreeImages</name>
+        <param>
+          <type>triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt;</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SrcImageIterator2, SrcAccessor2 &gt;</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>pair&lt; SrcImageIterator3, SrcAccessor3 &gt;</type>
+          <declname>src3</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="531" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="526" bodyend="536"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1ga268a46ff89b08ff169dfc4632caf7775" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class SrcIterator3</type>
+          </param>
+          <param>
+            <type>class SrcAccessor3</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineThreeLines</definition>
+        <argsstring>(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1, SrcIterator2 s2, SrcAccessor2 src2, SrcIterator3 s3, SrcAccessor3 src3, DestIterator d, DestAccessor dest, Functor const &amp;f)</argsstring>
+        <name>combineThreeLines</name>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>SrcIterator2</type>
+          <declname>s2</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>SrcIterator3</type>
+          <declname>s3</declname>
+        </param>
+        <param>
+          <type>SrcAccessor3</type>
+          <declname>src3</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="96" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gaccf94cfa4b47ceb10e08dabe668fce23" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImages</definition>
+        <argsstring>(...)</argsstring>
+        <name>combineTwoImages</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Combine two source images into destination image. </para>        </briefdescription>
+        <detaileddescription>
+<para>The transformation given by the functor is applied to the source pixels and the result written into the corresponding destination pixel. This is typically used for operations like add and subtract. The function uses accessors to access the pixel data. Note that the binary functors of the STL can be used in addition to the functors specifically defined in <ref refid="group__CombineFunctor" kindref="compound">Functors to Combine Images</ref>. Creation of new functors is easiest by using <ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1gaccf94cfa4b47ceb10e08dabe668fce23" kindref="member" tooltip="Combine two source images into destination image.">combineTwoImages</ref>(SrcImageIterator1<sp/>src1_upperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator1<sp/>src1_lowerright,<sp/>SrcAccessor1<sp/>sa1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator2<sp/>src2_upperleft,<sp/>SrcAccessor2<sp/>sa2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1gaccf94cfa4b47ceb10e08dabe668fce23" kindref="member" tooltip="Combine two source images into destination image.">combineTwoImages</ref>(triple&lt;SrcImageIterator1,<sp/>SrcImageIterator1,<sp/>SrcAccessor1&gt;<sp/>src1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SrcImageIterator2,<sp/>SrcAccessor2&gt;<sp/>src2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/combineimages.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;functional&gt;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>plus</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CombineAlgo_1gaccf94cfa4b47ceb10e08dabe668fce23" kindref="member" tooltip="Combine two source images into destination image.">vigra::combineTwoImages</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIterRange(src1.upperLeft(),<sp/>src1.lowerRight()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIter(src2.upperLeft()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destIter(dest.upperLeft()),<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::plus&lt;SrcValueType&gt;());</highlight></codeline>
+</programlisting></para><para>Note that <computeroutput>SrcValueType</computeroutput> must be replaced with the appropriate type (e.g. the promote type of the input images&apos; pixel type, see also <ref refid="NumericPromotionTraits" kindref="compound">Numeric and Promotion Traits</ref>)</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator1<sp/>src1_upperleft,<sp/>src1_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2<sp/>src2_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator1::row_iterator<sp/>sx1<sp/>=<sp/>src1_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2::row_iterator<sp/>sx2<sp/>=<sp/>src2_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor1<sp/>src1_accessor;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor2<sp/>src2_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>functor(src1_accessor(sx1),<sp/>src2_accessor(sx2)),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dx);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="201"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gacf904d5258fc6c9c2068e7c6686b26e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImages</definition>
+        <argsstring>(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1, SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2, DestImageIterator dest_upperleft, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>combineTwoImages</name>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>sa1</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator2</type>
+          <declname>src2_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>sa2</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="208" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1ga974698922089673dd741aa47f61ab9c7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImages</definition>
+        <argsstring>(triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt; src1, pair&lt; SrcImageIterator2, SrcAccessor2 &gt; src2, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;f)</argsstring>
+        <name>combineTwoImages</name>
+        <param>
+          <type>triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt;</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SrcImageIterator2, SrcAccessor2 &gt;</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="236" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="232" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1ga1a58f278634940f993888ef804340017" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImagesIf</definition>
+        <argsstring>(...)</argsstring>
+        <name>combineTwoImagesIf</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Combine ROI of two source images into destination image. </para>        </briefdescription>
+        <detaileddescription>
+<para>The transformation given by the functor is applied to all source pixels in the ROI (i.e. whenever the return value of the mask&apos;s accessor is not zero) and the result written into the corresponding destination pixel. This is typically used for operations like add and subtract. The function uses accessors to access the pixel data. Note that the binary functors of the STL can be used in addition to the functors specifically defined in <ref refid="group__CombineFunctor" kindref="compound">Functors to Combine Images</ref>. Creation of new functors is easiest by using <ref refid="FunctorExpressions" kindref="compound">Functor Expressions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/>clas<sp/>DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1ga1a58f278634940f993888ef804340017" kindref="member" tooltip="Combine ROI of two source images into destination image.">combineTwoImagesIf</ref>(SrcImageIterator1<sp/>src1_upperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator1<sp/>src1_lowerright,<sp/>SrcAccessor1<sp/>sa1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator2<sp/>src2_upperleft,<sp/>SrcAccessor2<sp/>sa2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dest_upperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/>clas<sp/>DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__CombineAlgo_1ga1a58f278634940f993888ef804340017" kindref="member" tooltip="Combine ROI of two source images into destination image.">combineTwoImagesIf</ref>(triple&lt;SrcImageIterator1,<sp/>SrcImageIterator1,<sp/>SrcAccessor1&gt;<sp/>src1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;SrcImageIterator2,<sp/>SrcAccessor2&gt;<sp/>src2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/combineimages.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;functional&gt;</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>plus</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CombineAlgo_1ga1a58f278634940f993888ef804340017" kindref="member" tooltip="Combine ROI of two source images into destination image.">vigra::combineTwoImagesIf</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIterRange(src1.upperLeft(),<sp/>src1.lowerRight()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcIter(src2.upperLeft()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskIter(mask.upperLeft()),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destIter(dest.upperLeft()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::plus&lt;SrcValueType&gt;());</highlight></codeline>
+</programlisting></para><para>Note that <computeroutput>SrcValueType</computeroutput> must be replaced with the appropriate type (e.g. the promote type of the input images&apos; pixel type, see also <ref refid="NumericPromotionTraits" kindref="compound">Numeric and Promotion Traits</ref>)</para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator1<sp/>src1_upperleft,<sp/>src1_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2<sp/>src2_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator1::row_iterator<sp/>sx1<sp/>=<sp/>src1_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">SrcImageIterator2::row_iterator<sp/>sx2<sp/>=<sp/>src2_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mask_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator::row_iterator<sp/>dx<sp/>=<sp/>dest_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor1<sp/>src1_accessor;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor2<sp/>src2_accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask_accessor(mx))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>functor(src1_accessor(sx1),<sp/>src2_accessor(sx2)),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dx);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="347"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gaf9b89f5fc5d1dabcdbb98246bcf09df0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImagesIf</definition>
+        <argsstring>(SrcImageIterator1 src1_upperleft, SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1, SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2, MaskImageIterator mask_upperleft, MaskAccessor ma, DestImageIterator dest_upperleft, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>combineTwoImagesIf</name>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator1</type>
+          <declname>src1_lowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>sa1</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator2</type>
+          <declname>src2_upperleft</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>sa2</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mask_upperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>ma</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dest_upperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="355" bodyend="374"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1gade6c72ea999dc163ce178b056313c533" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcImageIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoImagesIf</definition>
+        <argsstring>(triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt; src1, pair&lt; SrcImageIterator2, SrcAccessor2 &gt; src2, pair&lt; MaskImageIterator, MaskAccessor &gt; mask, pair&lt; DestImageIterator, DestAccessor &gt; dest, Functor const &amp;f)</argsstring>
+        <name>combineTwoImagesIf</name>
+        <param>
+          <type>triple&lt; SrcImageIterator1, SrcImageIterator1, SrcAccessor1 &gt;</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>pair&lt; SrcImageIterator2, SrcAccessor2 &gt;</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="388" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="383" bodyend="393"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1ga07685ea598ba2f2ed205e4a4b24f0904" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoLines</definition>
+        <argsstring>(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1, SrcIterator2 s2, SrcAccessor2 src2, DestIterator d, DestAccessor dest, Functor const &amp;f)</argsstring>
+        <name>combineTwoLines</name>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>SrcIterator2</type>
+          <declname>s2</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="69" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="64" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="group__CombineAlgo_1ga472091348376c0ca329b2496de4bcebe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::combineTwoLinesIf</definition>
+        <argsstring>(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1, SrcIterator2 s2, SrcAccessor2 src2, MaskIterator m, MaskAccessor mask, DestIterator d, DestAccessor dest, Functor const &amp;f)</argsstring>
+        <name>combineTwoLinesIf</name>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>SrcIterator2</type>
+          <declname>s2</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/combineimages.hxx" bodystart="79" bodyend="89"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Apply functor to calculate a pixelwise transformation depending on multiple images. Note that the binary functors of the STL may be used with these functions. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

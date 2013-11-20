@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>VIGRA Reference Manual</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="Installation" kindref="compound">Installation</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>how to get started</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="Concepts" kindref="compound">Concepts</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>generic interface definitions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="Utilities" kindref="compound">Utilities</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Basic helper functionality needed throughout</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ErrorReporting" kindref="compound">Error Reporting</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Exceptions and assertions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MathFunctionality" kindref="compound">Mathematical tools</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Number types, mathematical constants and functions, linear algebra etc.</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="PixelTypes" kindref="compound">Pixel Types</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Non-scalar types such as RGBValue and TinyVector</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ImageDataStructures" kindref="compound">Image Data Structures and Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Images, image iterators, and supporting types and functions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MultiDimensionalArrays" kindref="compound">Multi-Dimensional Arrays and Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Arrays, iterators, and supporting types and functions for arbitrary dimensions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ImportExport" kindref="compound">Image Import and Export</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Conversion from and to other image data types</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__ColorConversions" kindref="compound">Color Space Conversions</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Convert between RGB and other color spaces, such as L*u*v*, Y&apos;PbPr</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ImageProcessing" kindref="compound">Image Processing</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Point operators, image arithmetic, convolution, morphology</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="ImageAnalysis" kindref="compound">Image Analysis</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Segmentation and feature extraction algorithms</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MachineLearning" kindref="compound">Machine Learning</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Classification algorithms</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="Examples" kindref="compound">Examples</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Demonstration programs for VIGRA&apos;s usage </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="VigraMatlab" kindref="compound">Vigra Matlab</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>VIGRA Matlab bindings</emphasis> </para></listitem>
+<listitem>
+<para><bold><ulink url="../vigranumpy/index.html">vigranumpy</ulink></bold> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>VIGRA Python bindings</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="CreditsChangelog" kindref="compound">Credits and Changelog</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Who contributed what?</emphasis> </para></listitem>
+</itemizedlist>
+</para><para><anchor id="index_1_details"/><center> </center></para><sect1 id="index_1Main">
+<title>VIGRA - Vision with Generic Algorithms</title>
+<para><center>Version 1.8.0 by <ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/">Ullrich K<umlaut char="o"/>the</ulink> </center></para><para>VIGRA is a computer vision library that puts its main emphasis on <emphasis>flexible algorithms</emphasis>, because algorithms represent the principle know-how of this field. The library was consequently built using <emphasis>generic programming</emphasis> as introduced by Stepanov and Musser and exemplified in the C++ <ulink url="http://www.sgi.com/tech/stl/">Standard Template Library</ulink>. By writing a few adapters (image iterators and accessors) you can use VIGRA&apos;s algorithms on top of <emphasis>your</emphasis> data structures, within <emphasis>your</emphasis> environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA&apos;s flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.</para><para>VIGRA&apos;s design is documented in the chapter <emphasis>&quot;Reusable Software in
+Computer Vision&quot;</emphasis> by <ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/">Ullrich K<umlaut char="o"/>the</ulink>, in: B. J<umlaut char="a"/>hne, H. Hau<szlig/>ecker, P. Gei<szlig/>ler: &quot;Handbook on
+Computer Vision and  Applications&quot;, volume 3, Academic Press, 1999. If you don&apos;t have the book, you may read a <ulink url="documents/GenericProg2D.ps">draft of this article</ulink>. A shorter article <emphasis><ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_GenericProg2DCppReport">STL Style Generic Programming with Images</ulink></emphasis> describing some of the ideas has appeared in the January 2000 issue of <ulink url="http://www.creport.com/">C++ Report Magazine</ulink>. The most comprehensive source of information is U. K<umlaut char="o"/>the&apos;s PhD thesis <emphasis><ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_PhD">Generische Programmierung f<umlaut char="u"/>r die Bildverarbeitung</ulink></emphasis>, but this is written in German.</para><para>VIGRA is subject to this <ulink url="LICENSE.txt">LICENSE</ulink>.</para><para>You can also subscribe to the <ulink url="https://mailhost.informatik.uni-hamburg.de/mailman/listinfo/vigra">VIGRA Mailing List</ulink> to get instant information about new releases, discuss VIGRA&apos;s features and development, and ask the experts for help. </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

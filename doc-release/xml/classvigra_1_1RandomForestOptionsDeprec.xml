@@ -1,0 +1,368 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RandomForestOptionsDeprec" kind="class" prot="public">
+    <compoundname>vigra::RandomForestOptionsDeprec</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1a8c187ab739ad0498b665711bb84cee4d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; class_weights</definition>
+        <argsstring></argsstring>
+        <name>class_weights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="687" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="687" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1ab024fceb40d40eab9c2097d7d53a5a37" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int min_split_node_size</definition>
+        <argsstring></argsstring>
+        <name>min_split_node_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="689" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1a4242496ca18a1253799555a91f4bdb32" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int mtry</definition>
+        <argsstring></argsstring>
+        <name>mtry</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="689" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1ab6625294555cb30a5bb4e6c6a734f7c0" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, <ref refid="group__FixedSizeInt_1ga7332da5f8bfdbeecdfd09d4ed602288d" kindref="member">UInt8</ref> &gt;</type>
+        <definition>MultiArrayView&lt;2, UInt8&gt; oob_data</definition>
+        <argsstring></argsstring>
+        <name>oob_data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="686" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="686" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1a22858b680a71c545353e09b39f001398" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool sample_classes_individually</definition>
+        <argsstring></argsstring>
+        <name>sample_classes_individually</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="690" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1ab12fc16de8ed6983eae3b68413134435" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool sample_with_replacement</definition>
+        <argsstring></argsstring>
+        <name>sample_with_replacement</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="690" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1ac41bf0ff940498a525bf6cba9319a3cb" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double training_set_proportion</definition>
+        <argsstring></argsstring>
+        <name>training_set_proportion</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="688" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="688" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1a7e89a771604c19663c6b3198f6d878b9" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int training_set_size</definition>
+        <argsstring></argsstring>
+        <name>training_set_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="689" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestOptionsDeprec_1afb2bd37c1d4cc06a72834a9fb4ee4ee4" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int treeCount</definition>
+        <argsstring></argsstring>
+        <name>treeCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="691" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="691" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1aa7c403f74cd8f872cfec572a46f18778" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; featuresPerNode</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>featuresPerNode</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Number of features considered in each node.</para><para>If <emphasis>n</emphasis> is 0 (the default), the number of features tried in every node is determined by the square root of the total number of features. According to Breiman, this quantity should always be optimized by means of the out-of-bag error.<linebreak/>
+ Default: 0 (use <computeroutput>sqrt(columnCount(featureMatrix))</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="573" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="572" bodyend="576"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1addeaacd562858e5510357110febf9cc2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; minSplitNodeSize</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>minSplitNodeSize</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Number of examples required for a node to be split.</para><para>When the number of examples in a node is below this number, the node is not split even if class separation is not yet perfect. Instead, the node returns the proportion of each class (among the remaining examples) during the prediction phase.<linebreak/>
+ Default: 1 (complete growing) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="657" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="656" bodyend="662"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a3ff9fe252b5dc963431cde0e069117c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; oobData</definition>
+        <argsstring>(MultiArrayView&lt; 2, UInt8 &gt; &amp;data)</argsstring>
+        <name>oobData</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, <ref refid="group__FixedSizeInt_1ga7332da5f8bfdbeecdfd09d4ed602288d" kindref="member">UInt8</ref> &gt; &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="681" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="680" bodyend="684"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a4dcbc19656f8f52991e9b19b7b66e5ba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomForestOptionsDeprec</definition>
+        <argsstring>()</argsstring>
+        <name>RandomForestOptionsDeprec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize all options with default values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="562" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="554" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a23d3a7e979bd92a94f037f0bfc62e99a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; sampleClassesIndividually</definition>
+        <argsstring>(bool s)</argsstring>
+        <name>sampleClassesIndividually</name>
+        <param>
+          <type>bool</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Are the classes sampled individually?</para><para>If <emphasis>s</emphasis> is <computeroutput>false</computeroutput> (the default), the training set for each tree is sampled without considering class labels. Otherwise, samples are drawn from each class independently. The latter is especially useful in connection with the specification of an absolute training set size: then, the same number of examples is drawn from every class. This can be used as a counter-measure when the classes are very unbalanced in size.<linebreak/>
+ Default: <computeroutput>false</computeroutput> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="643" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="642" bodyend="646"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1af4bc2a8c39ef9c24301ad99c61935faf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; sampleWithReplacement</definition>
+        <argsstring>(bool r)</argsstring>
+        <name>sampleWithReplacement</name>
+        <param>
+          <type>bool</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>How to sample the subset of the training data for each tree.</para><para>Each tree is only trained with a subset of the entire training data. If <emphasis>r</emphasis> is <computeroutput>true</computeroutput>, this subset is sampled from the entire training set with replacement.<linebreak/>
+ Default: <computeroutput>true</computeroutput> (use sampling with replacement)) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="586" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="585" bodyend="589"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a341fdf38b20a1ec9da1e06e1c253fce1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; setTreeCount</definition>
+        <argsstring>(unsigned int cnt)</argsstring>
+        <name>setTreeCount</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>cnt</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="591" bodyend="595"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a08bfec4b3f8414aca784699c326a6d6d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; trainingSetSizeAbsolute</definition>
+        <argsstring>(unsigned int s)</argsstring>
+        <name>trainingSetSizeAbsolute</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Size of the training set for each tree.</para><para>If this option is set, it overrides the proportion set by trainingSetSizeProportional(). When classes are sampled individually, the number of examples is divided by the number of classes (rounded upwards) to determine the number of examples drawn from every class.<linebreak/>
+ Default: <computeroutput>0</computeroutput> (determine size by proportion) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="624" bodyend="630"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a5a713a0650f6efa2ca6ceadaee9b8cfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; trainingSetSizeProportional</definition>
+        <argsstring>(double p)</argsstring>
+        <name>trainingSetSizeProportional</name>
+        <param>
+          <type>double</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Proportion of training examples used for each tree.</para><para>If <emphasis>p</emphasis> is 1.0 (the default), and samples are drawn with replacement, the training set of each tree will contain as many examples as the entire training set, but some are drawn multiply and others not at all. On average, each tree is actually trained on about 65% of the examples in the full training set. Changing the proportion makes mainly sense when sampleWithReplacement() is set to <computeroutput>false</computeroutput>. trainingSetSizeProportional() gets overridden by trainingSetSizeAbsolute().<linebreak/>
+ Default: 1.0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="608" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="607" bodyend="614"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestOptionsDeprec_1a40998437ed7cda0b32900720b10ff01c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class WeightIterator</type>
+          </param>
+        </templateparamlist>
+        <type>RandomForestOptionsDeprec &amp;</type>
+        <definition>RandomForestOptionsDeprec&amp; weights</definition>
+        <argsstring>(WeightIterator weights, unsigned int classCount)</argsstring>
+        <name>weights</name>
+        <param>
+          <type>WeightIterator</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>classCount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Use a weighted random forest.</para><para>This is usually used to penalize the errors for the minority class. Weights must be convertible to <computeroutput>double</computeroutput>, and the array of weights must contain as many entries as there are classes.<linebreak/>
+ Default: do not use weights </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="672" bodyend="678"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2113">
+        <label>MultiArrayView&lt; 2, UInt8 &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="2114" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2111">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2112" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2112">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2110">
+        <label>RandomForestOptionsDeprec</label>
+        <childnode refid="2111" relation="usage">
+          <edgelabel>class_weights</edgelabel>
+        </childnode>
+        <childnode refid="2113" relation="usage">
+          <edgelabel>oob_data</edgelabel>
+        </childnode>
+      </node>
+      <node id="2114">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest_deprec.hxx" bodystart="549" bodyend="692"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a8c187ab739ad0498b665711bb84cee4d" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>class_weights</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1aa7c403f74cd8f872cfec572a46f18778" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>featuresPerNode</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1ab024fceb40d40eab9c2097d7d53a5a37" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>min_split_node_size</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1addeaacd562858e5510357110febf9cc2" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>minSplitNodeSize</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a4242496ca18a1253799555a91f4bdb32" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>mtry</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1ab6625294555cb30a5bb4e6c6a734f7c0" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>oob_data</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a3ff9fe252b5dc963431cde0e069117c1" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>oobData</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a4dcbc19656f8f52991e9b19b7b66e5ba" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>RandomForestOptionsDeprec</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a22858b680a71c545353e09b39f001398" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>sample_classes_individually</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1ab12fc16de8ed6983eae3b68413134435" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>sample_with_replacement</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a23d3a7e979bd92a94f037f0bfc62e99a" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>sampleClassesIndividually</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1af4bc2a8c39ef9c24301ad99c61935faf" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>sampleWithReplacement</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a341fdf38b20a1ec9da1e06e1c253fce1" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>setTreeCount</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1ac41bf0ff940498a525bf6cba9319a3cb" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>training_set_proportion</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a7e89a771604c19663c6b3198f6d878b9" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>training_set_size</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a08bfec4b3f8414aca784699c326a6d6d" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>trainingSetSizeAbsolute</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a5a713a0650f6efa2ca6ceadaee9b8cfb" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>trainingSetSizeProportional</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1afb2bd37c1d4cc06a72834a9fb4ee4ee4" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>treeCount</name></member>
+      <member refid="classvigra_1_1RandomForestOptionsDeprec_1a40998437ed7cda0b32900720b10ff01c" prot="public" virt="non-virtual"><scope>vigra::RandomForestOptionsDeprec</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

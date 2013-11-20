@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::detail::MultiMathExec</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class Assign</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_1aabfcbcb5ac86a1edac4035264bc7d2b8" prot="public" static="no">
+        <name>@27</name>
+        <enumvalue id="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_1aabfcbcb5ac86a1edac4035264bc7d2b8aa4b1e64b6e370537f87e5806385ee069" prot="public">
+          <name>LEVEL</name>
+          <initializer> N-1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="686" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="686" bodyend="686"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_1a903e954cac3a035e1228a8dd574576a7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class Expression</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(T *data, Shape const &amp;shape, Shape const &amp;strides, Shape const &amp;strideOrder, Expression const &amp;e)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>T *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>strides</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>strideOrder</declname>
+        </param>
+        <param>
+          <type>Expression const &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="691" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="689" bodyend="699"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="684" bodyend="700"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_1a903e954cac3a035e1228a8dd574576a7" prot="public" virt="non-virtual"><scope>vigra::multi_math::detail::MultiMathExec</scope><name>exec</name></member>
+      <member refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathExec_1aabfcbcb5ac86a1edac4035264bc7d2b8aa4b1e64b6e370537f87e5806385ee069" prot="public" virt="non-virtual"><scope>vigra::multi_math::detail::MultiMathExec</scope><name>LEVEL</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

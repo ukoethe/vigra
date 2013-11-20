@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__Functors" kind="group">
+    <compoundname>Functors</compoundname>
+    <title>Functors</title>
+    <innerclass refid="classvigra_1_1FunctorTraits" prot="public">vigra::FunctorTraits</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01R_07_5_08_07_08_4" prot="public">vigra::FunctorTraits&lt; R(*)()&gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01R_07_5_08_07T_08_4" prot="public">vigra::FunctorTraits&lt; R(*)(T)&gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01R_07_5_08_07T1_00_01T2_08_4" prot="public">vigra::FunctorTraits&lt; R(*)(T1, T2)&gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01R_07_5_08_07T1_00_01T2_00_01T3_08_4" prot="public">vigra::FunctorTraits&lt; R(*)(T1, T2, T3)&gt;</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__Functors_1gaaa21f51cf48bd904752edf1dd40a2e21" prot="public" static="no">
+        <name>VIGRA_DEFINE_STL_FUNCTOR</name>
+        <param><defname>name</defname></param>
+        <param><defname>unary</defname></param>
+        <param><defname>binary</defname></param>
+        <initializer>template &lt;class T&gt; \
+class FunctorTraits&lt;name&lt;T&gt; &gt; \
+{ \
+  public: \
+    typedef T type; \
+     \
+    typedef VigraFalseType isInitializer; \
+     \
+    typedef unary          isUnaryFunctor; \
+    typedef binary         isBinaryFunctor; \
+    typedef VigraFalseType isTernaryFunctor; \
+     \
+    typedef VigraFalseType isUnaryAnalyser; \
+    typedef VigraFalseType isBinaryAnalyser; \
+    typedef VigraFalseType isTernaryAnalyser; \
+};</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

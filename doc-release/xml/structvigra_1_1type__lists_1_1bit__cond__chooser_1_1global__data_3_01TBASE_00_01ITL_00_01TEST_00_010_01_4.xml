@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">plain_global_data</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class, class, template&lt; class &gt; class M, unsigned &gt; class</type>
+        <declname>TBASE</declname>
+        <defname>TBASE</defname>
+      </param>
+      <param>
+        <type>class ITL</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ad3e9f4ef735910767a9809b2c9c1e430" prot="public" static="no">
+        <type>global_data</type>
+        <definition>typedef global_data global_data_type</definition>
+        <argsstring></argsstring>
+        <name>global_data_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1399" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1399" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ac82248e923f983d5112c64212b0e22f4" prot="public" static="no" mutable="no">
+        <type>BitArray&lt; size&lt; ITL &gt;::of &gt;</type>
+        <definition>BitArray&lt;size&lt;ITL&gt;::of&gt; bit_set</definition>
+        <argsstring></argsstring>
+        <name>bit_set</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1401" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1401" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1403" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1403" bodyend="1403"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ad774926919c8aaa5a6eb24a630811144" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool is_bit_set</definition>
+        <argsstring>() const </argsstring>
+        <name>is_bit_set</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1407" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1407" bodyend="1407"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1af672b652a7bece668d5ae82f0352935a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_bit</definition>
+        <argsstring>()</argsstring>
+        <name>set_bit</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1405" bodyend="1405"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1397" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1396" bodyend="1408"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ac82248e923f983d5112c64212b0e22f4" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>bit_set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>clear</name></member>
+      <member refid="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ad3e9f4ef735910767a9809b2c9c1e430" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>global_data_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1ad774926919c8aaa5a6eb24a630811144" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>is_bit_set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1plain__global__data_1a1f7c606d6a47cc3b0d8789933708b848" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>reassign</name></member>
+      <member refid="structvigra_1_1type__lists_1_1bit__cond__chooser_1_1global__data_3_01TBASE_00_01ITL_00_01TEST_00_010_01_4_1af672b652a7bece668d5ae82f0352935a" prot="public" virt="non-virtual"><scope>vigra::type_lists::bit_cond_chooser::global_data&lt; TBASE, ITL, TEST, 0 &gt;</scope><name>set_bit</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

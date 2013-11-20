@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="PixelTypes" kind="page">
+    <compoundname>PixelTypes</compoundname>
+    <title>Pixel Types</title>
+    <detaileddescription>
+<para><variablelist>
+<varlistentry><term><bold>Scalar types</bold> </term></varlistentry>
+<listitem><para><itemizedlist>
+<listitem>
+<para><ref refid="group__FixedSizeInt" kindref="compound">Fixed Size Integer Types</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1Rational" kindref="compound">vigra::Rational</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1FixedPoint" kindref="compound">vigra::FixedPoint</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1FixedPoint16" kindref="compound">vigra::FixedPoint16</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<varlistentry><term><bold>RGB colors and related functionality</bold> </term></varlistentry>
+<listitem><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue</ref> </para></listitem>
+<listitem>
+<para><ref refid="RGBValueTraits" kindref="compound">Numeric and Promote Traits of RGBValue</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__RGBValueOperators" kindref="compound">Functions for RGBValue</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__RGBValueAccessors" kindref="compound">Accessors for RGBValue</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<varlistentry><term><bold>Fixed-size vectors and related functionality</bold> </term></varlistentry>
+<listitem><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1TinyVectorView" kindref="compound">vigra::TinyVectorView</ref> </para></listitem>
+<listitem>
+<para><ref refid="TinyVectorTraits" kindref="compound">Numeric and Promote Traits of TinyVector</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__TinyVectorOperators" kindref="compound">Functions for TinyVector</ref> </para></listitem>
+</itemizedlist>
+</para><para></para></listitem>
+<varlistentry><term><bold>Complex Numbers</bold> </term></varlistentry>
+<listitem><para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="FFTWComplexTraits" kindref="compound">Numeric and Promote Traits of FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__FFTWComplexOperators" kindref="compound">Functions for FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__FFTWComplexAccessors" kindref="compound">Accessors for FFTWComplex</ref> </para></listitem>
+</itemizedlist>
+</para></listitem>
+</variablelist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

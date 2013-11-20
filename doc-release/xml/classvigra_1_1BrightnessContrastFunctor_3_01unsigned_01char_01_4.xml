@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4" kind="class" prot="public">
+    <compoundname>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a424a7f4574d2daa75f8530c2aa11932f" prot="private" static="no">
+        <type>NumericTraits&lt; unsigned char &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;unsigned char&gt;::RealPromote promote_type</definition>
+        <argsstring></argsstring>
+        <name>promote_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1038" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a3517db96425b164b1ccbf5e86d55e840" prot="public" static="no">
+        <type>unsigned char</type>
+        <definition>typedef unsigned char value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1043" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1043" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a3c3e96d7822d3170f552a649b6ba5b16" prot="private" static="no" mutable="no">
+        <type>unsigned char</type>
+        <definition>unsigned char lut[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>lut</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1039" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1039" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a2847fc5d81512158a69e5979ae5a6901" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BrightnessContrastFunctor</definition>
+        <argsstring>(promote_type brightness, promote_type contrast, value_type const &amp;min=0, value_type const &amp;max=255)</argsstring>
+        <name>BrightnessContrastFunctor</name>
+        <param>
+          <type>promote_type</type>
+          <declname>brightness</declname>
+        </param>
+        <param>
+          <type>promote_type</type>
+          <declname>contrast</declname>
+        </param>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>min</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>max</declname>
+          <defval>255</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1047" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1045" bodyend="1054"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a8ab4229e60b5e04fd57303a42a89fa6a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type</type>
+        <definition>value_type operator()</definition>
+        <argsstring>(value_type const &amp;v) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1057" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1056" bodyend="1060"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1037" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1036" bodyend="1061"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a2847fc5d81512158a69e5979ae5a6901" prot="public" virt="non-virtual"><scope>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</scope><name>BrightnessContrastFunctor</name></member>
+      <member refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a3c3e96d7822d3170f552a649b6ba5b16" prot="private" virt="non-virtual"><scope>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</scope><name>lut</name></member>
+      <member refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a8ab4229e60b5e04fd57303a42a89fa6a" prot="public" virt="non-virtual"><scope>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a424a7f4574d2daa75f8530c2aa11932f" prot="private" virt="non-virtual"><scope>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</scope><name>promote_type</name></member>
+      <member refid="classvigra_1_1BrightnessContrastFunctor_3_01unsigned_01char_01_4_1a3517db96425b164b1ccbf5e86d55e840" prot="public" virt="non-virtual"><scope>vigra::BrightnessContrastFunctor&lt; unsigned char &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

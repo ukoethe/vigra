@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__ImageIterators" kind="group">
+    <compoundname>ImageIterators</compoundname>
+    <title>Image Iterators</title>
+    <innerclass refid="classvigra_1_1ConstImageIterator" prot="public">vigra::ConstImageIterator</innerclass>
+    <innerclass refid="classvigra_1_1ConstStridedImageIterator" prot="public">vigra::ConstStridedImageIterator</innerclass>
+    <innerclass refid="classvigra_1_1ConstValueIterator" prot="public">vigra::ConstValueIterator</innerclass>
+    <innerclass refid="classvigra_1_1ConstValueIteratorPolicy" prot="public">vigra::ConstValueIteratorPolicy</innerclass>
+    <innerclass refid="classvigra_1_1ImageIterator" prot="public">vigra::ImageIterator</innerclass>
+    <innerclass refid="classvigra_1_1ImageIteratorBase" prot="public">vigra::ImageIteratorBase</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits" prot="public">vigra::IteratorTraits</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01ConstImageIterator_3_01T_01_4_01_4" prot="public">vigra::IteratorTraits&lt; ConstImageIterator&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01ConstStridedImageIterator_3_01T_01_4_01_4" prot="public">vigra::IteratorTraits&lt; ConstStridedImageIterator&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4" prot="public">vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01ImageIterator_3_01T_01_4_01_4" prot="public">vigra::IteratorTraits&lt; ImageIterator&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01StridedImageIterator_3_01T_01_4_01_4" prot="public">vigra::IteratorTraits&lt; StridedImageIterator&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraitsBase" prot="public">vigra::IteratorTraitsBase</innerclass>
+    <innerclass refid="classvigra_1_1StridedImageIterator" prot="public">vigra::StridedImageIterator</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__ImageIterators_1ga110ba64ad5460bac151be32b748da74b" prot="public" static="no">
+        <type>Diff2D</type>
+        <definition>typedef Diff2D CoordinateIterator</definition>
+        <argsstring></argsstring>
+        <name>CoordinateIterator</name>
+        <briefdescription>
+<para>Simulate an image where each pixel contains its coordinate. </para>        </briefdescription>
+        <detaileddescription>
+<para>CoordinateIterator used to be a separate class, but has now become an alias for <ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref>. This is possible because <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> now provides all the necessary functionality.</para><para>CoordinateIterator behaves like a read-only <ref refid="classvigra_1_1ImageIterator" kindref="compound">vigra::ImageIterator</ref> for an image in which each pixel contains its coordinate. This is useful for algorithms that need access to the current pixel&apos;s location. For example, you can use CoordinateIterator/Diff2D to find the center of mass of an image region. To implement this, we first need a functor for center-of-mass calculations:</para><para><programlisting><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CenterOfMassFunctor</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>CenterOfMassFunctor()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>:<sp/>x(0.0),<sp/>y(0.0),<sp/>size(0)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>operator()(Diff2d<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">&amp;<sp/>diff)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++size;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>x<sp/>+=<sp/>diff.x;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>y<sp/>+=<sp/>diff.y;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>xCenter()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>x<sp/>/<sp/>size;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>yCenter()</highlight><highlight class="keyword"><sp/>const</highlight></codeline>
+<codeline><highlight class="keyword"><sp/><sp/><sp/><sp/></highlight><highlight class="normal">{<sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>y<sp/>/<sp/>size;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>size;</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para><para>Using this functor, we find the center of mass like so:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>mark<sp/>a<sp/>region<sp/>in<sp/>the<sp/>image<sp/>with<sp/>&apos;1&apos;,<sp/>background<sp/>with<sp/>&apos;0&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">CenterOfMassFunctor<sp/>center;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" kindref="member" tooltip="Apply read-only functor to every pixel in the ROI.">vigra::inspectImageIf</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>srcIterRange(Diff2D(),<sp/>Diff2D()<sp/>+<sp/>img.size()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>srcImage(img),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>center);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Center<sp/>of<sp/>mass:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>center.xCenter()<sp/>&lt;&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;,<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>center.yCenter()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="imageiterator_8hxx_source" kindref="compound">vigra/imageiterator.hxx</ref>&gt;</para><para>Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1565" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>General image iterator definition and implementations. </para>    </briefdescription>
+    <detaileddescription>
+<para>The following tables describe the general requirements for image iterators and their iterator traits. The iterator implementations provided here may be used for any image data type that stores its data as a linear array of pixels. The array will be interpreted as a row-major matrix with a particular width. </para><para><heading level="3">Requirements for Image Iterators</heading>
+</para><para><table rows="45" cols="3"><row>
+<entry thead="yes"><para>Local Types </para></entry><entry thead="yes"><para>Meaning   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">ImageIterator::value_type</ref></computeroutput></para></entry><entry thead="no"><para>the underlying image&apos;s pixel type  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1ac8456b73e94855de7203e3e337f2b872" kindref="member">ImageIterator::PixelType</ref></computeroutput></para></entry><entry thead="no"><para>the underlying image&apos;s pixel type  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1aabedc6031d7df619a0c453c558af87a0" kindref="member">ImageIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s reference type (return type of <computeroutput>*iter</computeroutput>). Will be <computeroutput>value_type &amp;</computeroutput> for a mutable iterator, and convertible to <computeroutput>value_type const &amp;</computeroutput> for a const iterator.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1af499f8cb218354b4e846a233590c15da" kindref="member">ImageIterator::index_reference</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s index reference type (return type of <computeroutput>iter[diff]</computeroutput>). Will be <computeroutput>value_type &amp;</computeroutput> for a mutable iterator, and convertible to <computeroutput>value_type const &amp;</computeroutput> for a const iterator.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>ImageIterator::pointer</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s pointer type (return type of <computeroutput>iter.operator-&gt;()</computeroutput>). Will be <computeroutput>value_type *</computeroutput> for a mutable iterator, and convertible to <computeroutput>value_type const *</computeroutput> for a const iterator.  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>ImageIterator::difference_type</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s difference type (<computeroutput><ref refid="classvigra_1_1Diff2D" kindref="compound">vigra::Diff2D</ref></computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a93321121482225e0577a134820fc5c6b" kindref="member">ImageIterator::iterator_category</ref></computeroutput> </para></entry><entry thead="no"><para>the iterator tag (<computeroutput>vigra::image_traverser_tag</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ImageIterator::row_iterator</ref></computeroutput></para></entry><entry thead="no"><para>the associated row iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1aa92bdd7ecc849908fd104c12a8c89360" kindref="member">ImageIterator::column_iterator</ref></computeroutput></para></entry><entry thead="no"><para>the associated column iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a90d38e8e631e426dc4e1e6c275b3ed69" kindref="member">ImageIterator::MoveX</ref></computeroutput></para></entry><entry thead="no"><para>type of the horizontal navigator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a0063a159df3efb1a4d17a609a5b8e0d3" kindref="member">ImageIterator::MoveY</ref></computeroutput></para></entry><entry thead="no"><para>type of the vertical navigator  </para></entry></row>
+<row>
+<entry thead="yes"><para>Operation </para></entry><entry thead="yes"><para>Result </para></entry><entry thead="yes"><para>Semantics   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>++i.x<linebreak/>
+i.x<ndash/></computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput></para></entry><entry thead="no"><para>increment x-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ndash/>i.x<linebreak/>
+i.x<ndash/></computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput></para></entry><entry thead="no"><para>decrement x-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x += dx</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a90d38e8e631e426dc4e1e6c275b3ed69" kindref="member">ImageIterator::MoveX</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>add <computeroutput>dx</computeroutput> to x-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x -= dx</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a90d38e8e631e426dc4e1e6c275b3ed69" kindref="member">ImageIterator::MoveX</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>subtract <computeroutput>dx</computeroutput> from x-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x - j.x</computeroutput></para></entry><entry thead="no"><para><computeroutput>int</computeroutput> </para></entry><entry thead="no"><para>difference of the x-coordinates of <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x = j.x</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a90d38e8e631e426dc4e1e6c275b3ed69" kindref="member">ImageIterator::MoveX</ref> &amp;</computeroutput></para></entry><entry thead="no"><para><computeroutput>i.x += j.x - i.x</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x == i.y</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput></para></entry><entry thead="no"><para><computeroutput>j.x - i.x == 0</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.x &lt; j.x</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput></para></entry><entry thead="no"><para><computeroutput>j.x - i.x &gt; 0</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>++i.y<linebreak/>
+i.y++</computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput></para></entry><entry thead="no"><para>increment y-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ndash/>i.y<linebreak/>
+i.y<ndash/></computeroutput></para></entry><entry thead="no"><para><computeroutput>void</computeroutput></para></entry><entry thead="no"><para>decrement y-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y += dy</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a0063a159df3efb1a4d17a609a5b8e0d3" kindref="member">ImageIterator::MoveY</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>add <computeroutput>dy</computeroutput> to y-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y -= dy</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a0063a159df3efb1a4d17a609a5b8e0d3" kindref="member">ImageIterator::MoveY</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para>subtract <computeroutput>dy</computeroutput> from y-coordinate  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y - j.y</computeroutput></para></entry><entry thead="no"><para><computeroutput>int</computeroutput> </para></entry><entry thead="no"><para>difference of the y-coordinates of <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y = j.y</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a0063a159df3efb1a4d17a609a5b8e0d3" kindref="member">ImageIterator::MoveY</ref> &amp;</computeroutput></para></entry><entry thead="no"><para><computeroutput>i.y += j.y - i.y</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y == j.y</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput></para></entry><entry thead="no"><para><computeroutput>j.y - i.y == 0</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i.y &lt; j.y</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput></para></entry><entry thead="no"><para><computeroutput>j.y - i.y &gt; 0</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> k(i)</computeroutput></para></entry><entry thead="no"><para>copy constructor  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>k = i</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> &amp;</computeroutput></para></entry><entry thead="no"><para>assignment  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> k</computeroutput></para></entry><entry thead="no"><para>default constructor  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ImageIterator::row_iterator</ref> r(i)</computeroutput></para></entry><entry thead="no"><para>construction of row iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1aa92bdd7ecc849908fd104c12a8c89360" kindref="member">ImageIterator::column_iterator</ref> c(i)</computeroutput></para></entry><entry thead="no"><para>construction of column iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i += diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para><computeroutput>{ i.x += diff.x<linebreak/>
+i.y += diff.y; }</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i -= diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> &amp;</computeroutput> </para></entry><entry thead="no"><para><computeroutput>{ i.x -= diff.x<linebreak/>
+i.y -= diff.y; }</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i + diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></computeroutput> </para></entry><entry thead="no"><para><computeroutput>{ <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> tmp(i);<linebreak/>
+tmp += diff;<linebreak/>
+return tmp; }</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i - diff</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></computeroutput> </para></entry><entry thead="no"><para><computeroutput>{ <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref> tmp(i);<linebreak/>
+tmp -= diff;<linebreak/>
+return tmp; }</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i - j</computeroutput></para></entry><entry thead="no"><para><computeroutput>ImageIterator::difference_type</computeroutput> </para></entry><entry thead="no"><para><computeroutput>{ ImageIterator::difference_type tmp(i.x - j.x, i.y - j.y);<linebreak/>
+return tmp; }</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i == j</computeroutput></para></entry><entry thead="no"><para><computeroutput>bool</computeroutput> </para></entry><entry thead="no"><para><computeroutput>i.x == j.x &amp;&amp; i.y == j.y</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>*i</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1aabedc6031d7df619a0c453c558af87a0" kindref="member">ImageIterator::reference</ref></computeroutput> </para></entry><entry thead="no"><para>access the current pixel  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i[diff]</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1af499f8cb218354b4e846a233590c15da" kindref="member">ImageIterator::index_reference</ref></computeroutput> </para></entry><entry thead="no"><para>access pixel at offset <computeroutput>diff</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i(dx, dy)</computeroutput></para></entry><entry thead="no"><para><computeroutput><ref refid="classvigra_1_1ImageIteratorBase_1af499f8cb218354b4e846a233590c15da" kindref="member">ImageIterator::index_reference</ref></computeroutput> </para></entry><entry thead="no"><para>access pixel at offset <computeroutput>(dx, dy)</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i-&gt;member()</computeroutput></para></entry><entry thead="no"><para>depends on operation </para></entry><entry thead="no"><para>call member function of underlying pixel type via <computeroutput>operator-&gt;</computeroutput> of iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>i, j, k</computeroutput> are of type <computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></computeroutput><linebreak/>
+ <computeroutput>diff</computeroutput> is of type <computeroutput>ImageIterator::difference_type</computeroutput><linebreak/>
+ <computeroutput>dx, dy</computeroutput> are of type <computeroutput>int</computeroutput><linebreak/>
+   </para></entry></row>
+</table>
+</para><para><heading level="3">Requirements for Image Iterator Traits</heading>
+</para><para>The following iterator traits must be defined for an image iterator: </para><para><table rows="14" cols="2"><row>
+<entry thead="yes"><para>Types </para></entry><entry thead="yes"><para>Meaning   </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::Iterator</computeroutput></para></entry><entry thead="no"><para>the iterator type the traits are referring to  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::iterator</computeroutput></para></entry><entry thead="no"><para>the iterator type the traits are referring to  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::value_type</computeroutput></para></entry><entry thead="no"><para>the underlying image&apos;s pixel type  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::reference</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s reference type (return type of <computeroutput>*iter</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::index_reference</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s index reference type (return type of <computeroutput>iter[diff]</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::pointer</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s pointer type (return type of <computeroutput>iter.operator-&gt;()</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::difference_type</computeroutput> </para></entry><entry thead="no"><para>the iterator&apos;s difference type  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::iterator_category</computeroutput> </para></entry><entry thead="no"><para>the iterator tag (<computeroutput>vigra::image_traverser_tag</computeroutput>)  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::row_iterator</computeroutput></para></entry><entry thead="no"><para>the associated row iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::column_iterator</computeroutput></para></entry><entry thead="no"><para>the associated column iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::DefaultAccessor</computeroutput> </para></entry><entry thead="no"><para>the default accessor to be used with the iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::default_accessor</computeroutput> </para></entry><entry thead="no"><para>the default accessor to be used with the iterator  </para></entry></row>
+<row>
+<entry thead="no"><para><computeroutput>IteratorTraits&lt;ImageIterator&gt;::hasConstantStrides</computeroutput> </para></entry><entry thead="no"><para>whether the iterator uses constant strides on the underlying memory (always <computeroutput>VigraTrueType</computeroutput> for <computeroutput><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></computeroutput>s).  </para></entry></row>
+</table>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

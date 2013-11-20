@@ -1,0 +1,407 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1Neighborhood3DTwentySix" kind="namespace">
+    <compoundname>vigra::Neighborhood3DTwentySix</compoundname>
+    <innerclass refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D" prot="public">vigra::Neighborhood3DTwentySix::NeighborCode3D</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacevigra_1_1Neighborhood3DTwentySix_1a360951641cc673ff11aace6651bf1fbc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">NeighborCode3D::Direction</ref></type>
+        <definition>typedef NeighborCode3D::Direction Direction</definition>
+        <argsstring></argsstring>
+        <name>Direction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">NeighborCode3D::Direction</ref> into the scope of namespace <ref refid="namespacevigra_1_1Neighborhood3DSix" kindref="compound">Neighborhood3DSix</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1565" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1565" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1aded7a8c18818506569f010eeef05457a" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction Behind</definition>
+        <argsstring></argsstring>
+        <name>Behind</name>
+        <initializer> NeighborCode3D::Behind</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::Behind to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1590" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1590" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1aea1714938c5ff90e3dea666215121173" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindEast</definition>
+        <argsstring></argsstring>
+        <name>BehindEast</name>
+        <initializer> NeighborCode3D::BehindEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1591" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a9ab028e21e67469f91658e1eb39d533f" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindNorth</definition>
+        <argsstring></argsstring>
+        <name>BehindNorth</name>
+        <initializer> NeighborCode3D::BehindNorth</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindNorth to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1587" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1587" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a2baba612e0550bc534958e574fb184eb" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindNorthEast</definition>
+        <argsstring></argsstring>
+        <name>BehindNorthEast</name>
+        <initializer> NeighborCode3D::BehindNorthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindNorthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1588" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1588" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a05844f263f8b6b3410da62daf472bef5" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindNorthWest</definition>
+        <argsstring></argsstring>
+        <name>BehindNorthWest</name>
+        <initializer> NeighborCode3D::BehindNorthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindNorthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1586" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1586" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a8871e17989f5189bde0eb77e3ac02558" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindSouth</definition>
+        <argsstring></argsstring>
+        <name>BehindSouth</name>
+        <initializer> NeighborCode3D::BehindSouth</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindSouth to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1593" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1593" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a03cc1d9ca323d2426ff1a7c6652b3270" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindSouthEast</definition>
+        <argsstring></argsstring>
+        <name>BehindSouthEast</name>
+        <initializer> NeighborCode3D::BehindSouthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindSouthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1594" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a242043ce6227e20ef3dd6e50b735dc92" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindSouthWest</definition>
+        <argsstring></argsstring>
+        <name>BehindSouthWest</name>
+        <initializer> NeighborCode3D::BehindSouthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindSouthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1592" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a7e229d761b5eb5a0f851e4413de1feef" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction BehindWest</definition>
+        <argsstring></argsstring>
+        <name>BehindWest</name>
+        <initializer> NeighborCode3D::BehindWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::BehindWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1589" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1589" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a98d59141d0f0e36a994f6b6a080cc158" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction DirectionCount</definition>
+        <argsstring></argsstring>
+        <name>DirectionCount</name>
+        <initializer> NeighborCode3D::DirectionCount</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::DirectionCount to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1596" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1596" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a39b52e52410a4873e32dabc34427da5c" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction East</definition>
+        <argsstring></argsstring>
+        <name>East</name>
+        <initializer> NeighborCode3D::East</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::East to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1581" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1581" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1aa9bd872064d5d20b0e9ac05d89771463" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFront</definition>
+        <argsstring></argsstring>
+        <name>InFront</name>
+        <initializer> NeighborCode3D::InFront</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFront to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1571" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1571" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a9ffcb5598c93b18e5a7c145f2a69a949" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontEast</definition>
+        <argsstring></argsstring>
+        <name>InFrontEast</name>
+        <initializer> NeighborCode3D::InFrontEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1572" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a264abb1f467a2b92e84898edb7069a31" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontNorth</definition>
+        <argsstring></argsstring>
+        <name>InFrontNorth</name>
+        <initializer> NeighborCode3D::InFrontNorth</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontNorth to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1568" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1568" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a3baf889e3da1317c52928b4127717960" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontNorthEast</definition>
+        <argsstring></argsstring>
+        <name>InFrontNorthEast</name>
+        <initializer> NeighborCode3D::InFrontNorthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontNorthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1569" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1569" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1ac2fdefe11a7f37553acbde0b5965d3a1" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontNorthWest</definition>
+        <argsstring></argsstring>
+        <name>InFrontNorthWest</name>
+        <initializer> NeighborCode3D::InFrontNorthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontNorthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1567" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1567" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a31e5cb417e5feddcc1b1a579330f73c6" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontSouth</definition>
+        <argsstring></argsstring>
+        <name>InFrontSouth</name>
+        <initializer> NeighborCode3D::InFrontSouth</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontSouth to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1574" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a3091d56b8055d323199d5d1cacef6842" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontSouthEast</definition>
+        <argsstring></argsstring>
+        <name>InFrontSouthEast</name>
+        <initializer> NeighborCode3D::InFrontSouthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontSouthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1575" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a8e101c47d79f26500bc5b8bf62ae3149" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontSouthWest</definition>
+        <argsstring></argsstring>
+        <name>InFrontSouthWest</name>
+        <initializer> NeighborCode3D::InFrontSouthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontSouthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1573" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1573" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a942c7ab96b7e46b465b66a33bbf8996a" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction InFrontWest</definition>
+        <argsstring></argsstring>
+        <name>InFrontWest</name>
+        <initializer> NeighborCode3D::InFrontWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::InFrontWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1570" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1570" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1ab8ee2b5353b7807a8934045eae3099c2" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction North</definition>
+        <argsstring></argsstring>
+        <name>North</name>
+        <initializer> NeighborCode3D::North</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::North to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1578" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1578" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a0e674ffd16f803a01dd6d8462b9dd533" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction NorthEast</definition>
+        <argsstring></argsstring>
+        <name>NorthEast</name>
+        <initializer> NeighborCode3D::NorthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::NorthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1579" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1579" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1add73cb2eb3cb27301638f6b2bddc3f31" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction NorthWest</definition>
+        <argsstring></argsstring>
+        <name>NorthWest</name>
+        <initializer> NeighborCode3D::NorthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::NorthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1577" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1577" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a5235cd5ca104c4410040db428892af8f" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction South</definition>
+        <argsstring></argsstring>
+        <name>South</name>
+        <initializer> NeighborCode3D::South</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::South to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1583" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1583" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1ac4d805b2b411a600a98dc2e665d3cd83" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction SouthEast</definition>
+        <argsstring></argsstring>
+        <name>SouthEast</name>
+        <initializer> NeighborCode3D::SouthEast</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::SouthEast to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1584" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1584" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a9b56fc173d1e0526c58598ace7e4ea78" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction SouthWest</definition>
+        <argsstring></argsstring>
+        <name>SouthWest</name>
+        <initializer> NeighborCode3D::SouthWest</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::SouthWest to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1582" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1582" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevigra_1_1Neighborhood3DTwentySix_1a0ed7ae90898438bcd62c59b2d267e219" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="classvigra_1_1Neighborhood3DTwentySix_1_1NeighborCode3D_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">Direction</ref></type>
+        <definition>const Direction West</definition>
+        <argsstring></argsstring>
+        <name>West</name>
+        <initializer> NeighborCode3D::West</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Export NeighborCode3D::West to namespace <ref refid="namespacevigra_1_1Neighborhood3DTwentySix" kindref="compound">Neighborhood3DTwentySix</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="1580" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" bodystart="1580" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>3D 26-Neighborhood. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/voxelneighborhood.hxx" line="477"/>
+  </compounddef>
+</doxygen>

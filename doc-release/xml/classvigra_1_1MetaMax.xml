@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MetaMax" kind="class" prot="public">
+    <compoundname>vigra::MetaMax</compoundname>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>N1</declname>
+        <defname>N1</defname>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>N2</declname>
+        <defname>N2</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MetaMax_1a679d27cc04d873a03221ea2a89b8c6d8" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> N1 &lt; N2 ? N2 : N1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="63" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="61" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="60" bodyend="64"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MetaMax_1a679d27cc04d873a03221ea2a89b8c6d8" prot="public" virt="non-virtual"><scope>vigra::MetaMax</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

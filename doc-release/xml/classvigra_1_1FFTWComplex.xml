@@ -1,0 +1,798 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FFTWComplex" kind="class" prot="public">
+    <compoundname>vigra::FFTWComplex</compoundname>
+    <includes refid="fftw3_8hxx" local="no">vigra/fftw3.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>Real</declname>
+        <defname>Real</defname>
+        <defval>double</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a03263059650009980dd1a55eba9ac3e7" prot="public" static="no">
+        <type>FFTWReal2Complex&lt; Real &gt;::type</type>
+        <definition>typedef FFTWReal2Complex&lt;Real&gt;::type complex_type</definition>
+        <argsstring></argsstring>
+        <name>complex_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The wrapped complex type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a8d3921909325ec56e10da00c0d6b1f08" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const *</type>
+        <definition>typedef value_type const* const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const iterator type (result of begin() const) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const &amp;</type>
+        <definition>typedef value_type const&amp; const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const reference type (result of operator[] const) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="148" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a4b0424da8c99197075d119ba0959bf1e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> *</type>
+        <definition>typedef value_type* iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>iterator type (result of begin() ) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a2fa2782e8551b7a98e797ca5fac5fb38" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref></type>
+        <definition>typedef value_type NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The norm type (result of <ref refid="classvigra_1_1FFTWComplex_1aa9f35e702c4ae0fb038461f6af25fc9f" kindref="member">magnitude()</ref>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> &amp;</type>
+        <definition>typedef value_type&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>reference type (result of operator[]) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1aaa5054dbc77b03f4453abf6eb570f0b8" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref></type>
+        <definition>typedef value_type SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The squared norm type (result of squaredMagnitde()) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" prot="public" static="no">
+        <type>Real</type>
+        <definition>typedef Real value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The complex&apos; component type, as defined in &apos;<computeroutput>fftw3.h</computeroutput>&apos; </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1FFTWComplex_1a5c8c1f9e1893a311a4fc180a3b3fe021" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a03263059650009980dd1a55eba9ac3e7" kindref="member">complex_type</ref></type>
+        <definition>complex_type data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="399" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="399" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a4b0424da8c99197075d119ba0959bf1e" kindref="member">iterator</ref></type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="386" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a8d3921909325ec56e10da00c0d6b1f08" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="393" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="392" bodyend="393"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a4b0424da8c99197075d119ba0959bf1e" kindref="member">iterator</ref></type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="389" bodyend="390"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a8d3921909325ec56e10da00c0d6b1f08" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="396" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="395" bodyend="396"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a06d3208f7c29e98c57ee861e7f3e950d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(value_type const &amp;re=0.0, value_type const &amp;im=0.0)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const &amp;</type>
+          <declname>re</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref> const &amp;</type>
+          <declname>im</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from real and imaginary part. Default: 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="169" bodyend="173"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a239f7792d493c80f57d94aa3fa25cf45" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(FFTWComplex const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="177" bodyend="181"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ad410a1f99fddd7f329b0bc064a4545d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(FFTWComplex&lt; U &gt; const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; U &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="187" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="186" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a03cabfbf724227b6c160c760b7a36e3d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(fftw_complex const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type>fftw_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from plain <computeroutput>fftw_complex</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="194" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a41aa5395bf6533be303d92b12ff3c502" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(fftwf_complex const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type>fftwf_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from plain <computeroutput>fftwf_complex</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="202" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a892ed2a62b02fd1b279d182d06eb369f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(fftwl_complex const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type>fftwl_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from plain <computeroutput>fftwl_complex</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="210" bodyend="214"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a9560ba2114b010ef7f568969b28d5ede" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(std::complex&lt; T &gt; const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type>std::complex&lt; T &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from std::complex. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="220" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="219" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ac81e2101141f5b1f1493b679325e5c56" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWComplex</definition>
+        <argsstring>(TinyVector&lt; T, 2 &gt; const &amp;o)</argsstring>
+        <name>FFTWComplex</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, 2 &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="229" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="228" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a337b39d7d1a9a0352b0e28208cbf74f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" kindref="member">reference</ref></type>
+        <definition>reference im</definition>
+        <argsstring>()</argsstring>
+        <name>im</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="340" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="339" bodyend="340"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a2bebf9e5ac6d810c3f7f539b8605950a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" kindref="member">const_reference</ref></type>
+        <definition>const_reference im</definition>
+        <argsstring>() const </argsstring>
+        <name>im</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="342" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a8ff4a065f90790677d6e387f0d5540c6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" kindref="member">reference</ref></type>
+        <definition>reference imag</definition>
+        <argsstring>()</argsstring>
+        <name>imag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="345" bodyend="346"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1abb2dbceb388a031957ff81f4682b893f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" kindref="member">const_reference</ref></type>
+        <definition>const_reference imag</definition>
+        <argsstring>() const </argsstring>
+        <name>imag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="349" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="348" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a2fa2782e8551b7a98e797ca5fac5fb38" kindref="member">NormType</ref></type>
+        <definition>NormType magnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>magnitude</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Magnitude (length of radius vector). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="364" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="363" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a8635846cbdb31321a40b861087bf06b2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref></type>
+        <definition>FFTWComplex operator-</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Unary negation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="354" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="353" bodyend="354"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ae5fe0a5196aa50e15d795336996f005f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(FFTWComplex const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="236" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a55df181b27a48aaa18228c75a6de3eec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(FFTWComplex&lt; U &gt; const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; U &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="246" bodyend="251"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aba55c661d8b4c2e5ef51fd7bebcda066" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(fftw_complex const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>fftw_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="255" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ae2aa8a9f8eeed81c05792971ffa7ad41" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(fftwf_complex const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>fftwf_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="264" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a29a5d272a3793f0584344d6841763b37" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(fftwl_complex const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>fftwl_complex const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="274" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="273" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1af68ad938e51d6d7b153d1bc433c02fb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(double o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>double</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="282" bodyend="287"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ac10cabf9f5c9e8428a198e9b266f5ee2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(float o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>float</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="291" bodyend="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aac7557e38747ba96034d7f03c7c7cfd1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(long double o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>long double</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="301" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="300" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a0e89ccb97d660a77c11a2242ffc6cfbf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(TinyVector&lt; T, 2 &gt; const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, 2 &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="310" bodyend="315"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aa24e0e1a4ea240b4c331d31f7b69d54d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> &amp;</type>
+        <definition>FFTWComplex&amp; operator=</definition>
+        <argsstring>(std::complex&lt; T &gt; const &amp;o)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>std::complex&lt; T &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="320" bodyend="325"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ae5990304eb0423a69cab0418747e9413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" kindref="member">reference</ref></type>
+        <definition>reference operator[]</definition>
+        <argsstring>(int i)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access components as if number were a vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="373" bodyend="374"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a623c1cb7ef8fe45be9781202cc361a6d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" kindref="member">const_reference</ref></type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read components as if number were a vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="379" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="378" bodyend="379"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a054f9ac1e86edb59d0485ef0747b8f20" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" kindref="member">value_type</ref></type>
+        <definition>value_type phase</definition>
+        <argsstring>() const </argsstring>
+        <name>phase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Phase angle. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="369" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="368" bodyend="369"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a81c06bb3b7f8e58d21fa489a2c7ddd45" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" kindref="member">reference</ref></type>
+        <definition>reference re</definition>
+        <argsstring>()</argsstring>
+        <name>re</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="327" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1aaf3265350453cbb7258a296aae53df1d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" kindref="member">const_reference</ref></type>
+        <definition>const_reference re</definition>
+        <argsstring>() const </argsstring>
+        <name>re</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="330" bodyend="331"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ad32b2e2fb43097ffb02dbb70b278f2e8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" kindref="member">reference</ref></type>
+        <definition>reference real</definition>
+        <argsstring>()</argsstring>
+        <name>real</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="333" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1a4a2c3b47dcfdf5a6bdd34b8c4bc91bb4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" kindref="member">const_reference</ref></type>
+        <definition>const_reference real</definition>
+        <argsstring>() const </argsstring>
+        <name>real</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="337" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="336" bodyend="337"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Length of complex number (always 2). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="384" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="383" bodyend="384"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWComplex_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWComplex_1aaa5054dbc77b03f4453abf6eb570f0b8" kindref="member">SquaredNormType</ref></type>
+        <definition>SquaredNormType squaredMagnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>squaredMagnitude</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Squared magnitude x*conj(x) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="359" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="358" bodyend="359"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Wrapper class for the FFTW complex types &apos;<computeroutput>fftw_complex</computeroutput>&apos;. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class encapsulates the low-level complex number types provided by the <ulink url="http://www.fftw.org/">FFTW Fast Fourier Transform</ulink> library (i.e. &apos;<computeroutput>fftw_complex</computeroutput>&apos;, &apos;<computeroutput>fftwf_complex</computeroutput>&apos;, &apos;<computeroutput>fftwl_complex</computeroutput>&apos;). In particular, it provides constructors, member functions and <ref refid="group__FFTWComplexOperators" kindref="compound">arithmetic operators</ref> that make FFTW complex numbers compatible with <computeroutput>std::complex</computeroutput>. In addition, the class defines transformations to polar coordinates and <ref refid="group__FFTWComplexAccessors" kindref="compound">accessors</ref>.</para><para><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> implements the concepts <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref> and <ref refid="AlgebraicConcepts_1DivisionAlgebra" kindref="member">DivisionAlgebra</ref>. The standard image types <computeroutput>FFTWRealImage</computeroutput> and <computeroutput>FFTWComplexImage</computeroutput> are defined.</para><para><bold>See also:</bold> <itemizedlist>
+<listitem>
+<para><ref refid="FFTWComplexTraits" kindref="compound">Numeric and Promote Traits of FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__FFTWComplexOperators" kindref="compound">Functions for FFTWComplex</ref> </para></listitem>
+<listitem>
+<para><ref refid="group__FFTWComplexAccessors" kindref="compound">Accessors for FFTWComplex</ref> </para></listitem>
+</itemizedlist>
+</para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for FFTW 3) or<linebreak/>
+ <bold>#include</bold> &lt;vigra/fftw.hxx&gt; (for deprecated FFTW 2)<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="131" bodyend="400"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FFTWComplex_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>begin</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>begin</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a03263059650009980dd1a55eba9ac3e7" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>complex_type</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a8d3921909325ec56e10da00c0d6b1f08" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a6e5dd840ebfcc997e984193eab900a21" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a5c8c1f9e1893a311a4fc180a3b3fe021" prot="private" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>data_</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>end</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>end</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a06d3208f7c29e98c57ee861e7f3e950d" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a239f7792d493c80f57d94aa3fa25cf45" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ad410a1f99fddd7f329b0bc064a4545d9" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a03cabfbf724227b6c160c760b7a36e3d" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a41aa5395bf6533be303d92b12ff3c502" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a892ed2a62b02fd1b279d182d06eb369f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a9560ba2114b010ef7f568969b28d5ede" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ac81e2101141f5b1f1493b679325e5c56" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>FFTWComplex</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a337b39d7d1a9a0352b0e28208cbf74f7" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>im</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a2bebf9e5ac6d810c3f7f539b8605950a" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>im</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a8ff4a065f90790677d6e387f0d5540c6" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>imag</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1abb2dbceb388a031957ff81f4682b893f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>imag</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a4b0424da8c99197075d119ba0959bf1e" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a2fa2782e8551b7a98e797ca5fac5fb38" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>NormType</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a8635846cbdb31321a40b861087bf06b2" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ae5fe0a5196aa50e15d795336996f005f" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a55df181b27a48aaa18228c75a6de3eec" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aba55c661d8b4c2e5ef51fd7bebcda066" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ae2aa8a9f8eeed81c05792971ffa7ad41" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a29a5d272a3793f0584344d6841763b37" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1af68ad938e51d6d7b153d1bc433c02fb0" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ac10cabf9f5c9e8428a198e9b266f5ee2" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aac7557e38747ba96034d7f03c7c7cfd1" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a0e89ccb97d660a77c11a2242ffc6cfbf" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aa24e0e1a4ea240b4c331d31f7b69d54d" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ae5990304eb0423a69cab0418747e9413" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a623c1cb7ef8fe45be9781202cc361a6d" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a054f9ac1e86edb59d0485ef0747b8f20" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>phase</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a81c06bb3b7f8e58d21fa489a2c7ddd45" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>re</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aaf3265350453cbb7258a296aae53df1d" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>re</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ad32b2e2fb43097ffb02dbb70b278f2e8" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>real</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a4a2c3b47dcfdf5a6bdd34b8c4bc91bb4" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>real</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1abe8933d436779a43cb5c1896ff5f2918" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>reference</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>size</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1aaa5054dbc77b03f4453abf6eb570f0b8" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1FFTWComplex_1a64a1ba313ad4c1fd58bf5887c366df5a" prot="public" virt="non-virtual"><scope>vigra::FFTWComplex</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

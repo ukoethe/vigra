@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PriorityQueue_1_1Compare" kind="struct" prot="private">
+    <compoundname>vigra::PriorityQueue::Compare</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1PriorityQueue_1_1Compare_1a3eee23e7708da869500dc9eecc0b394c" prot="public" static="no" mutable="no">
+        <type>IfBool&lt; Ascending, std::greater&lt; PriorityType &gt;, std::less&lt; PriorityType &gt; &gt;::type</type>
+        <definition>IfBool&lt;Ascending, std::greater&lt;PriorityType&gt;, std::less&lt;PriorityType&gt; &gt;::type cmp</definition>
+        <argsstring></argsstring>
+        <name>cmp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="297" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1PriorityQueue_1_1Compare_1af4c027b61475dd2dbaca8ec71b738224" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(ElementType const &amp;l, ElementType const &amp;r) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ElementType const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>ElementType const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="300" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="299" bodyend="302"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" line="295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bucket_queue.hxx" bodystart="294" bodyend="303"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PriorityQueue_1_1Compare_1a3eee23e7708da869500dc9eecc0b394c" prot="public" virt="non-virtual"><scope>vigra::PriorityQueue::Compare</scope><name>cmp</name></member>
+      <member refid="structvigra_1_1PriorityQueue_1_1Compare_1af4c027b61475dd2dbaca8ec71b738224" prot="public" virt="non-virtual"><scope>vigra::PriorityQueue::Compare</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

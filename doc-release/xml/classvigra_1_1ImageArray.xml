@@ -1,0 +1,949 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1ImageArray" kind="class" prot="public">
+    <compoundname>vigra::ImageArray</compoundname>
+    <derivedcompoundref refid="classvigra_1_1GaborFilterFamily" prot="public" virt="non-virtual">GaborFilterFamily&lt; ImageType, Alloc &gt;</derivedcompoundref>
+    <includes refid="imagecontainer_8hxx" local="no">vigra/imagecontainer.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ImageType</declname>
+        <defname>ImageType</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Alloc</declname>
+        <defname>Alloc</defname>
+        <defval>typename ImageType::allocator_type::template rebind&lt;ImageType&gt;::other</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a935b2def8595c2a5c1ffc7270c378d4e" prot="protected" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; ImageType, Alloc &gt;</type>
+        <definition>typedef ArrayVector&lt;ImageType, Alloc&gt; ImageVector</definition>
+        <argsstring></argsstring>
+        <name>ImageVector</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1ad8ab228799755cc66f3b8de921508690" prot="public" static="no">
+        <type>ImageVector::const_iterator</type>
+        <definition>typedef ImageVector::const_iterator const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a92409f7d21a9c8bd7cdc84e873e0f03a" prot="public" static="no">
+        <type>ImageVector::const_reference</type>
+        <definition>typedef ImageVector::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1ae95c98dfd41e66671cc48065e6b41dd4" prot="public" static="no">
+        <type>ImageVector::const_reverse_iterator</type>
+        <definition>typedef ImageVector::const_reverse_iterator const_reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a48236068431c0a239668e1b8c1fba4be" prot="public" static="no">
+        <type>ImageVector::difference_type</type>
+        <definition>typedef ImageVector::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1ac5ff9ddf2faa16ab6b9ae40e157b96d0" prot="public" static="no">
+        <type>ImageVector::iterator</type>
+        <definition>typedef ImageVector::iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a98888d2cbb7e7cedb9e52dcd308a5a6a" prot="public" static="no">
+        <type>ImageVector::pointer</type>
+        <definition>typedef ImageVector::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a56628b9fd214b563093a9bbff48c9d5b" prot="public" static="no">
+        <type>ImageVector::reference</type>
+        <definition>typedef ImageVector::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a48ef57c91b97228cdad7a75053028d63" prot="public" static="no">
+        <type>ImageVector::reverse_iterator</type>
+        <definition>typedef ImageVector::reverse_iterator reverse_iterator</definition>
+        <argsstring></argsstring>
+        <name>reverse_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="88" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1a0e9389736123e80492af446ae9de3ed6" prot="public" static="no">
+        <type>ImageVector::size_type</type>
+        <definition>typedef ImageVector::size_type size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1ImageArray_1aa51d8837ec5025a0ab4e9f9ffadeb767" prot="public" static="no">
+        <type>ImageType</type>
+        <definition>typedef ImageType value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the type of the contained values/images </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImageArray_1a1b68f7afac6c4a89baa70260e6eb9ecb" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D imageSize_</definition>
+        <argsstring></argsstring>
+        <name>imageSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1ImageArray_1ae219ae3c2604c7c029953dd0bfc040eb" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ImageVector</ref></type>
+        <definition>ImageVector images_</definition>
+        <argsstring></argsstring>
+        <name>images_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="79" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference back</definition>
+        <argsstring>()</argsstring>
+        <name>back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the last image. (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="355" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="354" bodyend="357"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference back</definition>
+        <argsstring>() const </argsstring>
+        <name>back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the last image. (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="361" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing to the first image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="161" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_iterator</type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing to the first image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="169" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ab009512ed674371bda87b4a4a3fc7305" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type capacity</definition>
+        <argsstring>() const </argsstring>
+        <name>capacity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>number of image objects for which memory has been allocated (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="395" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="394" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Empty this array. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="302" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="301" bodyend="304"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a3f37b042a1e7cd4bd38fc564de81f0da" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool empty</definition>
+        <argsstring>()</argsstring>
+        <name>empty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if and only if there are no contained images. (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="246" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing behind the last image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="177" bodyend="180"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_iterator</type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns an iterator pointing behind the last image (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="186" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="185" bodyend="188"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1af7659d9799f06df763bf397101941dd7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator erase</definition>
+        <argsstring>(iterator pos)</argsstring>
+        <name>erase</name>
+        <param>
+          <type>iterator</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes the image at pos from this array. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="286" bodyend="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ad220964db436bf27e9ce52bec8d41a45" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator erase</definition>
+        <argsstring>(iterator begin, iterator end)</argsstring>
+        <name>erase</name>
+        <param>
+          <type>iterator</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>iterator</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes the images from [begin, end) from this array. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="294" bodyend="297"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a6a48363b4355f6f5b441637774f79a59" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference front</definition>
+        <argsstring>()</argsstring>
+        <name>front</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the first image. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="340" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a1b5b57596df7e42e35dcd646906cb438" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference front</definition>
+        <argsstring>() const </argsstring>
+        <name>front</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>return the first image. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="348" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="347" bodyend="350"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ac9776adb8a47cf8093312355c4ceb6f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImageArray</definition>
+        <argsstring>(unsigned int numImages, const Diff2D &amp;imageSize, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImageArray</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>numImages</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>imageSize</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init an array of numImages equal-sized images; use the specified allocator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="100" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1acafb6d1d0d25505c04a7ac0e34410dc7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImageArray</definition>
+        <argsstring>(unsigned int numImages=0, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImageArray</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>numImages</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init an array of numImages equal-sized images. The size depends on ImageType&apos;s default constructor (so it will usually be 0x0); use the specified allocator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="113" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a507730192389332f3a6fced59c550eb2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ImageArray</definition>
+        <argsstring>(unsigned int numImages, const ImageType &amp;image, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImageArray</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>numImages</declname>
+        </param>
+        <param>
+          <type>const ImageType &amp;</type>
+          <declname>image</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>fill constructor: Init an array with numImages copies of the given image. (STL-Sequence interface); use the specified allocator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="122" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ac48f6c96fe91d5b269356ea0c4027fe6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>ImageArray</definition>
+        <argsstring>(InputIterator begin, InputIterator end, Alloc const &amp;alloc=Alloc())</argsstring>
+        <name>ImageArray</name>
+        <param>
+          <type>InputIterator</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>Alloc const &amp;</type>
+          <declname>alloc</declname>
+          <defval>Alloc()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>range constructor: Construct an array containing copies of the images in [begin, end). Those images must all have the same size, see <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref>. (STL-Sequence interface); use the specified allocator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="134" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D imageSize</definition>
+        <argsstring>() const </argsstring>
+        <name>imageSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the size of the contained images. <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref> will maintain an array of equal-sized images of this size. However, <emphasis>do not resize the contained images manually</emphasis>. <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref> currently has no way to detect or prevent this. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="413" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="412" bodyend="413"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a57f85fd1cc4b1445aa9f66d4c1cd2967" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator insert</definition>
+        <argsstring>(iterator pos, const_reference image)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>const_reference</type>
+          <declname>image</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Insert image at/before pos. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="264" bodyend="267"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a19d396e629f6817330d2ec2a20d227a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void insert</definition>
+        <argsstring>(iterator pos, size_type count, const_reference image)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>size_type</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>const_reference</type>
+          <declname>image</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Insert count copies of image at/before pos. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="272"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a8bddf58e8cc20663907a2c3cf4603189" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void insert</definition>
+        <argsstring>(iterator pos, InputIterator begin, InputIterator end)</argsstring>
+        <name>insert</name>
+        <param>
+          <type>iterator</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Insert copies of images from [begin, end) at/before pos. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="278" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a0ab5ce862c0331d9e45a6e1774fca131" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type max_size</definition>
+        <argsstring>() const </argsstring>
+        <name>max_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query maximum size of this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, that is: the max. parameter you may pass to <ref refid="classvigra_1_1ImageArray_1a7f1d91e80478135d3b2f6a24ffd8f494" kindref="member">resize()</ref>. (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="238" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1add0b6c04153235613d03222e223dbf6c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(const ImageArray&lt; ImageType, Alloc &gt; &amp;other)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>&lt; ImageType, Alloc &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if and only if both ImageArrays have exactly the same contents and all images did compare equal with the corresponding image in the other <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>. (STL-Forward Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="257" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="256" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a97ebf4646d84d180bf682f7d5f042ca0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference operator[]</definition>
+        <argsstring>(size_type index)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>size_type</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Operator for a vector-like access to the contained images (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="145" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a0f85f0c43f6fa530133c3c7f49101d57" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(size_type index) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>size_type</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Operator for a vector-like access to the contained images (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="153" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a058bda4957df6a97b1ea6c9fd783f672" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pop_back</definition>
+        <argsstring>()</argsstring>
+        <name>pop_back</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>remove last image from array (STL-Back Insertion Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="376" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="375" bodyend="378"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a3cf3204cda8c85eb0e98ee4c71098ea1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void push_back</definition>
+        <argsstring>(const_reference image)</argsstring>
+        <name>push_back</name>
+        <param>
+          <type>const_reference</type>
+          <declname>image</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>append image to array (STL-Back Insertion Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="369" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="368" bodyend="371"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reverse_iterator</type>
+        <definition>reverse_iterator rbegin</definition>
+        <argsstring>()</argsstring>
+        <name>rbegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing to the first image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="194" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a04886aa70c34d66738e78bf70c675e66" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reverse_iterator</type>
+        <definition>const_reverse_iterator rbegin</definition>
+        <argsstring>() const </argsstring>
+        <name>rbegin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing to the first image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="203" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a68c599ddcbfddc65170de524ac165e44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reverse_iterator</type>
+        <definition>reverse_iterator rend</definition>
+        <argsstring>()</argsstring>
+        <name>rend</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing behind the last image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="212" bodyend="215"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reverse_iterator</type>
+        <definition>const_reverse_iterator rend</definition>
+        <argsstring>() const </argsstring>
+        <name>rend</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a reverse_iterator pointing behind the last image of the reversed view of this array (STL-Reversable Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="221" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a562f7b24b47d3e7632a9896935c14d8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reserve</definition>
+        <argsstring>(size_type n)</argsstring>
+        <name>reserve</name>
+        <param>
+          <type>size_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>increase <ref refid="classvigra_1_1ImageArray_1ab009512ed674371bda87b4a4a3fc7305" kindref="member">capacity()</ref>. (STL-Vector interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="402" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="401" bodyend="404"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a7f1d91e80478135d3b2f6a24ffd8f494" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resize</definition>
+        <argsstring>(size_type newSize)</argsstring>
+        <name>resize</name>
+        <param>
+          <type>size_type</type>
+          <declname>newSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, throwing the last images away if you make the array smaller or appending new images of the right size at the end of the array if you make it larger. (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="312" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="311" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a2125049ce19f357e74bb2c3ae0905532" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resize</definition>
+        <argsstring>(size_type newSize, ImageType &amp;image)</argsstring>
+        <name>resize</name>
+        <param>
+          <type>size_type</type>
+          <declname>newSize</declname>
+        </param>
+        <param>
+          <type>ImageType &amp;</type>
+          <declname>image</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, throwing the last images away if you make the array smaller or appending new copies of image at the end of the array if you make it larger. precondition: <computeroutput>image.size() == <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref></computeroutput> (STL-Sequence interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="328" bodyend="336"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a59b6e47c76f39f804bb5e5e979b76d03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void resizeImages</definition>
+        <argsstring>(const Diff2D &amp;newSize)</argsstring>
+        <name>resizeImages</name>
+        <reimplementedby refid="classvigra_1_1GaborFilterFamily_1a59b6e47c76f39f804bb5e5e979b76d03">resizeImages</reimplementedby>
+        <param>
+          <type>const <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> &amp;</type>
+          <declname>newSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize all images to a common new size (No-op if <computeroutput>newSize == <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref></computeroutput>). See <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref> for an important note about resizing the images. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="420" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="419" bodyend="427"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a80206f6d3bfed08587247572ef53a410" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void resizeImages</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>resizeImages</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Resize all images to a common new size (No-op if <computeroutput>newSize == <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref></computeroutput>). See <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref> for an important note about resizing the images.</para><para>(Convenience function, same as calling <computeroutput>resizeImages(Diff2D(width, height));</computeroutput>.) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="437" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="436" bodyend="439"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a503ab01f6c0142145d3434f6924714e7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query size of this <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>, that is: the number of images. (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="230" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="229" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a7611428da318d884d50c88f1a0fcccef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void swap</definition>
+        <argsstring>(const_reference other)</argsstring>
+        <name>swap</name>
+        <param>
+          <type>const_reference</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>swap contents of this array with the contents of other (STL-Container interface) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="384" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="383" bodyend="389"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1ImageArray_1a25d8a4623a2e0ced1f83ccfbd9951bc8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~ImageArray</definition>
+        <argsstring>()</argsstring>
+        <name>~ImageArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="140" bodyend="140"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Fundamental class template for arrays of equal-sized images. </para>    </briefdescription>
+    <detaileddescription>
+<para>An <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref> manages an array of images of the type given as template parameter. Use it like a ArrayVector&lt;ImageType&gt;, it has the same interface, only operator&lt; is missing from <ref refid="classvigra_1_1ImageArray" kindref="compound">ImageArray</ref>. It offers additional functions for resizing the images and querying their common size. See <ref refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" kindref="member">imageSize()</ref> for additional notes.</para><para>A customized allocator can be passed as a template argument and via the constructor. By default, the allocator of the <computeroutput>ImageType</computeroutput> is reused.</para><para><bold>#include</bold> &lt;<ref refid="imagecontainer_8hxx_source" kindref="compound">vigra/imagecontainer.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="828">
+        <label>ImageArray&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ImageArray"/>
+      </node>
+      <node id="829">
+        <label>GaborFilterFamily&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1GaborFilterFamily"/>
+        <childnode refid="828" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="830">
+        <label>ImageArray&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ImageArray"/>
+        <childnode refid="831" relation="usage">
+          <edgelabel>images_</edgelabel>
+        </childnode>
+      </node>
+      <node id="832">
+        <label>ArrayVectorView&lt; ImageType &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="831">
+        <label>ArrayVector&lt; ImageType, Alloc &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="832" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imagecontainer.hxx" bodystart="73" bodyend="440"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ImageArray_1af71e6c1eccbc12e9339c00a86a981a43" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImageArray_1af181aa8839ff8d5867941fd0f0d214b6" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>back</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImageArray_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>begin</name></member>
+      <member refid="classvigra_1_1ImageArray_1ab009512ed674371bda87b4a4a3fc7305" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>capacity</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>clear</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad8ab228799755cc66f3b8de921508690" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a92409f7d21a9c8bd7cdc84e873e0f03a" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1ImageArray_1ae95c98dfd41e66671cc48065e6b41dd4" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>const_reverse_iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a48236068431c0a239668e1b8c1fba4be" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1ImageArray_1a3f37b042a1e7cd4bd38fc564de81f0da" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>empty</name></member>
+      <member refid="classvigra_1_1ImageArray_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImageArray_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>end</name></member>
+      <member refid="classvigra_1_1ImageArray_1af7659d9799f06df763bf397101941dd7" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>erase</name></member>
+      <member refid="classvigra_1_1ImageArray_1ad220964db436bf27e9ce52bec8d41a45" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>erase</name></member>
+      <member refid="classvigra_1_1ImageArray_1a6a48363b4355f6f5b441637774f79a59" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>front</name></member>
+      <member refid="classvigra_1_1ImageArray_1a1b5b57596df7e42e35dcd646906cb438" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>front</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac9776adb8a47cf8093312355c4ceb6f7" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1acafb6d1d0d25505c04a7ac0e34410dc7" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1a507730192389332f3a6fced59c550eb2" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac48f6c96fe91d5b269356ea0c4027fe6" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>ImageArray</name></member>
+      <member refid="classvigra_1_1ImageArray_1ae219ae3c2604c7c029953dd0bfc040eb" prot="protected" virt="non-virtual"><scope>vigra::ImageArray</scope><name>images_</name></member>
+      <member refid="classvigra_1_1ImageArray_1a33b73753bfe00438a94b1e22052da449" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>imageSize</name></member>
+      <member refid="classvigra_1_1ImageArray_1a1b68f7afac6c4a89baa70260e6eb9ecb" prot="private" virt="non-virtual"><scope>vigra::ImageArray</scope><name>imageSize_</name></member>
+      <member refid="classvigra_1_1ImageArray_1a935b2def8595c2a5c1ffc7270c378d4e" prot="protected" virt="non-virtual"><scope>vigra::ImageArray</scope><name>ImageVector</name></member>
+      <member refid="classvigra_1_1ImageArray_1a57f85fd1cc4b1445aa9f66d4c1cd2967" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1a19d396e629f6817330d2ec2a20d227a1" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1a8bddf58e8cc20663907a2c3cf4603189" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>insert</name></member>
+      <member refid="classvigra_1_1ImageArray_1ac5ff9ddf2faa16ab6b9ae40e157b96d0" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0ab5ce862c0331d9e45a6e1774fca131" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>max_size</name></member>
+      <member refid="classvigra_1_1ImageArray_1add0b6c04153235613d03222e223dbf6c" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1ImageArray_1a97ebf4646d84d180bf682f7d5f042ca0" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0f85f0c43f6fa530133c3c7f49101d57" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1ImageArray_1a98888d2cbb7e7cedb9e52dcd308a5a6a" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1ImageArray_1a058bda4957df6a97b1ea6c9fd783f672" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>pop_back</name></member>
+      <member refid="classvigra_1_1ImageArray_1a3cf3204cda8c85eb0e98ee4c71098ea1" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>push_back</name></member>
+      <member refid="classvigra_1_1ImageArray_1acea44ed500a54b2bb93e16b86e81afa8" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImageArray_1a04886aa70c34d66738e78bf70c675e66" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>rbegin</name></member>
+      <member refid="classvigra_1_1ImageArray_1a56628b9fd214b563093a9bbff48c9d5b" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>reference</name></member>
+      <member refid="classvigra_1_1ImageArray_1a68c599ddcbfddc65170de524ac165e44" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImageArray_1ab3c414470d5cea2986cfab7a90146cb6" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>rend</name></member>
+      <member refid="classvigra_1_1ImageArray_1a562f7b24b47d3e7632a9896935c14d8b" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>reserve</name></member>
+      <member refid="classvigra_1_1ImageArray_1a7f1d91e80478135d3b2f6a24ffd8f494" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ImageArray_1a2125049ce19f357e74bb2c3ae0905532" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>resize</name></member>
+      <member refid="classvigra_1_1ImageArray_1a59b6e47c76f39f804bb5e5e979b76d03" prot="public" virt="virtual"><scope>vigra::ImageArray</scope><name>resizeImages</name></member>
+      <member refid="classvigra_1_1ImageArray_1a80206f6d3bfed08587247572ef53a410" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>resizeImages</name></member>
+      <member refid="classvigra_1_1ImageArray_1a48ef57c91b97228cdad7a75053028d63" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>reverse_iterator</name></member>
+      <member refid="classvigra_1_1ImageArray_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>size</name></member>
+      <member refid="classvigra_1_1ImageArray_1a0e9389736123e80492af446ae9de3ed6" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1ImageArray_1a7611428da318d884d50c88f1a0fcccef" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>swap</name></member>
+      <member refid="classvigra_1_1ImageArray_1aa51d8837ec5025a0ab4e9f9ffadeb767" prot="public" virt="non-virtual"><scope>vigra::ImageArray</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1ImageArray_1a25d8a4623a2e0ced1f83ccfbd9951bc8" prot="public" virt="virtual"><scope>vigra::ImageArray</scope><name>~ImageArray</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

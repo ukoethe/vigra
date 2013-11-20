@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Edgel" kind="class" prot="public">
+    <compoundname>vigra::Edgel</compoundname>
+    <includes refid="edgedetection_8hxx" local="no">vigra/edgedetection.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" prot="public" static="no">
+        <type>float</type>
+        <definition>typedef float value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The type of an <ref refid="classvigra_1_1Edgel" kindref="compound">Edgel</ref>&apos;s members. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1161" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Edgel_1a0c5720bac8fb11f78cbf277b4de9f040" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+        <definition>value_type orientation</definition>
+        <argsstring></argsstring>
+        <name>orientation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>  The edgel&apos;s orientation. This is the clockwise angle in radians
+  between the x-axis and the edge, so that the bright side of the
+  edge is on the left when one looks along the orientation vector. 
+  The angle is measured clockwise because the y-axis increases 
+  downwards (left-handed coordinate system):
+
+  @code 
+</verbatim></para><para>edgel axis \ (dark \ (bright side) side) \ \ +---------<mdash/>&gt; x-axis |\ | | \ /_/ orientation angle | \ | \ | y-axis V </para><para>So, for example a vertical edge with its dark side on the left has orientation PI/2, and a horizontal edge with dark side on top has orientation PI. Obviously, the edge&apos;s orientation changes by PI if the contrast is reversed.</para><para>Note that this convention changed as of VIGRA version 1.7.0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1206" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1206" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Edgel_1a254d346034ae81e4d43a3433092ab10d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+        <definition>value_type strength</definition>
+        <argsstring></argsstring>
+        <name>strength</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The edgel&apos;s strength (magnitude of the gradient vector). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Edgel_1a2c32febee2f4761177aba9d6ae83c737" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+        <definition>value_type x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The edgel&apos;s sub-pixel x coordinate. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Edgel_1ab08ebdaa6201280aa8192d9c32b06353" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+        <definition>value_type y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The edgel&apos;s sub-pixel y coordinate. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1169" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1169" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Edgel_1a56b2e74017739ef4931038cf975aebf3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Edgel</definition>
+        <argsstring>()</argsstring>
+        <name>Edgel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1210" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1208" bodyend="1210"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Edgel_1a8046bf529f1cf1384de0141cea3ccdde" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Edgel</definition>
+        <argsstring>(value_type ix, value_type iy, value_type is, value_type io)</argsstring>
+        <name>Edgel</name>
+        <param>
+          <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+          <declname>ix</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+          <declname>iy</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" kindref="member">value_type</ref></type>
+          <declname>io</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1212" bodyend="1214"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Helper class that stores edgel attributes. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" line="1156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/edgedetection.hxx" bodystart="1155" bodyend="1215"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Edgel_1a56b2e74017739ef4931038cf975aebf3" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>Edgel</name></member>
+      <member refid="classvigra_1_1Edgel_1a8046bf529f1cf1384de0141cea3ccdde" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>Edgel</name></member>
+      <member refid="classvigra_1_1Edgel_1a0c5720bac8fb11f78cbf277b4de9f040" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>orientation</name></member>
+      <member refid="classvigra_1_1Edgel_1a254d346034ae81e4d43a3433092ab10d" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>strength</name></member>
+      <member refid="classvigra_1_1Edgel_1aab9230711eeb1465bccda813a910a907" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1Edgel_1a2c32febee2f4761177aba9d6ae83c737" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>x</name></member>
+      <member refid="classvigra_1_1Edgel_1ab08ebdaa6201280aa8192d9c32b06353" prot="public" virt="non-virtual"><scope>vigra::Edgel</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1remove__if__not" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::remove_if_not</compoundname>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>P</declname>
+        <defname>P</defname>
+      </param>
+      <param>
+        <type>class L</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1remove__if__not_1ac92db6df97d5c6cf2cd5e767d50c3e3a" prot="public" static="no">
+        <type>remove_if&lt; P, L, false &gt;::type</type>
+        <definition>typedef remove_if&lt;P, L, false&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="291" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="289" bodyend="292"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1remove__if__not_1ac92db6df97d5c6cf2cd5e767d50c3e3a" prot="public" virt="non-virtual"><scope>vigra::type_lists::remove_if_not</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

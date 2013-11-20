@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType" kind="struct" prot="public">
+    <compoundname>vigra::LineBasedColumnIteratorPolicy::BaseType</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1ae715c4e028602ed2de580c2aa80cc6b4" prot="public" static="no" mutable="no">
+        <type>LineStartIterator</type>
+        <definition>LineStartIterator line_start_</definition>
+        <argsstring></argsstring>
+        <name>line_start_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1a929b7cd517a8c7f9eda90e5ee9b4405d" prot="public" static="no" mutable="no">
+        <type>difference_type</type>
+        <definition>difference_type offset_</definition>
+        <argsstring></argsstring>
+        <name>offset_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="79" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1a4760c34ac977def8f0d8f555715a523b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BaseType</definition>
+        <argsstring>(LineStartIterator c=LineStartIterator(), difference_type o=0)</argsstring>
+        <name>BaseType</name>
+        <param>
+          <type>LineStartIterator</type>
+          <declname>c</declname>
+          <defval>LineStartIterator()</defval>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>o</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="73" bodyend="76"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicimage.hxx" bodystart="71" bodyend="80"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1a4760c34ac977def8f0d8f555715a523b" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy::BaseType</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1ae715c4e028602ed2de580c2aa80cc6b4" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy::BaseType</scope><name>line_start_</name></member>
+      <member refid="structvigra_1_1LineBasedColumnIteratorPolicy_1_1BaseType_1a929b7cd517a8c7f9eda90e5ee9b4405d" prot="public" virt="non-virtual"><scope>vigra::LineBasedColumnIteratorPolicy::BaseType</scope><name>offset_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

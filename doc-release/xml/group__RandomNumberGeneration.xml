@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RandomNumberGeneration" kind="group">
+    <compoundname>RandomNumberGeneration</compoundname>
+    <title>Random Number Generation</title>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01NormalRandomFunctor_3_01Engine_01_4_01_4" prot="public">vigra::FunctorTraits&lt; NormalRandomFunctor&lt; Engine &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01RandomNumberGenerator_3_01Engine_01_4_01_4" prot="public">vigra::FunctorTraits&lt; RandomNumberGenerator&lt; Engine &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01UniformIntRandomFunctor_3_01Engine_01_4_01_4" prot="public">vigra::FunctorTraits&lt; UniformIntRandomFunctor&lt; Engine &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1FunctorTraits_3_01UniformRandomFunctor_3_01Engine_01_4_01_4" prot="public">vigra::FunctorTraits&lt; UniformRandomFunctor&lt; Engine &gt; &gt;</innerclass>
+    <innerclass refid="classvigra_1_1NormalRandomFunctor" prot="public">vigra::NormalRandomFunctor</innerclass>
+    <innerclass refid="classvigra_1_1RandomNumberGenerator" prot="public">vigra::RandomNumberGenerator</innerclass>
+    <innerclass refid="classvigra_1_1UniformIntRandomFunctor" prot="public">vigra::UniformIntRandomFunctor</innerclass>
+    <innerclass refid="classvigra_1_1UniformRandomFunctor" prot="public">vigra::UniformRandomFunctor</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__RandomNumberGeneration_1ga663aac0cefac046218349844e0567ac4" prot="public" static="no">
+        <type>RandomNumberGenerator&lt; detail::RandomState&lt; detail::MT19937 &gt; &gt;</type>
+        <definition>typedef RandomNumberGenerator&lt;detail::RandomState&lt;detail::MT19937&gt; &gt; MersenneTwister</definition>
+        <argsstring></argsstring>
+        <name>MersenneTwister</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Shorthand for the MT19937 random number generator class (same as RandomMT19937). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="606" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="606" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__RandomNumberGeneration_1gac1184f48edbce638f79fcb5d8074984d" prot="public" static="no">
+        <type>RandomNumberGenerator&lt; detail::RandomState&lt; detail::MT19937 &gt; &gt;</type>
+        <definition>typedef RandomNumberGenerator&lt;detail::RandomState&lt;detail::MT19937&gt; &gt; RandomMT19937</definition>
+        <argsstring></argsstring>
+        <name>RandomMT19937</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Shorthand for the MT19937 random number generator class. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="602" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="602" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__RandomNumberGeneration_1ga97d0d393c8d83d0c91239d92a8eeca41" prot="public" static="no">
+        <type>RandomNumberGenerator</type>
+        <definition>typedef RandomNumberGenerator RandomTT800</definition>
+        <argsstring></argsstring>
+        <name>RandomTT800</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Shorthand for the TT800 random number generator class. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="594" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__RandomNumberGeneration_1ga8c183b73cb58f57a16e73d4ae5c892e8" prot="public" static="no">
+        <type>RandomNumberGenerator</type>
+        <definition>typedef RandomNumberGenerator TemperedTwister</definition>
+        <argsstring></argsstring>
+        <name>TemperedTwister</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Shorthand for the TT800 random number generator class (same as RandomTT800). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="598" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="598" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__RandomNumberGeneration_1ga4238039b57f46f7695bf6caad1ad8e16" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double normal</definition>
+        <argsstring>() const </argsstring>
+        <name>normal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a standard normal variate (<ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref>) random number.</para><para>Mean is zero, standard deviation is 1.0. It uses the polar form of the Box-Muller transform. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="565" bodyend="590"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RandomNumberGeneration_1gae34d6da9b72d96c42bec282cb8936017" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomMT19937 &amp;</type>
+        <definition>RandomMT19937&amp; vigra::randomMT19937</definition>
+        <argsstring>()</argsstring>
+        <name>randomMT19937</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access the global (program-wide) instance of the MT19937 random number generator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="614" bodyend="614"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RandomNumberGeneration_1gae55108350d19c537466a50a1783cd3f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>RandomTT800 &amp;</type>
+        <definition>RandomTT800&amp; vigra::randomTT800</definition>
+        <argsstring>()</argsstring>
+        <name>randomTT800</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access the global (program-wide) instance of the TT800 random number generator. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" line="610" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random.hxx" bodystart="610" bodyend="610"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>High-quality random number generators and related functors. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

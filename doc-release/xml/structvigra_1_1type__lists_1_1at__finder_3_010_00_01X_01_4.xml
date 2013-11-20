@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::at_finder&lt; 0, X &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class X</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4_1a3d756860df8c61c4819a0e4761150d89" prot="public" static="no">
+        <type>X::first_type</type>
+        <definition>typedef X::first_type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="982" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="982" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4_1ac036b78b8f30b073c74fc15ee821e6b2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>type &amp;</type>
+        <definition>static type&amp; at</definition>
+        <argsstring>(X &amp;x)</argsstring>
+        <name>at</name>
+        <param>
+          <type>X &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="984" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="984" bodyend="986"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="981" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="980" bodyend="987"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4_1ac036b78b8f30b073c74fc15ee821e6b2" prot="public" virt="non-virtual"><scope>vigra::type_lists::at_finder&lt; 0, X &gt;</scope><name>at</name></member>
+      <member refid="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4_1a3d756860df8c61c4819a0e4761150d89" prot="public" virt="non-virtual"><scope>vigra::type_lists::at_finder&lt; 0, X &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

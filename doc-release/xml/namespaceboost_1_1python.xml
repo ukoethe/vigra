@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespaceboost_1_1python" kind="namespace">
+    <compoundname>boost::python</compoundname>
+    <innerclass refid="structboost_1_1python_1_1TypeList" prot="public">boost::python::TypeList</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceboost_1_1python_1a8247ffac574d25c684bc0c77de7a1506" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, Tail &gt;)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, Tail &gt;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="248" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="247" bodyend="251"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1a8fa16d913e7672e5980ac27e3da0d7c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, Tail &gt;, const char *help)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, Tail &gt;</type>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>help</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="254" bodyend="258"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1a8e6336e75a7468807593fa2d8927006d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+          <param>
+            <type>class Args</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, Tail &gt;, Args const &amp;args)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, Tail &gt;</type>
+        </param>
+        <param>
+          <type>Args const &amp;</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="261" bodyend="265"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1acf24a016d4daff315f4d93636526eea1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+          <param>
+            <type>class Args</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, Tail &gt;, Args const &amp;args, char const *help)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, Tail &gt;</type>
+        </param>
+        <param>
+          <type>Args const &amp;</type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>help</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="269" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="268" bodyend="272"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1a40604988aceed4b243f7724ce2406f81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="276" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="275" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1a94f964b7b69dfeab10a908944afd8d3e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+          <param>
+            <type>class Args</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;, Args const &amp;args)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;</type>
+        </param>
+        <param>
+          <type>Args const &amp;</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="282" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="281" bodyend="284"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1ae89908f5e16c53f977f992e73651068a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;, const char *help)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;</type>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>help</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="287" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="namespaceboost_1_1python_1a5e9a63e3c51dc27347ec0ed156d558f9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Head</type>
+          </param>
+          <param>
+            <type>class Tail</type>
+          </param>
+          <param>
+            <type>class Args</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void boost::python::multidef</definition>
+        <argsstring>(char const *functor_name, TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;, Args const &amp;args, const char *help)</argsstring>
+        <name>multidef</name>
+        <param>
+          <type>char const *</type>
+          <declname>functor_name</declname>
+        </param>
+        <param>
+          <type>TypeList&lt; Head, TypeList&lt; void, Tail &gt; &gt;</type>
+        </param>
+        <param>
+          <type>Args const &amp;</type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>help</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="294" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="293" bodyend="296"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="175"/>
+  </compounddef>
+</doxygen>

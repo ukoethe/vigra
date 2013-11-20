@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SlantedEdgeMTFOptions" kind="class" prot="public">
+    <compoundname>vigra::SlantedEdgeMTFOptions</compoundname>
+    <includes refid="slanted__edge__mtf_8hxx" local="no">vigra/slanted_edge_mtf.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SlantedEdgeMTFOptions_1a745c2482accac315ed2cb73dcdb98dca" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int desired_edge_width</definition>
+        <argsstring></argsstring>
+        <name>desired_edge_width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SlantedEdgeMTFOptions_1a1e9d73441a9a959744f02a2ccc838da2" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int minimum_edge_width</definition>
+        <argsstring></argsstring>
+        <name>minimum_edge_width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SlantedEdgeMTFOptions_1ace4551f1ea4f13e51f6b28f071d09e66" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int minimum_number_of_lines</definition>
+        <argsstring></argsstring>
+        <name>minimum_number_of_lines</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SlantedEdgeMTFOptions_1a31371e029911fecd254faebf9f7dc4c6" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double mtf_smoothing_scale</definition>
+        <argsstring></argsstring>
+        <name>mtf_smoothing_scale</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SlantedEdgeMTFOptions_1a4fec24cc4dcd3761ffb959be495781b7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound">SlantedEdgeMTFOptions</ref> &amp;</type>
+        <definition>SlantedEdgeMTFOptions&amp; desiredEdgeWidth</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>desiredEdgeWidth</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Desired number of pixels perpendicular to the edge.</para><para>The larger the regions to either side of the edge, the more accurate the resulting MTF estimate. If you don&apos;t have good data, but absolutely have to compute an MTF, you may force a lower value here.<linebreak/>
+ Default: 10 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="125" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SlantedEdgeMTFOptions_1a623aabecc4265c52edaf484464975d12" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound">SlantedEdgeMTFOptions</ref> &amp;</type>
+        <definition>SlantedEdgeMTFOptions&amp; minimumEdgeWidth</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>minimumEdgeWidth</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Minimum acceptable number of pixels perpendicular to the edge.</para><para>The larger the regions to either side of the edge, the more accurate the resulting MTF estimate. If you don&apos;t have good data, but absolutely have to compute an MTF, you may force a lower value here.<linebreak/>
+ Default: 5 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="138" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SlantedEdgeMTFOptions_1adc9a4b69a3bcfc9edc8bcb49ec006f63" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound">SlantedEdgeMTFOptions</ref> &amp;</type>
+        <definition>SlantedEdgeMTFOptions&amp; minimumNumberOfLines</definition>
+        <argsstring>(unsigned int n)</argsstring>
+        <name>minimumNumberOfLines</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Minimum number of pixels the edge must cross.</para><para>The longer the edge the more accurate the resulting MTF estimate. If you don&apos;t have good data, but absolutely have to compute an MTF, you may force a lower value here.<linebreak/>
+ Default: 20 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="112" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SlantedEdgeMTFOptions_1aba7f033c44ff7b49cb70d3caa41fc695" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound">SlantedEdgeMTFOptions</ref> &amp;</type>
+        <definition>SlantedEdgeMTFOptions&amp; mtfSmoothingScale</definition>
+        <argsstring>(double scale)</argsstring>
+        <name>mtfSmoothingScale</name>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Amount of smoothing of the computed MTF.</para><para>If the data is noisy, so will be the MTF. Thus, some smoothing is useful.<linebreak/>
+ Default: 2.0 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="149" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SlantedEdgeMTFOptions_1a583baafa4fcc0dabac7a309987a7dcad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SlantedEdgeMTFOptions</definition>
+        <argsstring>()</argsstring>
+        <name>SlantedEdgeMTFOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize all options with default values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="99" bodyend="104"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Pass options to one of the <ref refid="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" kindref="member">slantedEdgeMTF()</ref> functions. </para>    </briefdescription>
+    <detaileddescription>
+<para><computeroutput><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound">SlantedEdgeMTFOptions</ref></computeroutput> is an argument objects that holds various optional parameters used by the <ref refid="group__SlantedEdgeMTF_1gaff310bc50ffb7d3a60f545c2b7a7bf37" kindref="member">slantedEdgeMTF()</ref> functions. If a parameter is not explicitly set, a suitable default will be used. Changing the defaults is only necessary if you can&apos;t obtain good input data, but absolutely need an MTF estimate.</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/slanted_edge_mtf.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>mtf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::slantedEdgeMTF(srcImageRange(src),<sp/>mtf,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1SlantedEdgeMTFOptions" kindref="compound" tooltip="Pass options to one of the slantedEdgeMTF() functions.">vigra::SlantedEdgeMTFOptions</ref>().<ref refid="classvigra_1_1SlantedEdgeMTFOptions_1aba7f033c44ff7b49cb70d3caa41fc695" kindref="member">mtfSmoothingScale</ref>(1.0));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>print<sp/>the<sp/>frequency<sp/>/<sp/>attenuation<sp/>pairs<sp/>found</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;result.size();<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;frequency:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>mtf[k][0]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>estimated<sp/>attenuation:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>mtf[k][1]<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/slanted_edge_mtf.hxx" bodystart="94" bodyend="159"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a745c2482accac315ed2cb73dcdb98dca" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>desired_edge_width</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a4fec24cc4dcd3761ffb959be495781b7" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>desiredEdgeWidth</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a1e9d73441a9a959744f02a2ccc838da2" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>minimum_edge_width</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1ace4551f1ea4f13e51f6b28f071d09e66" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>minimum_number_of_lines</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a623aabecc4265c52edaf484464975d12" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>minimumEdgeWidth</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1adc9a4b69a3bcfc9edc8bcb49ec006f63" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>minimumNumberOfLines</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a31371e029911fecd254faebf9f7dc4c6" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>mtf_smoothing_scale</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1aba7f033c44ff7b49cb70d3caa41fc695" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>mtfSmoothingScale</name></member>
+      <member refid="classvigra_1_1SlantedEdgeMTFOptions_1a583baafa4fcc0dabac7a309987a7dcad" prot="public" virt="non-virtual"><scope>vigra::SlantedEdgeMTFOptions</scope><name>SlantedEdgeMTFOptions</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__LinearAlgebraModule" kind="group">
+    <compoundname>LinearAlgebraModule</compoundname>
+    <title>Linear Algebra</title>
+    <innerclass refid="classvigra_1_1linalg_1_1Matrix" prot="public">vigra::linalg::Matrix</innerclass>
+    <innernamespace refid="namespacevigra_1_1linalg">vigra::linalg</innernamespace>
+    <innergroup refid="group__MatrixAlgebra">Advanced Matrix Algebra</innergroup>
+    <innergroup refid="group__LinearAlgebraFunctions">Matrix Functions</innergroup>
+    <briefdescription>
+<para>Classes and functions for matrix algebra, linear equations systems, eigen systems, least squares etc. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

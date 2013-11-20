@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1triple" kind="struct" prot="public">
+    <compoundname>vigra::triple</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T1</declname>
+        <defname>T1</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T2</declname>
+        <defname>T2</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T3</declname>
+        <defname>T3</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1triple_1a2ff1057d713f47338b9b6c4a60e5ab87" prot="public" static="no">
+        <type>T1</type>
+        <definition>typedef T1 first_type</definition>
+        <argsstring></argsstring>
+        <name>first_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="106" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1triple_1a75b41637f35c1f6bbf8ec5c0ebb79728" prot="public" static="no">
+        <type>T2</type>
+        <definition>typedef T2 second_type</definition>
+        <argsstring></argsstring>
+        <name>second_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1triple_1a32442a804e500a7dc9ecb4a3feeb143d" prot="public" static="no">
+        <type>T3</type>
+        <definition>typedef T3 third_type</definition>
+        <argsstring></argsstring>
+        <name>third_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1triple_1ae885a6822c40e26649c9dd8b476942f8" prot="public" static="no" mutable="no">
+        <type>T1</type>
+        <definition>T1 first</definition>
+        <argsstring></argsstring>
+        <name>first</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1triple_1a9a8a97f32d498c09c0f1f82c8a67bd6f" prot="public" static="no" mutable="no">
+        <type>T2</type>
+        <definition>T2 second</definition>
+        <argsstring></argsstring>
+        <name>second</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="111" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1triple_1ab02b336e2ad870f773affd07b0f68ef8" prot="public" static="no" mutable="no">
+        <type>T3</type>
+        <definition>T3 third</definition>
+        <argsstring></argsstring>
+        <name>third</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="112" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1triple_1a87aa95191f543f716183080f7bfcbfd0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>triple</definition>
+        <argsstring>()</argsstring>
+        <name>triple</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="113" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1triple_1aa519d64ebe02cf77be9fce8401bbfc59" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>triple</definition>
+        <argsstring>(const T1 &amp;a, const T2 &amp;b, const T3 &amp;c)</argsstring>
+        <name>triple</name>
+        <param>
+          <type>const T1 &amp;</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>const T2 &amp;</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>const T3 &amp;</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="114" bodyend="115"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" line="105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tuple.hxx" bodystart="105" bodyend="116"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1triple_1ae885a6822c40e26649c9dd8b476942f8" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>first</name></member>
+      <member refid="structvigra_1_1triple_1a2ff1057d713f47338b9b6c4a60e5ab87" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>first_type</name></member>
+      <member refid="structvigra_1_1triple_1a9a8a97f32d498c09c0f1f82c8a67bd6f" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>second</name></member>
+      <member refid="structvigra_1_1triple_1a75b41637f35c1f6bbf8ec5c0ebb79728" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>second_type</name></member>
+      <member refid="structvigra_1_1triple_1ab02b336e2ad870f773affd07b0f68ef8" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>third</name></member>
+      <member refid="structvigra_1_1triple_1a32442a804e500a7dc9ecb4a3feeb143d" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>third_type</name></member>
+      <member refid="structvigra_1_1triple_1a87aa95191f543f716183080f7bfcbfd0" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>triple</name></member>
+      <member refid="structvigra_1_1triple_1aa519d64ebe02cf77be9fce8401bbfc59" prot="public" virt="non-virtual"><scope>vigra::triple</scope><name>triple</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

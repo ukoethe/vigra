@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1FixedPointCast_3_01double_01_4" kind="struct" prot="public">
+    <compoundname>vigra::FixedPointCast&lt; double &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1FixedPointCast_3_01double_01_4_1a139178d6832f374d276b781e6fa61f30" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>IntBits</declname>
+            <defname>IntBits</defname>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>FracBits</declname>
+            <defname>FracBits</defname>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>static double cast</definition>
+        <argsstring>(FixedPoint&lt; IntBits, FracBits &gt; v)</argsstring>
+        <name>cast</name>
+        <param>
+          <type><ref refid="classvigra_1_1FixedPoint" kindref="compound">FixedPoint</ref>&lt; IntBits, FracBits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="453" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="452" bodyend="455"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="450" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="449" bodyend="456"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1FixedPointCast_3_01double_01_4_1a139178d6832f374d276b781e6fa61f30" prot="public" virt="non-virtual"><scope>vigra::FixedPointCast&lt; double &gt;</scope><name>cast</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

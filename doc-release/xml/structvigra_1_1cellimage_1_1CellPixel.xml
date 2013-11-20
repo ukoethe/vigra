@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1cellimage_1_1CellPixel" kind="struct" prot="public">
+    <compoundname>vigra::cellimage::CellPixel</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structvigra_1_1cellimage_1_1CellPixel_1a62de41b26b1552c7f5435f84025667c0" prot="private" static="no" mutable="no">
+        <type>CellLabel</type>
+        <definition>CellLabel typeLabel_</definition>
+        <argsstring></argsstring>
+        <name>typeLabel_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="structvigra_1_1cellimage_1_1CellPixel_1a5783c68425e374ba2797d0a9961fee63" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend struct</type>
+        <definition>friend struct CellPixelSerializer</definition>
+        <argsstring></argsstring>
+        <name>CellPixelSerializer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="64" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a416951d030c7705438df29a3378361f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CellPixel</definition>
+        <argsstring>()</argsstring>
+        <name>CellPixel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="67" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1aeda7d9d11871a8126a586a1a0d9a5938" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CellPixel</definition>
+        <argsstring>(CellType type, CellLabel label=0)</argsstring>
+        <name>CellPixel</name>
+        <param>
+          <type>CellType</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>CellLabel</type>
+          <declname>label</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="70" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="68" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a941831a6fa04de7417be7baa6c85a1c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>CellLabel</type>
+        <definition>CellLabel label</definition>
+        <argsstring>() const </argsstring>
+        <name>label</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="79" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1af60726b23a54fc267ff76686d897d47e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(CellPixel const &amp;rhs) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>CellPixel const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="90" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="89" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a8286ea428a5e916898f44f7959d5d615" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(CellPixel const &amp;rhs) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>CellPixel const &amp;</type>
+          <declname>rhs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="86" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1afd14b5682b8b6cc6ec2575509dd046be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setLabel</definition>
+        <argsstring>(CellLabel label)</argsstring>
+        <name>setLabel</name>
+        <param>
+          <type>CellLabel</type>
+          <declname>label</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="81" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a54a053ad8ca5a57669531d9e7f6eb539" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setLabel</definition>
+        <argsstring>(CellLabel label, CellType type)</argsstring>
+        <name>setLabel</name>
+        <param>
+          <type>CellLabel</type>
+          <declname>label</declname>
+        </param>
+        <param>
+          <type>CellType</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="83" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a2d5e00b81ae54be2c395d99541945115" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setType</definition>
+        <argsstring>(CellType type)</argsstring>
+        <name>setType</name>
+        <param>
+          <type>CellType</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="74" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a3943f2061f6fc43e06e01f75a413e9fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setType</definition>
+        <argsstring>(CellType type, CellLabel label)</argsstring>
+        <name>setType</name>
+        <param>
+          <type>CellType</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>CellLabel</type>
+          <declname>label</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="76" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1cellimage_1_1CellPixel_1a33f56fd3b4b0a84f4e3d80b5e4f40276" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>CellType</type>
+        <definition>CellType type</definition>
+        <argsstring>() const </argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="72" bodyend="73"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="60" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="59" bodyend="91"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a416951d030c7705438df29a3378361f7" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>CellPixel</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1aeda7d9d11871a8126a586a1a0d9a5938" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>CellPixel</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a5783c68425e374ba2797d0a9961fee63" prot="private" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>CellPixelSerializer</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a941831a6fa04de7417be7baa6c85a1c2" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>label</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1af60726b23a54fc267ff76686d897d47e" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>operator!=</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a8286ea428a5e916898f44f7959d5d615" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>operator==</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1afd14b5682b8b6cc6ec2575509dd046be" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>setLabel</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a54a053ad8ca5a57669531d9e7f6eb539" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>setLabel</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a2d5e00b81ae54be2c395d99541945115" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>setType</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a3943f2061f6fc43e06e01f75a413e9fd" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>setType</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a33f56fd3b4b0a84f4e3d80b5e4f40276" prot="public" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>type</name></member>
+      <member refid="structvigra_1_1cellimage_1_1CellPixel_1a62de41b26b1552c7f5435f84025667c0" prot="private" virt="non-virtual"><scope>vigra::cellimage::CellPixel</scope><name>typeLabel_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

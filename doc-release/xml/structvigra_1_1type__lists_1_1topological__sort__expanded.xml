@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1topological__sort__expanded" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::topological_sort_expanded</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class L</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1topological__sort__expanded_1a2618b7426c0b9c3dd5b4aaa2c7e2ab71" prot="public" static="no">
+        <type>topological_sort&lt; typename implies_expand&lt; L &gt;::type &gt;::type</type>
+        <definition>typedef topological_sort&lt;typename implies_expand&lt;L&gt;::type&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="741" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="741" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="737" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="736" bodyend="742"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1topological__sort__expanded_1a2618b7426c0b9c3dd5b4aaa2c7e2ab71" prot="public" virt="non-virtual"><scope>vigra::type_lists::topological_sort_expanded</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

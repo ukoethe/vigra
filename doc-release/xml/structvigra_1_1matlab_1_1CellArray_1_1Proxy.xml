@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1matlab_1_1CellArray_1_1Proxy" kind="struct" prot="public">
+    <compoundname>vigra::matlab::CellArray::Proxy</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">ConstCellArray::Proxy</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1matlab_1_1CellArray_1_1Proxy_1afdf7cc842437c54fb8391e0caacc9963" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator=</definition>
+        <argsstring>(mxArray *v)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>mxArray *</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="241" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1matlab_1_1CellArray_1_1Proxy_1acf3522ab61a79db57d81bae41203c35e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Proxy</definition>
+        <argsstring>(mxArray *matPointer, int index)</argsstring>
+        <name>Proxy</name>
+        <param>
+          <type>mxArray *</type>
+          <declname>matPointer</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="237" bodyend="239"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="236" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="234" bodyend="246"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1matlab_1_1ConstCellArray_1_1Proxy_1aaaf1ac02dfa554a3cdffc647d512a77b" prot="public" virt="non-virtual"><scope>vigra::matlab::CellArray::Proxy</scope><name>index_</name></member>
+      <member refid="structvigra_1_1matlab_1_1ConstCellArray_1_1Proxy_1aab46c0ccbda0a0af4a809657c91e422e" prot="public" virt="non-virtual"><scope>vigra::matlab::CellArray::Proxy</scope><name>matPointer_</name></member>
+      <member refid="structvigra_1_1matlab_1_1ConstCellArray_1_1Proxy_1a3e9603c7b271ea1831e02425cb9f1b5c" prot="public" virt="non-virtual"><scope>vigra::matlab::CellArray::Proxy</scope><name>operator const mxArray *</name></member>
+      <member refid="structvigra_1_1matlab_1_1CellArray_1_1Proxy_1afdf7cc842437c54fb8391e0caacc9963" prot="public" virt="non-virtual"><scope>vigra::matlab::CellArray::Proxy</scope><name>operator=</name></member>
+      <member refid="structvigra_1_1matlab_1_1CellArray_1_1Proxy_1acf3522ab61a79db57d81bae41203c35e" prot="public" virt="non-virtual"><scope>vigra::matlab::CellArray::Proxy</scope><name>Proxy</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

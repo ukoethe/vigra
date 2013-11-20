@@ -1,0 +1,1466 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__TensorImaging" kind="group">
+    <compoundname>TensorImaging</compoundname>
+    <title>Tensor Image Processing</title>
+    <innerclass refid="classvigra_1_1Cos2Kernel" prot="public">vigra::Cos2Kernel</innerclass>
+    <innerclass refid="classvigra_1_1Cos2RingKernel" prot="public">vigra::Cos2RingKernel</innerclass>
+    <innerclass refid="classvigra_1_1Cos6Kernel" prot="public">vigra::Cos6Kernel</innerclass>
+    <innerclass refid="classvigra_1_1Cos6RingKernel" prot="public">vigra::Cos6RingKernel</innerclass>
+    <innerclass refid="classvigra_1_1FoerstnerKernelBase" prot="public">vigra::FoerstnerKernelBase</innerclass>
+    <innerclass refid="classvigra_1_1FoerstnerRingKernelBase" prot="public">vigra::FoerstnerRingKernelBase</innerclass>
+    <innerclass refid="classvigra_1_1Sin2Kernel" prot="public">vigra::Sin2Kernel</innerclass>
+    <innerclass refid="classvigra_1_1Sin2RingKernel" prot="public">vigra::Sin2RingKernel</innerclass>
+    <innerclass refid="classvigra_1_1Sin6Kernel" prot="public">vigra::Sin6Kernel</innerclass>
+    <innerclass refid="classvigra_1_1Sin6RingKernel" prot="public">vigra::Sin6RingKernel</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor</definition>
+        <argsstring>(...)</argsstring>
+        <name>boundaryTensor</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the boundary tensor for a scalar valued image. </para>        </briefdescription>
+        <detaileddescription>
+<para>These functions calculate a spatial domain approximation of the boundary tensor as described in</para><para>U. K<umlaut char="o"/>the: <ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_polarfilters"><emphasis>&quot;Integrated Edge and Junction Detection with the Boundary Tensor&quot;</emphasis></ulink>, in: ICCV 03, Proc. of 9th Intl. Conf. on Computer Vision, Nice 2003, vol. 1, pp. 424-431, Los Alamitos: IEEE Computer Society, 2003</para><para>with the Laplacian of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> as the underlying bandpass filter (see <ref refid="group__CommonConvolutionFilters_1ga1725cf1cffa836093e343d85ed6cc684" kindref="member">rieszTransformOfLOG()</ref>). The output image must have 3 bands which will hold the tensor components in the order t11, t12 (== t21), t22. The function <ref refid="group__TensorImaging_1ga09752d76329cf689fcc427c8c6b5be96" kindref="member">boundaryTensor1()</ref> with the same interface implements a variant of the boundary tensor where the 0th-order Riesz transform has been dropped, so that the tensor is no longer sensitive to blobs.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member" tooltip="Calculate the boundary tensor for a scalar valued image.">boundaryTensor</ref>(SrcIterator<sp/>supperleft,<sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member" tooltip="Calculate the boundary tensor for a scalar valued image.">boundaryTensor</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="boundarytensor_8hxx_source" kindref="compound">vigra/boundarytensor.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>bt(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">boundaryTensor(srcImageRange(img),<sp/>destImage(bt),<sp/>2.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="597"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga52ea6b9ca8f9b0527bda7430ae4c7047" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double scale)</argsstring>
+        <name>boundaryTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="604" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="601" bodyend="614"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga5da2346578da1f5d2e5371aaf2ea0b85" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>boundaryTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="622" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="619" bodyend="625"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga09752d76329cf689fcc427c8c6b5be96" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor1</definition>
+        <argsstring>(...)</argsstring>
+        <name>boundaryTensor1</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Boundary tensor variant. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements a variant of the boundary tensor where the 0th-order Riesz transform has been dropped, so that the tensor is no longer sensitive to blobs. See <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref> for more detailed documentation.</para><para><bold> Declarations:</bold></para><para><bold>#include</bold> &lt;<ref refid="boundarytensor_8hxx_source" kindref="compound">vigra/boundarytensor.hxx</ref>&gt;</para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1ga09752d76329cf689fcc427c8c6b5be96" kindref="member" tooltip="Boundary tensor variant.">boundaryTensor1</ref>(SrcIterator<sp/>supperleft,<sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1ga09752d76329cf689fcc427c8c6b5be96" kindref="member" tooltip="Boundary tensor variant.">boundaryTensor1</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="660"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gac200d8186eb48def9a6af49f4eec9798" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor1</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, double scale)</argsstring>
+        <name>boundaryTensor1</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="667" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="664" bodyend="677"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga7260aa42e7863ffa4e0363792543cf06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor1</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>boundaryTensor1</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="682" bodyend="688"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gaf5026c225075139a485dc657d66c0a80" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorEven</type>
+          </param>
+          <param>
+            <type>class DestAccessorEven</type>
+          </param>
+          <param>
+            <type>class DestIteratorOdd</type>
+          </param>
+          <param>
+            <type>class DestAccessorOdd</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor3</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIteratorEven dupperleft_even, DestAccessorEven even, DestIteratorOdd dupperleft_odd, DestAccessorOdd odd, double scale)</argsstring>
+        <name>boundaryTensor3</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIteratorEven</type>
+          <declname>dupperleft_even</declname>
+        </param>
+        <param>
+          <type>DestAccessorEven</type>
+          <declname>even</declname>
+        </param>
+        <param>
+          <type>DestIteratorOdd</type>
+          <declname>dupperleft_odd</declname>
+        </param>
+        <param>
+          <type>DestAccessorOdd</type>
+          <declname>odd</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="706" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="702" bodyend="783"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gae8aa6771c815ec046728eef038f3bb2c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIteratorEven</type>
+          </param>
+          <param>
+            <type>class DestAccessorEven</type>
+          </param>
+          <param>
+            <type>class DestIteratorOdd</type>
+          </param>
+          <param>
+            <type>class DestAccessorOdd</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::boundaryTensor3</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIteratorEven, DestAccessorEven &gt; even, pair&lt; DestIteratorOdd, DestAccessorOdd &gt; odd, double scale)</argsstring>
+        <name>boundaryTensor3</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorEven, DestAccessorEven &gt;</type>
+          <declname>even</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIteratorOdd, DestAccessorOdd &gt;</type>
+          <declname>odd</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" line="793" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/boundarytensor.hxx" bodystart="789" bodyend="796"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga0d055a30dc6288ee20fb4f078449f7a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::ellipticGaussian</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, double sigmax, double sigmin)</argsstring>
+        <name>ellipticGaussian</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigmax</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigmin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="210" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gabd45a38a7c291f9c9474217006e611e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::ellipticGaussian</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d, double sigmax, double sigmin)</argsstring>
+        <name>ellipticGaussian</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigmax</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigmin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="274" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="271" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga7635aadbeaf4383498850941c5286366" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientEnergyTensor</definition>
+        <argsstring>(...)</argsstring>
+        <name>gradientEnergyTensor</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the gradient energy tensor for a scalar valued image. </para>        </briefdescription>
+        <detaileddescription>
+<para>These function calculates the gradient energy tensor (GET operator) as described in</para><para>M. Felsberg, U. K<umlaut char="o"/>the: <emphasis>&quot;GET: The Connection Between Monogenic Scale-Space and Gaussian Derivatives&quot;</emphasis>, in: R. Kimmel, N. Sochen, J. Weickert (Eds.): Scale Space and PDE Methods in Computer Vision, Proc. of Scale-Space 2005, Lecture Notes in Computer Science 3459, pp. 192-203, Heidelberg: Springer, 2005.</para><para>U. K<umlaut char="o"/>the, M. Felsberg: <emphasis>&quot;Riesz-Transforms Versus Derivatives: On the Relationship Between the Boundary Tensor and the Energy Tensor&quot;</emphasis>, in: ditto, pp. 179-191.</para><para>with the given filters: The derivative filter <emphasis>derivKernel</emphasis> is applied to the appropriate image dimensions in turn (see the papers above for details), and the other dimension is smoothed with <emphasis>smoothKernel</emphasis>. The kernels can be as small as 3x1, e.g. [0.5, 0, -0.5] and [3.0/16.0, 10.0/16.0, 3.0/16.0] respectively. The output image must have 3 bands which will hold the tensor components in the order t11, t12 (== t21), t22. The signs of the output are adjusted for a right-handed coordinate system. Thus, orientations derived from the tensor will be in counter-clockwise (mathematically positive) order, with the x-axis at zero degrees (this is the standard in all VIGRA functions that deal with orientation).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1ga7635aadbeaf4383498850941c5286366" kindref="member" tooltip="Calculate the gradient energy tensor for a scalar valued image.">gradientEnergyTensor</ref>(SrcIterator<sp/>supperleft,<sp/>SrcIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;double&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>derivKernel,<sp/>Kernel1D&lt;double&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>smoothKernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1ga7635aadbeaf4383498850941c5286366" kindref="member" tooltip="Calculate the gradient energy tensor for a scalar valued image.">gradientEnergyTensor</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel1D&lt;double&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>derivKernel,<sp/>Kernel1D&lt;double&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>smoothKernel);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="gradient__energy__tensor_8hxx_source" kindref="compound">vigra/gradient_energy_tensor.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/></highlight><highlight class="keyword">get</highlight><highlight class="normal">(w,h);</highlight></codeline>
+<codeline><highlight class="normal">Kernel1D&lt;double&gt;<sp/>grad,<sp/>smooth;</highlight></codeline>
+<codeline><highlight class="normal">grad.initGaussianDerivative(0.7,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">smooth.initGaussian(0.7);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">gradientEnergyTensor(srcImageRange(img),<sp/>destImage(</highlight><highlight class="keyword">get</highlight><highlight class="normal">),<sp/>grad,<sp/>smooth);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gradient_energy_tensor.hxx" line="121"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga6851a3ce8e9c05f524259a01b47b749e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientEnergyTensor</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src, DestIterator dupperleft, DestAccessor dest, Kernel1D&lt; double &gt; const &amp;derivKernel, Kernel1D&lt; double &gt; const &amp;smoothKernel)</argsstring>
+        <name>gradientEnergyTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; double &gt; const &amp;</type>
+          <declname>derivKernel</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; double &gt; const &amp;</type>
+          <declname>smoothKernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gradient_energy_tensor.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gradient_energy_tensor.hxx" bodystart="125" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga92ffc4b2e2ab072794b4277d15f044f1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::gradientEnergyTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, Kernel1D&lt; double &gt; const &amp;derivKernel, Kernel1D&lt; double &gt; const &amp;smoothKernel)</argsstring>
+        <name>gradientEnergyTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; double &gt; const &amp;</type>
+          <declname>derivKernel</declname>
+        </param>
+        <param>
+          <type>Kernel1D&lt; double &gt; const &amp;</type>
+          <declname>smoothKernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gradient_energy_tensor.hxx" line="183" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gradient_energy_tensor.hxx" bodystart="180" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gae34b2f441aa2b256574ae43dc2991294" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hourGlassFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>hourGlassFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Anisotropic tensor smoothing with the hourglass filter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function implements anisotropic tensor smoothing by an hourglass-shaped filters as described in</para><para>U. K<umlaut char="o"/>the: <ulink url="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_structureTensor"><emphasis>&quot;Edge and Junction Detection with an Improved Structure Tensor&quot;</emphasis></ulink>, in: Proc. of 25th DAGM Symposium, Magdeburg 2003, Lecture Notes in Computer Science 2781, pp. 25-32, Heidelberg: Springer, 2003</para><para>It is closely related to the structure tensor (see <ref refid="group__CommonConvolutionFilters_1ga1fa5263dd0a2d0d152e67e7bb31f1d66" kindref="member">structureTensor()</ref>), but replaces the linear tensor smoothing with a smoothing along edges only. Smoothing across edges is largely suppressed. This means that the image structure is preserved much better because nearby features such as parallel edges are not blended into each other.</para><para>The hourglass filter is typically applied to a gradient tensor, i.e. the Euclidean product of the gradient with itself, which can be obtained by a gradient operator followed with <ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member">vectorToTensor()</ref>, see example below. The hourglass shape of the filter can be interpreted as indicating the likely continuations of a local edge element. The parameter <computeroutput>sigma</computeroutput> determines the radius of the hourglass (i.e. how far the influence of the edge element reaches), and <computeroutput>rho</computeroutput> controls its opening angle (i.e. how narrow the edge orientation os followed). Recommended values are <computeroutput>sigma = 1.4</computeroutput> (or, more generally, two to three times the scale of the gradient operator used in the first step), and <computeroutput>rho = 0.4</computeroutput> which corresponds to an opening angle of 22.5 degrees to either side of the edge.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gae34b2f441aa2b256574ae43dc2991294" kindref="member" tooltip="Anisotropic tensor smoothing with the hourglass filter.">hourGlassFilter</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>rho);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gae34b2f441aa2b256574ae43dc2991294" kindref="member" tooltip="Anisotropic tensor smoothing with the hourglass filter.">hourGlassFilter</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>s,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>d,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>rho);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="orientedtensorfilters_8hxx_source" kindref="compound">vigra/orientedtensorfilters.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" kindref="member">FVector2Image</ref><sp/>gradient(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>tensor(w,h),<sp/>smoothedTensor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(srcImageRange(img),<sp/>destImage(gradient),<sp/>1.0);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member" tooltip="Calculate the tensor (outer) product of a 2D vector with itself.">vectorToTensor</ref>(srcImageRange(gradient),<sp/>destImage(tensor));</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gae34b2f441aa2b256574ae43dc2991294" kindref="member" tooltip="Anisotropic tensor smoothing with the hourglass filter.">hourGlassFilter</ref>(srcImageRange(tensor),<sp/>destImage(smoothedTensor),<sp/>2.0,<sp/>0.4);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member">vectorToTensor()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="126"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga3afc82c01aa668a35f91e9defe3b587c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hourGlassFilter</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, double sigma, double rho)</argsstring>
+        <name>hourGlassFilter</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>rho</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="130" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga5bb1d8399bbeaa58afad0d004db192f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::hourGlassFilter</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d, double sigma, double rho)</argsstring>
+        <name>hourGlassFilter</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>rho</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="198" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="195" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga654fadd30a3f934f96bbd5c2ca9c6491" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::orientedTrigonometricFilter</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, Kernel const &amp;kernel)</argsstring>
+        <name>orientedTrigonometricFilter</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="513" bodyend="560"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gac26df5719a128cb8317f55036d1ed7dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::orientedTrigonometricFilter</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d, Kernel const &amp;kernel)</argsstring>
+        <name>orientedTrigonometricFilter</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" line="569" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/orientedtensorfilters.hxx" bodystart="566" bodyend="571"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gac6c6ac6dbf29130be5337bb4d4c4c250" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorEigenRepresentation</definition>
+        <argsstring>(...)</argsstring>
+        <name>tensorEigenRepresentation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate eigen representation of a symmetric 2x2 tensor. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function turns a 3-band image representing the tensor components t11, t12 (== t21 due to symmetry), t22 into the a 3-band image holding the eigen representation e1, e2, and angle, where e1 &gt; e2. When the tensor is defined in a left-handed coordinate system (the default on images), the angle will then be given in clockwise orientation, starting at the x-axis. Otherwise, it will be given in counter-clockwise orientation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gac6c6ac6dbf29130be5337bb4d4c4c250" kindref="member" tooltip="Calculate eigen representation of a symmetric 2x2 tensor.">tensorEigenRepresentation</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gac6c6ac6dbf29130be5337bb4d4c4c250" kindref="member" tooltip="Calculate eigen representation of a symmetric 2x2 tensor.">tensorEigenRepresentation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>s,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>d);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tensorutilities_8hxx_source" kindref="compound">vigra/tensorutilities.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>tensor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>eigen(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gac6c6ac6dbf29130be5337bb4d4c4c250" kindref="member" tooltip="Calculate eigen representation of a symmetric 2x2 tensor.">tensorEigenRepresentation</ref>(srcImageRange(tensor),<sp/>destImage(eigen));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="228"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga21e0829ef50521045bd357d3e9ca911c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorEigenRepresentation</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest)</argsstring>
+        <name>tensorEigenRepresentation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="232" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gaaa62d87f7b80990c17aefebcbc4d0084" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorEigenRepresentation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d)</argsstring>
+        <name>tensorEigenRepresentation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="276" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="274" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gafcf8fcdf2b221ff2d4f7430353b373f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorToEdgeCorner</definition>
+        <argsstring>(...)</argsstring>
+        <name>tensorToEdgeCorner</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Decompose a symmetric 2x2 tensor into its edge and corner parts. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function turns a 3-band image representing the tensor components t11, t12 (== t21 due to symmetry), t22 into the a 2-band image holding the tensor&apos;s edgeness (difference of the tensor&apos;s eigenvalues) and orientation, and a 1-band image representing its corner part (equal to the twice the small eigen value). The original tensor must be positive definite and defined in a right-handed coordinate system (e.g. the tensor resulting from <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gafcf8fcdf2b221ff2d4f7430353b373f0" kindref="member" tooltip="Decompose a symmetric 2x2 tensor into its edge and corner parts.">tensorToEdgeCorner</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator1<sp/>edgeul,<sp/>DestAccessor1<sp/>edge,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator2<sp/>cornerul,<sp/>DestAccessor2<sp/>corner);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor2&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gafcf8fcdf2b221ff2d4f7430353b373f0" kindref="member" tooltip="Decompose a symmetric 2x2 tensor into its edge and corner parts.">tensorToEdgeCorner</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>s,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator1,<sp/>DestAccessor1&gt;<sp/>edge,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator2,<sp/>DestAccessor2&gt;<sp/>corner);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tensorutilities_8hxx_source" kindref="compound">vigra/tensorutilities.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>tensor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" kindref="member">FVector2Image</ref><sp/>edgePart(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>cornerPart(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gae7b454b5230ad9a79069980f232ac3d7" kindref="member" tooltip="Calculate the trace of a 2x2 tensor.">tensorTrace</ref>(srcImageRange(tensor),<sp/>destImage(edgePart),<sp/>destImage(cornerPart));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="417"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga2274c827713c1ee0adca40bb6528b9fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator1</type>
+          </param>
+          <param>
+            <type>class DestAccessor1</type>
+          </param>
+          <param>
+            <type>class DestIterator2</type>
+          </param>
+          <param>
+            <type>class DestAccessor2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorToEdgeCorner</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator1 edgeul, DestAccessor1 edge, DestIterator2 cornerul, DestAccessor2 corner)</argsstring>
+        <name>tensorToEdgeCorner</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator1</type>
+          <declname>edgeul</declname>
+        </param>
+        <param>
+          <type>DestAccessor1</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>DestIterator2</type>
+          <declname>cornerul</declname>
+        </param>
+        <param>
+          <type>DestAccessor2</type>
+          <declname>corner</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="422" bodyend="461"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gae501be91cbdc20c396e57af0f0cf4114" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator1</type>
+          </param>
+          <param>
+            <type>class DestAccessor1</type>
+          </param>
+          <param>
+            <type>class DestIterator2</type>
+          </param>
+          <param>
+            <type>class DestAccessor2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorToEdgeCorner</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator1, DestAccessor1 &gt; edge, pair&lt; DestIterator2, DestAccessor2 &gt; corner)</argsstring>
+        <name>tensorToEdgeCorner</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator1, DestAccessor1 &gt;</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator2, DestAccessor2 &gt;</type>
+          <declname>corner</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="470" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="467" bodyend="473"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gae7b454b5230ad9a79069980f232ac3d7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorTrace</definition>
+        <argsstring>(...)</argsstring>
+        <name>tensorTrace</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the trace of a 2x2 tensor. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function turns a 3-band image representing the tensor components t11, t12 (== t21 due to symmetry), t22 into the a 1-band image holding the tensor trace t11 + t22.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gae7b454b5230ad9a79069980f232ac3d7" kindref="member" tooltip="Calculate the trace of a 2x2 tensor.">tensorTrace</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gae7b454b5230ad9a79069980f232ac3d7" kindref="member" tooltip="Calculate the trace of a 2x2 tensor.">tensorTrace</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>s,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>d);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tensorutilities_8hxx_source" kindref="compound">vigra/tensorutilities.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>tensor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/><ref refid="group__LinearAlgebraFunctions_1ga0dc9d4f009147f671d137888389568c7" kindref="member">trace</ref>(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gae7b454b5230ad9a79069980f232ac3d7" kindref="member" tooltip="Calculate the trace of a 2x2 tensor.">tensorTrace</ref>(srcImageRange(tensor),<sp/>destImage(<ref refid="group__LinearAlgebraFunctions_1ga0dc9d4f009147f671d137888389568c7" kindref="member">trace</ref>));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="327"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gaf97f4a542d50d20b4ec6ca757cd1e971" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorTrace</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest)</argsstring>
+        <name>tensorTrace</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="331" bodyend="350"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga8c0fb24772a01d3f221d5374a2f234f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::tensorTrace</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d)</argsstring>
+        <name>tensorTrace</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="357" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="355" bodyend="359"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::vectorToTensor</definition>
+        <argsstring>(...)</argsstring>
+        <name>vectorToTensor</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Calculate the tensor (outer) product of a 2D vector with itself. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is useful to transform vector images into a tensor representation that can be used as input to tensor based processing and analysis functions (e.g. tensor smoothing). The input pixel type must be vectors of length 2, whereas the output must contain vectors of length 3 which will represent the tensor components in the order t11, t12 (== t21 due to symmetry), t22.</para><para><bold>Note:</bold> In order to account for the left-handedness of the image coordinate system, the second tensor component (t12) can be negated by setting <computeroutput>negateComponent2 = false</computeroutput>. Angles will then be interpreted counter-clockwise rather than clockwise. By default, this behavior is switched off.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member" tooltip="Calculate the tensor (outer) product of a 2D vector with itself.">vectorToTensor</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>negateComponent2<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member" tooltip="Calculate the tensor (outer) product of a 2D vector with itself.">vectorToTensor</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>s,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>d,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>negateComponent2<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="tensorutilities_8hxx_source" kindref="compound">vigra/tensorutilities.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" kindref="member">FImage</ref><sp/>img(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" kindref="member">FVector2Image</ref><sp/>gradient(w,h);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" kindref="member">FVector3Image</ref><sp/>tensor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CommonConvolutionFilters_1ga1eedd3703e4ab90a2f8926a453fe6a8f" kindref="member" tooltip="Calculate the gradient vector by means of a 1st derivatives of Gaussian filter.">gaussianGradient</ref>(srcImageRange(img),<sp/>destImage(gradient),<sp/>2.0);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TensorImaging_1gac89c1d0fbbeb611478744da17c2bb104" kindref="member" tooltip="Calculate the tensor (outer) product of a 2D vector with itself.">vectorToTensor</ref>(srcImageRange(gradient),<sp/>destImage(tensor));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="107"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga05504bbc56a2fb81b23a2ae6bbe1f3bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::vectorToTensor</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, bool negateComponent2)</argsstring>
+        <name>vectorToTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>negateComponent2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="114" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="111" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1gaeb70d6889f1d9e56c9be8a11981dfc0a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::vectorToTensor</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest)</argsstring>
+        <name>vectorToTensor</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="153" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga8883ffa6621dbad8b6dda92318c97a61" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::vectorToTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d, bool negateComponent2)</argsstring>
+        <name>vectorToTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>negateComponent2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="162" bodyend="167"/>
+      </memberdef>
+      <memberdef kind="function" id="group__TensorImaging_1ga890f11ef8dd8bf85a38508ec7c4ea5db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::vectorToTensor</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; s, pair&lt; DestIterator, DestAccessor &gt; d)</argsstring>
+        <name>vectorToTensor</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" line="174" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tensorutilities.hxx" bodystart="172" bodyend="176"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

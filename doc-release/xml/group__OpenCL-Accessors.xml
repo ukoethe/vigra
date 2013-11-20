@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__OpenCL-Accessors" kind="group">
+    <compoundname>OpenCL-Accessors</compoundname>
+    <title>Accessors for OpenCL types</title>
+    <innerclass refid="classcl__charNAccessor__COMP" prot="public">cl_charNAccessor_COMP</innerclass>
+    <innerclass refid="classcl__TYPE3WriteAccessor__s1" prot="public">cl_TYPE3WriteAccessor_s1</innerclass>
+    <innerclass refid="classcl__TYPE3WriteAccessor__s2" prot="public">cl_TYPE3WriteAccessor_s2</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Encapsulate access to members of OpenCL vector types.</para><para><bold>#include</bold> &lt;<ref refid="multi__opencl_8hxx_source" kindref="compound">vigra/multi_opencl.hxx</ref>&gt;</para><para>OpenCL 1.1 [6.1.7] - Vector Components</para><para><itemizedlist>
+<listitem><para>cl_TYPE2Accessor_x</para></listitem><listitem><para>cl_TYPE2Accessor_y</para></listitem><listitem><para>cl_TYPE2Accessor_s0</para></listitem><listitem><para>cl_TYPE2Accessor_s1</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>cl_TYPE2WriteAccessor_x</para></listitem><listitem><para>cl_TYPE2WriteAccessor_y</para></listitem><listitem><para>cl_TYPE2WriteAccessor_s0</para></listitem><listitem><para>cl_TYPE2WriteAccessor_s1</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>cl_TYPE3Accessor_x</para></listitem><listitem><para>cl_TYPE3Accessor_y</para></listitem><listitem><para>cl_TYPE3Accessor_z</para></listitem><listitem><para>cl_TYPE3Accessor_s0</para></listitem><listitem><para>cl_TYPE3Accessor_s1</para></listitem><listitem><para>cl_TYPE3Accessor_s2</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para>cl_TYPE3WriteAccessor_x</para></listitem><listitem><para>cl_TYPE3WriteAccessor_y</para></listitem><listitem><para>cl_TYPE3WriteAccessor_z</para></listitem><listitem><para>cl_TYPE3WriteAccessor_s0</para></listitem><listitem><para><ref refid="classcl__TYPE3WriteAccessor__s1" kindref="compound">cl_TYPE3WriteAccessor_s1</ref></para></listitem><listitem><para>...</para></listitem></itemizedlist>
+</para><para>where TYPE is one of {char, uchar, short, ushort, int, uint, long, ulong, float, double }</para><para>For example:</para><para><programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;vigra/multi_opencl.hxx&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArrayView&lt;2,<sp/>cl_double3<sp/>&gt;<sp/>dataView<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FindMinMax" kindref="compound" tooltip="Find the minimum and maximum pixel value in an image or ROI.">vigra::FindMinMax&lt;double&gt;</ref><sp/>minmax;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MultiPointoperators_1ga40ad7d2006bb841fd422b2f3a28447c6" kindref="member" tooltip="Call an analyzing functor at every element of a multi-dimensional array.">vigra::inspectMultiArray</ref>(srcMultiArrayRange(dataView,<sp/>cl_double3Accessor_z()),<sp/>minmax);</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;range<sp/>of<sp/>.z:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a0ae3408e83fa258f08ece61e194251a9" kindref="member">min</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>-<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a7a6d5ee26475974260562366c1a71b01" kindref="member">max</ref>;</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,437 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__StandardImageTypes" kind="group">
+    <compoundname>StandardImageTypes</compoundname>
+    <title>Standard Image Types</title>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01BasicImageIterator_3_01FFTWComplex_3_01R_01_4_00_01FFTWComplex_3_01R_01_4_01_5_5_01_4_01_4" prot="public">vigra::IteratorTraits&lt; BasicImageIterator&lt; FFTWComplex&lt; R &gt;, FFTWComplex&lt; R &gt; ** &gt; &gt;</innerclass>
+    <innerclass refid="structvigra_1_1IteratorTraits_3_01ConstBasicImageIterator_3_01FFTWComplex_3_01R_01_4_00_01FFTWCod8c5dfdce68bd626d806d797a67b8728" prot="public">vigra::IteratorTraits&lt; ConstBasicImageIterator&lt; FFTWComplex&lt; R &gt;, FFTWComplex&lt; R &gt; ** &gt; &gt;</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaf7e342087f23fa1b4651510fbe2fde90" prot="public" static="no">
+        <type>BasicImage&lt; UInt8 &gt;</type>
+        <definition>typedef BasicImage&lt;UInt8&gt; BImage</definition>
+        <argsstring></argsstring>
+        <name>BImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Byte (8-bit unsigned) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga40a63f7a3e96164c1077a11438371ff5" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; UInt8 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;UInt8&gt; &gt; BRGBImage</definition>
+        <argsstring></argsstring>
+        <name>BRGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Byte (3x 8-bit unsigned) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::UInt8&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="164" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaa506d6092a193e037a1766737c781f7b" prot="public" static="no">
+        <type>BasicImage&lt; double &gt;</type>
+        <definition>typedef BasicImage&lt;double&gt; DImage</definition>
+        <argsstring></argsstring>
+        <name>DImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Double (double) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaa036c9ad3ae0ffa40b46046343a0e4f2" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; double &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;double&gt; &gt; DRGBImage</definition>
+        <argsstring></argsstring>
+        <name>DRGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Double-precision floating-point (3x double) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;double&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="266" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gac2804d94abe2f4d5c601f5501f4c294f" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; double, 2 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;double, 2&gt; &gt; DVector2Image</definition>
+        <argsstring></argsstring>
+        <name>DVector2Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;double, 2&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="306" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="306" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga16c2b279961911253eeccc9ec8011ef3" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; double, 3 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;double, 3&gt; &gt; DVector3Image</definition>
+        <argsstring></argsstring>
+        <name>DVector3Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;double, 3&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="317" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaffa1c30fa8eafa80431421c3e82dcd8a" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; double, 4 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;double, 4&gt; &gt; DVector4Image</definition>
+        <argsstring></argsstring>
+        <name>DVector4Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;double, 4&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="327" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga58cc9e13367834f4c49ad4f55c7df854" prot="public" static="no">
+        <type>BasicImage&lt; FFTWComplex&lt;&gt; &gt;</type>
+        <definition>typedef BasicImage&lt;FFTWComplex&lt;&gt; &gt; FFTWComplexImage</definition>
+        <argsstring></argsstring>
+        <name>FFTWComplexImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Complex (<ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for FFTW 3) or<linebreak/>
+ <bold>#include</bold> &lt;vigra/fftw.hxx&gt; (for deprecated FFTW 2)<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gae8339cb9eea2c7a74b6f7030f5e5c822" prot="public" static="no">
+        <type>BasicImage&lt; fftw_real &gt;</type>
+        <definition>typedef BasicImage&lt;fftw_real&gt; FFTWRealImage</definition>
+        <argsstring></argsstring>
+        <name>FFTWRealImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Float (<computeroutput>fftw_real</computeroutput>) image.</para><para>The type <computeroutput>fftw_real</computeroutput> is defined as <computeroutput>double</computeroutput> (in FFTW 2 it used to be either <computeroutput>float</computeroutput> or <computeroutput>double</computeroutput>, as specified during compilation of FFTW). FFTWRealImage uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="fftw3_8hxx_source" kindref="compound">vigra/fftw3.hxx</ref>&gt; (for FFTW 3) or<linebreak/>
+ <bold>#include</bold> &lt;vigra/fftw.hxx&gt; (for deprecated FFTW 2)<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="1132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="1132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga1170a9252f2ce52a075238e327ec78f0" prot="public" static="no">
+        <type>BasicImage&lt; float &gt;</type>
+        <definition>typedef BasicImage&lt;float&gt; FImage</definition>
+        <argsstring></argsstring>
+        <name>FImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Float (float) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga0217ae4add549fefbc1fe4a1f6d5136a" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; float &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;float&gt; &gt; FRGBImage</definition>
+        <argsstring></argsstring>
+        <name>FRGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point (3x float) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;float&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga1d1599adb292403c7766a7ffa099323e" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; float, 2 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;float, 2&gt; &gt; FVector2Image</definition>
+        <argsstring></argsstring>
+        <name>FVector2Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;float, 2&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="276" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="276" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaf1f737b060f00b6e0f9dad8d75cb0740" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; float, 3 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;float, 3&gt; &gt; FVector3Image</definition>
+        <argsstring></argsstring>
+        <name>FVector3Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;float, 3&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="286" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="286" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga18d596089442715dcc31683b3eafdb77" prot="public" static="no">
+        <type>BasicImage&lt; TinyVector&lt; float, 4 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;TinyVector&lt;float, 4&gt; &gt; FVector4Image</definition>
+        <argsstring></argsstring>
+        <name>FVector4Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Floating-point <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> image. The pixel type is <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector&lt;float, 4&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1VectorAccessor" kindref="compound">vigra::VectorAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="296" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaa8e0f5fa2b9612e2caeed36ff0a6daad" prot="public" static="no">
+        <type>BasicImage&lt; Int32 &gt;</type>
+        <definition>typedef BasicImage&lt;Int32&gt; IImage</definition>
+        <argsstring></argsstring>
+        <name>IImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (32-bit signed) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="116" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga885822797a13038e4ca0c074a6d2756a" prot="public" static="no">
+        <type>BasicImage&lt; Int16 &gt;</type>
+        <definition>typedef BasicImage&lt;Int16&gt; Int16Image</definition>
+        <argsstring></argsstring>
+        <name>Int16Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short integer (16-bit signed) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga736b5f3694d1536694fd357ae8a36a49" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; Int16 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;Int16&gt; &gt; Int16RGBImage</definition>
+        <argsstring></argsstring>
+        <name>Int16RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short (3x 16-bit signed) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int16&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="214" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga23a490c4345d9f9829e2dcbcff28cb00" prot="public" static="no">
+        <type>BasicImage&lt; Int32 &gt;</type>
+        <definition>typedef BasicImage&lt;Int32&gt; Int32Image</definition>
+        <argsstring></argsstring>
+        <name>Int32Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (32-bit signed) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaeca1ebec69a24d3fb59ab6279bec1598" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; Int32 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;Int32&gt; &gt; Int32RGBImage</definition>
+        <argsstring></argsstring>
+        <name>Int32RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (3x 32-bit signed) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int32&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="244" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga55871a371db690b76295adbc077a1916" prot="public" static="no">
+        <type>BasicImage&lt; Int8 &gt;</type>
+        <definition>typedef BasicImage&lt;Int8&gt; Int8Image</definition>
+        <argsstring></argsstring>
+        <name>Int8Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Signed byte (8-bit signed) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga6e9edcdc6420b18fe9c7ef0791b17790" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; Int8 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;Int8&gt; &gt; Int8RGBImage</definition>
+        <argsstring></argsstring>
+        <name>Int8RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Byte (3x 8-bit signed) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::UInt8&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="184" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga9e9a94902f552dcf9726d60d65d2780d" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; Int32 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;Int32&gt; &gt; IRGBImage</definition>
+        <argsstring></argsstring>
+        <name>IRGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (3x 32-bit signed) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int32&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="224" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga8553d180f7b500092428c0dfef36bdf0" prot="public" static="no">
+        <type>BasicImage&lt; Int16 &gt;</type>
+        <definition>typedef BasicImage&lt;Int16&gt; SImage</definition>
+        <argsstring></argsstring>
+        <name>SImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short integer (16-bit signed) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga95efef10274ee7082b8a687e76fa3671" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; Int16 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;Int16&gt; &gt; SRGBImage</definition>
+        <argsstring></argsstring>
+        <name>SRGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short (3x 16-bit signed) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int16&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga08a5639ad5cfd1116fb6a54ba6bb5566" prot="public" static="no">
+        <type>BasicImage&lt; UInt16 &gt;</type>
+        <definition>typedef BasicImage&lt;UInt16&gt; UInt16Image</definition>
+        <argsstring></argsstring>
+        <name>UInt16Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short integer (16-bit unsigned) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga77cdcb7ef56633a347f2a52e07dbb3f7" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; UInt16 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;UInt16&gt; &gt; UInt16RGBImage</definition>
+        <argsstring></argsstring>
+        <name>UInt16RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Short (3x 16-bit unsigned) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int16&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gaead9b0da438c09d8f98a5970a7b59b20" prot="public" static="no">
+        <type>BasicImage&lt; UInt32 &gt;</type>
+        <definition>typedef BasicImage&lt;UInt32&gt; UInt32Image</definition>
+        <argsstring></argsstring>
+        <name>UInt32Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (32-bit unsigned) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1gadfd8cf7696f2354d7fd792999d743def" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; UInt32 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;UInt32&gt; &gt; UInt32RGBImage</definition>
+        <argsstring></argsstring>
+        <name>UInt32RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Integer (3x 32-bit unsigned) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::Int32&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="234" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga1b553cb653e4e5b3d0daf4c925a06dfd" prot="public" static="no">
+        <type>BasicImage&lt; UInt8 &gt;</type>
+        <definition>typedef BasicImage&lt;UInt8&gt; UInt8Image</definition>
+        <argsstring></argsstring>
+        <name>UInt8Image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Byte (8-bit unsigned) image. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1StandardAccessor" kindref="compound">vigra::StandardAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="71" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__StandardImageTypes_1ga29df47ed6b0437d0a7fc6b05c7a242e7" prot="public" static="no">
+        <type>BasicImage&lt; RGBValue&lt; UInt8 &gt; &gt;</type>
+        <definition>typedef BasicImage&lt;RGBValue&lt;UInt8&gt; &gt; UInt8RGBImage</definition>
+        <argsstring></argsstring>
+        <name>UInt8RGBImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Byte (3x 8-bit unsigned) RGB image. The pixel type is <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue&lt;vigra::UInt8&gt;</ref>. It uses <ref refid="classvigra_1_1BasicImageIterator" kindref="compound">vigra::BasicImageIterator</ref> and <ref refid="classvigra_1_1RGBAccessor" kindref="compound">vigra::RGBAccessor</ref> and their const counterparts to access the data.</para><para><bold>#include</bold> &lt;<ref refid="stdimage_8hxx_source" kindref="compound">vigra/stdimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" line="174" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdimage.hxx" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The most common instantiations of the <ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref> template. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

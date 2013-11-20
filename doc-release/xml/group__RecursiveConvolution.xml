@@ -1,0 +1,2166 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RecursiveConvolution" kind="group">
+    <compoundname>RecursiveConvolution</compoundname>
+    <title>Recursive convolution functions</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFilterLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1-dimensional recursive convolution of the source signal. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function performs a causal and an anti-causal first or second order recursive filtering with the given filter parameter <computeroutput>b1</computeroutput> and border treatment <computeroutput>border</computeroutput> (first order filter, <computeroutput>b2 = 0</computeroutput>) or parameters <computeroutput>b1, b2</computeroutput> and <computeroutput>BORDER_TREATMENT_REFLECT</computeroutput> (second order filter). Thus, the result is always a filtering with linear phase. <formula id="70">\[ \begin{array}{rcl} a_{i, causal} &amp; = &amp; source_i + b1 * a_{i-1, causal} + b2 * a_{i-2, causal} \\ a_{i, anticausal} &amp; = &amp; source_i + b1 * a_{i+1, anticausal} + b2 * a_{i+2, anticausal} \\ dest_i &amp; = &amp; \frac{1 - b1 - b2}{1 + b1 + b2}(a_{i, causal} + a_{i, anticausal} - source_i) \end{array} \]</formula></para><para>The signal&apos;s value_type (SrcAccessor::value_type) must be a linear space over <computeroutput>double</computeroutput>, i.e. addition of source values, multiplication with <computeroutput>double</computeroutput>, and <computeroutput>NumericTraits</computeroutput> must be defined.</para><para><bold> Declaration:</bold></para><para><bold>First order recursive filter:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member" tooltip="Performs a 1-dimensional recursive convolution of the source signal.">recursiveFilterLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/>BorderTreatmentMode<sp/>border)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>Second order recursive filter:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member" tooltip="Performs a 1-dimensional recursive convolution of the source signal.">recursiveFilterLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b2)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vector&lt;float&gt;<sp/>src,<sp/>dest;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::DefaultAccessor&lt;vector&lt;float&gt;::iterator,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member" tooltip="Performs a 1-dimensional recursive convolution of the source signal.">vigra::recursiveFilterLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.begin(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.5,<sp/>BORDER_TREATMENT_REFLECT);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>d<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">-1<sp/>&lt;<sp/>b<sp/><sp/>&lt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="162"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaf22bf17ae5384e50720f6c5b7830bd38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double b, BorderTreatmentMode border)</argsstring>
+        <name>recursiveFilterLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="168" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="166" bodyend="301"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga6a1d0e1e50eefce4b24d930e64949b38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double b1, double b2)</argsstring>
+        <name>recursiveFilterLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="313" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="311" bodyend="361"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterX</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFilterX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> for every row of the image. See <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction.">recursiveFilterX</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction.">recursiveFilterX</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b2);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction.">recursiveFilterX</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaf634b87803c602b9f3f34e670119f035" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in x direction.">recursiveFilterX</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveSmoothX(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.5,<sp/>BORDER_TREATMENT_REFLECT);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="921"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gac3c2f4670d15b587e1ff9236ff40334c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double b, BorderTreatmentMode border)</argsstring>
+        <name>recursiveFilterX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="929" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="925" bodyend="944"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gafad0b3760be0c8b15bf1578212b46082" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double b, BorderTreatmentMode border)</argsstring>
+        <name>recursiveFilterX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="952" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="948" bodyend="955"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaa4c9a4c35482da84b19bd5ead8bce3aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double b1, double b2)</argsstring>
+        <name>recursiveFilterX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="969" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="965" bodyend="984"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gafdb4288088f461e6608347e2e3c56639" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double b1, double b2)</argsstring>
+        <name>recursiveFilterX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="992" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="988" bodyend="995"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterY</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFilterY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction.">recursiveFilterY</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction.">recursiveFilterY</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b2);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction.">recursiveFilterY</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,<sp/>BorderTreatmentMode<sp/>border);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>order<sp/>filter</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gaa2197533a4dc993998f89641f61015cb" kindref="member" tooltip="Performs 1 dimensional recursive filtering (1st and 2nd order) in y direction.">recursiveFilterY</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveFilterY(srcImageRange(src),<sp/>destImage(dest),<sp/>-0.6,<sp/>-0.06);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1251"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga67cddbc9437343425490df7c1a0fba6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double b, BorderTreatmentMode border)</argsstring>
+        <name>recursiveFilterY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1259" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1255" bodyend="1274"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gac212a5c474f6db93ff22b8c2122cc611" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double b, BorderTreatmentMode border)</argsstring>
+        <name>recursiveFilterY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1282" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1278" bodyend="1285"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga759efc750ec9034761bd77d3a6b93b04" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double b1, double b2)</argsstring>
+        <name>recursiveFilterY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1295" bodyend="1314"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga051c1728732bb1db9787b3a7dcf77849" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFilterY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double b1, double b2)</argsstring>
+        <name>recursiveFilterY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>b2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1322" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1318" bodyend="1325"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFirstDerivativeLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1 dimensional recursive convolution of the source signal. </para>        </briefdescription>
+        <detaileddescription>
+<para>It uses the first derivative an exponential <computeroutput>d/dx exp(-abs(x)/scale)</computeroutput> as a kernel. The signal&apos;s value_type (SrcAccessor::value_type) must be a linear space over <computeroutput>double</computeroutput>, i.e. addition and subtraction of source values, multiplication with <computeroutput>double</computeroutput>, and <computeroutput>NumericTraits</computeroutput> must be defined. Border treatment is always <computeroutput>BORDER_TREATMENT_REPEAT</computeroutput>.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member" tooltip="Performs a 1 dimensional recursive convolution of the source signal.">recursiveFirstDerivativeLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vector&lt;float&gt;<sp/>src,<sp/>dest;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::DefaultAccessor&lt;vector&lt;float&gt;::iterator,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member" tooltip="Performs a 1 dimensional recursive convolution of the source signal.">vigra::recursiveFirstDerivativeLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.begin(),<sp/>FAccessor(),<sp/>3.0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>-s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>d<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="677"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gabecdb92477226f2c0ed504f6fb06bb3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveFirstDerivativeLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="683" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="681" bodyend="725"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga1c1ec548957b55a384faae347bea11a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeX</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFirstDerivativeX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Recursively calculates the 1 dimensional first derivative in x direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member">recursiveFirstDerivativeLine()</ref> for every row of the image. See <ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member">recursiveFirstDerivativeLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga1c1ec548957b55a384faae347bea11a1" kindref="member" tooltip="Recursively calculates the 1 dimensional first derivative in x direction.">recursiveFirstDerivativeX</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga1c1ec548957b55a384faae347bea11a1" kindref="member" tooltip="Recursively calculates the 1 dimensional first derivative in x direction.">recursiveFirstDerivativeX</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveFirstDerivativeX(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1563"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gab3956a47502881f5e6c74030995f2b4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveFirstDerivativeX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1571" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1567" bodyend="1586"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga0b05e87a45efd23589a21ce82a1b3b5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveFirstDerivativeX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1590" bodyend="1597"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga403c328c10708888afb8a8ebabff6112" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeY</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveFirstDerivativeY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Recursively calculates the 1 dimensional first derivative in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member">recursiveFirstDerivativeLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1ga60a94e16526f93f19d0cee9cf6bb9343" kindref="member">recursiveFirstDerivativeLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga403c328c10708888afb8a8ebabff6112" kindref="member" tooltip="Recursively calculates the 1 dimensional first derivative in y direction.">recursiveFirstDerivativeY</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga403c328c10708888afb8a8ebabff6112" kindref="member" tooltip="Recursively calculates the 1 dimensional first derivative in y direction.">recursiveFirstDerivativeY</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveFirstDerivativeY(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1653"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gad6505d7055ad2495a8881983854bd982" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveFirstDerivativeY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1661" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1657" bodyend="1676"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gad82f6bcc11a0e923a64725e0ae5e0b39" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveFirstDerivativeY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveFirstDerivativeY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1684" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1680" bodyend="1687"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveGaussianFilterLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Compute a 1-dimensional recursive approximation of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function applies a causal and an anti-causal third order recursive filter which optimally approximates the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter, as proposed in</para><para>I. Young, L. van Vliet: <emphasis>Recursive implementation of the <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> filter</emphasis><linebreak/>
+ Signal Processing 44:139-151, 1995</para><para>The formulas for transforming the given scale parameter <computeroutput>sigma</computeroutput> into the actual filter coefficients are taken from Luigi Rosa&apos;s Matlab implementation.</para><para>The signal&apos;s value_type (SrcAccessor::value_type) must be a linear space over <computeroutput>double</computeroutput>, i.e. addition of source values, multiplication with <computeroutput>double</computeroutput>, and <computeroutput>NumericTraits</computeroutput> must be defined.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member" tooltip="Compute a 1-dimensional recursive approximation of Gaussian smoothing.">recursiveGaussianFilterLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vector&lt;float&gt;<sp/>src,<sp/>dest;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::DefaultAccessor&lt;vector&lt;float&gt;::iterator,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma<sp/>=<sp/>2.5;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member" tooltip="Compute a 1-dimensional recursive approximation of Gaussian smoothing.">vigra::recursiveGaussianFilterLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.begin(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sigma);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>d<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">0<sp/>&lt;=<sp/>sigma<sp/>(absolute<sp/>values<sp/>are<sp/>used<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>negative<sp/>sigma)</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="444"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga90a69cbfa3e824a999354ddf0b0956be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double sigma)</argsstring>
+        <name>recursiveGaussianFilterLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="452" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="449" bodyend="518"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gabdf886196470e2cc9cbf346c9fddf2ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterX</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveGaussianFilterX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Compute 1 dimensional recursive approximation of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member">recursiveGaussianFilterLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member">recursiveGaussianFilterLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1gabdf886196470e2cc9cbf346c9fddf2ba" kindref="member" tooltip="Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.">recursiveGaussianFilterX</ref>(SrcImageIterator<sp/>supperleft,<sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1gabdf886196470e2cc9cbf346c9fddf2ba" kindref="member" tooltip="Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.">recursiveGaussianFilterX</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveGaussianFilterX(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1054"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga71a883b7a7bfda3f3db1ad0dcdc261af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double sigma)</argsstring>
+        <name>recursiveGaussianFilterX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1062" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1059" bodyend="1077"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaf7f7ac4506c09c46b1db2c53d7750388" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double sigma)</argsstring>
+        <name>recursiveGaussianFilterX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1085" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1082" bodyend="1088"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga06487fbca4d237ebb6b31bd946fe4b10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterY</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveGaussianFilterY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Compute 1 dimensional recursive approximation of <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> smoothing in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member">recursiveGaussianFilterLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1gac3b0b8f9de1d4349523c013e86f7d87b" kindref="member">recursiveGaussianFilterLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1ga06487fbca4d237ebb6b31bd946fe4b10" kindref="member" tooltip="Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.">recursiveGaussianFilterY</ref>(SrcImageIterator<sp/>supperleft,<sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__RecursiveConvolution_1ga06487fbca4d237ebb6b31bd946fe4b10" kindref="member" tooltip="Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.">recursiveGaussianFilterY</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveGaussianFilterY(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1383"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gac4d535b16b6962848726e5d68f2581e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double sigma)</argsstring>
+        <name>recursiveGaussianFilterY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1391" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1388" bodyend="1406"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga6d90ec4f934c6a854df55426ee813872" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveGaussianFilterY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double sigma)</argsstring>
+        <name>recursiveGaussianFilterY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1414" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1411" bodyend="1417"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSecondDerivativeLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1 dimensional recursive convolution of the source signal. </para>        </briefdescription>
+        <detaileddescription>
+<para>It uses the second derivative an exponential <computeroutput>d2/dx2 exp(-abs(x)/scale)</computeroutput> as a kernel. The signal&apos;s value_type (SrcAccessor::value_type) must be a linear space over <computeroutput>double</computeroutput>, i.e. addition and subtraction of source values, multiplication with <computeroutput>double</computeroutput>, and <computeroutput>NumericTraits</computeroutput> must be defined. Border treatment is always <computeroutput>BORDER_TREATMENT_REPEAT</computeroutput>.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member" tooltip="Performs a 1 dimensional recursive convolution of the source signal.">recursiveSecondDerivativeLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vector&lt;float&gt;<sp/>src,<sp/>dest;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::DefaultAccessor&lt;vector&lt;float&gt;::iterator,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member" tooltip="Performs a 1 dimensional recursive convolution of the source signal.">vigra::recursiveSecondDerivativeLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.begin(),<sp/>FAccessor(),<sp/>3.0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>-<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>d<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="798"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaca5dae883f0d8e4bd52c0671bbc7eecc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSecondDerivativeLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="804" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="802" bodyend="847"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gadba28236309482d0cbaafb16255accdc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeX</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSecondDerivativeX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Recursively calculates the 1 dimensional second derivative in x direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member">recursiveSecondDerivativeLine()</ref> for every row of the image. See <ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member">recursiveSecondDerivativeLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gadba28236309482d0cbaafb16255accdc" kindref="member" tooltip="Recursively calculates the 1 dimensional second derivative in x direction.">recursiveSecondDerivativeX</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gadba28236309482d0cbaafb16255accdc" kindref="member" tooltip="Recursively calculates the 1 dimensional second derivative in x direction.">recursiveSecondDerivativeX</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveSecondDerivativeX(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1743"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaa4e2af0074b23828841e0133fc9b7f52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSecondDerivativeX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1751" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1747" bodyend="1766"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gae90b653603bba62ef75a73f75f616747" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveSecondDerivativeX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1774" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1770" bodyend="1777"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga6b132800bac14425c86402edd6af1338" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeY</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSecondDerivativeY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Recursively calculates the 1 dimensional second derivative in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member">recursiveSecondDerivativeLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1ga514cd0d70fc617cfea89b9dcb779ea18" kindref="member">recursiveSecondDerivativeLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga6b132800bac14425c86402edd6af1338" kindref="member" tooltip="Recursively calculates the 1 dimensional second derivative in y direction.">recursiveSecondDerivativeY</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga6b132800bac14425c86402edd6af1338" kindref="member" tooltip="Recursively calculates the 1 dimensional second derivative in y direction.">recursiveSecondDerivativeY</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveSecondDerivativeY(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1833"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga4f168e56f45e873d87a6e9731a5fb0c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSecondDerivativeY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1841" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1837" bodyend="1856"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga5b2a69d8cc30e61d81caffebe636520e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSecondDerivativeY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveSecondDerivativeY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1864" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1860" bodyend="1867"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSmoothLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Convolves the image with a 1-dimensional exponential filter. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function calls <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> with <computeroutput>b = exp(-1.0/scale)</computeroutput> and <computeroutput>border = BORDER_TREATMENT_REPEAT</computeroutput>. See <ref refid="group__RecursiveConvolution_1gaa39fc82115f78dfab5ae275eaebb854a" kindref="member">recursiveFilterLine()</ref> for more documentation.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member" tooltip="Convolves the image with a 1-dimensional exponential filter.">recursiveSmoothLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">vector&lt;float&gt;<sp/>src,<sp/>dest;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::DefaultAccessor&lt;vector&lt;float&gt;::iterator,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member" tooltip="Convolves the image with a 1-dimensional exponential filter.">vigra::recursiveSmoothLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.begin(),<sp/>FAccessor(),<sp/>3.0);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>d<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">scale<sp/>&gt;<sp/>0</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="588"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga9b19b3857fc6885b0c9136d29d033dca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator isend, SrcAccessor as, DestIterator id, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSmoothLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>isend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="595" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="593" bodyend="604"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gae3e3c74fead25258d1225ceda83f3535" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothX</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSmoothX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs 1 dimensional recursive smoothing in x direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member">recursiveSmoothLine()</ref> for every row of the image. See <ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member">recursiveSmoothLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gae3e3c74fead25258d1225ceda83f3535" kindref="member" tooltip="Performs 1 dimensional recursive smoothing in x direction.">recursiveSmoothX</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1gae3e3c74fead25258d1225ceda83f3535" kindref="member" tooltip="Performs 1 dimensional recursive smoothing in x direction.">recursiveSmoothX</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveSmoothX(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1144"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga033d930e5567dbdef9aca2872d13d187" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothX</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSmoothX</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1148" bodyend="1167"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gad157fd1436231dc2bb8d9857b4a85e77" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothX</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveSmoothX</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1171" bodyend="1178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1ga10723bec4fe32dfb5885671c08c5c16a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothY</definition>
+        <argsstring>(...)</argsstring>
+        <name>recursiveSmoothY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs 1 dimensional recursive smoothing in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member">recursiveSmoothLine()</ref> for every column of the image. See <ref refid="group__RecursiveConvolution_1gad82fca7f8ede53725047c44b4715f9a8" kindref="member">recursiveSmoothLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga10723bec4fe32dfb5885671c08c5c16a" kindref="member" tooltip="Performs 1 dimensional recursive smoothing in y direction.">recursiveSmoothY</ref>(SrcImageIterator<sp/>supperleft,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>ad,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__RecursiveConvolution_1ga10723bec4fe32dfb5885671c08c5c16a" kindref="member" tooltip="Performs 1 dimensional recursive smoothing in y direction.">recursiveSmoothY</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>scale)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="recursiveconvolution_8hxx_source" kindref="compound">vigra/recursiveconvolution.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::recursiveSmoothY(srcImageRange(src),<sp/>destImage(dest),<sp/>3.0);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1473"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaaf2ee0a54512490a2b7a306cc1a2eb43" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothY</definition>
+        <argsstring>(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as, DestImageIterator dupperleft, DestAccessor ad, double scale)</argsstring>
+        <name>recursiveSmoothY</name>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcImageIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1481" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1477" bodyend="1496"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RecursiveConvolution_1gaf50fd3f0caf4f0edc7f1542e62d4b308" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::recursiveSmoothY</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double scale)</argsstring>
+        <name>recursiveSmoothY</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>scale</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" line="1504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/recursiveconvolution.hxx" bodystart="1500" bodyend="1507"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>First order recursive filters and their specialization for the exponential filter and its derivatives (1D and separable 2D). These filters are very fast, and the speed does not depend on the filter size. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

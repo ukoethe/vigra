@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1DiffusivityFunctor" kind="class" prot="public">
+    <compoundname>vigra::DiffusivityFunctor</compoundname>
+    <includes refid="nonlineardiffusion_8hxx" local="no">vigra/nonlineardiffusion.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Value</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1DiffusivityFunctor_1ad6618df528e9bda993955ef07324c565" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value first_argument_type</definition>
+        <argsstring></argsstring>
+        <name>first_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functors first argument type (must be an algebraic field with <computeroutput><ref refid="group__LinearAlgebraFunctions_1ga2a9e01ae7ae7b39a618e9f4a6afaee5b" kindref="member">exp()</ref></computeroutput> defined). However, the functor also works with RGBValue&lt;first_argument_type&gt; (this hack is necessary since Microsoft C++ doesn&apos;t support partial specialization). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="651" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" prot="public" static="no">
+        <type>NumericTraits&lt; Value &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;Value&gt;::RealPromote result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functors result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="661" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="661" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1DiffusivityFunctor_1a8c576a0ee1500c6fcb07a158134e8034" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value second_argument_type</definition>
+        <argsstring></argsstring>
+        <name>second_argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functors second argument type (same as first). However, the functor also works with RGBValue&lt;second_argument_type&gt; (this hack is necessary since Microsoft C++ doesn&apos;t support partial specialization). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="657" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="657" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1DiffusivityFunctor_1a04f69f8f2936ff309627511179c1709b" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000039"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use first_argument_type, second_argument_type, result_type </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="665" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="665" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1DiffusivityFunctor_1a5cfdc88d1de2ab459dda220696f336ea" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" kindref="member">result_type</ref></type>
+        <definition>result_type one_</definition>
+        <argsstring></argsstring>
+        <name>one_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="699" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="699" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1DiffusivityFunctor_1a530556a62df4276ebe5acfd2b25ba949" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" kindref="member">result_type</ref></type>
+        <definition>result_type weight_</definition>
+        <argsstring></argsstring>
+        <name>weight_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="698" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="698" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1DiffusivityFunctor_1aa1deb33bf7df1e54bad7c080ac774862" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" kindref="member">result_type</ref></type>
+        <definition>result_type zero_</definition>
+        <argsstring></argsstring>
+        <name>zero_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="700" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="700" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1DiffusivityFunctor_1a37fde8c3b702c54c6e4ce9aaef447d4c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DiffusivityFunctor</definition>
+        <argsstring>(Value const &amp;thresh)</argsstring>
+        <name>DiffusivityFunctor</name>
+        <param>
+          <type>Value const &amp;</type>
+          <declname>thresh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>init functor with given edge threshold </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="669" bodyend="673"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1DiffusivityFunctor_1af6953f74eccaac5811ea5d3b97331165" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(first_argument_type const &amp;gx, second_argument_type const &amp;gy) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1DiffusivityFunctor_1ad6618df528e9bda993955ef07324c565" kindref="member">first_argument_type</ref> const &amp;</type>
+          <declname>gx</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1DiffusivityFunctor_1a8c576a0ee1500c6fcb07a158134e8034" kindref="member">second_argument_type</ref> const &amp;</type>
+          <declname>gy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate diffusivity from scalar arguments </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="678" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="677" bodyend="682"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1DiffusivityFunctor_1af00f8ad0e5e6066f93c15ac37c0abd41" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(RGBValue&lt; Value &gt; const &amp;gx, RGBValue&lt; Value &gt; const &amp;gy) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>&lt; Value &gt; const &amp;</type>
+          <declname>gx</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>&lt; Value &gt; const &amp;</type>
+          <declname>gy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate diffusivity from RGB arguments </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="687" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="686" bodyend="696"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Diffusivity functor for non-linear diffusion. </para>    </briefdescription>
+    <detaileddescription>
+<para>This functor implements the diffusivity recommended by Weickert:</para><para><formula id="68">\[ g(|\nabla u|) = 1 - \exp{\left(\frac{-3.315}{(|\nabla u| / thresh)^4}\right)} \]</formula></para><para>where <computeroutput>thresh</computeroutput> is a threshold that determines whether a specific gradient magnitude is interpreted as a significant edge (above the threshold) or as noise. It is meant to be used with <ref refid="group__NonLinearDiffusion_1ga682a281ec8f2abbf2e3b18aaa7753c60" kindref="member">nonlinearDiffusion()</ref>. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" line="645" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/nonlineardiffusion.hxx" bodystart="644" bodyend="701"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1DiffusivityFunctor_1a37fde8c3b702c54c6e4ce9aaef447d4c" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>DiffusivityFunctor</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1ad6618df528e9bda993955ef07324c565" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>first_argument_type</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1a5cfdc88d1de2ab459dda220696f336ea" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>one_</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1af6953f74eccaac5811ea5d3b97331165" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1af00f8ad0e5e6066f93c15ac37c0abd41" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1ab971e3896c5c89e391935c170f7d47f3" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1a8c576a0ee1500c6fcb07a158134e8034" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>second_argument_type</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1a04f69f8f2936ff309627511179c1709b" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1a530556a62df4276ebe5acfd2b25ba949" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>weight_</name></member>
+      <member refid="classvigra_1_1DiffusivityFunctor_1aa1deb33bf7df1e54bad7c080ac774862" prot="public" virt="non-virtual"><scope>vigra::DiffusivityFunctor</scope><name>zero_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

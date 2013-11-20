@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4" kind="class" prot="public">
+    <compoundname>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7dad85bd7bac074962d2c4fd54e8276d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; unsigned char, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;unsigned char, 3&gt; argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="718" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="718" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a0969d2b07af0610791b4eb80d5483639" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; unsigned char, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;unsigned char, 3&gt; result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="720" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="720" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1aec9d2ea62cf3fb90d8bcf9cc6ea1394b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; unsigned char, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;unsigned char, 3&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="722" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="722" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a02447161e467ac95b5c3414d91a58756" prot="private" static="no" mutable="no">
+        <type>unsigned char</type>
+        <definition>unsigned char lut_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>lut_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="714" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="714" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7ca10ea6f666fe5c27806d1a053c0f5b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; unsigned char, 3 &gt;</type>
+        <definition>TinyVector&lt;unsigned char, 3&gt; operator()</definition>
+        <argsstring>(V const &amp;rgb) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>rgb</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="742" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="741" bodyend="744"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7acfbe75c4c42fc076bc815a262a640c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>sRGB2RGBFunctor</definition>
+        <argsstring>()</argsstring>
+        <name>sRGB2RGBFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="725" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="724" bodyend="730"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a941f69bfd2e94eecc78ea81eb7e8e58f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>sRGB2RGBFunctor</definition>
+        <argsstring>(double max)</argsstring>
+        <name>sRGB2RGBFunctor</name>
+        <param>
+          <type>double</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="733" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="732" bodyend="738"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a75bb4cb77b8b6db0aaa33f3bea8773c0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string targetColorSpace</definition>
+        <argsstring>()</argsstring>
+        <name>targetColorSpace</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="747" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="746" bodyend="749"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" line="713" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/colorconversions.hxx" bodystart="712" bodyend="750"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7dad85bd7bac074962d2c4fd54e8276d" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a02447161e467ac95b5c3414d91a58756" prot="private" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>lut_</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7ca10ea6f666fe5c27806d1a053c0f5b" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a0969d2b07af0610791b4eb80d5483639" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a7acfbe75c4c42fc076bc815a262a640c" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>sRGB2RGBFunctor</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a941f69bfd2e94eecc78ea81eb7e8e58f" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>sRGB2RGBFunctor</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1a75bb4cb77b8b6db0aaa33f3bea8773c0" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>targetColorSpace</name></member>
+      <member refid="classvigra_1_1sRGB2RGBFunctor_3_01unsigned_01char_00_01unsigned_01char_01_4_1aec9d2ea62cf3fb90d8bcf9cc6ea1394b" prot="public" virt="non-virtual"><scope>vigra::sRGB2RGBFunctor&lt; unsigned char, unsigned char &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

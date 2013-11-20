@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumericTraits_3_01char_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumericTraits&lt; char &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1acd2c29dbf53de268fb9f7e6b031663c0" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ComplexPromote</definition>
+        <argsstring></argsstring>
+        <name>ComplexPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="502" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="502" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a36b6f6e070665730283803065cb31ee8" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isComplex</definition>
+        <argsstring></argsstring>
+        <name>isComplex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="509" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="509" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1af5f5d7b9c6a19bfb6ff4caa451f00267" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isIntegral</definition>
+        <argsstring></argsstring>
+        <name>isIntegral</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="506" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="506" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1ae92b2db609de5cbe2b3d8b7bc45ed768" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isOrdered</definition>
+        <argsstring></argsstring>
+        <name>isOrdered</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="508" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="508" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a24bd1d22d78d1d8fcca5265f74990e4d" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isScalar</definition>
+        <argsstring></argsstring>
+        <name>isScalar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="505" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="505" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a7089afebab96688722050cc9d3f23f5b" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char isSigned</definition>
+        <argsstring></argsstring>
+        <name>isSigned</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="507" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="507" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a14c2f889f59190f9b5dfb2c40768287e" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a915ea459a7c1358b462f5ff3b02592b4" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char RealPromote</definition>
+        <argsstring></argsstring>
+        <name>RealPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="501" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="501" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a45c6410f82509331e909f83f56188582" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1ac1a791fb13241ed299219dbbde5942b1" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char UnsignedPromote</definition>
+        <argsstring></argsstring>
+        <name>UnsignedPromote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="500" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumericTraits_3_01char_01_4_1a9431450cc1730fe5988116a4d199e626" prot="public" static="no">
+        <type>Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char</type>
+        <definition>typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ValueType</definition>
+        <argsstring></argsstring>
+        <name>ValueType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="503" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="503" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="496" bodyend="510"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1acd2c29dbf53de268fb9f7e6b031663c0" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>ComplexPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a36b6f6e070665730283803065cb31ee8" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>isComplex</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1af5f5d7b9c6a19bfb6ff4caa451f00267" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>isIntegral</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1ae92b2db609de5cbe2b3d8b7bc45ed768" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>isOrdered</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a24bd1d22d78d1d8fcca5265f74990e4d" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>isScalar</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a7089afebab96688722050cc9d3f23f5b" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>isSigned</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a14c2f889f59190f9b5dfb2c40768287e" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a915ea459a7c1358b462f5ff3b02592b4" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>RealPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a45c6410f82509331e909f83f56188582" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>Type</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1ac1a791fb13241ed299219dbbde5942b1" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>UnsignedPromote</name></member>
+      <member refid="structvigra_1_1NumericTraits_3_01char_01_4_1a9431450cc1730fe5988116a4d199e626" prot="public" virt="non-virtual"><scope>vigra::NumericTraits&lt; char &gt;</scope><name>ValueType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

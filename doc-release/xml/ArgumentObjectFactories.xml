@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ArgumentObjectFactories" kind="page">
+    <compoundname>ArgumentObjectFactories</compoundname>
+    <title>Argument Object Factories</title>
+    <detaileddescription>
+<para>Factory functions to create argument objects which simplify long argument lists.</para><para><itemizedlist>
+<listitem>
+<para><ref refid="ArgumentObjectFactories_1ImageBasedArgumentObjectFactories" kindref="member">Image Based Argument Object Factories</ref> </para></listitem>
+<listitem>
+<para><ref refid="ArgumentObjectFactories_1MultiArrayBasedArgumentObjectFactories" kindref="member">MultiArrayView Based Argument Object Factories</ref> </para></listitem>
+<listitem>
+<para><ref refid="ArgumentObjectFactories_1IteratorBasedArgumentObjectFactories" kindref="member">Iterator Based Argument Object Factories</ref> </para></listitem>
+</itemizedlist>
+</para><para>Long argument lists provide for greater flexibility of functions, but they are also tedious and error prone, when we don&apos;t need the flexibility. Thus, we define argument objects which automatically provide reasonable defaults for those arguments that we didn&apos;t specify explicitly.</para><para>The argument objects are created via a number of factory functions. Since these functions have descriptive names, they also serve to improve readability: the name of each factory tells te purpose of its argument object.</para><para>Consider the following example. Without argument objects we had to write something like this (cf. <ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member">copyImageIf()</ref>):</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img1,<sp/>img2,<sp/>img3;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>fill<sp/>img1<sp/>and<sp/>img2<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">vigra::copyImageIf</ref>(img1.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>img1.<ref refid="classvigra_1_1BasicImage_1acc69aa43c87902b25a957867d68a795b" kindref="member">lowerRight</ref>(),<sp/>img1.<ref refid="classvigra_1_1BasicImage_1ac1e543db9ce291e86b9023cdb9202b5b" kindref="member">accessor</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>img2.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>img2.<ref refid="classvigra_1_1BasicImage_1ac1e543db9ce291e86b9023cdb9202b5b" kindref="member">accessor</ref>(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>img3.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>img3.<ref refid="classvigra_1_1BasicImage_1ac1e543db9ce291e86b9023cdb9202b5b" kindref="member">accessor</ref>());</highlight></codeline>
+</programlisting></para><para>Using the argument object factories, this becomes much shorter and more readable:</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">vigra::copyImageIf</ref>(srcImageRange(img1),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(img2),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(img3));</highlight></codeline>
+</programlisting></para><para>The names of the factories clearly tell which image is source, mask, and destination. In addition, the suffix <computeroutput>Range</computeroutput> must be used for those argument objects that need to specify the lower right corner of the region of interest. Typically, this is only the first source argument, but sometimes the first destiniation argument must also contain a range.</para><para>The factory functions come in two flavours: Iterator based and image based factories. Above we have seen the image based variant. The iterator based variant would look like this:</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">vigra::copyImageIf</ref>(srcIterRange(img1.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>img1.<ref refid="classvigra_1_1BasicImage_1acc69aa43c87902b25a957867d68a795b" kindref="member">lowerRight</ref>()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskIter(img2.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destIter(img3.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>()));</highlight></codeline>
+</programlisting></para><para>These factory functions contain the word <computeroutput>Iter</computeroutput> instead of the word <computeroutput>Image</computeroutput>, They would normally be used if we couldn&apos;t access the images (for example, within a function which got passed iterators) or if we didn&apos;t want to operate on the entire image. The default accessor is obtained via <ref refid="structvigra_1_1IteratorTraits" kindref="compound">vigra::IteratorTraits</ref>.</para><para>All factory functions also allow to specify accessors explicitly. This is useful if we can&apos;t use the default accessor. This variant looks like this:</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">vigra::copyImageIf</ref>(srcImageRange(img1),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(img2,<sp/>MaskPredicateAccessor()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destImage(img3));</highlight></codeline>
+</programlisting></para><para>or</para><para><programlisting><codeline><highlight class="normal"><ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member" tooltip="Copy source ROI into destination image.">vigra::copyImageIf</ref>(srcIterRange(img1.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>img1.<ref refid="classvigra_1_1BasicImage_1acc69aa43c87902b25a957867d68a795b" kindref="member">lowerRight</ref>()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskIter(img2.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>(),<sp/>MaskPredicateAccessor()),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destIter(img3.<ref refid="classvigra_1_1BasicImage_1af9eeb6ad11570b4918e6bf2086384bf4" kindref="member">upperLeft</ref>()));</highlight></codeline>
+</programlisting></para><para>All versions can be mixed freely within one expression. Technically, the argument objects are simply defined as pairs and triples of iterators and accessor so that all algorithms should declare a call interface version based on pairs and triples (see for example <ref refid="group__CopyAlgo_1ga6ff922dacba428e319cb0ae2ebbfedd0" kindref="member">copyImageIf()</ref>).</para><sect1 id="ArgumentObjectFactories_1ImageBasedArgumentObjectFactories">
+<title>Image Based Argument Object Factories</title>
+<para><bold>Include:</bold> automatically included with the image classes<linebreak/>
+ Namespace: vigra</para><para>These factories can be used to create argument objects when we are given instances or subclasses of <ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage</ref> (see <ref refid="group__StandardImageTypes" kindref="compound">Standard Image Types</ref> for instances defined per default). These factory functions access <computeroutput>img.upperLeft()</computeroutput>, <computeroutput>img.lowerRight()</computeroutput>, and <computeroutput>img.accessor()</computeroutput> to obtain the iterators and accessor for the given image (unless the accessor is given explicitly). The following factory functions are provided:</para><para><table rows="21" cols="2"><row>
+<entry thead="yes"><para><computeroutput><ref refid="classvigra_1_1BasicImage" kindref="compound">vigra::BasicImage&lt;SomeType&gt;</ref> img;</computeroutput> or <linebreak/>
+ <computeroutput><ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView&lt;SomeType&gt;</ref> img;</computeroutput>   </para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImageRange(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, lower right, and default accessor of source image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImageRange(img, <ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref>(...))</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the ROI specified by <computeroutput><ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref></computeroutput> and default accessor of source image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImageRange(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, lower right of source image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImageRange(img, <ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref>(...), SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the ROI specified by <computeroutput><ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref></computeroutput> and of source image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImage(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, and default accessor of source image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...))</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput>, and default accessor of source image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImage(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left of source image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...), SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput> of source image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskImage(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, and default accessor of mask image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...))</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput>, and default accessor of mask image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskImage(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left of mask image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...), SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput> of mask image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImageRange(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, lower right, and default accessor of destination image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImageRange(img, <ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref>(...))</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the ROI specified by <computeroutput><ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref></computeroutput> and default accessor of destination image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImageRange(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, lower right of destination image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImageRange(img, <ref refid="classvigra_1_1Rect2D" kindref="compound">Rect2D</ref>(...), SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the ROI specified by <computeroutput><ref refid="classvigra_1_1Rect2D" kindref="compound">vigra::Rect2D</ref></computeroutput> of destination image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImage(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left, and default accessor of destination image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...))</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput>, and default accessor of destination image</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImage(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing upper left of destination image, and given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destImage(img, <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>(...), SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object with upper left at point given by <computeroutput><ref refid="classvigra_1_1Point2D" kindref="compound">vigra::Point2D</ref></computeroutput> of destination image, and given accessor</para><para></para></entry></row>
+</table>
+</para></sect1>
+<sect1 id="ArgumentObjectFactories_1MultiArrayBasedArgumentObjectFactories">
+<title>MultiArrayView Based Argument Object Factories</title>
+<para><bold>Include:</bold> automatically included with &lt;<ref refid="multi__array_8hxx_source" kindref="compound">vigra/multi_array.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para>These factories can be used to create argument objects when we are given instances or subclasses of <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>. These factory functions access <computeroutput>array.traverser_begin()</computeroutput>, <computeroutput>array.traverser_end()</computeroutput> to obtain the iterators. If no accessor is given, they use the <computeroutput>AccessorTraits&lt;T&gt;</computeroutput> to determine the default accessor associated with the array&apos;s value type <computeroutput>T</computeroutput>. The following factory functions are provided:</para><para><table rows="9" cols="2"><row>
+<entry thead="yes"><para><computeroutput><ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView&lt;N, SomeType&gt;</ref> img;</computeroutput>   </para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcMultiArrayRange(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array, a shape object giving the desired shape of the array (possibly a subarray) and the default const accessor for <computeroutput>SomeType</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcMultiArrayRange(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array, a shape object giving the desired shape of the array (possibly a subarray) and the given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcMultiArray(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array, and the default const accessor for <computeroutput>SomeType</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcMultiArray(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array and the given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destMultiArrayRange(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array, a shape object giving the desired shape of the array (possibly a subarray) and the default accessor for <computeroutput>SomeType</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destMultiArrayRange(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref>&apos;s marking the begin of the array, a shape object giving the desired shape of the array (possibly a subarray) and the given accessor</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destMultiArray(img)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref> marking the begin of the array and the default accessor for <computeroutput>SomeType</computeroutput></para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destMultiArray(img, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing a <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref>&apos;s marking the begin of the array and the given accessor</para><para></para></entry></row>
+</table>
+</para></sect1>
+<sect1 id="ArgumentObjectFactories_1IteratorBasedArgumentObjectFactories">
+<title>Iterator Based Argument Object Factories</title>
+<para><bold>#include</bold> &lt;<ref refid="iteratortraits_8hxx_source" kindref="compound">vigra/iteratortraits.hxx</ref>&gt; Namespace: vigra</para><para>These factories can be used to create argument objects when we are given <ref refid="group__ImageIterators" kindref="compound">Image Iterators</ref>. These factory functions use <ref refid="structvigra_1_1IteratorTraits" kindref="compound">vigra::IteratorTraits</ref> to get the default accessor for the given iterator unless the accessor is given explicitly. The following factory functions are provided:</para><para><table rows="11" cols="2"><row>
+<entry thead="yes"><para><computeroutput><ref refid="classvigra_1_1BasicImage_1af41e23f99db325a93187f3cd64201529" kindref="member">vigra::BasicImage&lt;SomeType&gt;::Iterator</ref> i1, i2;</computeroutput>   </para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcIterRange(i1, i2)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the given iterators and corresponding default accessor (for source image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcIterRange(i1, i2, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing given iterators and accessor (for source image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcIter(i1)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the given iterator and corresponding default accessor (for source image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>srcIter(i1, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing given iterator and accessor (for source image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskIter(i1)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the given iterator and corresponding default accessor (for mask image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>maskIter(i1, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing given iterator and accessor (for mask image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destIterRange(i1, i2)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the given iterators and corresponding default accessor (for destination image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destIterRange(i1, i2, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing given iterators and accessor (for destination image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destIter(i1)</computeroutput> </para></entry><entry thead="no"><para>create argument object containing the given iterator and corresponding default accessor (for destination image)</para><para></para></entry></row>
+<row>
+<entry thead="no"><para></para><para><computeroutput>destIter(i1, SomeAccessor())</computeroutput> </para></entry><entry thead="no"><para>create argument object containing given iterator and accessor (for destination image)</para><para></para></entry></row>
+</table>
+</para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

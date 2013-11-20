@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1ae9e571cb9ff5d7854536dd6daeab98d6" prot="public" static="no">
+        <type>NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+        <definition>typedef NumpyArrayTraits&lt;N, Singleband&lt;T&gt;, StridedArrayTag&gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1a2f21d3598301f3577cce7b291620a9f6" prot="public" static="no">
+        <type>NumpyArrayTraits&lt; N, T, <ref refid="structvigra_1_1UnstridedArrayTag" kindref="compound">UnstridedArrayTag</ref> &gt;</type>
+        <definition>typedef NumpyArrayTraits&lt;N, T, UnstridedArrayTag&gt; UnstridedTraits</definition>
+        <argsstring></argsstring>
+        <name>UnstridedTraits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1acd022dadb9667f0c24463a26b629ef0e" prot="public" static="no">
+        <type>BaseType::ValuetypeTraits</type>
+        <definition>typedef BaseType::ValuetypeTraits ValuetypeTraits</definition>
+        <argsstring></argsstring>
+        <name>ValuetypeTraits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="500" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1a6386b7307ff26ae4e1454664d23d27a0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isPropertyCompatible</definition>
+        <argsstring>(PyArrayObject *obj)</argsstring>
+        <name>isPropertyCompatible</name>
+        <param>
+          <type>PyArrayObject *</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="525" bodyend="528"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1ab21e26620663281d83ace57e2e9c9001" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isShapeCompatible</definition>
+        <argsstring>(PyArrayObject *array)</argsstring>
+        <name>isShapeCompatible</name>
+        <param>
+          <type>PyArrayObject *</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="503" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="502" bodyend="523"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="495" bodyend="529"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1ae9e571cb9ff5d7854536dd6daeab98d6" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1a6386b7307ff26ae4e1454664d23d27a0" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</scope><name>isPropertyCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1ab21e26620663281d83ace57e2e9c9001" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</scope><name>isShapeCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1a2f21d3598301f3577cce7b291620a9f6" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</scope><name>UnstridedTraits</name></member>
+      <member refid="structvigra_1_1NumpyArrayTraits_3_01N_00_01Singleband_3_01T_01_4_00_01UnstridedArrayTag_01_4_1acd022dadb9667f0c24463a26b629ef0e" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayTraits&lt; N, Singleband&lt; T &gt;, UnstridedArrayTag &gt;</scope><name>ValuetypeTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

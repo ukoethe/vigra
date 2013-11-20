@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="ErrorReporting" kind="page">
+    <compoundname>ErrorReporting</compoundname>
+    <title>Error Reporting</title>
+    <detaileddescription>
+<para>Exceptions and assertions provided by VIGRA</para><para><bold>#include</bold> &lt;<ref refid="error_8hxx_source" kindref="compound">vigra/error.hxx</ref>&gt;</para><para>VIGRA defines the following exception classes:</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ContractViolation<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>std::exception;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>class<sp/>PreconditionViolation<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>ContractViolation;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>class<sp/>PostconditionViolation<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>ContractViolation;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>class<sp/>InvariantViolation<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>ContractViolation;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The following associated macros throw the corresponding exception if their PREDICATE evaluates to &apos;<computeroutput>false</computeroutput>&apos;:</para><para><programlisting><codeline><highlight class="normal">vigra_precondition(PREDICATE,<sp/>MESSAGE);</highlight></codeline>
+<codeline><highlight class="normal">vigra_postcondition(PREDICATE,<sp/>MESSAGE);</highlight></codeline>
+<codeline><highlight class="normal">vigra_invariant(PREDICATE,<sp/>MESSAGE);</highlight></codeline>
+</programlisting></para><para>The MESSAGE is passed to the exception and can be retrieved via the overloaded member function &apos;<computeroutput>exception.what()</computeroutput>&apos;. If the compiler flag &apos;<computeroutput>NDEBUG</computeroutput>&apos; is <emphasis>not</emphasis> defined, the file name and line number of the error are automatically included in the message. The macro</para><para><programlisting><codeline><highlight class="normal">vigra_assert(PREDICATE,<sp/>MESSAGE);</highlight></codeline>
+</programlisting></para><para>is identical to <computeroutput>vigra_precondition()</computeroutput> except that it is completely removed when &apos;<computeroutput>NDEBUG</computeroutput>&apos; is defined. This is useful for test that are only needed during debugging, such as array index bound checking. The following macro</para><para><programlisting><codeline><highlight class="normal">vigra_fail(MESSAGE);</highlight></codeline>
+</programlisting></para><para>unconditionally throws a &apos;<computeroutput>std::runtime_error</computeroutput>&apos; constructed from the message (along with file name and line number, if NDEBUG is not set).</para><para><bold> Usage:</bold></para><para>Include-File: &lt;<ref refid="error_8hxx_source" kindref="compound">vigra/error.hxx</ref>&gt; </para><para>Namespace: vigra (except for the macros, of course)</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**<sp/>argv)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>input_file_name<sp/>=<sp/>argv[1];</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>read<sp/>input<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1ImageImportInfo" kindref="compound" tooltip="Argument object for the function importImage().">vigra::ImageImportInfo</ref><sp/>info(input_file_name);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>fail<sp/>if<sp/>input<sp/>image<sp/>is<sp/>not<sp/>grayscale</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vigra_precondition(info.isGrayscale(),<sp/></highlight><highlight class="stringliteral">&quot;Input<sp/>image<sp/>must<sp/>be<sp/>grayscale&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>...</highlight><highlight class="comment">//<sp/>process<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(std::exception<sp/>&amp;<sp/>e)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cerr<sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/>std::endl;<sp/></highlight><highlight class="comment">//<sp/>print<sp/>message</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

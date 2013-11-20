@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1acc" kind="namespace">
+    <compoundname>vigra::acc</compoundname>
+    <innerclass refid="structvigra_1_1acc_1_1CoordKurtosis" prot="public">vigra::acc::CoordKurtosis</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMax" prot="public">vigra::acc::CoordMax</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMean" prot="public">vigra::acc::CoordMean</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMin" prot="public">vigra::acc::CoordMin</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMoment2" prot="public">vigra::acc::CoordMoment2</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMoment2__2Pass" prot="public">vigra::acc::CoordMoment2_2Pass</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMoment3" prot="public">vigra::acc::CoordMoment3</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordMoment4" prot="public">vigra::acc::CoordMoment4</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordSkewness" prot="public">vigra::acc::CoordSkewness</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordSum" prot="public">vigra::acc::CoordSum</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordUnbiasedVariance" prot="public">vigra::acc::CoordUnbiasedVariance</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1CoordVariance" prot="public">vigra::acc::CoordVariance</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Count" prot="public">vigra::acc::Count</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Kurtosis" prot="public">vigra::acc::Kurtosis</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Max" prot="public">vigra::acc::Max</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Mean" prot="public">vigra::acc::Mean</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Min" prot="public">vigra::acc::Min</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Moment2" prot="public">vigra::acc::Moment2</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Moment2__2Pass" prot="public">vigra::acc::Moment2_2Pass</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Moment3" prot="public">vigra::acc::Moment3</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Moment4" prot="public">vigra::acc::Moment4</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Skewness" prot="public">vigra::acc::Skewness</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Sum" prot="public">vigra::acc::Sum</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1UnbiasedVariance" prot="public">vigra::acc::UnbiasedVariance</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1Variance" prot="public">vigra::acc::Variance</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedKurtosis" prot="public">vigra::acc::WeightedKurtosis</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMax" prot="public">vigra::acc::WeightedMax</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMean" prot="public">vigra::acc::WeightedMean</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMin" prot="public">vigra::acc::WeightedMin</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMoment2" prot="public">vigra::acc::WeightedMoment2</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMoment2__2Pass" prot="public">vigra::acc::WeightedMoment2_2Pass</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMoment3" prot="public">vigra::acc::WeightedMoment3</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedMoment4" prot="public">vigra::acc::WeightedMoment4</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedSkewness" prot="public">vigra::acc::WeightedSkewness</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedSum" prot="public">vigra::acc::WeightedSum</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedUnbiasedVariance" prot="public">vigra::acc::WeightedUnbiasedVariance</innerclass>
+    <innerclass refid="structvigra_1_1acc_1_1WeightedVariance" prot="public">vigra::acc::WeightedVariance</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/object_features.hxx" line="335"/>
+  </compounddef>
+</doxygen>

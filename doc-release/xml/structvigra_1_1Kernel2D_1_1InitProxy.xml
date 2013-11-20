@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1Kernel2D_1_1InitProxy" kind="struct" prot="public">
+    <compoundname>vigra::Kernel2D::InitProxy</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1Kernel2D_1_1InitProxy_1a5fdfe429fbbdfa62309780cdad06f81f" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; <ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &gt;::ScanOrderIterator</type>
+        <definition>typedef BasicImage&lt;value_type&gt;::ScanOrderIterator Iterator</definition>
+        <argsstring></argsstring>
+        <name>Iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="844" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="844" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1Kernel2D_1_1InitProxy_1a7d5b9dc4cbedeb0ac588fc544fcc4f4f" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" kindref="member">Iterator</ref></type>
+        <definition>Iterator base_</definition>
+        <argsstring></argsstring>
+        <name>base_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="876" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="876" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel2D_1_1InitProxy_1a9acf5084c965a76d24ec228412256bc3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int count_</definition>
+        <argsstring></argsstring>
+        <name>count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="877" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="877" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel2D_1_1InitProxy_1aab87cdecff5a712b212fda808877d7c1" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" kindref="member">Iterator</ref></type>
+        <definition>Iterator iter_</definition>
+        <argsstring></argsstring>
+        <name>iter_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="876" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="876" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel2D_1_1InitProxy_1af94ab3b949d7bfa845f0ceba4ad7ded4" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &amp;</type>
+        <definition>value_type&amp; norm_</definition>
+        <argsstring></argsstring>
+        <name>norm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="878" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="878" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1Kernel2D_1_1InitProxy_1ae19129de4f29722b899b09321b6fc5bf" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sum_</definition>
+        <argsstring></argsstring>
+        <name>sum_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="877" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="877" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1Kernel2D_1_1InitProxy_1acca96f98aa8052ccd7ab9825599a62ed" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>InitProxy</definition>
+        <argsstring>(Iterator i, int count, value_type &amp;norm)</argsstring>
+        <name>InitProxy</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1a8ac16ae585236fce49fdffa9b2ac821f" kindref="member">Iterator</ref></type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> &amp;</type>
+          <declname>norm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="850" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="846" bodyend="850"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Kernel2D_1_1InitProxy_1af3903e32b316b8820f8ec8b78bb664dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>InitProxy &amp;</type>
+        <definition>InitProxy&amp; operator,</definition>
+        <argsstring>(value_type const &amp;v)</argsstring>
+        <name>operator,</name>
+        <param>
+          <type><ref refid="classvigra_1_1Kernel2D_1aa809bef2afe021f7dc842bece09dceb1" kindref="member">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="860" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="859" bodyend="874"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1Kernel2D_1_1InitProxy_1a10fe2833d11bb538e76b673127d812e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~InitProxy</definition>
+        <argsstring>()</argsstring>
+        <name>~InitProxy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="853" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="852" bodyend="857"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="872">
+        <label>BasicImage&lt; value_type &gt;</label>
+        <link refid="classvigra_1_1BasicImage"/>
+      </node>
+      <node id="871">
+        <label>Kernel2D&lt; ARITHTYPE &gt;::InitProxy</label>
+        <childnode refid="872" relation="usage">
+          <edgelabel>iter_</edgelabel>
+          <edgelabel>base_</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" line="842" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/stdconvolution.hxx" bodystart="841" bodyend="879"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1a7d5b9dc4cbedeb0ac588fc544fcc4f4f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>base_</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1a9acf5084c965a76d24ec228412256bc3" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>count_</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1acca96f98aa8052ccd7ab9825599a62ed" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>InitProxy</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1aab87cdecff5a712b212fda808877d7c1" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>iter_</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1a5fdfe429fbbdfa62309780cdad06f81f" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>Iterator</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1af94ab3b949d7bfa845f0ceba4ad7ded4" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>norm_</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1af3903e32b316b8820f8ec8b78bb664dc" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>operator,</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1ae19129de4f29722b899b09321b6fc5bf" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>sum_</name></member>
+      <member refid="structvigra_1_1Kernel2D_1_1InitProxy_1a10fe2833d11bb538e76b673127d812e4" prot="public" virt="non-virtual"><scope>vigra::Kernel2D::InitProxy</scope><name>~InitProxy</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

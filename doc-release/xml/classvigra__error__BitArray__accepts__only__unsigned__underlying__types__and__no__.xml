@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra__error__BitArray__accepts__only__unsigned__underlying__types__and__no__" kind="class" prot="public">
+    <compoundname>vigra_error_BitArray_accepts_only_unsigned_underlying_types_and_no_</compoundname>
+    <derivedcompoundref refid="classvigra_1_1BitArray" prot="public" virt="non-virtual">BitArray&lt; size&lt; ITL &gt;::of &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1BitArray" prot="public" virt="non-virtual">BitArray&lt; SIZE, WORD_TYPE, class &gt;</derivedcompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="27"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

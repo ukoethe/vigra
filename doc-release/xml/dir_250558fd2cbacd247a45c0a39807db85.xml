@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="dir_250558fd2cbacd247a45c0a39807db85" kind="dir">
+    <compoundname>C:/Users/ukoethe/Arbeit/vigra-git/vigra/docsrc/</compoundname>
+    <innerfile refid="credits__changelog_8dxx">credits_changelog.dxx</innerfile>
+    <innerfile refid="examples_8dxx">examples.dxx</innerfile>
+    <innerfile refid="index_8dxx">index.dxx</innerfile>
+    <innerfile refid="installation_8dxx">installation.dxx</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/docsrc/"/>
+  </compounddef>
+</doxygen>

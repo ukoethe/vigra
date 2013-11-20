@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Splice" kind="class" prot="public">
+    <compoundname>vigra::Splice</compoundname>
+    <includes refid="splices_8hxx" local="no">vigra/random_forest/splices.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1Splice_1ad543e853981e56c8ae28a8b8b8ca01ac" prot="private" static="no" mutable="no">
+        <type>T</type>
+        <definition>T begin_</definition>
+        <argsstring></argsstring>
+        <name>begin_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="38" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Splice_1a2c7d06a54745697d21bed0107ce26432" prot="private" static="no" mutable="no">
+        <type>T</type>
+        <definition>T end_</definition>
+        <argsstring></argsstring>
+        <name>end_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="39" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1Splice_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="37" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Splice_1a6aebb65f71f3a3faf2442c3299799195" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int operator[]</definition>
+        <argsstring>(int index)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="48" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="47" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Splice_1af4b57d21919c42d55af03391f91a1c08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int size</definition>
+        <argsstring>()</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="55" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="54" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Splice_1adc6af07430adaf24a61a70a2e5be1ca6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Splice</definition>
+        <argsstring>(T &amp;begin, T &amp;end)</argsstring>
+        <name>Splice</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>begin</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="45" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="41" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Idea for a class to use for easy splicing</para><para>usage (with factory function _spl)</para><para>// copy every even indexed element to a 5 x 5 // sized matrix Matrix&lt;double&gt; a(10, 10) <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView&lt;2,double&gt;</ref> b(_spl_shp(_spl(0,2,10), _spl(0,2,10))); copy_splice(_spl(0,2,10),_spl(0,2,10), a, b);</para><para>it is also possible to supply iterator ranges std::vector&lt;int&gt; indices; indices.push_back(3) (...)</para><para>copy_splice(_spl(indices.begin(), indices.end()), _spl(a.shape(1)), a, b)</para><para>if you only have a forward iterator then you must specify the size of the splice with _spl(set.begin(), set.end(), set.size());</para><para>ok.. what we actually need is a decent iota iterator or something like xrange but for now it should suffice. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" line="36" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/splices.hxx" bodystart="35" bodyend="58"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Splice_1ad543e853981e56c8ae28a8b8b8ca01ac" prot="private" virt="non-virtual"><scope>vigra::Splice</scope><name>begin_</name></member>
+      <member refid="classvigra_1_1Splice_1a2c7d06a54745697d21bed0107ce26432" prot="private" virt="non-virtual"><scope>vigra::Splice</scope><name>end_</name></member>
+      <member refid="classvigra_1_1Splice_1a6aebb65f71f3a3faf2442c3299799195" prot="public" virt="non-virtual"><scope>vigra::Splice</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Splice_1af4b57d21919c42d55af03391f91a1c08" prot="public" virt="non-virtual"><scope>vigra::Splice</scope><name>size</name></member>
+      <member refid="classvigra_1_1Splice_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" virt="non-virtual"><scope>vigra::Splice</scope><name>size_</name></member>
+      <member refid="classvigra_1_1Splice_1adc6af07430adaf24a61a70a2e5be1ca6" prot="public" virt="non-virtual"><scope>vigra::Splice</scope><name>Splice</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

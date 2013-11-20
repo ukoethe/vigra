@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::ExpandElementResult&lt; std::complex&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4_1aba01db17f4a2bfbc3db60dc172972a25" prot="public" static="no">
+        <name>@15</name>
+        <enumvalue id="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4_1aba01db17f4a2bfbc3db60dc172972a25a052a2b4924452fb4a73f2cb52b6e9d41" prot="public">
+          <name>size</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="652" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="652" bodyend="652"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4_1a565429e62c1d4fd084335146ba778e17" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="651" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="650" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="649" bodyend="653"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4_1aba01db17f4a2bfbc3db60dc172972a25a052a2b4924452fb4a73f2cb52b6e9d41" prot="public" virt="non-virtual"><scope>vigra::ExpandElementResult&lt; std::complex&lt; T &gt; &gt;</scope><name>size</name></member>
+      <member refid="structvigra_1_1ExpandElementResult_3_01std_1_1complex_3_01T_01_4_01_4_1a565429e62c1d4fd084335146ba778e17" prot="public" virt="non-virtual"><scope>vigra::ExpandElementResult&lt; std::complex&lt; T &gt; &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

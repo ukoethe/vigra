@@ -1,0 +1,951 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4" kind="class" prot="public">
+    <compoundname>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</compoundname>
+    <innerclass refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_02f34e55c822a52df84d9939b178a7dcb" prot="protected">vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_and_assign</innerclass>
+    <innerclass refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1_1bit__index" prot="protected">vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_index</innerclass>
+    <innerclass refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_0c70f79458011827137624b120c42ed91" prot="protected">vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::bit_or_assign</innerclass>
+    <innerclass refid="structvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_0183f96cd3491b78c284cf29d0e1bee0a" prot="protected">vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;::exclusive_or_assign</innerclass>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>SIZE</declname>
+        <defname>SIZE</defname>
+      </param>
+      <param>
+        <type>class WORD_TYPE</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a188484317493196a4dd630fee010d676" prot="protected" static="no">
+        <type>std::greater&lt; WORD_TYPE &gt;</type>
+        <definition>typedef std::greater&lt;WORD_TYPE&gt; greater</definition>
+        <argsstring></argsstring>
+        <name>greater</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1aa66e6c31f400bd7f7db2a68b039b976e" prot="protected" static="no">
+        <type>std::less&lt; WORD_TYPE &gt;</type>
+        <definition>typedef std::less&lt;WORD_TYPE&gt; less</definition>
+        <argsstring></argsstring>
+        <name>less</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9fa5ea83a58aa6b34b399623e22f7d4c" prot="protected" static="no">
+        <type>bit_index&lt; bit_size &gt;</type>
+        <definition>typedef bit_index&lt;bit_size&gt; size_index</definition>
+        <argsstring></argsstring>
+        <name>size_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="47" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-static-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a193866b8fb8153eb73041699c8597901" prot="protected" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned array_len</definition>
+        <argsstring></argsstring>
+        <name>array_len</name>
+        <initializer> (bit_size + word_len - 1) / word_len</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="38" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1abd9c088e01dddde7144b278949042ca0" prot="protected" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned bit_size</definition>
+        <argsstring></argsstring>
+        <name>bit_size</name>
+        <initializer> SIZE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="36" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8d3ad3fe112de98622b7c128a3e8f309" prot="protected" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned border_pos</definition>
+        <argsstring></argsstring>
+        <name>border_pos</name>
+        <initializer> size_index::bit_pos</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="49" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a1a48d79048d90975fc16e8b8e82c26b0" prot="protected" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool does_fit</definition>
+        <argsstring></argsstring>
+        <name>does_fit</name>
+        <initializer> border_pos == 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="52" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a21960f5088203d3be0b88abfa6123316" prot="protected" static="yes" mutable="no">
+        <type>const WORD_TYPE</type>
+        <definition>const WORD_TYPE last_mask</definition>
+        <argsstring></argsstring>
+        <name>last_mask</name>
+        <initializer> !border_pos ? 0
+                                                   : size_index::bit_mask - 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="51" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ad408237947dfb0c6f497ad44e77b87b8" prot="protected" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned last_pos</definition>
+        <argsstring></argsstring>
+        <name>last_pos</name>
+        <initializer> array_len - 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="39" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac85b34335fbe4caf2782c516d57a5374" prot="protected" static="yes" mutable="no">
+        <type>const WORD_TYPE</type>
+        <definition>const WORD_TYPE ones_mask</definition>
+        <argsstring></argsstring>
+        <name>ones_mask</name>
+        <initializer> ~(WORD_TYPE(0))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="48" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a46a142502d95b76886c9325e4359ecdc" prot="protected" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned word_len</definition>
+        <argsstring></argsstring>
+        <name>word_len</name>
+        <initializer> MetaLog2&lt;WORD_TYPE&gt;::value</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="37" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a465155609d5199b04d858925169ef0c5" prot="protected" static="no" mutable="no">
+        <type>WORD_TYPE</type>
+        <definition>WORD_TYPE set_bits[array_len]</definition>
+        <argsstring>[array_len]</argsstring>
+        <name>set_bits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a97d6bfdee73b68ed95220840461baaf8" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+        </templateparamlist>
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; assign_operator</definition>
+        <argsstring>(const BitArray &amp;x)</argsstring>
+        <name>assign_operator</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="250" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a67dd61005bc67d527bfdd47b1b4f1a77" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>WORD_TYPE</type>
+        <definition>WORD_TYPE bit_mask</definition>
+        <argsstring>(unsigned pos) const </argsstring>
+        <name>bit_mask</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="58" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="57" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af8137880f1004c9694da2b67305edce5" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+        </templateparamlist>
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; bit_operator</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>bit_operator</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="272" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a81573c46ae35aa7267ae79cf3d8f12f9" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class F</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool mutual_compare</definition>
+        <argsstring>(const BitArray &amp;t, F f, bool if_equal=false) const </argsstring>
+        <name>mutual_compare</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <param>
+          <type>F</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>if_equal</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="189" bodyend="201"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a85495ab6e35556c404a074e03f48494a" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned word_pos</definition>
+        <argsstring>(unsigned pos) const </argsstring>
+        <name>word_pos</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="54" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="53" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8df8a389781b95596f98ef919b00d5f0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool all</definition>
+        <argsstring>() const </argsstring>
+        <name>all</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="170" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8be230fdd50e0ce842dd3b0a3012821b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool any</definition>
+        <argsstring>() const </argsstring>
+        <name>any</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="162" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a17d41e3b87d22b4755d756c52ec56aa8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BitArray</definition>
+        <argsstring>()</argsstring>
+        <name>BitArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="74" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="70" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="69" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1afbaec442885f5cefd3946ba1db87b617" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void flip</definition>
+        <argsstring>()</argsstring>
+        <name>flip</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="92" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="91" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1acd1d2adc4cbb68431ed839f5f42ab639" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; flip</definition>
+        <argsstring>(unsigned pos)</argsstring>
+        <name>flip</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="114" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a830b8219a640aba3bd16c2cf82ec81be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; flip</definition>
+        <argsstring>()</argsstring>
+        <name>flip</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="142" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af1e4125b7ff0c303f71b91960d882070" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool none</definition>
+        <argsstring>() const </argsstring>
+        <name>none</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="167" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="166" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1aa385aa18f5e42db5a415c25a90f4193d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>operator bool</definition>
+        <argsstring>() const </argsstring>
+        <name>operator bool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="151" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!</definition>
+        <argsstring>() const </argsstring>
+        <name>operator!</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="159" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="158" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3a8782b2e251b374143f33ae24b883ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="225" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="224" bodyend="230"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a969719c65ba39401553f924f3056faef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray</type>
+        <definition>BitArray operator&amp;</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>operator&amp;</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="279" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="278" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ad856321dc0784f6dadc8ae6ddde7c0a3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&amp;&amp;</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>operator&amp;&amp;</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="291" bodyend="294"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac25a92becfff6a401209119c436b6a9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; operator&amp;=</definition>
+        <argsstring>(const BitArray &amp;x)</argsstring>
+        <name>operator&amp;=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="258" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="257" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac4caa07532b1d030ccbf181e77dac8ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="207" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="206" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1afddeeefc296abcbf1408ecd480865db1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;=</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="216" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="215" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a1638a4bfdcd7e15614dad287cb5fbb9d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="231" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1addbaf4a45bf870bb15398ada3efa1b63" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="210" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a0351ba4efab1085a1c315796686fa329" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;=</definition>
+        <argsstring>(const BitArray &amp;t) const </argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="220" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="219" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ab949e91ac3ea478f274e048e512d39a5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator[]</definition>
+        <argsstring>(unsigned pos) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="124" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="123" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af976e2a42dfccce2d69ac48cc21a303d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray</type>
+        <definition>BitArray operator^</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>operator^</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="282" bodyend="285"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ae104b39fa7069b942c2edd6203238e04" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; operator^=</definition>
+        <argsstring>(const BitArray &amp;x)</argsstring>
+        <name>operator^=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="261" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a387eb0cef7f629dc1a087874906e5129" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray</type>
+        <definition>BitArray operator|</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>operator|</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="286" bodyend="289"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a54f01f9955b0ad83175205e8eede05bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; operator|=</definition>
+        <argsstring>(const BitArray &amp;x)</argsstring>
+        <name>operator|=</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="266" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="265" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1adaa53e5276df6b3e22288a0d5d6d290c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator||</definition>
+        <argsstring>(const BitArray &amp;y) const </argsstring>
+        <name>operator||</name>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="295" bodyend="298"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af1da3e5223a8874e2d131534e7d9db39" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray</type>
+        <definition>BitArray operator~</definition>
+        <argsstring>() const </argsstring>
+        <name>operator~</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="180" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9fc26c3f9822eea20457a8e6fde4f060" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="85" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a6d1f178fffb1582a1bf1747005401a97" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; reset</definition>
+        <argsstring>(unsigned pos)</argsstring>
+        <name>reset</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="109" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a116e47d940240366fd2eca82f62f97e3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="136" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3fbe91f74734add7e1df567f6b1b8139" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>()</argsstring>
+        <name>set</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="80" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="79" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3d9c895169b0b66ba69291aa872fe40f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; set</definition>
+        <argsstring>(unsigned pos, bool value=true)</argsstring>
+        <name>set</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="103" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3eae1258af81a85ccd6eec788ba0be19" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BitArray &amp;</type>
+        <definition>BitArray&amp; set</definition>
+        <argsstring>()</argsstring>
+        <name>set</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="128" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9a7de761204eb128ec468b36b2915c5b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned size</definition>
+        <argsstring>()</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="66" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="65" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a27ab42e013fb42029aeb4037f7ef7e4f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>pos</declname>
+            <defname>pos</defname>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool test</definition>
+        <argsstring>() const </argsstring>
+        <name>test</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="97" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8fcbf27d7fb329be121a6829f99237d3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool test</definition>
+        <argsstring>(unsigned pos) const </argsstring>
+        <name>test</name>
+        <param>
+          <type>unsigned</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="120" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="119" bodyend="122"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a5fa142b0649e88d4fcbd2e3732b1d4b3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>friend std::ostream &amp;</type>
+        <definition>std::ostream&amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const BitArray &amp;z)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const BitArray &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="301" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="300" bodyend="305"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" line="31" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bit_array.hxx" bodystart="30" bodyend="306"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8df8a389781b95596f98ef919b00d5f0" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>all</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8be230fdd50e0ce842dd3b0a3012821b" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>any</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a193866b8fb8153eb73041699c8597901" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>array_len</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a97d6bfdee73b68ed95220840461baaf8" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>assign_operator</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a67dd61005bc67d527bfdd47b1b4f1a77" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>bit_mask</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af8137880f1004c9694da2b67305edce5" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>bit_operator</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1abd9c088e01dddde7144b278949042ca0" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>bit_size</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a17d41e3b87d22b4755d756c52ec56aa8" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>BitArray</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8d3ad3fe112de98622b7c128a3e8f309" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>border_pos</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac8bb3912a3ce86b15842e79d0b421204" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>clear</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a1a48d79048d90975fc16e8b8e82c26b0" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>does_fit</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1afbaec442885f5cefd3946ba1db87b617" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>flip</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1acd1d2adc4cbb68431ed839f5f42ab639" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>flip</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a830b8219a640aba3bd16c2cf82ec81be" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>flip</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a188484317493196a4dd630fee010d676" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>greater</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a21960f5088203d3be0b88abfa6123316" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>last_mask</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ad408237947dfb0c6f497ad44e77b87b8" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>last_pos</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1aa66e6c31f400bd7f7db2a68b039b976e" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>less</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a81573c46ae35aa7267ae79cf3d8f12f9" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>mutual_compare</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af1e4125b7ff0c303f71b91960d882070" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>none</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac85b34335fbe4caf2782c516d57a5374" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>ones_mask</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1aa385aa18f5e42db5a415c25a90f4193d" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator bool</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator!</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3a8782b2e251b374143f33ae24b883ef" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a969719c65ba39401553f924f3056faef" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&amp;</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ad856321dc0784f6dadc8ae6ddde7c0a3" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&amp;&amp;</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac25a92becfff6a401209119c436b6a9f" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&amp;=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ac4caa07532b1d030ccbf181e77dac8ea" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&lt;</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a5fa142b0649e88d4fcbd2e3732b1d4b3" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1afddeeefc296abcbf1408ecd480865db1" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&lt;=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a1638a4bfdcd7e15614dad287cb5fbb9d" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1addbaf4a45bf870bb15398ada3efa1b63" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&gt;</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a0351ba4efab1085a1c315796686fa329" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator&gt;=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ab949e91ac3ea478f274e048e512d39a5" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af976e2a42dfccce2d69ac48cc21a303d" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator^</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1ae104b39fa7069b942c2edd6203238e04" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator^=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a387eb0cef7f629dc1a087874906e5129" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator|</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a54f01f9955b0ad83175205e8eede05bd" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator|=</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1adaa53e5276df6b3e22288a0d5d6d290c" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator||</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1af1da3e5223a8874e2d131534e7d9db39" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>operator~</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9fc26c3f9822eea20457a8e6fde4f060" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>reset</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a6d1f178fffb1582a1bf1747005401a97" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>reset</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a116e47d940240366fd2eca82f62f97e3" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>reset</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3fbe91f74734add7e1df567f6b1b8139" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>set</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3d9c895169b0b66ba69291aa872fe40f" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>set</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a3eae1258af81a85ccd6eec788ba0be19" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>set</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a465155609d5199b04d858925169ef0c5" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>set_bits</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9a7de761204eb128ec468b36b2915c5b" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>size</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a9fa5ea83a58aa6b34b399623e22f7d4c" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>size_index</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a27ab42e013fb42029aeb4037f7ef7e4f" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>test</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a8fcbf27d7fb329be121a6829f99237d3" prot="public" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>test</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a46a142502d95b76886c9325e4359ecdc" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>word_len</name></member>
+      <member refid="classvigra_1_1BitArray_3_01SIZE_00_01WORD__TYPE_00_01typename_01EnableBitArray_3_01WORD__TYPE_01_4_1_1type_01_4_1a85495ab6e35556c404a074e03f48494a" prot="protected" virt="non-virtual"><scope>vigra::BitArray&lt; SIZE, WORD_TYPE, typename EnableBitArray&lt; WORD_TYPE &gt;::type &gt;</scope><name>word_pos</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

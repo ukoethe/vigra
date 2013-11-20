@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1cellimage" kind="namespace">
+    <compoundname>vigra::cellimage</compoundname>
+    <innerclass refid="structvigra_1_1cellimage_1_1CellMask" prot="public">vigra::cellimage::CellMask</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1CellPixel" prot="public">vigra::cellimage::CellPixel</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1CellPixelSerializer" prot="public">vigra::cellimage::CellPixelSerializer</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1CellTypeEquals" prot="public">vigra::cellimage::CellTypeEquals</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1LabelAccessor" prot="public">vigra::cellimage::LabelAccessor</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1LabelWriter" prot="public">vigra::cellimage::LabelWriter</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1RelabelFunctor" prot="public">vigra::cellimage::RelabelFunctor</innerclass>
+    <innerclass refid="structvigra_1_1cellimage_1_1TypeAccessor" prot="public">vigra::cellimage::TypeAccessor</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4" prot="public" static="no">
+        <name>CellType</name>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4afe4c1cccfe905d93605ab730b607ef06" prot="public">
+          <name>CellTypeRegion</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4af1c57526b743a547cbb41a9dc268c009" prot="public">
+          <name>CellTypeLine</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4a470dea2e209b5b826aad46c29012f1f4" prot="public">
+          <name>CellTypeVertex</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4a94b62e75bd59d0cda710008a54869722" prot="public">
+          <name>CellTypeError</name>
+          <initializer> 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4a13fae565af51a3911a0b9adecc218621" prot="public">
+          <name>CellTypeVertexOrLine</name>
+          <initializer> 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1cellimage_1a268ae74e98bc01a0e35f5e215580bcb4a2e20e3d3d8f0c5f3184b07a092c21da9" prot="public">
+          <name>CellTypeErrorOrLine</name>
+          <initializer> 5</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="47" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="47" bodyend="52"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacevigra_1_1cellimage_1a8e65c7cd54678ab48fbd35d32420625d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1BasicImage" kindref="compound">BasicImage</ref>&lt; CellPixel &gt;</type>
+        <definition>typedef BasicImage&lt;CellPixel&gt; CellImage</definition>
+        <argsstring></argsstring>
+        <name>CellImage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="93" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacevigra_1_1cellimage_1aaac5449f2336ef7c3db5418bdbe4da60" prot="public" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">vigra::NeighborhoodCirculator</ref>&lt; <ref refid="classvigra_1_1BasicImage_1af41e23f99db325a93187f3cd64201529" kindref="member">CellImage::Iterator</ref>, <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref> &gt;</type>
+        <definition>typedef vigra::NeighborhoodCirculator&lt;CellImage::Iterator, EightNeighborCode&gt; CellImageEightCirculator</definition>
+        <argsstring></argsstring>
+        <name>CellImageEightCirculator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacevigra_1_1cellimage_1a4e8a53a752ccd668e2d019c07af24ee3" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>typedef unsigned int CellLabel</definition>
+        <argsstring></argsstring>
+        <name>CellLabel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="57" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacevigra_1_1cellimage_1a49857d946c92ba804564c99a6e993121" prot="public" static="no">
+        <type>TypeAccessor</type>
+        <definition>typedef TypeAccessor CellTypeAccessor</definition>
+        <argsstring></argsstring>
+        <name>CellTypeAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacevigra_1_1cellimage_1a3b3f0708d055b1b46c15fca76baae7f8" prot="public" static="no">
+        <type>TypeAccessor&lt; unsigned char &gt;</type>
+        <definition>typedef TypeAccessor&lt;unsigned char&gt; TypeAsByteAccessor</definition>
+        <argsstring></argsstring>
+        <name>TypeAsByteAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="138" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="138" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacevigra_1_1cellimage_1ae7ecf4e0473e6b6d0d2afc8486a016f2" prot="public" static="yes" mutable="no">
+        <type>CellType</type>
+        <definition>CellType cellConfigurations[]</definition>
+        <argsstring>[]</argsstring>
+        <name>cellConfigurations</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellconfigurations.hxx" line="1325" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellconfigurations.hxx" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1cellimage_1acb5a2d878add6927f900b2193e9f04a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class EndIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cellimage::inspectCell</definition>
+        <argsstring>(EndIterator endIterator, Accessor a, Functor &amp;f)</argsstring>
+        <name>inspectCell</name>
+        <param>
+          <type>EndIterator</type>
+          <declname>endIterator</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="234" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="233" bodyend="237"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1cellimage_1a2f1bddba4e0fc06abcc47ac29954e042" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class EndIterator</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cellimage::inspectCell</definition>
+        <argsstring>(EndIterator endIterator, Functor &amp;f)</argsstring>
+        <name>inspectCell</name>
+        <param>
+          <type>EndIterator</type>
+          <declname>endIterator</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="240" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1cellimage_1a94806f8cd081aca93d5b87ca9122fd26" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcEndIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestEndIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cellimage::transformCell</definition>
+        <argsstring>(SrcEndIterator srcEndIterator, SrcAccessor sa, DestEndIterator destEndIterator, DestAccessor da, Functor const &amp;f)</argsstring>
+        <name>transformCell</name>
+        <param>
+          <type>SrcEndIterator</type>
+          <declname>srcEndIterator</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestEndIterator</type>
+          <declname>destEndIterator</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="254" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="251" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1cellimage_1a9157493ead1e6e45bc7f06f5776dc010" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcEndIterator</type>
+          </param>
+          <param>
+            <type>class DestEndIterator</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::cellimage::transformCell</definition>
+        <argsstring>(SrcEndIterator srcEndIterator, DestEndIterator destEndIterator, Functor const &amp;f)</argsstring>
+        <name>transformCell</name>
+        <param>
+          <type>SrcEndIterator</type>
+          <declname>srcEndIterator</declname>
+        </param>
+        <param>
+          <type>DestEndIterator</type>
+          <declname>destEndIterator</declname>
+        </param>
+        <param>
+          <type>Functor const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" line="263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellimage.hxx" bodystart="260" bodyend="266"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/cellconfigurations.hxx" line="43"/>
+  </compounddef>
+</doxygen>

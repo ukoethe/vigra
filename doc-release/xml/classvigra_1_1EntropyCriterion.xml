@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1EntropyCriterion" kind="class" prot="public">
+    <compoundname>vigra::EntropyCriterion</compoundname>
+    <includes refid="rf__split_8hxx" local="no">vigra/random_forest/rf_split.hxx</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1EntropyCriterion_1aa60e756d9df59b48b45e06eb6f0917ae" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Array</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double operator()</definition>
+        <argsstring>(Array const &amp;hist, Array2 const &amp;weights, double total=1.0) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>hist</declname>
+        </param>
+        <param>
+          <type>Array2 const &amp;</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>total</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate the weighted gini impurity based on class histogram and class weights </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="366" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="363" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1EntropyCriterion_1a1a588b5948193d67685337f4e8e346bd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>double operator()</definition>
+        <argsstring>(Array const &amp;hist, double total=1.0) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>hist</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>total</declname>
+          <defval>1.0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate the gini based impurity based on class histogram </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="373" bodyend="376"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1EntropyCriterion_1a38f0a44f03e5412b4d544ea7b271c1e9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Array</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>static double impurity</definition>
+        <argsstring>(Array const &amp;hist, double total)</argsstring>
+        <name>impurity</name>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>hist</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>total</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>static version of operator(hist total) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="382" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="381" bodyend="384"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1EntropyCriterion_1acd258b59a5b3ced4c6599b618c4b189a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Array</type>
+          </param>
+          <param>
+            <type>class Array2</type>
+          </param>
+        </templateparamlist>
+        <type>double</type>
+        <definition>static double impurity</definition>
+        <argsstring>(Array const &amp;hist, Array2 const &amp;weights, double total)</argsstring>
+        <name>impurity</name>
+        <param>
+          <type>Array const &amp;</type>
+          <declname>hist</declname>
+        </param>
+        <param>
+          <type>Array2 const &amp;</type>
+          <declname>weights</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>total</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>static version of operator(hist, weights, total) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="392" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="389" bodyend="413"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Functor to calculate the entropy based impurity </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="357" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="356" bodyend="414"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1EntropyCriterion_1a38f0a44f03e5412b4d544ea7b271c1e9" prot="public" virt="non-virtual"><scope>vigra::EntropyCriterion</scope><name>impurity</name></member>
+      <member refid="classvigra_1_1EntropyCriterion_1acd258b59a5b3ced4c6599b618c4b189a" prot="public" virt="non-virtual"><scope>vigra::EntropyCriterion</scope><name>impurity</name></member>
+      <member refid="classvigra_1_1EntropyCriterion_1aa60e756d9df59b48b45e06eb6f0917ae" prot="public" virt="non-virtual"><scope>vigra::EntropyCriterion</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1EntropyCriterion_1a1a588b5948193d67685337f4e8e346bd" prot="public" virt="non-virtual"><scope>vigra::EntropyCriterion</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

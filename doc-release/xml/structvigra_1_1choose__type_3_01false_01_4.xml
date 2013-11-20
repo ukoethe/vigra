@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1choose__type_3_01false_01_4" kind="struct" prot="public">
+    <compoundname>vigra::choose_type&lt; false &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1choose__type_3_01false_01_4_1a5d827580af5cd2ef420fd55bbf48f0eb" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+        </templateparamlist>
+        <type>const B &amp;</type>
+        <definition>static const B&amp; at</definition>
+        <argsstring>(const A &amp;, const B &amp;b)</argsstring>
+        <name>at</name>
+        <param>
+          <type>const A &amp;</type>
+        </param>
+        <param>
+          <type>const B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="591" bodyend="591"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1choose__type_3_01false_01_4_1a02a29fcd38c3e152ba150cf1a19153c3" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class A</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+        </templateparamlist>
+        <type>B &amp;</type>
+        <definition>static B&amp; at</definition>
+        <argsstring>(A &amp;, B &amp;b)</argsstring>
+        <name>at</name>
+        <param>
+          <type>A &amp;</type>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="593" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="593" bodyend="593"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="589" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="588" bodyend="594"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1choose__type_3_01false_01_4_1a5d827580af5cd2ef420fd55bbf48f0eb" prot="public" virt="non-virtual"><scope>vigra::choose_type&lt; false &gt;</scope><name>at</name></member>
+      <member refid="structvigra_1_1choose__type_3_01false_01_4_1a02a29fcd38c3e152ba150cf1a19153c3" prot="public" virt="non-virtual"><scope>vigra::choose_type&lt; false &gt;</scope><name>at</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

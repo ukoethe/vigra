@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structPromoteTraits_3_01long_01double_00_01short_01_4" kind="struct" prot="public">
+    <compoundname>PromoteTraits&lt; long double, short &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structPromoteTraits_3_01long_01double_00_01short_01_4_1a505095af443397cf0f72b947f0825b21" prot="public" static="no">
+        <type>detail::PromoteType&lt; long double, short &gt;::Promote</type>
+        <definition>typedef detail::PromoteType&lt;long double, short&gt;::Promote Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" bodystart="1195" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" bodystart="1193" bodyend="1197"/>
+    <listofallmembers>
+      <member refid="structPromoteTraits_3_01long_01double_00_01short_01_4_1a505095af443397cf0f72b947f0825b21" prot="public" virt="non-virtual"><scope>PromoteTraits&lt; long double, short &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

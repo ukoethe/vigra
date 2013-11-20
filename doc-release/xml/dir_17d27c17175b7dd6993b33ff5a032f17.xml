@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="dir_17d27c17175b7dd6993b33ff5a032f17" kind="dir">
+    <compoundname>vigra/random_forest/</compoundname>
+    <innerfile refid="features_8hxx">features.hxx</innerfile>
+    <innerfile refid="rf__algorithm_8hxx">rf_algorithm.hxx</innerfile>
+    <innerfile refid="rf__common_8hxx">rf_common.hxx</innerfile>
+    <innerfile refid="rf__decisionTree_8hxx">rf_decisionTree.hxx</innerfile>
+    <innerfile refid="rf__earlystopping_8hxx">rf_earlystopping.hxx</innerfile>
+    <innerfile refid="rf__nodeproxy_8hxx">rf_nodeproxy.hxx</innerfile>
+    <innerfile refid="rf__online__prediction__set_8hxx">rf_online_prediction_set.hxx</innerfile>
+    <innerfile refid="rf__preprocessing_8hxx">rf_preprocessing.hxx</innerfile>
+    <innerfile refid="rf__region_8hxx">rf_region.hxx</innerfile>
+    <innerfile refid="rf__ridge__split_8hxx">rf_ridge_split.hxx</innerfile>
+    <innerfile refid="rf__split_8hxx">rf_split.hxx</innerfile>
+    <innerfile refid="rf__visitors_8hxx">rf_visitors.hxx</innerfile>
+    <innerfile refid="splices_8hxx">splices.hxx</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1inspectImageIf__binder" kind="struct" prot="public">
+    <compoundname>vigra::inspectImageIf_binder</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class <ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+      </param>
+      <param>
+        <type>class Accessor</type>
+      </param>
+      <param>
+        <type>class MaskImageIterator</type>
+      </param>
+      <param>
+        <type>class MaskAccessor</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1inspectImageIf__binder_1a928c5ad9c5ee4cb10446a62f5fc74ac7" prot="public" static="no" mutable="no">
+        <type>Accessor</type>
+        <definition>Accessor a</definition>
+        <argsstring></argsstring>
+        <name>a</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="333" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectImageIf__binder_1afd6ad5f473d0f51550d23274b8da2547" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+        <definition>ImageIterator lowerright</definition>
+        <argsstring></argsstring>
+        <name>lowerright</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="332" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="332" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectImageIf__binder_1a8ea66ccf8662683bf16edab4cd192cdf" prot="public" static="no" mutable="no">
+        <type>MaskAccessor</type>
+        <definition>MaskAccessor ma</definition>
+        <argsstring></argsstring>
+        <name>ma</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="335" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectImageIf__binder_1a282a795a45213d925185e8f3e5a5397f" prot="public" static="no" mutable="no">
+        <type>MaskImageIterator</type>
+        <definition>MaskImageIterator mask_upperleft</definition>
+        <argsstring></argsstring>
+        <name>mask_upperleft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="334" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1inspectImageIf__binder_1a5c4084d6c8e813d5bb0bcf1d0625b31d" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+        <definition>ImageIterator upperleft</definition>
+        <argsstring></argsstring>
+        <name>upperleft</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="331" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1inspectImageIf__binder_1a99044a608c8a1555d6c44ac917d95642" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>inspectImageIf_binder</definition>
+        <argsstring>(ImageIterator ul, ImageIterator lr, Accessor ac, MaskImageIterator m_ul, MaskAccessor m_ac)</argsstring>
+        <name>inspectImageIf_binder</name>
+        <param>
+          <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+          <declname>ul</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ImageIterator" kindref="compound">ImageIterator</ref></type>
+          <declname>lr</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>ac</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>m_ul</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>m_ac</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="340" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="337" bodyend="340"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1inspectImageIf__binder_1af942b5d6570488a702efd7722d1d96df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(Functor &amp;f)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="343" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="342" bodyend="353"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="881">
+        <label>ImageIterator&lt; PIXELTYPE &gt;</label>
+        <link refid="classvigra_1_1ImageIterator"/>
+        <childnode refid="882" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="882">
+        <label>ImageIteratorBase&lt; ImageIterator&lt; PIXELTYPE &gt;, PIXELTYPE, PIXELTYPE &amp;, PIXELTYPE * &gt;</label>
+        <link refid="classvigra_1_1ImageIteratorBase"/>
+      </node>
+      <node id="880">
+        <label>inspectImageIf_binder&lt; ImageIterator, Accessor, MaskImageIterator, MaskAccessor &gt;</label>
+        <childnode refid="881" relation="usage">
+          <edgelabel>lowerright</edgelabel>
+          <edgelabel>upperleft</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="329" bodyend="354"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1inspectImageIf__binder_1a928c5ad9c5ee4cb10446a62f5fc74ac7" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>a</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1a99044a608c8a1555d6c44ac917d95642" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>inspectImageIf_binder</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1afd6ad5f473d0f51550d23274b8da2547" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>lowerright</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1a8ea66ccf8662683bf16edab4cd192cdf" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>ma</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1a282a795a45213d925185e8f3e5a5397f" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>mask_upperleft</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1af942b5d6570488a702efd7722d1d96df" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>operator()</name></member>
+      <member refid="structvigra_1_1inspectImageIf__binder_1a5c4084d6c8e813d5bb0bcf1d0625b31d" prot="public" virt="non-virtual"><scope>vigra::inspectImageIf_binder</scope><name>upperleft</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

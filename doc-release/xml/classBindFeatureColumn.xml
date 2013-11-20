@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classBindFeatureColumn" kind="class" prot="public">
+    <compoundname>BindFeatureColumn</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">FeatureBase</basecompoundref>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classBindFeatureColumn_1aa9674a606af4235acc50734986f61153" prot="private" static="no">
+        <type>MultiArrayShape&lt; N &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;N&gt;::type Shp</definition>
+        <argsstring></argsstring>
+        <name>Shp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classBindFeatureColumn_1a750b5d744c39a06bfb13e6eb010e35d0" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int index</definition>
+        <argsstring></argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="85" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classBindFeatureColumn_1ae9115b8ef05394c84fa6254b6cb55774" prot="private" static="no" mutable="no">
+        <type>FeatureBase &amp;</type>
+        <definition>FeatureBase&amp; underlying</definition>
+        <argsstring></argsstring>
+        <name>underlying</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classBindFeatureColumn_1a28fe20420e86d51a9b66a568c6d34303" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BindFeatureColumn</definition>
+        <argsstring>(FeaetureBase &amp;in, int index_)</argsstring>
+        <name>BindFeatureColumn</name>
+        <param>
+          <type>FeaetureBase &amp;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="102" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classBindFeatureColumn_1a0cc1452510c86e885e47693b95c36c89" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; operator()</definition>
+        <argsstring>(int i, int j)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>j</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="94" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="93" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classBindFeatureColumn_1af1a8c9c4769161714a5a1a2c7fad446b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; operator[]</definition>
+        <argsstring>(int i)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="97" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classBindFeatureColumn_1a4a3dd88a69e2364cd8fdc5146a43beb0" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>MultiArrayShape&lt; 2 &gt;::type</type>
+        <definition>MultiArrayShape&lt;2&gt;::type shape</definition>
+        <argsstring>()</argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="88" bodyend="91"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="82" bodyend="107"/>
+    <listofallmembers>
+      <member refid="classBindFeatureColumn_1a28fe20420e86d51a9b66a568c6d34303" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>BindFeatureColumn</name></member>
+      <member refid="classBindFeatureColumn_1a750b5d744c39a06bfb13e6eb010e35d0" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>index</name></member>
+      <member refid="classBindFeatureColumn_1a0cc1452510c86e885e47693b95c36c89" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>operator()</name></member>
+      <member refid="classBindFeatureColumn_1af1a8c9c4769161714a5a1a2c7fad446b" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>operator[]</name></member>
+      <member refid="classBindFeatureColumn_1a4a3dd88a69e2364cd8fdc5146a43beb0" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>shape</name></member>
+      <member refid="classFeatureBase_1a60ba1f15bb1a37be91ca3cc8fbe4c0c4" prot="public" virt="non-virtual" ambiguityscope="FeatureBase::"><scope>BindFeatureColumn</scope><name>shape</name></member>
+      <member refid="classBindFeatureColumn_1aa9674a606af4235acc50734986f61153" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>Shp</name></member>
+      <member refid="classBindFeatureColumn_1ae9115b8ef05394c84fa6254b6cb55774" prot="private" virt="non-virtual"><scope>BindFeatureColumn</scope><name>underlying</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

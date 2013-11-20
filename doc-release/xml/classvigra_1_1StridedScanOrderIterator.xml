@@ -1,0 +1,739 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1StridedScanOrderIterator" kind="class" prot="public">
+    <compoundname>vigra::StridedScanOrderIterator</compoundname>
+    <includes refid="multi__iterator_8hxx" local="no">vigra/multi_iterator.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class REFERENCE</type>
+      </param>
+      <param>
+        <type>class POINTER</type>
+      </param>
+      <param>
+        <type>unsigned int</type>
+        <declname>M</declname>
+        <defname>M</defname>
+        <defval>N</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="enum" id="classvigra_1_1StridedScanOrderIterator_1ae4d5251432e1a9e6803c0240cc492e18" prot="private" static="no">
+        <name>@25</name>
+        <enumvalue id="classvigra_1_1StridedScanOrderIterator_1ae4d5251432e1a9e6803c0240cc492e18a831fc3a2f78e54e3c4ce5251aa1fc268" prot="private">
+          <name>level</name>
+          <initializer> M-1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2083" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2083" bodyend="2083"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1af158cac8f91432cb11957495aace3c9b" prot="private" static="no">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref>&lt; N, T, REFERENCE, POINTER, M-1 &gt;</type>
+        <definition>typedef StridedScanOrderIterator&lt;N, T, REFERENCE, POINTER, M-1&gt; base_type</definition>
+        <argsstring></argsstring>
+        <name>base_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2082" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2082" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1ac7fe6b8cecbddf1efcf0d5d3b9b688eb" prot="public" static="no">
+        <type>base_type::const_reference</type>
+        <definition>typedef base_type::const_reference const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2090" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2090" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1a6a980d519d39c42228bbb09c5fd1c9c3" prot="public" static="no">
+        <type>stride_traits::stride_array_type</type>
+        <definition>typedef stride_traits::stride_array_type difference_array_type</definition>
+        <argsstring></argsstring>
+        <name>difference_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2094" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2094" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1a97c637af287dd370461127aa1de4b00b" prot="public" static="no">
+        <type>stride_traits::stride_type</type>
+        <definition>typedef stride_traits::stride_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2093" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2093" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1ab60587bd4cb8b25bb3e92d2ce2e05f5b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>typedef StridedScanOrderIterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2095" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2095" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>typedef std::random_access_iterator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2096" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2096" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1a68ecfc7edab9c677fab5affc459305f2" prot="public" static="no">
+        <type>base_type::pointer</type>
+        <definition>typedef base_type::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2088" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2088" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1aa5c002ab42a75cdabd182cdde72b474f" prot="public" static="no">
+        <type>base_type::reference</type>
+        <definition>typedef base_type::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2089" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2089" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1ae2a5f1a923d61ad77b98a0585cbe89ff" prot="public" static="no">
+        <type>base_type::shape_type</type>
+        <definition>typedef base_type::shape_type shape_type</definition>
+        <argsstring></argsstring>
+        <name>shape_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2091" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2091" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1a25df743756a76032eb69086784fffaec" prot="public" static="no">
+        <type>MultiIteratorStrideTraits&lt; POINTER &gt;</type>
+        <definition>typedef MultiIteratorStrideTraits&lt;POINTER&gt; stride_traits</definition>
+        <argsstring></argsstring>
+        <name>stride_traits</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2092" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2092" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1StridedScanOrderIterator_1afabdc9b5f48b286e2d7676557d2b66ed" prot="public" static="no">
+        <type>base_type::value_type</type>
+        <definition>typedef base_type::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2087" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2087" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a2142215a38ed07b99140511cb5330e7b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool atBorder</definition>
+        <argsstring>() const </argsstring>
+        <name>atBorder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2176" bodyend="2181"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a504b2dd73407a8d442cb8f0e771996b2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator getEndIterator</definition>
+        <argsstring>() const </argsstring>
+        <name>getEndIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2169" bodyend="2174"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a88d33cbe627ae27fdb8a67a313b2ddde" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int neighborhoodType</definition>
+        <argsstring>() const </argsstring>
+        <name>neighborhoodType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2183" bodyend="2191"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a71b8c89abd337d2181a99eb706e52956" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2227" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2226" bodyend="2229"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a89ca8bc1591238bd28e0d3bd8d326edf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator+</definition>
+        <argsstring>(MultiArrayIndex d) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2194" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2193" bodyend="2196"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ab266494712b01007c2f2907193276137" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator+</definition>
+        <argsstring>(const shape_type &amp;coordOffset) const </argsstring>
+        <name>operator+</name>
+        <param>
+          <type>const shape_type &amp;</type>
+          <declname>coordOffset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2205" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2204" bodyend="2207"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a2aa3bec209f440c7db24adcbdc1479ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2107" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2106" bodyend="2116"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a27da1b87e3afdfabd54009d2731c2ec7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2119" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2118" bodyend="2123"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ad27abc69ef4cda8b511dcb98ca0736ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator+=</definition>
+        <argsstring>(MultiArrayIndex i)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2125" bodyend="2129"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a78e189fbc36cab2d60aff960064f3e4d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator+=</definition>
+        <argsstring>(const shape_type &amp;coordOffset)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>const shape_type &amp;</type>
+          <declname>coordOffset</declname>
+        </param>
+        <briefdescription>
+<para>overload to add a coord-tuple: </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2133" bodyend="2139"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a91475046ee1f894f24e672deee431c4e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator-</definition>
+        <argsstring>(MultiArrayIndex d) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2199" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2198" bodyend="2201"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ae0dd9bfbc14d3f6d679834e2a000e175" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator-</definition>
+        <argsstring>(const shape_type &amp;coordOffset) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type>const shape_type &amp;</type>
+          <declname>coordOffset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2210" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2209" bodyend="2212"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a153151f7b58818695d975b9b0d15640a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex operator-</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator-</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2217" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2216" bodyend="2219"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ad17f6b959864b407cf49272d53ea5bb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2145" bodyend="2155"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a160316e54e9b850a8112f56d32df548f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref></type>
+        <definition>StridedScanOrderIterator operator--</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator--</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2158" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2157" bodyend="2162"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a5457549d9006a5b3a250e9b17b8fac6c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator-=</definition>
+        <argsstring>(const shape_type &amp;coordOffset)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>const shape_type &amp;</type>
+          <declname>coordOffset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2140" bodyend="2143"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a5e2641caec93a0dc5a098b7445088cf3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; operator-=</definition>
+        <argsstring>(MultiArrayIndex i)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2164" bodyend="2167"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ad3d665c23aeaa2c511cda560cacc7c97" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2231" bodyend="2234"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1aba9e72f6c12641dc25bbd1b2d6f9fbec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;=</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2236" bodyend="2239"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a672dfd6063dac3258910135b9b1d25b2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2221" bodyend="2224"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ab5be1367f622988145d9cc1209242b30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2241" bodyend="2244"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a73a9cf4f04e007930fc1e88451f36f30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;=</definition>
+        <argsstring>(StridedScanOrderIterator const &amp;r) const </argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2246" bodyend="2249"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a49fcb5ff7377d987104dacd3cc662f21" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StridedScanOrderIterator</definition>
+        <argsstring>()</argsstring>
+        <name>StridedScanOrderIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2099" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2098" bodyend="2099"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a0f2153aef5e9312bc706e1507c737277" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StridedScanOrderIterator</definition>
+        <argsstring>(pointer i, shape_type const &amp;shape, shape_type const &amp;strides)</argsstring>
+        <name>StridedScanOrderIterator</name>
+        <param>
+          <type>pointer</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>strides</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2104" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2101" bodyend="2104"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a2815b09dd4169f4f343ab8885f078ac8" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Ptr</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void decrement</definition>
+        <argsstring>(Ptr &amp;p2, shape_type const &amp;strides2)</argsstring>
+        <name>decrement</name>
+        <param>
+          <type>Ptr &amp;</type>
+          <declname>p2</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>strides2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2287" bodyend="2297"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a90cfdd03d80084ef1f1fa2258bf58021" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Ptr</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void increment</definition>
+        <argsstring>(Ptr &amp;p2, shape_type const &amp;strides2)</argsstring>
+        <name>increment</name>
+        <param>
+          <type>Ptr &amp;</type>
+          <declname>p2</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>strides2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2275" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2274" bodyend="2284"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ace640074e8dfbb20a54abe1f27c39f4b" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void inverseReset</definition>
+        <argsstring>()</argsstring>
+        <name>inverseReset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2268" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2267" bodyend="2271"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1a92e3a3cbe854ad9c5178d6bc29b316a9" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1StridedScanOrderIterator" kindref="compound">StridedScanOrderIterator</ref> &amp;</type>
+        <definition>StridedScanOrderIterator&amp; moveRelative</definition>
+        <argsstring>(const MultiArrayIndex &amp;pointerOffset, const MultiArrayIndex &amp;indexOffset, const shape_type &amp;coordOffset)</argsstring>
+        <name>moveRelative</name>
+        <param>
+          <type>const <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref> &amp;</type>
+          <declname>pointerOffset</declname>
+        </param>
+        <param>
+          <type>const <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref> &amp;</type>
+          <declname>indexOffset</declname>
+        </param>
+        <param>
+          <type>const shape_type &amp;</type>
+          <declname>coordOffset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2301" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2298" bodyend="2305"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StridedScanOrderIterator_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2261" bodyend="2265"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Sequential iterator for <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>This iterator provides STL-compatible random access iterator functionality for arbitrary <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref> instances, regardless of their shapes and strides. The class uses an implementation that minimizes speed penalties that could result from non-trivial strides. The <emphasis>scan-order</emphasis> is defined such that dimensions are iterated from front to back (first to last).</para><para>You normally construct instances of this class by calling <ref refid="classvigra_1_1MultiArrayView_1ad69bd11391be1a1dba5c8202259664f8" kindref="member">MultiArrayView::begin()</ref> and <ref refid="classvigra_1_1MultiArrayView_1acad38d52497a975bfb6f2f6acd76631f" kindref="member">MultiArrayView::end()</ref>.</para><para>The iterator supports all functions listed in the STL documentation for <ulink url="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</ulink>. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="2081" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="2077" bodyend="2306"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a2142215a38ed07b99140511cb5330e7b" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>atBorder</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1af158cac8f91432cb11957495aace3c9b" prot="private" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>base_type</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ac7fe6b8cecbddf1efcf0d5d3b9b688eb" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a2815b09dd4169f4f343ab8885f078ac8" prot="protected" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>decrement</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a6a980d519d39c42228bbb09c5fd1c9c3" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>difference_array_type</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a97c637af287dd370461127aa1de4b00b" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a504b2dd73407a8d442cb8f0e771996b2" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>getEndIterator</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a90cfdd03d80084ef1f1fa2258bf58021" prot="protected" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>increment</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ace640074e8dfbb20a54abe1f27c39f4b" prot="protected" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>inverseReset</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ab60587bd4cb8b25bb3e92d2ce2e05f5b" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ae4d5251432e1a9e6803c0240cc492e18a831fc3a2f78e54e3c4ce5251aa1fc268" prot="private" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>level</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a92e3a3cbe854ad9c5178d6bc29b316a9" prot="protected" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>moveRelative</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a88d33cbe627ae27fdb8a67a313b2ddde" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>neighborhoodType</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a71b8c89abd337d2181a99eb706e52956" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a89ca8bc1591238bd28e0d3bd8d326edf" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ab266494712b01007c2f2907193276137" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a2aa3bec209f440c7db24adcbdc1479ef" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a27da1b87e3afdfabd54009d2731c2ec7" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ad27abc69ef4cda8b511dcb98ca0736ff" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a78e189fbc36cab2d60aff960064f3e4d" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a91475046ee1f894f24e672deee431c4e" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ae0dd9bfbc14d3f6d679834e2a000e175" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a153151f7b58818695d975b9b0d15640a" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ad17f6b959864b407cf49272d53ea5bb5" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a160316e54e9b850a8112f56d32df548f" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a5457549d9006a5b3a250e9b17b8fac6c" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a5e2641caec93a0dc5a098b7445088cf3" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ad3d665c23aeaa2c511cda560cacc7c97" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator&lt;</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1aba9e72f6c12641dc25bbd1b2d6f9fbec" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator&lt;=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a672dfd6063dac3258910135b9b1d25b2" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ab5be1367f622988145d9cc1209242b30" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator&gt;</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a73a9cf4f04e007930fc1e88451f36f30" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>operator&gt;=</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a68ecfc7edab9c677fab5affc459305f2" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1aa5c002ab42a75cdabd182cdde72b474f" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>reset</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1ae2a5f1a923d61ad77b98a0585cbe89ff" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>shape_type</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a25df743756a76032eb69086784fffaec" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>stride_traits</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a49fcb5ff7377d987104dacd3cc662f21" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>StridedScanOrderIterator</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1a0f2153aef5e9312bc706e1507c737277" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>StridedScanOrderIterator</name></member>
+      <member refid="classvigra_1_1StridedScanOrderIterator_1afabdc9b5f48b286e2d7676557d2b66ed" prot="public" virt="non-virtual"><scope>vigra::StridedScanOrderIterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

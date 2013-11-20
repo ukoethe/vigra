@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiArrayTags" kind="group">
+    <compoundname>MultiArrayTags</compoundname>
+    <title>Multi-dimensional Array Tags</title>
+    <innerclass refid="structvigra_1_1StridedArrayTag" prot="public">vigra::StridedArrayTag</innerclass>
+    <innerclass refid="classvigra_1_1TypeTraits" prot="public">vigra::TypeTraits</innerclass>
+    <innerclass refid="classvigra_1_1TypeTraits_3_01T_01_5_01_4" prot="public">vigra::TypeTraits&lt; T * &gt;</innerclass>
+    <innerclass refid="classvigra_1_1TypeTraits_3_01T_01const_01_01_4" prot="public">vigra::TypeTraits&lt; T const  &gt;</innerclass>
+    <innerclass refid="classvigra_1_1TypeTraits_3_01T_01const_01_5_01_4" prot="public">vigra::TypeTraits&lt; T const * &gt;</innerclass>
+    <innerclass refid="structvigra_1_1UnstridedArrayTag" prot="public">vigra::UnstridedArrayTag</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__MultiArrayTags_1ga16a65b8122b0527ff2e9ff58afdcaed5" prot="public" static="no">
+        <name>VIGRA_TYPE_TRAITS</name>
+        <param><defname>type</defname></param>
+        <param><defname>size</defname></param>
+        <initializer>template&lt;&gt; \
+class TypeTraits&lt;type&gt; \
+{ \
+  public: \
+    typedef VigraFalseType isConst; \
+    typedef VigraTrueType isPOD; \
+    typedef VigraTrueType isBuiltinType; \
+    typedef char TypeToSize[size]; \
+}; \
+ \
+namespace detail { \
+  TypeTraits&lt;type&gt;::TypeToSize * typeToSize(type); \
+  \
+  template &lt;&gt; \
+  struct SizeToType&lt;size&gt; \
+  { \
+      typedef type result; \
+  }; \
+}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Meta-programming tags to mark array&apos;s as strided or unstrided. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

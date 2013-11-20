@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1GammaFunctor" kind="class" prot="public">
+    <compoundname>vigra::GammaFunctor</compoundname>
+    <includes refid="transformimage_8hxx" local="no">vigra/transformimage.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>PixelType</declname>
+        <defname>PixelType</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_1ab18052d148fb1ece13cd69185195aba5" prot="private" static="no">
+        <type>NumericTraits&lt; PixelType &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;PixelType&gt;::RealPromote promote_type</definition>
+        <argsstring></argsstring>
+        <name>promote_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1251" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1251" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" prot="public" static="no">
+        <type>PixelType</type>
+        <definition>typedef PixelType argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1257" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1257" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_1a2f1cac15c70a6f5199a4104c37e88608" prot="public" static="no">
+        <type>PixelType</type>
+        <definition>typedef PixelType result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1261" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_1af1ae1457b0364ede460a98f91a694265" prot="public" static="no">
+        <type>PixelType</type>
+        <definition>typedef PixelType value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000042"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use argument_type and result_type </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1265" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1265" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_1a7dd958cdd73cbd9462e8dc2234ab6cc2" prot="private" static="no" mutable="no">
+        <type>promote_type</type>
+        <definition>promote_type diff_</definition>
+        <argsstring></argsstring>
+        <name>diff_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1292" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_1afac8f52bbe25f4b715c11e8f70cd223c" prot="private" static="no" mutable="no">
+        <type>promote_type</type>
+        <definition>promote_type gamma_</definition>
+        <argsstring></argsstring>
+        <name>gamma_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1290" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_1aafcf222d69bb3e240a9a11fdfa0ffca6" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" kindref="member">argument_type</ref></type>
+        <definition>argument_type min_</definition>
+        <argsstring></argsstring>
+        <name>min_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1291" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1291" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_1a57fead474344ed3b75d5f73212861ddb" prot="private" static="no" mutable="no">
+        <type>promote_type</type>
+        <definition>promote_type one_</definition>
+        <argsstring></argsstring>
+        <name>one_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1292" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_1a123184f402676f2aba8b76f0848f1cfa" prot="private" static="no" mutable="no">
+        <type>promote_type</type>
+        <definition>promote_type zero_</definition>
+        <argsstring></argsstring>
+        <name>zero_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1292" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1GammaFunctor_1ab102a43e993c8b16517900205f4dbc0b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GammaFunctor</definition>
+        <argsstring>(double gamma, argument_type const &amp;min, argument_type const &amp;max)</argsstring>
+        <name>GammaFunctor</name>
+        <param>
+          <type>double</type>
+          <declname>gamma</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" kindref="member">argument_type</ref> const &amp;</type>
+          <declname>min</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" kindref="member">argument_type</ref> const &amp;</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Init functor for argument range <computeroutput>[min, max]</computeroutput>. <computeroutput>gamma</computeroutput> values &lt; 1 will increase brightness, &gt; 1 will decrease it (gamma == 1 means no change). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1271" bodyend="1278"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GammaFunctor_1a144b031a96930bdd54be8c0b7164b4e4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1GammaFunctor_1a2f1cac15c70a6f5199a4104c37e88608" kindref="member">result_type</ref></type>
+        <definition>result_type operator()</definition>
+        <argsstring>(argument_type const &amp;v) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" kindref="member">argument_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate modified gray or color value </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1282" bodyend="1287"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Perform gamma correction of an image. </para>    </briefdescription>
+    <detaileddescription>
+<para>This functor applies a gamma correction to each pixel in order to modify the brightness of the image. Gamma values smaller than 1 will increase image brightness, whereas values greater than 1 decrease it. A value of gamma = 1 will have no effect. (See also <ref refid="classvigra_1_1BrightnessContrastFunctor" kindref="compound">BrightnessContrastFunctor</ref>, which additionally changes the contrast.)</para><para>For <ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue&apos;s</ref>, the transforms are applied component-wise. For ease of use, the pixel values are assumed to lie between the given minimum and maximum values (in case of RGB, this is again understood component-wise). In case of <computeroutput>unsigned char</computeroutput>, min and max default to 0 and 255 respectively. Precisely, the following transform is applied to each <emphasis> PixelValue</emphasis>:</para><para><formula id="88">\[ \begin{array}{rcl} V_1 &amp; = &amp; \frac{PixelValue - min}{max - min} \\ V_2 &amp; = &amp; V_1^{gamma} \\ Result &amp; = &amp; V_2 (max - min) + min \end{array} \]</formula></para><para>If the <computeroutput>PixelType</computeroutput> is <computeroutput>unsigned char</computeroutput>, a look-up-table is used for faster computation.</para><para><bold> Traits defined:</bold></para><para><computeroutput>FunctorTraits::isUnaryFunctor</computeroutput> is true (<computeroutput>VigraTrueType</computeroutput>)</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/transformimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>bimage(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" kindref="member">gamma</ref>;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::transformImage(srcImageRange(bimage),<sp/>destImage(bimage),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="classvigra_1_1GammaFunctor" kindref="compound" tooltip="Perform gamma correction of an image.">vigra::GammaFunctor&lt;unsigned char&gt;</ref>(gamma));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>fimage(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::FindMinMax&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">&gt;<sp/>minmax;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">vigra::inspectImage</ref>(srcImageRange(fimage),<sp/>minmax);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member" tooltip="Apply unary point transformation to each pixel.">vigra::transformImage</ref>(srcImageRange(fimage),<sp/>destImage(fimage),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="classvigra_1_1GammaFunctor" kindref="compound" tooltip="Perform gamma correction of an image.">vigra::GammaFunctor&lt;float&gt;</ref>(gamma,<sp/>minmax.min,<sp/>minmax.max));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>Scalar types: must be a linear algebra (+, - *, NumericTraits), strict weakly ordered (&lt;), and <computeroutput>pow()</computeroutput> must be defined.</para><para>RGB values: the component type must meet the above requirements. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1249" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1248" bodyend="1293"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1GammaFunctor_1a43a6feb130a539eef06a3666941ad9c9" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1a7dd958cdd73cbd9462e8dc2234ab6cc2" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>diff_</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1afac8f52bbe25f4b715c11e8f70cd223c" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>gamma_</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1ab102a43e993c8b16517900205f4dbc0b" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>GammaFunctor</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1aafcf222d69bb3e240a9a11fdfa0ffca6" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>min_</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1a57fead474344ed3b75d5f73212861ddb" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>one_</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1a144b031a96930bdd54be8c0b7164b4e4" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1ab18052d148fb1ece13cd69185195aba5" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>promote_type</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1a2f1cac15c70a6f5199a4104c37e88608" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1af1ae1457b0364ede460a98f91a694265" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1GammaFunctor_1a123184f402676f2aba8b76f0848f1cfa" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor</scope><name>zero_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,530 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1rf_1_1algorithms" kind="namespace">
+    <compoundname>vigra::rf::algorithms</compoundname>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1ClusterImportanceVisitor" prot="public">vigra::rf::algorithms::ClusterImportanceVisitor</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1ClusterNode" prot="public">vigra::rf::algorithms::ClusterNode</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1CorrectStatus" prot="public">vigra::rf::algorithms::CorrectStatus</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1Draw" prot="public">vigra::rf::algorithms::Draw</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1GetClusterVariables" prot="public">vigra::rf::algorithms::GetClusterVariables</innerclass>
+    <innerclass refid="structvigra_1_1rf_1_1algorithms_1_1HC__Entry" prot="public">vigra::rf::algorithms::HC_Entry</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" prot="public">vigra::rf::algorithms::HClustering</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus" prot="public">vigra::rf::algorithms::NormalizeStatus</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1PermuteCluster" prot="public">vigra::rf::algorithms::PermuteCluster</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1RFErrorCallback" prot="public">vigra::rf::algorithms::RFErrorCallback</innerclass>
+    <innerclass refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" prot="public">vigra::rf::algorithms::VariableSelectionResult</innerclass>
+    <innernamespace refid="namespacevigra_1_1rf_1_1algorithms_1_1detail">vigra::rf::algorithms::detail</innernamespace>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespacevigra_1_1rf_1_1algorithms_1affdfc29b4d56494c3fd8e016727d7ace" prot="public" static="no">
+        <name>ClusterLeafTypes</name>
+        <enumvalue id="namespacevigra_1_1rf_1_1algorithms_1affdfc29b4d56494c3fd8e016727d7acea47c8f25502576911dbcf02c49101b734" prot="public">
+          <name>c_Leaf</name>
+          <initializer> 95</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacevigra_1_1rf_1_1algorithms_1affdfc29b4d56494c3fd8e016727d7acea3f6abe47add82b6d8932e1071bf78310" prot="public">
+          <name>c_Node</name>
+          <initializer> 99</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="542" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="542" bodyend="542"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1af98df4134b76bd9cbb2d46f4a484498f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class ErrorRateCallBack</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::backward_elimination</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result, ErrorRateCallBack errorcallback)</argsstring>
+        <name>backward_elimination</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>ErrorRateCallBack</type>
+          <declname>errorcallback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform backward elimination</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x p matrix containing n instances with p attributes/features used in the variable selection algorithm </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x 1 matrix containing the corresponding response </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN/OUT: <ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> struct which will contain the results of the algorithm. Features between result.pivot and result.selected.end() will be left untouched. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>errorcallback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN, OPTIONAL: Functor that returns the error rate given a set of features and labels. Default is the <ref refid="classvigra_1_1RandomForest" kindref="compound">RandomForest</ref> OOB Error.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Backward elimination subsequently eliminates features that have the least influence on the error rate</para><para>usage: <programlisting><codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/><sp/><sp/><sp/><sp/>features<sp/>=<sp/>createSomeFeatures();</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>int&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>labels<sp/><sp/><sp/>=<sp/>createCorrespondingLabels();</highlight></codeline>
+<codeline><highlight class="normal">VariableSelectionResult<sp/><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1rf_1_1algorithms_1af98df4134b76bd9cbb2d46f4a484498f" kindref="member">backward_elimination</ref>(features,<sp/>labels,<sp/>result);</highlight></codeline>
+</programlisting> To use backward elimination but ensure that a specific feature e.g. feature 5 is always excluded one would do the following:</para><para><programlisting><codeline><highlight class="normal">VariableSelectionResult<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">result.init(features,<sp/>labels);</highlight></codeline>
+<codeline><highlight class="normal">std::swap(result.selected[result.selected.size()-1],<sp/>result.selected[5]);</highlight></codeline>
+<codeline><highlight class="normal">result.setPivot(result.selected.size()-1);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1rf_1_1algorithms_1af98df4134b76bd9cbb2d46f4a484498f" kindref="member">backward_elimination</ref>(features,<sp/>labels,<sp/>result);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="396" bodyend="450"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1aad7f0cff92940a025e60834053bdeca4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::backward_elimination</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result)</argsstring>
+        <name>backward_elimination</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="456" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="453" bodyend="458"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1a975ff04eb92e74fe4f3847b520c4da15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::cluster_permutation_importance</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, HClustering &amp;linkage, MultiArray&lt; 2, double &gt; &amp;distance)</argsstring>
+        <name>cluster_permutation_importance</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> &amp;</type>
+          <declname>linkage</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt; &amp;</type>
+          <declname>distance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform hierarchical clustering of variables and assess importance of clusters</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x p matrix containing n instances with p attributes/features used in the variable selection algorithm </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x 1 matrix containing the corresponding response </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>linkage</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>OUT: Hierarchical grouping of variables. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>distance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>OUT: distance matrix used for creating the linkage</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Performs Hierarchical clustering of variables. And calculates the permutation importance measures of each of the clusters. Use the <ref refid="classvigra_1_1rf_1_1algorithms_1_1Draw" kindref="compound">Draw</ref> functor to create human readable output The cluster-permutation importance measure corresponds to the normal permutation importance measure with all columns corresponding to a cluster permuted. The importance measure for each cluster is stored as the status() field of each clusternode <simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref></para></simplesect>
+usage: <programlisting><codeline><highlight class="normal"><sp/><sp/><sp/>MultiArray&lt;2,<sp/>double&gt;<sp/><sp/><sp/><sp/><sp/>features<sp/>=<sp/>createSomeFeatures();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>MultiArray&lt;2,<sp/>int&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>labels<sp/><sp/><sp/>=<sp/>createCorrespondingLabels();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>HClustering<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>linkage;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>MultiArray&lt;2,<sp/>double&gt;<sp/><sp/><sp/><sp/>distance;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><ref refid="namespacevigra_1_1rf_1_1algorithms_1a975ff04eb92e74fe4f3847b520c4da15" kindref="member">cluster_permutation_importance</ref>(features,<sp/>labels,<sp/>linkage,<sp/>distance)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>graphviz<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Draw&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;<sp/>draw(features,<sp/>labels,<sp/>&quot;linkagetree.graph&quot;);</highlight></codeline>
+<codeline><highlight class="normal">linkage.breadth_first_traversal(draw);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="1277" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="1273" bodyend="1314"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1a56220109082918a4f74aa247b551c13f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::cluster_permutation_importance</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, HClustering &amp;linkage)</argsstring>
+        <name>cluster_permutation_importance</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> &amp;</type>
+          <declname>linkage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="1318" bodyend="1324"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1a0b78f1ea066a6205cd89e8ca49acc796" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class ErrorRateCallBack</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::forward_selection</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result, ErrorRateCallBack errorcallback)</argsstring>
+        <name>forward_selection</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>ErrorRateCallBack</type>
+          <declname>errorcallback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform forward selection</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x p matrix containing n instances with p attributes/features used in the variable selection algorithm </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x 1 matrix containing the corresponding response </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN/OUT: <ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> struct which will contain the results of the algorithm. Features between result.selected.begin() and result.pivot will be left untouched. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>errorcallback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN, OPTIONAL: Functor that returns the error rate given a set of features and labels. Default is the <ref refid="classvigra_1_1RandomForest" kindref="compound">RandomForest</ref> OOB Error.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Forward selection subsequently chooses the next feature that decreases the Error rate most.</para><para>usage: <programlisting><codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/><sp/><sp/><sp/><sp/>features<sp/>=<sp/>createSomeFeatures();</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>int&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>labels<sp/><sp/><sp/>=<sp/>createCorrespondingLabels();</highlight></codeline>
+<codeline><highlight class="normal">VariableSelectionResult<sp/><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1rf_1_1algorithms_1a0b78f1ea066a6205cd89e8ca49acc796" kindref="member">forward_selection</ref>(features,<sp/>labels,<sp/>result);</highlight></codeline>
+</programlisting> To use forward selection but ensure that a specific feature e.g. feature 5 is always included one would do the following</para><para><programlisting><codeline><highlight class="normal">VariableSelectionResult<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">result.init(features,<sp/>labels);</highlight></codeline>
+<codeline><highlight class="normal">std::swap(result.selected[0],<sp/>result.selected[5]);</highlight></codeline>
+<codeline><highlight class="normal">result.setPivot(1);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1rf_1_1algorithms_1a0b78f1ea066a6205cd89e8ca49acc796" kindref="member">forward_selection</ref>(features,<sp/>labels,<sp/>result);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="298" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="294" bodyend="346"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1a09110fbd65212b252e4c97a2ccd4cbf4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::forward_selection</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result)</argsstring>
+        <name>forward_selection</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="348" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1aa754a1f6344036551e373745a8bed34c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Array1</type>
+          </param>
+          <param>
+            <type>class Vector1</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::get_ranking</definition>
+        <argsstring>(Array1 const &amp;in, Vector1 &amp;out)</argsstring>
+        <name>get_ranking</name>
+        <param>
+          <type>Array1 const &amp;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>Vector1 &amp;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="1329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="1328" bodyend="1337"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1a4aee2ecd7b3ea0123f3ae70e6dfb68c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class ErrorRateCallBack</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::rank_selection</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result, ErrorRateCallBack errorcallback)</argsstring>
+        <name>rank_selection</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>ErrorRateCallBack</type>
+          <declname>errorcallback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Perform rank selection using a predefined ranking</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x p matrix containing n instances with p attributes/features used in the variable selection algorithm </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN: n x 1 matrix containing the corresponding response </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN/OUT: <ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> struct which will contain the results of the algorithm. The struct should be initialized with the predefined ranking.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>errorcallback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>IN, OPTIONAL: Functor that returns the error rate given a set of features and labels. Default is the <ref refid="classvigra_1_1RandomForest" kindref="compound">RandomForest</ref> OOB Error.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Often some variable importance, score measure is used to create the ordering in which variables have to be selected. This method takes such a ranking and calculates the corresponding error rates.</para><para>usage: <programlisting><codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/><sp/><sp/><sp/><sp/>features<sp/>=<sp/>createSomeFeatures();</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>int&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>labels<sp/><sp/><sp/>=<sp/>createCorrespondingLabels();</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ranking<sp/><sp/>=<sp/>createRanking(features);</highlight></codeline>
+<codeline><highlight class="normal">VariableSelectionResult<sp/><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">result.init(features,<sp/>labels,<sp/>ranking.begin(),<sp/>ranking.end());</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacevigra_1_1rf_1_1algorithms_1af98df4134b76bd9cbb2d46f4a484498f" kindref="member">backward_elimination</ref>(features,<sp/>labels,<sp/>result);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="493" bodyend="530"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1rf_1_1algorithms_1ac04675ac7b271c714053540e457d5507" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rf::algorithms::rank_selection</definition>
+        <argsstring>(FeatureT const &amp;features, ResponseT const &amp;response, VariableSelectionResult &amp;result)</argsstring>
+        <name>rank_selection</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref> &amp;</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="533" bodyend="538"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>This namespace contains all algorithms developed for feature selection </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="51"/>
+  </compounddef>
+</doxygen>

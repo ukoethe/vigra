@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::VariableSelectionResult</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aa19017f95cc39fae24991178afaa080c" prot="public" static="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>typedef std::vector&lt;double&gt; ErrorList_t</definition>
+        <argsstring></argsstring>
+        <name>ErrorList_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a5eaee1ef80d0fdc1928bad1df4323e99" prot="public" static="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>typedef std::vector&lt;int&gt; FeatureList_t</definition>
+        <argsstring></argsstring>
+        <name>FeatureList_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aee74aa8700d93336ca18e0221a5e27cc" prot="public" static="no">
+        <type>FeatureList_t::iterator</type>
+        <definition>typedef FeatureList_t::iterator Pivot_t</definition>
+        <argsstring></argsstring>
+        <name>Pivot_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="127" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aedeffc7d23da25d52b9a50045189fe2b" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool initialized</definition>
+        <argsstring></argsstring>
+        <name>initialized</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="118" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a36a82ad616be33993132f3a247d61015" prot="public" static="no" mutable="no">
+        <type>ErrorList_t</type>
+        <definition>ErrorList_t errors</definition>
+        <argsstring></argsstring>
+        <name>errors</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>vector of size (number of features)</para><para>the i-th entry encodes the error rate obtained while using features [0 - i](including i)</para><para>if the i-th entry is -1 then no error rate was obtained this may happen if more than one feature is added to the selected list in one step of the algorithm.</para><para>during initialisation error[m+n-1] is always filled </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="146" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a1995b66c3b74bfb79ed898c05b6dee14" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double no_features</definition>
+        <argsstring></argsstring>
+        <name>no_features</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>errorrate using no features </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1af3f1b78bf4d2c67adafc04038aab4735" prot="public" static="no" mutable="no">
+        <type>Pivot_t</type>
+        <definition>Pivot_t pivot</definition>
+        <argsstring></argsstring>
+        <name>pivot</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="129" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a8d8184fd8ef3caf2a9c270f9e568ae05" prot="public" static="no" mutable="no">
+        <type>FeatureList_t</type>
+        <definition>FeatureList_t selected</definition>
+        <argsstring></argsstring>
+        <name>selected</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>list of features. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1ac4e2f1282612b46f8d77f1dd08fb653f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class Iter</type>
+          </param>
+          <param>
+            <type>class ErrorRateCallBack</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool init</definition>
+        <argsstring>(FeatureT const &amp;all_features, ResponseT const &amp;response, Iter b, Iter e, ErrorRateCallBack errorcallback)</argsstring>
+        <name>init</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>all_features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>e</declname>
+        </param>
+        <param>
+          <type>ErrorRateCallBack</type>
+          <declname>errorcallback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="157" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aece347715055ce786e3f35138d704e8c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class Iter</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool init</definition>
+        <argsstring>(FeatureT const &amp;all_features, ResponseT const &amp;response, Iter b, Iter e)</argsstring>
+        <name>init</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>all_features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="175" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1adc146f547436c1ee2543d00a335158a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool init</definition>
+        <argsstring>(FeatureT const &amp;all_features, ResponseT const &amp;response)</argsstring>
+        <name>init</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>all_features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="189" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="187" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1ae2a6aaaef306d74be5a988ca70ef42d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class FeatureT</type>
+          </param>
+          <param>
+            <type>class ResponseT</type>
+          </param>
+          <param>
+            <type>class ErrorRateCallBack</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool init</definition>
+        <argsstring>(FeatureT const &amp;all_features, ResponseT const &amp;response, ErrorRateCallBack errorcallback)</argsstring>
+        <name>init</name>
+        <param>
+          <type>FeatureT const &amp;</type>
+          <declname>all_features</declname>
+        </param>
+        <param>
+          <type>ResponseT const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>ErrorRateCallBack</type>
+          <declname>errorcallback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>initialization routine. Will be called only once in the lifetime of a <ref refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult" kindref="compound">VariableSelectionResult</ref>. Subsequent calls will not reinitialize member variables.</para><para>This is intended, to allow continuing variable selection at a point stopped in an earlier iteration.</para><para>returns true if initialization was successful and false if the object was already initialized before. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="205" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a2310e3c0e8eb556af79e80a83d97c6a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>VariableSelectionResult</definition>
+        <argsstring>()</argsstring>
+        <name>VariableSelectionResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="121" bodyend="123"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Structure to hold Variable Selection results </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="116" bodyend="251"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aa19017f95cc39fae24991178afaa080c" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>ErrorList_t</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a36a82ad616be33993132f3a247d61015" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>errors</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a5eaee1ef80d0fdc1928bad1df4323e99" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>FeatureList_t</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1ac4e2f1282612b46f8d77f1dd08fb653f" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>init</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aece347715055ce786e3f35138d704e8c" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>init</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1adc146f547436c1ee2543d00a335158a3" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>init</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1ae2a6aaaef306d74be5a988ca70ef42d3" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>init</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aedeffc7d23da25d52b9a50045189fe2b" prot="private" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>initialized</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a1995b66c3b74bfb79ed898c05b6dee14" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>no_features</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1af3f1b78bf4d2c67adafc04038aab4735" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>pivot</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1aee74aa8700d93336ca18e0221a5e27cc" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>Pivot_t</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a8d8184fd8ef3caf2a9c270f9e568ae05" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>selected</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1VariableSelectionResult_1a2310e3c0e8eb556af79e80a83d97c6a9" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::VariableSelectionResult</scope><name>VariableSelectionResult</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

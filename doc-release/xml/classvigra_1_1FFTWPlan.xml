@@ -1,0 +1,672 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FFTWPlan" kind="class" prot="public">
+    <compoundname>vigra::FFTWPlan</compoundname>
+    <includes refid="multi__fft_8hxx" local="no">vigra/multi_fft.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Real</declname>
+        <defname>Real</defname>
+        <defval>double</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1FFTWPlan_1acddb97491111374b197e9f4759e1fa01" prot="private" static="no">
+        <type><ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;::complex_type</type>
+        <definition>typedef FFTWComplex&lt;Real&gt;::complex_type Complex</definition>
+        <argsstring></argsstring>
+        <name>Complex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="804" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="804" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWPlan_1a62a76a5953dd1fc19e31be3f42a5c46b" prot="private" static="no">
+        <type>FFTWReal2Complex&lt; Real &gt;::plan_type</type>
+        <definition>typedef FFTWReal2Complex&lt;Real&gt;::plan_type PlanType</definition>
+        <argsstring></argsstring>
+        <name>PlanType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="803" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="803" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FFTWPlan_1aee0f31f782697eb33855a370be9be863" prot="private" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; int &gt;</type>
+        <definition>typedef ArrayVector&lt;int&gt; Shape</definition>
+        <argsstring></argsstring>
+        <name>Shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="802" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="802" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1FFTWPlan_1a67e50d60fde896582c4f6fa201983ae4" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">Shape</ref></type>
+        <definition>Shape instrides</definition>
+        <argsstring></argsstring>
+        <name>instrides</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="807" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FFTWPlan_1af32ad4eb4516a62c69e1bbaea8898876" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">Shape</ref></type>
+        <definition>Shape outstrides</definition>
+        <argsstring></argsstring>
+        <name>outstrides</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="807" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FFTWPlan_1a95e1e9db5a6f98c18c3749794c363b2c" prot="private" static="no" mutable="no">
+        <type>PlanType</type>
+        <definition>PlanType plan</definition>
+        <argsstring></argsstring>
+        <name>plan</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="806" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="806" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FFTWPlan_1a8b9f7758a8bd2bef680aeecc40bcfe04" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">Shape</ref></type>
+        <definition>Shape shape</definition>
+        <argsstring></argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="807" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1FFTWPlan_1abbeb8ae63622a7fef0b5a56bb91a1682" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sign</definition>
+        <argsstring></argsstring>
+        <name>sign</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="808" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="808" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1ac2451d98863694afea345ea9a5e7c5d4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void execute</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out) const </argsstring>
+        <name>execute</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+<para>Execute a complex-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array shapes must be the same as in the corresponding init function or constructor. However, <ref refid="classvigra_1_1FFTWPlan_1ac2451d98863694afea345ea9a5e7c5d4" kindref="member">execute()</ref> can be called several times on the same plan, even with different arrays, as long as they have the appropriate shapes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="971" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="969" bodyend="973"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1ab40d51a194c564ec0a620cf89a2f5ae7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void execute</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out) const </argsstring>
+        <name>execute</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+<para>Execute a real-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array shapes must be the same as in the corresponding init function or constructor. However, <ref refid="classvigra_1_1FFTWPlan_1ac2451d98863694afea345ea9a5e7c5d4" kindref="member">execute()</ref> can be called several times on the same plan, even with different arrays, as long as they have the appropriate shapes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="985" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="983" bodyend="987"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1ab5bb3a651936156a78010cd157bd9fd8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void execute</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, Real, C2 &gt; out) const </argsstring>
+        <name>execute</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+<para>Execute a complex-to-real transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array shapes must be the same as in the corresponding init function or constructor. However, <ref refid="classvigra_1_1FFTWPlan_1ac2451d98863694afea345ea9a5e7c5d4" kindref="member">execute()</ref> can be called several times on the same plan, even with different arrays, as long as they have the appropriate shapes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="999" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="997" bodyend="1001"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1ae4d9a442304fdf6acf732f345fb09e22" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWPlan</definition>
+        <argsstring>()</argsstring>
+        <name>FFTWPlan</name>
+        <briefdescription>
+<para>Create an empty plan. </para>        </briefdescription>
+        <detaileddescription>
+<para>The plan can be initialized later by one of the <ref refid="classvigra_1_1FFTWPlan_1aa9e4cc0ad553e551d915ef90fc5ed3f6" kindref="member">init()</ref> functions. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="817" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="815" bodyend="817"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a169cc3462162ceae01c4497026dfce59" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWPlan</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out, int SIGN, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>FFTWPlan</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>SIGN</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Create a plan for a complex-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para><itemizedlist>
+<listitem><para>SIGN must be <computeroutput>FFTW_FORWARD</computeroutput> or <computeroutput>FFTW_BACKWARD</computeroutput> according to the desired transformation direction. </para></listitem>
+<listitem><para>planner_flags must be a combination of the <ulink url="http://www.fftw.org/doc/Planner-Flags.html">planner flags</ulink> defined by the FFTW library. The default <computeroutput>FFTW_ESTIMATE</computeroutput> will guess optimal algorithm settings or read them from pre-loaded <ulink url="http://www.fftw.org/doc/Wisdom.html">&quot;wisdom&quot;</ulink>. </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="832" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="828" bodyend="834"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1adcde64f1a0148f4625468ad470c785ac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWPlan</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>FFTWPlan</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Create a plan for a real-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>This always refers to a forward transform. The shape of the output determines if a standard transform (when <computeroutput>out.shape() == in.shape()</computeroutput>) or an <ulink url="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C transform</ulink> (when <computeroutput>out.shape() == fftwCorrespondingShapeR2C(in.shape())</computeroutput>) will be executed.</para><para><itemizedlist>
+<listitem><para>planner_flags must be a combination of the <ulink url="http://www.fftw.org/doc/Planner-Flags.html">planner flags</ulink> defined by the FFTW library. The default <computeroutput>FFTW_ESTIMATE</computeroutput> will guess optimal algorithm settings or read them from pre-loaded <ulink url="http://www.fftw.org/doc/Wisdom.html">&quot;wisdom&quot;</ulink>. </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="852" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="848" bodyend="854"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a5743bcaa3c6285361d43368f4eba8d68" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>FFTWPlan</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, Real, C2 &gt; out, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>FFTWPlan</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Create a plan for a complex-to-real transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>This always refers to a inverse transform. The shape of the input determines if a standard transform (when <computeroutput>in.shape() == out.shape()</computeroutput>) or a <ulink url="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">C2R transform</ulink> (when <computeroutput>in.shape() == fftwCorrespondingShapeR2C(out.shape())</computeroutput>) will be executed.</para><para><itemizedlist>
+<listitem><para>planner_flags must be a combination of the <ulink url="http://www.fftw.org/doc/Planner-Flags.html">planner flags</ulink> defined by the FFTW library. The default <computeroutput>FFTW_ESTIMATE</computeroutput> will guess optimal algorithm settings or read them from pre-loaded <ulink url="http://www.fftw.org/doc/Wisdom.html">&quot;wisdom&quot;</ulink>. </para></listitem>
+</itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="872" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="868" bodyend="874"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a0a99a0851c9bc7fbd16a17a843835143" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>FFTWPlan</definition>
+        <argsstring>(FFTWPlan const &amp;other)</argsstring>
+        <name>FFTWPlan</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWPlan" kindref="compound">FFTWPlan</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Copy constructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="881" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="878" bodyend="887"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1aa9e4cc0ad553e551d915ef90fc5ed3f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out, int SIGN, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>init</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>SIGN</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Init a complex-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See the constructor with the same signature for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="921" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="918" bodyend="927"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a92782368c20db1cd1a72b389d9e39a76" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, C1 &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C2 &gt; out, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>init</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Init a real-to-complex transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See the constructor with the same signature for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="937" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="934" bodyend="943"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a2f9ed902747a03caf77a131b7691f523" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, C1 &gt; in, MultiArrayView&lt; N, Real, C2 &gt; out, unsigned int planner_flags=FFTW_ESTIMATE)</argsstring>
+        <name>init</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, C1 &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, C2 &gt;</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+          <defval>FFTW_ESTIMATE</defval>
+        </param>
+        <briefdescription>
+<para>Init a complex-to-real transform. </para>        </briefdescription>
+        <detaileddescription>
+<para>See the constructor with the same signature for details. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="953" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="950" bodyend="959"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a49a933f109d7a4c027cd9f2d350e3630" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1FFTWPlan" kindref="compound">FFTWPlan</ref> &amp;</type>
+        <definition>FFTWPlan&amp; operator=</definition>
+        <argsstring>(FFTWPlan const &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1FFTWPlan" kindref="compound">FFTWPlan</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Copy assigment. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="892" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="891" bodyend="904"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a2027c60e66cf80c4e6051d2a20492865" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~FFTWPlan</definition>
+        <argsstring>()</argsstring>
+        <name>~FFTWPlan</name>
+        <briefdescription>
+<para>Destructor. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="909" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="908" bodyend="911"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a6af587eaf46bcb8af9a23a307770681a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void checkShapes</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, StridedArrayTag &gt; in, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, StridedArrayTag &gt; out) const </argsstring>
+        <name>checkShapes</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1013" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1011" bodyend="1016"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1ab2710a7a15b624181c4a719f35a013ee" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void checkShapes</definition>
+        <argsstring>(MultiArrayView&lt; N, Real, StridedArrayTag &gt; ins, MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, StridedArrayTag &gt; outs) const </argsstring>
+        <name>checkShapes</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1020" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1018" bodyend="1026"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1FFTWPlan_1a4b2091a1dd850f21c642ef3c85067513" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void checkShapes</definition>
+        <argsstring>(MultiArrayView&lt; N, FFTWComplex&lt; Real &gt;, StridedArrayTag &gt; ins, MultiArrayView&lt; N, Real, StridedArrayTag &gt; outs) const </argsstring>
+        <name>checkShapes</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref>&lt; Real &gt;, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, Real, <ref refid="structvigra_1_1StridedArrayTag" kindref="compound">StridedArrayTag</ref> &gt;</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1030" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1028" bodyend="1036"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gadaed0291a40e452762a2cc869d255699" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MI</type>
+          </param>
+          <param>
+            <type>class MO</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void executeImpl</definition>
+        <argsstring>(MI ins, MO outs) const </argsstring>
+        <name>executeImpl</name>
+        <param>
+          <type>MI</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type>MO</type>
+          <declname>outs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1009" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1076" bodyend="1096"/>
+      </memberdef>
+      <memberdef kind="function" id="group__FourierTransform_1gad303523fe8a8860e9275504a476032b7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MI</type>
+          </param>
+          <param>
+            <type>class MO</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void initImpl</definition>
+        <argsstring>(MI ins, MO outs, int SIGN, unsigned int planner_flags)</argsstring>
+        <name>initImpl</name>
+        <param>
+          <type>MI</type>
+          <declname>ins</declname>
+        </param>
+        <param>
+          <type>MO</type>
+          <declname>outs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>SIGN</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>planner_flags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="1006" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="1042" bodyend="1072"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>C++ wrapper for FFTW plans.</para><para>The class encapsulates the calls to <computeroutput>fftw_plan_dft_2d</computeroutput>, <computeroutput>fftw_execute</computeroutput>, and <computeroutput>fftw_destroy_plan</computeroutput> (and their <computeroutput>float</computeroutput> and <computeroutput>long double</computeroutput> counterparts) in an easy-to-use interface.</para><para>Usually, you use this class only indirectly via <ref refid="group__FourierTransform_1gadd9dce5cef45cda228466002d00a0666" kindref="member">fourierTransform()</ref> and <ref refid="group__FourierTransform_1ga478712099cf479694c81ccc5918aca73" kindref="member">fourierTransformInverse()</ref>. You only need this class if you want to have more control about FFTW&apos;s planning process (by providing non-default planning flags) and/or want to re-use plans for several transformations.</para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__fft_8hxx_source" kindref="compound">vigra/multi_fft.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="comment">//<sp/>compute<sp/>complex<sp/>Fourier<sp/>transform<sp/>of<sp/>a<sp/>real<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>double&gt;<sp/>src(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,<sp/>h));</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;2,<sp/>FFTWComplex&lt;double&gt;<sp/>&gt;<sp/>fourier(<ref refid="group__MultiIteratorGroup_1ga2e2ffc107bb0e38f9b1288b647c8ec5b" kindref="member" tooltip="shape type for MultiArray&amp;lt;2, T&amp;gt;">Shape2</ref>(w,<sp/>h));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>optimized<sp/>plan<sp/>by<sp/>measuring<sp/>the<sp/>speed<sp/>of<sp/>several<sp/>algorithm<sp/>variants</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">FFTWPlan&lt;2,<sp/>double&gt;<sp/>plan(src,<sp/>fourier,<sp/>FFTW_MEASURE);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">plan.execute(src,<sp/>fourier);<sp/></highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" line="801" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_fft.hxx" bodystart="800" bodyend="1037"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FFTWPlan_1a6af587eaf46bcb8af9a23a307770681a" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>checkShapes</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1ab2710a7a15b624181c4a719f35a013ee" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>checkShapes</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a4b2091a1dd850f21c642ef3c85067513" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>checkShapes</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1acddb97491111374b197e9f4759e1fa01" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>Complex</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1ac2451d98863694afea345ea9a5e7c5d4" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>execute</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1ab40d51a194c564ec0a620cf89a2f5ae7" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>execute</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1ab5bb3a651936156a78010cd157bd9fd8" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>execute</name></member>
+      <member refid="group__FourierTransform_1gadaed0291a40e452762a2cc869d255699" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>executeImpl</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1ae4d9a442304fdf6acf732f345fb09e22" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>FFTWPlan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a169cc3462162ceae01c4497026dfce59" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>FFTWPlan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1adcde64f1a0148f4625468ad470c785ac" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>FFTWPlan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a5743bcaa3c6285361d43368f4eba8d68" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>FFTWPlan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a0a99a0851c9bc7fbd16a17a843835143" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>FFTWPlan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1aa9e4cc0ad553e551d915ef90fc5ed3f6" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>init</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a92782368c20db1cd1a72b389d9e39a76" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>init</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a2f9ed902747a03caf77a131b7691f523" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>init</name></member>
+      <member refid="group__FourierTransform_1gad303523fe8a8860e9275504a476032b7" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>initImpl</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a67e50d60fde896582c4f6fa201983ae4" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>instrides</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a49a933f109d7a4c027cd9f2d350e3630" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1af32ad4eb4516a62c69e1bbaea8898876" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>outstrides</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a95e1e9db5a6f98c18c3749794c363b2c" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>plan</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a62a76a5953dd1fc19e31be3f42a5c46b" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>PlanType</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1aee0f31f782697eb33855a370be9be863" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>Shape</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a8b9f7758a8bd2bef680aeecc40bcfe04" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>shape</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1abbeb8ae63622a7fef0b5a56bb91a1682" prot="private" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>sign</name></member>
+      <member refid="classvigra_1_1FFTWPlan_1a2027c60e66cf80c4e6051d2a20492865" prot="public" virt="non-virtual"><scope>vigra::FFTWPlan</scope><name>~FFTWPlan</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

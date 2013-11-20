@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1MultiIteratorStrideTraits" kind="struct" prot="public">
+    <compoundname>vigra::MultiIteratorStrideTraits</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class POINTER</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1MultiIteratorStrideTraits_1ae83f6ed820d5b9ccacdaf48ecc822a01" prot="public" static="no">
+        <type>stride_array_type</type>
+        <definition>typedef stride_array_type shape_array_type</definition>
+        <argsstring></argsstring>
+        <name>shape_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="372" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1MultiIteratorStrideTraits_1a29195cb035b04bb45dc0537109ff8767" prot="public" static="no">
+        <type>const stride_type *</type>
+        <definition>typedef const stride_type* stride_array_type</definition>
+        <argsstring></argsstring>
+        <name>stride_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="371" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="371" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1MultiIteratorStrideTraits_1ab5e55488e28b9d5a57c6177aa9ed5c0c" prot="public" static="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>typedef MultiArrayIndex stride_type</definition>
+        <argsstring></argsstring>
+        <name>stride_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="370" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="370" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1MultiIteratorStrideTraits_1ad622f3a5d8655cfee2935622eada4d4b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>stride_array_type</type>
+        <definition>static stride_array_type shift</definition>
+        <argsstring>(stride_array_type s, unsigned d)</argsstring>
+        <name>shift</name>
+        <param>
+          <type>stride_array_type</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="374" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="373" bodyend="376"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="369" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="368" bodyend="377"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1MultiIteratorStrideTraits_1ae83f6ed820d5b9ccacdaf48ecc822a01" prot="public" virt="non-virtual"><scope>vigra::MultiIteratorStrideTraits</scope><name>shape_array_type</name></member>
+      <member refid="structvigra_1_1MultiIteratorStrideTraits_1ad622f3a5d8655cfee2935622eada4d4b" prot="public" virt="non-virtual"><scope>vigra::MultiIteratorStrideTraits</scope><name>shift</name></member>
+      <member refid="structvigra_1_1MultiIteratorStrideTraits_1a29195cb035b04bb45dc0537109ff8767" prot="public" virt="non-virtual"><scope>vigra::MultiIteratorStrideTraits</scope><name>stride_array_type</name></member>
+      <member refid="structvigra_1_1MultiIteratorStrideTraits_1ab5e55488e28b9d5a57c6177aa9ed5c0c" prot="public" virt="non-virtual"><scope>vigra::MultiIteratorStrideTraits</scope><name>stride_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

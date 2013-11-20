@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1StridedIteratorPolicy_1_1BaseType" kind="struct" prot="public">
+    <compoundname>vigra::StridedIteratorPolicy::BaseType</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a9227560e106360095f34dff5d19abcf6" prot="public" static="no" mutable="no">
+        <type>pointer</type>
+        <definition>pointer current_</definition>
+        <argsstring></argsstring>
+        <name>current_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="67" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a18b3e16a1422568dcbcf3841870c8aba" prot="public" static="no" mutable="no">
+        <type>difference_type</type>
+        <definition>difference_type stride_</definition>
+        <argsstring></argsstring>
+        <name>stride_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a9c96de8753d094817da220b7b173ab0b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BaseType</definition>
+        <argsstring>(pointer c=0, difference_type stride=0)</argsstring>
+        <name>BaseType</name>
+        <param>
+          <type>pointer</type>
+          <declname>c</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>stride</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="65" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="63" bodyend="65"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="61" bodyend="69"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a9c96de8753d094817da220b7b173ab0b" prot="public" virt="non-virtual"><scope>vigra::StridedIteratorPolicy::BaseType</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a9227560e106360095f34dff5d19abcf6" prot="public" virt="non-virtual"><scope>vigra::StridedIteratorPolicy::BaseType</scope><name>current_</name></member>
+      <member refid="structvigra_1_1StridedIteratorPolicy_1_1BaseType_1a18b3e16a1422568dcbcf3841870c8aba" prot="public" virt="non-virtual"><scope>vigra::StridedIteratorPolicy::BaseType</scope><name>stride_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

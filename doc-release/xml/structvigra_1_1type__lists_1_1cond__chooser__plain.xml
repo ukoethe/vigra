@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__chooser__plain" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_chooser_plain</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">plain_chooser</basecompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1cond__virtual__chooser" prot="public" virt="non-virtual">cond_virtual_chooser&lt; ACXTT&lt; T, ITL &gt;, T, Z &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1cond__chooser" prot="public" virt="non-virtual">cond_chooser</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1cond__virtual__chooser" prot="public" virt="non-virtual">cond_virtual_chooser&lt; ACX, T, Z &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1virtual__chooser" prot="public" virt="non-virtual">virtual_chooser&lt; ACX, T, Z &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1virtual__chooser" prot="public" virt="non-virtual">virtual_chooser&lt; ACXTT&lt; T, ITL &gt;, T, Z &gt;</derivedcompoundref>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1_1exec__op" prot="public">vigra::type_lists::cond_chooser_plain::exec_op</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1_1use" prot="public">vigra::type_lists::cond_chooser_plain::use</innerclass>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__chooser__plain_1a28631af393217920fb7683a088860ebd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class QV</type>
+          </param>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>static bool is_set</definition>
+        <argsstring>(const QV &amp;qv, const TUPLE &amp;t)</argsstring>
+        <name>is_set</name>
+        <param>
+          <type>const QV &amp;</type>
+          <declname>qv</declname>
+        </param>
+        <param>
+          <type>const TUPLE &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1188" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1187" bodyend="1190"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__chooser__plain_1a888bad01e357c8d239fff8040bd15b48" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class QV</type>
+          </param>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void set</definition>
+        <argsstring>(QV &amp;qv, TUPLE &amp;t)</argsstring>
+        <name>set</name>
+        <param>
+          <type>QV &amp;</type>
+          <declname>qv</declname>
+        </param>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1192" bodyend="1195"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1155" bodyend="1196"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1a28631af393217920fb7683a088860ebd" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser_plain</scope><name>is_set</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__chooser__plain_1a888bad01e357c8d239fff8040bd15b48" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_chooser_plain</scope><name>set</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

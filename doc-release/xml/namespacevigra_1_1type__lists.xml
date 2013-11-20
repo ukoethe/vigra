@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1type__lists" kind="namespace">
+    <compoundname>vigra::type_lists</compoundname>
+    <innerclass refid="structvigra_1_1type__lists_1_1append" prot="public">vigra::type_lists::append</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1append_3_01nil_00_01nil_01_4" prot="public">vigra::type_lists::append&lt; nil, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1append_3_01X_00_01nil_01_4" prot="public">vigra::type_lists::append&lt; X, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1at__finder" prot="public">vigra::type_lists::at_finder</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1at__finder_3_010_00_01X_01_4" prot="public">vigra::type_lists::at_finder&lt; 0, X &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1binder__0" prot="public">vigra::type_lists::binder_0</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1binder__1" prot="public">vigra::type_lists::binder_1</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1binder__2" prot="public">vigra::type_lists::binder_2</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1binder__3" prot="public">vigra::type_lists::binder_3</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1bit__cond__chooser" prot="public">vigra::type_lists::bit_cond_chooser</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1bit__cond__tuple" prot="public">vigra::type_lists::bit_cond_tuple</innerclass>
+    <innerclass refid="classvigra_1_1type__lists_1_1bit__cond__val" prot="public">vigra::type_lists::bit_cond_val</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1choose__tuple" prot="public">vigra::type_lists::choose_tuple</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__chooser" prot="public">vigra::type_lists::cond_chooser</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__chooser__plain" prot="public">vigra::type_lists::cond_chooser_plain</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__cons__rest_3_01false_00_01A_01_4" prot="public">vigra::type_lists::cond_cons_rest&lt; false, A &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__cons__rest_3_01true_00_01A_01_4" prot="public">vigra::type_lists::cond_cons_rest&lt; true, A &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__op" prot="public">vigra::type_lists::cond_op</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__op_3_01nil_00_01TEST_00_01RRL_01_4" prot="public">vigra::type_lists::cond_op&lt; nil, TEST, RRL &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__op__inner" prot="public">vigra::type_lists::cond_op_inner</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__op__inner_3_01nil_00_01TEST_00_01RRL_01_4" prot="public">vigra::type_lists::cond_op_inner&lt; nil, TEST, RRL &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__tuple" prot="public">vigra::type_lists::cond_tuple</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__tuple__entry" prot="public">vigra::type_lists::cond_tuple_entry</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__tuple__plain" prot="public">vigra::type_lists::cond_tuple_plain</innerclass>
+    <innerclass refid="classvigra_1_1type__lists_1_1cond__val" prot="public">vigra::type_lists::cond_val</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__virtual__chooser" prot="public">vigra::type_lists::cond_virtual_chooser</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__virtual__tuple" prot="public">vigra::type_lists::cond_virtual_tuple</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cond__virtual__tuple__base" prot="public">vigra::type_lists::cond_virtual_tuple_base</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1cons" prot="public">vigra::type_lists::cons</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1contains" prot="public">vigra::type_lists::contains</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1contains_3_01typename_01L_1_1first_00_01L_01_4" prot="public">vigra::type_lists::contains&lt; typename L::first, L &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1contains_3_01X_00_01nil_01_4" prot="public">vigra::type_lists::contains&lt; X, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1contains__dependent" prot="public">vigra::type_lists::contains_dependent</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__deep" prot="public">vigra::type_lists::depends_on_deep</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__deep_3_01typename_01L_1_1first_00_01T_00_01L_01_4" prot="public">vigra::type_lists::depends_on_deep&lt; typename L::first, T, L &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__deep_3_01X_00_01T_00_01nil_01_4" prot="public">vigra::type_lists::depends_on_deep&lt; X, T, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__guard_3_01false_00_01T_01_4" prot="public">vigra::type_lists::depends_on_guard&lt; false, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__guard_3_01true_00_01T_01_4" prot="public">vigra::type_lists::depends_on_guard&lt; true, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1depends__on__template" prot="public">vigra::type_lists::depends_on_template</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1exec__op__plain" prot="public">vigra::type_lists::exec_op_plain</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on" prot="public">vigra::type_lists::first_depends_on</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on_3_01T_00_01nil_01_4" prot="public">vigra::type_lists::first_depends_on&lt; T, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on__all__of" prot="public">vigra::type_lists::first_depends_on_all_of</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on__all__of_3_01nil_00_01nil_01_4" prot="public">vigra::type_lists::first_depends_on_all_of&lt; nil, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on__all__of_3_01nil_00_01R_01_4" prot="public">vigra::type_lists::first_depends_on_all_of&lt; nil, R &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1first__depends__on__all__of_3_01RRL_00_01nil_01_4" prot="public">vigra::type_lists::first_depends_on_all_of&lt; RRL, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1follows__guard_3_01false_00_01T_01_4" prot="public">vigra::type_lists::follows_guard&lt; false, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1follows__guard_3_01true_00_01T_01_4" prot="public">vigra::type_lists::follows_guard&lt; true, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1follows__template" prot="public">vigra::type_lists::follows_template</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1for__exec" prot="public">vigra::type_lists::for_exec</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1for__exec_3_01EXEC_00_01nil_01_4" prot="public">vigra::type_lists::for_exec&lt; EXEC, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__depends__on" prot="public">vigra::type_lists::get_depends_on</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__follows" prot="public">vigra::type_lists::get_follows</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__implies" prot="public">vigra::type_lists::get_implies</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__independent" prot="public">vigra::type_lists::get_independent</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__independent_3_01XL_00_01nil_01_4" prot="public">vigra::type_lists::get_independent&lt; XL, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1get__pure__depends__on" prot="public">vigra::type_lists::get_pure_depends_on</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1has__depends__on" prot="public">vigra::type_lists::has_depends_on</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1has__first__rest" prot="public">vigra::type_lists::has_first_rest</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1has__follows" prot="public">vigra::type_lists::has_follows</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1has__implies" prot="public">vigra::type_lists::has_implies</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1if__nil" prot="public">vigra::type_lists::if_nil</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1if__nil_3_01nil_00_01A_00_01B_01_4" prot="public">vigra::type_lists::if_nil&lt; nil, A, B &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1if__then" prot="public">vigra::type_lists::if_then</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1implies__expand" prot="public">vigra::type_lists::implies_expand</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1implies__expand_3_01nil_01_4" prot="public">vigra::type_lists::implies_expand&lt; nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1implies__guard_3_01false_00_01T_01_4" prot="public">vigra::type_lists::implies_guard&lt; false, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1implies__guard_3_01true_00_01T_01_4" prot="public">vigra::type_lists::implies_guard&lt; true, T &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1implies__template" prot="public">vigra::type_lists::implies_template</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1is__independent__on" prot="public">vigra::type_lists::is_independent_on</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1is__independent__on_3_01X_00_01nil_01_4" prot="public">vigra::type_lists::is_independent_on&lt; X, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1is__list" prot="public">vigra::type_lists::is_list</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1is__list_3_01nil_01_4" prot="public">vigra::type_lists::is_list&lt; nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1is__list_3_01void_01_5_01_4" prot="public">vigra::type_lists::is_list&lt; void * &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1list__guard" prot="public">vigra::type_lists::list_guard</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1make__list" prot="public">vigra::type_lists::make_list</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1make__list__nil" prot="public">vigra::type_lists::make_list_nil</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1make__list__template" prot="public">vigra::type_lists::make_list_template</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1max__value" prot="public">vigra::type_lists::max_value</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4" prot="public">vigra::type_lists::max_value&lt; P, Q, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1merge" prot="public">vigra::type_lists::merge</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1merge_3_01X_00_01nil_01_4" prot="public">vigra::type_lists::merge&lt; X, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1null__exec" prot="public">vigra::type_lists::null_exec</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1plain__chooser" prot="public">vigra::type_lists::plain_chooser</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1plain__global__data" prot="public">vigra::type_lists::plain_global_data</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1ref__finder" prot="public">vigra::type_lists::ref_finder</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove" prot="public">vigra::type_lists::remove</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove_3_01typename_01L_1_1first_00_01L_01_4" prot="public">vigra::type_lists::remove&lt; typename L::first, L &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove_3_01X_00_01nil_01_4" prot="public">vigra::type_lists::remove&lt; X, nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove__if" prot="public">vigra::type_lists::remove_if</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove__if_3_01P_00_01nil_00_01value_01_4" prot="public">vigra::type_lists::remove_if&lt; P, nil, value &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1remove__if__not" prot="public">vigra::type_lists::remove_if_not</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1reverse" prot="public">vigra::type_lists::reverse</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1reverse_3_01nil_00_01R_01_4" prot="public">vigra::type_lists::reverse&lt; nil, R &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1set__exec" prot="public">vigra::type_lists::set_exec</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1simple__member__dispatch" prot="public">vigra::type_lists::simple_member_dispatch</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1size" prot="public">vigra::type_lists::size</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1size_3_01nil_01_4" prot="public">vigra::type_lists::size&lt; nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1sub__finder" prot="public">vigra::type_lists::sub_finder</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1sub__finder_3_01typename_01X_1_1finder__type_00_01X_01_4" prot="public">vigra::type_lists::sub_finder&lt; typename X::finder_type, X &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1topo__sort" prot="public">vigra::type_lists::topo_sort</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1topo__sort_3_01nil_01_4" prot="public">vigra::type_lists::topo_sort&lt; nil &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1topological__sort" prot="public">vigra::type_lists::topological_sort</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1topological__sort__expanded" prot="public">vigra::type_lists::topological_sort_expanded</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1truncate" prot="public">vigra::type_lists::truncate</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1truncate_3_01typename_01L_1_1first_00_01L_00_01NIL_01_4" prot="public">vigra::type_lists::truncate&lt; typename L::first, L, NIL &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1truncate_3_01X_00_01NIL_00_01NIL_01_4" prot="public">vigra::type_lists::truncate&lt; X, NIL, NIL &gt;</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1tuple" prot="public">vigra::type_lists::tuple</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1tuple__base" prot="public">vigra::type_lists::tuple_base</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4" prot="public">vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;</innerclass>
+    <innerclass refid="classvigra_1_1type__lists_1_1tuple__entry" prot="public">vigra::type_lists::tuple_entry</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1unique" prot="public">vigra::type_lists::unique</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1use__template__list" prot="public">vigra::type_lists::use_template_list</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1uses__template" prot="public">vigra::type_lists::uses_template</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1virtual__chooser" prot="public">vigra::type_lists::virtual_chooser</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1virtual__tuple" prot="public">vigra::type_lists::virtual_tuple</innerclass>
+    <innerclass refid="structvigra_1_1type__lists_1_1virtual__tuple__base" prot="public">vigra::type_lists::virtual_tuple_base</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacevigra_1_1type__lists_1a63b13b629544733ab1fff2909ff38fcb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class L</type>
+          </param>
+          <param>
+            <type>template&lt; class &gt; class</type>
+            <declname>EXEC</declname>
+            <defname>EXEC</defname>
+          </param>
+          <param>
+            <type>class TX</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::type_lists::for_all</definition>
+        <argsstring>(TX &amp;tx)</argsstring>
+        <name>for_all</name>
+        <param>
+          <type>TX &amp;</type>
+          <declname>tx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="553" bodyend="556"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacevigra_1_1type__lists_1a0d9c7137642dd0d08ed96c406f36d4b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>template&lt; class &gt; class</type>
+            <declname>EXEC</declname>
+            <defname>EXEC</defname>
+          </param>
+          <param>
+            <type>class TX</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::type_lists::for_all_used</definition>
+        <argsstring>(TX &amp;tx)</argsstring>
+        <name>for_all_used</name>
+        <param>
+          <type>TX &amp;</type>
+          <declname>tx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="659" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="658" bodyend="661"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="20"/>
+  </compounddef>
+</doxygen>

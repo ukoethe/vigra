@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="MultiDimensionalArrays" kind="page">
+    <compoundname>MultiDimensionalArrays</compoundname>
+    <title>Multi-Dimensional Arrays and Iterators</title>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem>
+<para><ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Interface for multi-dimensional arrays </emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Array class that holds the actual memory</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiMathModule" kindref="compound">vigra::multi_math</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Arithmetic and algebraic expressions for multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayTags" kindref="compound">Multi-dimensional Array Tags</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Meta-programming tags to mark array&apos;s as strided or unstrided</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="MultiIteratorPage" kindref="compound">Multi-dimensional Array Iterators</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Iterators for multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1MultiArrayNavigator" kindref="compound">vigra::MultiArrayNavigator</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Navigator utility for multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VolumeImpex" kindref="compound">Import/export of volume data.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Import/export of volume data.</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiPointoperators" kindref="compound">Point operators for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Point operators on multi-dimensional arrays</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayConvolutionFilters" kindref="compound">Convolution filters for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Convolution filters in arbitrary dimensions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__FourierTransform" kindref="compound">Fast Fourier Transform</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Fast Fourier transform for arrays of arbitrary dimension</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member">resizeMultiArraySplineInterpolation()</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Interpolation of arrays in arbitrary dimensions</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayDistanceTransform" kindref="compound">Euclidean distance transform for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Separable distance transform for arrays of arbitrary dimension</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__MultiArrayMorphology" kindref="compound">Morphological operators for multi-dimensional arrays.</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Separable morphology with parabola structuring function for arrays of arbitrary dimension</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__Labeling_1ga89a6b1e5784831c7145612bd738f3112" kindref="member">labelVolume()</ref>, <ref refid="group__SeededRegionGrowing_1gae9e3ebc5978a393267485d426141a201" kindref="member">seededRegionGrowing3D()</ref>, <ref refid="group__SeededRegionGrowing_1ga848b9a3983f20e8ad753d104aad16810" kindref="member">watersheds3D()</ref>, <ref refid="group__LocalMinMax_1gac845c0bf489cfea8b5caabb8ac827609" kindref="member">localMinima3D()</ref>, <ref refid="group__LocalMinMax_1gaf7d58b90367742c7d20d9b47b82129b6" kindref="member">localMaxima3D()</ref>, <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>3-dimensional image (i.e. volume) analysis</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="group__VoxelNeighborhood" kindref="compound">Utilities to manage voxel neighborhoods</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Easy access to the 6- and 26-neighbors of a voxel</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="classvigra_1_1NumpyArray" kindref="compound">vigra::NumpyArray</ref> and <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">vigra::NumpyAnyArray</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Provide the VIGRA multi array interface Python arrays</emphasis> </para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

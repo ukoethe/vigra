@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01double_00_01float_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; double, float &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">PromoteType&lt; double, float &gt;</basecompoundref>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01double_00_01float_01_4_1aa35ea14e4316261256a732524fd482fa" prot="public" static="no">
+        <type>detail::PromoteType&lt; double, float &gt;::Promote</type>
+        <definition>typedef detail::PromoteType&lt;double, float&gt;::Promote Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1136" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1136" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="1135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1134" bodyend="1138"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01double_00_01float_01_4_1aa35ea14e4316261256a732524fd482fa" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; double, float &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

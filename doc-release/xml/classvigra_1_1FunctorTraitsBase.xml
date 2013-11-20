@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1FunctorTraitsBase" kind="class" prot="public">
+    <compoundname>vigra::FunctorTraitsBase</compoundname>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits" prot="public" virt="non-virtual">FunctorTraits&lt; T &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01ArrayOfRegionStatistics_3_01RegionStatistics_00_01LabelType_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; ArrayOfRegionStatistics&lt; RegionStatistics, LabelType &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01BeaudetCornerFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; BeaudetCornerFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01CornerResponseFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; CornerResponseFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01DiffusivityFunctor_3_01ValueType_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; DiffusivityFunctor&lt; ValueType &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FindAverage_3_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FindAverage&lt; VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FindAverageAndVariance_3_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FindAverageAndVariance&lt; VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FindBoundingRectangle_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FindBoundingRectangle &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FindMinMax_3_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FindMinMax&lt; VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FindROISize_3_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FindROISize&lt; VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01FoerstnerCornerFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; FoerstnerCornerFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Lab2RGBFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Lab2RGBFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Lab2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Lab2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Lab2XYZFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Lab2XYZFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01LastValueFunctor_3_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; LastValueFunctor&lt; VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01LinearIntensityTransform_3_01DestValueType_00_01Multiplier_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; LinearIntensityTransform&lt; DestValueType, Multiplier &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Luv2RGBFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Luv2RGBFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Luv2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Luv2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Luv2XYZFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Luv2XYZFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01MagnitudeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; MagnitudeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01ReduceFunctor_3_01FUNCTOR_00_01VALUETYPE_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; ReduceFunctor&lt; FUNCTOR, VALUETYPE &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01resampling__detail_1_1MapTargetToSourceCoordinate_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; resampling_detail::MapTargetToSourceCoordinate &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGB2LabFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGB2LabFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGB2LuvFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGB2LuvFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGB2RGBPrimeFunctor_3_01From_00_01To_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGB2RGBPrimeFunctor&lt; From, To &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGB2sRGBFunctor_3_01From_00_01To_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGB2sRGBFunctor&lt; From, To &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGB2XYZFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGB2XYZFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBGradientMagnitudeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBGradientMagnitudeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2LabFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2LabFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2LuvFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2LuvFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2RGBFunctor_3_01From_00_01To_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2RGBFunctor&lt; From, To &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2XYZFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2XYZFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeCbCrFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2YPrimeCbCrFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeIQFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2YPrimeIQFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimePbPrFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2YPrimePbPrFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RGBPrime2YPrimeUVFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RGBPrime2YPrimeUVFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01RohrCornerFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; RohrCornerFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01ScalarIntensityTransform_3_01DestValueType_00_01Multiplier_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; ScalarIntensityTransform&lt; DestValueType, Multiplier &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01sRGB2RGBFunctor_3_01From_00_01To_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; sRGB2RGBFunctor&lt; From, To &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01Threshold_3_01SrcValueType_00_01DestValueType_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; Threshold&lt; SrcValueType, DestValueType &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01VectorNormFunctor_3_01ValueType_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; VectorNormFunctor&lt; ValueType &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01VectorNormSqFunctor_3_01ValueType_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; VectorNormSqFunctor&lt; ValueType &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01XYZ2LabFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; XYZ2LabFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01XYZ2LuvFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; XYZ2LuvFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01XYZ2RGBFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; XYZ2RGBFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01XYZ2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; XYZ2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01YPrimeCbCr2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; YPrimeCbCr2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01YPrimeIQ2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; YPrimeIQ2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01YPrimePbPr2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; YPrimePbPr2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1FunctorTraits_3_01YPrimeUV2RGBPrimeFunctor_3_01T_01_4_01_4" prot="public" virt="non-virtual">FunctorTraits&lt; YPrimeUV2RGBPrimeFunctor&lt; T &gt; &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a6cb018a9f1b095d1ba43901fe0981978" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, BinaryAnalyserTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, BinaryAnalyserTag&gt;::result isBinaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isBinaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1ad3a8945ee6ab942c5797bfe970c4c6e2" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, BinaryFunctorTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, BinaryFunctorTag&gt;::result isBinaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isBinaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a3c2cbe5667a896d68567fd1695e157ce" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, InitializerTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, InitializerTag&gt;::result isInitializer</definition>
+        <argsstring></argsstring>
+        <name>isInitializer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="70" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a9be0a8f594fdc60755f535c5dee13549" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, TernaryAnalyserTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, TernaryAnalyserTag&gt;::result isTernaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isTernaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a5e8ed03bf2c875398b4f632054647ac9" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, TernaryFunctorTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, TernaryFunctorTag&gt;::result isTernaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isTernaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="74" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a72ee54fb00fac7c367a7a39ae7dc2b95" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, UnaryAnalyserTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, UnaryAnalyserTag&gt;::result isUnaryAnalyser</definition>
+        <argsstring></argsstring>
+        <name>isUnaryAnalyser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a82f794272cb17400bc48e187420698e8" prot="public" static="no">
+        <type>IsDerivedFrom&lt; T, UnaryFunctorTag &gt;::result</type>
+        <definition>typedef IsDerivedFrom&lt;T, UnaryFunctorTag&gt;::result isUnaryFunctor</definition>
+        <argsstring></argsstring>
+        <name>isUnaryFunctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1FunctorTraitsBase_1a565429e62c1d4fd084335146ba778e17" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="718">
+        <label>FunctorTraitsBase&lt; T &gt;</label>
+      </node>
+      <node id="719">
+        <label>FunctorTraits&lt; T &gt;</label>
+        <link refid="classvigra_1_1FunctorTraits"/>
+        <childnode refid="718" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" line="66" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/functortraits.hxx" bodystart="65" bodyend="79"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a6cb018a9f1b095d1ba43901fe0981978" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isBinaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1ad3a8945ee6ab942c5797bfe970c4c6e2" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isBinaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a3c2cbe5667a896d68567fd1695e157ce" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isInitializer</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a9be0a8f594fdc60755f535c5dee13549" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isTernaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a5e8ed03bf2c875398b4f632054647ac9" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isTernaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a72ee54fb00fac7c367a7a39ae7dc2b95" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isUnaryAnalyser</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a82f794272cb17400bc48e187420698e8" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>isUnaryFunctor</name></member>
+      <member refid="classvigra_1_1FunctorTraitsBase_1a565429e62c1d4fd084335146ba778e17" prot="public" virt="non-virtual"><scope>vigra::FunctorTraitsBase</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

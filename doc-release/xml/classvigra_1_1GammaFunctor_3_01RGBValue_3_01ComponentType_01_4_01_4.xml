@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4" kind="class" prot="public">
+    <compoundname>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class ComponentType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a1b7cd0aba644ccca915d1785908e570c" prot="private" static="no">
+        <type>NumericTraits&lt; ComponentType &gt;::RealPromote</type>
+        <definition>typedef NumericTraits&lt;ComponentType&gt;::RealPromote promote_type</definition>
+        <argsstring></argsstring>
+        <name>promote_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1329" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1329" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1accd94992ecff0bc620ae3e4a614cbe01" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RGBValue" kindref="compound">RGBValue</ref>&lt; ComponentType &gt;</type>
+        <definition>typedef RGBValue&lt;ComponentType&gt; value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1334" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1334" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a4e92a6decad19b39b7837b677ad752c5" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1GammaFunctor" kindref="compound">GammaFunctor</ref>&lt; ComponentType &gt;</type>
+        <definition>GammaFunctor&lt;ComponentType&gt; blue</definition>
+        <argsstring></argsstring>
+        <name>blue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1330" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1aeccd99cdb5c067bc99291eeb746f86ad" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1GammaFunctor" kindref="compound">GammaFunctor</ref>&lt; ComponentType &gt;</type>
+        <definition>GammaFunctor&lt;ComponentType&gt; green</definition>
+        <argsstring></argsstring>
+        <name>green</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1330" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a8a6187326d43b3b7bd7a0cc8a19789d0" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1GammaFunctor" kindref="compound">GammaFunctor</ref>&lt; ComponentType &gt;</type>
+        <definition>GammaFunctor&lt;ComponentType&gt; red</definition>
+        <argsstring></argsstring>
+        <name>red</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1330" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1330" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a2ecb825ed22c9619c9ad19855bb19f32" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GammaFunctor</definition>
+        <argsstring>(promote_type gamma, value_type const &amp;min, value_type const &amp;max)</argsstring>
+        <name>GammaFunctor</name>
+        <param>
+          <type>promote_type</type>
+          <declname>gamma</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RGBValue" kindref="compound">value_type</ref> const &amp;</type>
+          <declname>min</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RGBValue" kindref="compound">value_type</ref> const &amp;</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1336" bodyend="1341"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a8ab4229e60b5e04fd57303a42a89fa6a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RGBValue" kindref="compound">value_type</ref></type>
+        <definition>value_type operator()</definition>
+        <argsstring>(value_type const &amp;v) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1RGBValue" kindref="compound">value_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1344" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1343" bodyend="1346"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" line="1327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/transformimage.hxx" bodystart="1326" bodyend="1347"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a4e92a6decad19b39b7837b677ad752c5" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>blue</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a2ecb825ed22c9619c9ad19855bb19f32" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>GammaFunctor</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1aeccd99cdb5c067bc99291eeb746f86ad" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>green</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a8ab4229e60b5e04fd57303a42a89fa6a" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a1b7cd0aba644ccca915d1785908e570c" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>promote_type</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1a8a6187326d43b3b7bd7a0cc8a19789d0" prot="private" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>red</name></member>
+      <member refid="classvigra_1_1GammaFunctor_3_01RGBValue_3_01ComponentType_01_4_01_4_1accd94992ecff0bc620ae3e4a614cbe01" prot="public" virt="non-virtual"><scope>vigra::GammaFunctor&lt; RGBValue&lt; ComponentType &gt; &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

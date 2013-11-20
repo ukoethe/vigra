@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1InvariantViolation" kind="class" prot="public">
+    <compoundname>vigra::InvariantViolation</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">ContractViolation</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1InvariantViolation_1a3b5742a89229d3273196e90a4b6cfbe5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>InvariantViolation</definition>
+        <argsstring>(char const *message, const char *file, int line)</argsstring>
+        <name>InvariantViolation</name>
+        <param>
+          <type>char const *</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="200" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="198" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1InvariantViolation_1a22b94d700582c25f7b6bb80ceb398186" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>InvariantViolation</definition>
+        <argsstring>(char const *message)</argsstring>
+        <name>InvariantViolation</name>
+        <param>
+          <type>char const *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="202" bodyend="204"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" line="196" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/error.hxx" bodystart="195" bodyend="205"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1ContractViolation_1a4e211143fcba68a6826f6baedbecaca4" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1ac8fe168ac0bcb2556fba1c1bcb388d66" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a3ebe9c6a02ef5f528328a972c3230dfd" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>ContractViolation</name></member>
+      <member refid="classvigra_1_1InvariantViolation_1a3b5742a89229d3273196e90a4b6cfbe5" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>InvariantViolation</name></member>
+      <member refid="classvigra_1_1InvariantViolation_1a22b94d700582c25f7b6bb80ceb398186" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>InvariantViolation</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a738ff5978b79e600c673508ad295e0cb" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classvigra_1_1ContractViolation_1aff06f49065b54a8a86e02e9a2441a8ba" prot="public" virt="virtual"><scope>vigra::InvariantViolation</scope><name>what</name></member>
+      <member refid="classvigra_1_1ContractViolation_1a72c050065b5ec8e881e355cb3809b330" prot="public" virt="non-virtual"><scope>vigra::InvariantViolation</scope><name>~ContractViolation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

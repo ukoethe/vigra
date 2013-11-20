@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Diff2DConstColumnIteratorPolicy" kind="class" prot="public">
+    <compoundname>vigra::Diff2DConstColumnIteratorPolicy</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Diff</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1ac6dbb5755aedd5387c4f056493ad7cd9" prot="public" static="no">
+        <type>Diff</type>
+        <definition>typedef Diff BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aa7b19604c213e1431ea8061df478faea" prot="public" static="no">
+        <type>Diff::MoveY</type>
+        <definition>typedef Diff::MoveY difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="99" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a0fb451c4947c9d139c858cc3d800a29f" prot="public" static="no">
+        <type>Diff</type>
+        <definition>typedef Diff index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" static="no">
+        <type>std::random_access_iterator_tag</type>
+        <definition>typedef std::random_access_iterator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="103" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a997ce4ae23f297c438351e262b1c65f9" prot="public" static="no">
+        <type>Diff const *</type>
+        <definition>typedef Diff const* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a5f15ca6117a0cf2827beee923463b959" prot="public" static="no">
+        <type>Diff const &amp;</type>
+        <definition>typedef Diff const&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1ad3939947714a6a3f34a06e462d91a180" prot="public" static="no">
+        <type>Diff</type>
+        <definition>typedef Diff value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="98" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a30e65aa9c7eda66322f509fcdf0180c7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void advance</definition>
+        <argsstring>(BaseType &amp;d, difference_type n)</argsstring>
+        <name>advance</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="131" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a529736ecd161189550723cebf022c747" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void decrement</definition>
+        <argsstring>(BaseType &amp;d)</argsstring>
+        <name>decrement</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="128" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aba720e1b1ad270aa4733da93335b1bd7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>static reference dereference</definition>
+        <argsstring>(BaseType const &amp;d)</argsstring>
+        <name>dereference</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="107" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a158a1c6daa58bc8e51e012320f33c072" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>index_reference</type>
+        <definition>static index_reference dereference</definition>
+        <argsstring>(BaseType d, difference_type n)</argsstring>
+        <name>dereference</name>
+        <param>
+          <type>BaseType</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="111" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="110" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a9d762be6e14a5c799eb48cb33580fbec" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>difference_type</type>
+        <definition>static difference_type difference</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>difference</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="122" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1af531dcd09797a7276453d2dfd2adeb27" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool equal</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>equal</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="116" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aff8874051e84275d024c7e7f7814e082" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void increment</definition>
+        <argsstring>(BaseType &amp;d)</argsstring>
+        <name>increment</name>
+        <param>
+          <type>BaseType &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="126" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="125" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a1c9ca99d49fcc03f9936221f22221030" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void initialize</definition>
+        <argsstring>(BaseType &amp;)</argsstring>
+        <name>initialize</name>
+        <param>
+          <type>BaseType &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="105" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a3ee86e344d51aab730dd91f605e45811" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool less</definition>
+        <argsstring>(BaseType const &amp;d1, BaseType const &amp;d2)</argsstring>
+        <name>less</name>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d1</declname>
+        </param>
+        <param>
+          <type>BaseType const &amp;</type>
+          <declname>d2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="120" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="119" bodyend="120"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="94" bodyend="133"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a30e65aa9c7eda66322f509fcdf0180c7" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>advance</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1ac6dbb5755aedd5387c4f056493ad7cd9" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>BaseType</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a529736ecd161189550723cebf022c747" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>decrement</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aba720e1b1ad270aa4733da93335b1bd7" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>dereference</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a158a1c6daa58bc8e51e012320f33c072" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>dereference</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a9d762be6e14a5c799eb48cb33580fbec" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>difference</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aa7b19604c213e1431ea8061df478faea" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1af531dcd09797a7276453d2dfd2adeb27" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>equal</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1aff8874051e84275d024c7e7f7814e082" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>increment</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a0fb451c4947c9d139c858cc3d800a29f" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a1c9ca99d49fcc03f9936221f22221030" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>initialize</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a66a158bf0b4497bf1e08a1996dbe7939" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a3ee86e344d51aab730dd91f605e45811" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>less</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a997ce4ae23f297c438351e262b1c65f9" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1a5f15ca6117a0cf2827beee923463b959" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>reference</name></member>
+      <member refid="classvigra_1_1Diff2DConstColumnIteratorPolicy_1ad3939947714a6a3f34a06e462d91a180" prot="public" virt="non-virtual"><scope>vigra::Diff2DConstColumnIteratorPolicy</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

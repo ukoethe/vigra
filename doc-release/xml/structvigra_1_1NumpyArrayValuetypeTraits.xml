@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NumpyArrayValuetypeTraits" kind="struct" prot="public">
+    <compoundname>vigra::NumpyArrayValuetypeTraits</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class ValueType</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1NumpyArrayValuetypeTraits_1ab2954ab0dd1f8646df0eb378a7c3bd4f" prot="public" static="yes" mutable="no">
+        <type>ERROR_NumpyArrayValuetypeTraits_not_specialized_for_&lt; ValueType &gt;</type>
+        <definition>ERROR_NumpyArrayValuetypeTraits_not_specialized_for_&lt; ValueType &gt; typeCode</definition>
+        <argsstring></argsstring>
+        <name>typeCode</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayValuetypeTraits_1ab6e73e2effaba3665d3d5677a1b088a0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool isValuetypeCompatible</definition>
+        <argsstring>(PyArrayObject const *obj)</argsstring>
+        <name>isValuetypeCompatible</name>
+        <param>
+          <type>PyArrayObject const *</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="130" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="129" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayValuetypeTraits_1aad014d01028f5a006265275de3a4940a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string typeName</definition>
+        <argsstring>()</argsstring>
+        <name>typeName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="136" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayValuetypeTraits_1a7489f5731d6589348e72b1bb02de153f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string typeNameImpex</definition>
+        <argsstring>()</argsstring>
+        <name>typeNameImpex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1NumpyArrayValuetypeTraits_1afd5154590a9d6c05ee93fcde1cd2876f" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>PyObject *</type>
+        <definition>static PyObject* typeObject</definition>
+        <argsstring>()</argsstring>
+        <name>typeObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="146" bodyend="149"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" line="128" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_traits.hxx" bodystart="127" bodyend="150"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NumpyArrayValuetypeTraits_1ab6e73e2effaba3665d3d5677a1b088a0" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayValuetypeTraits</scope><name>isValuetypeCompatible</name></member>
+      <member refid="structvigra_1_1NumpyArrayValuetypeTraits_1ab2954ab0dd1f8646df0eb378a7c3bd4f" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayValuetypeTraits</scope><name>typeCode</name></member>
+      <member refid="structvigra_1_1NumpyArrayValuetypeTraits_1aad014d01028f5a006265275de3a4940a" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayValuetypeTraits</scope><name>typeName</name></member>
+      <member refid="structvigra_1_1NumpyArrayValuetypeTraits_1a7489f5731d6589348e72b1bb02de153f" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayValuetypeTraits</scope><name>typeNameImpex</name></member>
+      <member refid="structvigra_1_1NumpyArrayValuetypeTraits_1afd5154590a9d6c05ee93fcde1cd2876f" prot="public" virt="non-virtual"><scope>vigra::NumpyArrayValuetypeTraits</scope><name>typeObject</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

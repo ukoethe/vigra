@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__FFTWComplexAccessors" kind="group">
+    <compoundname>FFTWComplexAccessors</compoundname>
+    <title>Accessors for FFTWComplex</title>
+    <innerclass refid="classvigra_1_1FFTWImaginaryAccessor" prot="public">vigra::FFTWImaginaryAccessor</innerclass>
+    <innerclass refid="classvigra_1_1FFTWMagnitudeAccessor" prot="public">vigra::FFTWMagnitudeAccessor</innerclass>
+    <innerclass refid="classvigra_1_1FFTWPhaseAccessor" prot="public">vigra::FFTWPhaseAccessor</innerclass>
+    <innerclass refid="classvigra_1_1FFTWRealAccessor" prot="public">vigra::FFTWRealAccessor</innerclass>
+    <innerclass refid="classvigra_1_1FFTWSquaredMagnitudeAccessor" prot="public">vigra::FFTWSquaredMagnitudeAccessor</innerclass>
+    <innerclass refid="classvigra_1_1FFTWWriteRealAccessor" prot="public">vigra::FFTWWriteRealAccessor</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Encapsulate access to pixels of type <ref refid="classvigra_1_1FFTWComplex" kindref="compound">FFTWComplex</ref> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

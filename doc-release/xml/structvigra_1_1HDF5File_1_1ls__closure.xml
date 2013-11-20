@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1HDF5File_1_1ls__closure" kind="struct" prot="private">
+    <compoundname>vigra::HDF5File::ls_closure</compoundname>
+    <derivedcompoundref refid="structvigra_1_1HDF5File_1_1ls__container__data" prot="public" virt="non-virtual">HDF5File::ls_container_data&lt; Container &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1HDF5File_1_1lsOpData" prot="public" virt="non-virtual">HDF5File::lsOpData</derivedcompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1HDF5File_1_1ls__closure_1a080cf9ed0c2aeb16f20302ea90bfddf2" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void insert</definition>
+        <argsstring>(const std::string &amp;)=0</argsstring>
+        <name>insert</name>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="511"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1HDF5File_1_1ls__closure_1aed7a603b0d202576dfbc2dfb6650f812" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual ~ls_closure</definition>
+        <argsstring>()</argsstring>
+        <name>~ls_closure</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="512" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="512" bodyend="512"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="510" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="509" bodyend="513"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1HDF5File_1_1ls__closure_1a080cf9ed0c2aeb16f20302ea90bfddf2" prot="public" virt="pure-virtual"><scope>vigra::HDF5File::ls_closure</scope><name>insert</name></member>
+      <member refid="structvigra_1_1HDF5File_1_1ls__closure_1aed7a603b0d202576dfbc2dfb6650f812" prot="public" virt="virtual"><scope>vigra::HDF5File::ls_closure</scope><name>~ls_closure</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

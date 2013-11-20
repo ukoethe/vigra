@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1remove__if" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::remove_if</compoundname>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>P</declname>
+        <defname>P</defname>
+      </param>
+      <param>
+        <type>class L</type>
+      </param>
+      <param>
+        <type>bool</type>
+        <declname>value</declname>
+        <defname>value</defname>
+        <defval>true</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1remove__if_1a4c2ff7549452f2f494ef96e3ffd0a8ab" prot="public" static="no">
+        <type>IfBool&lt; value==P&lt; typename L::first &gt;::value, typename remove_if&lt; P, typename L::rest, value &gt;::type, cons&lt; typename L::first, typename remove_if&lt; P, typename L::rest, value &gt;::type &gt; &gt;::type</type>
+        <definition>typedef IfBool&lt; value == P&lt;typename L::first&gt;::value, typename remove_if&lt;P, typename L::rest, value&gt;::type, cons&lt;typename L::first, typename remove_if&lt;P, typename L::rest, value&gt;::type &gt; &gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="280" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="280" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="271" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="270" bodyend="281"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1remove__if_1a4c2ff7549452f2f494ef96e3ffd0a8ab" prot="public" virt="non-virtual"><scope>vigra::type_lists::remove_if</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SeedRgDirectValueFunctor" kind="class" prot="public">
+    <compoundname>vigra::SeedRgDirectValueFunctor</compoundname>
+    <includes refid="seededregiongrowing_8hxx" local="no">vigra/seededregiongrowing.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class Value</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1SeedRgDirectValueFunctor_1a5979385fa78b42bc3dbeb8043f62f1e9" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value argument_type</definition>
+        <argsstring></argsstring>
+        <name>argument_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s argument type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="867" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SeedRgDirectValueFunctor_1a7012983ccf8d028aa147cf4d1f4e0962" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value cost_type</definition>
+        <argsstring></argsstring>
+        <name>cost_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the return type of the <ref refid="classvigra_1_1SeedRgDirectValueFunctor_1a5671d064efe68c116fdc09ec564c8b71" kindref="member">cost()</ref> function </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="880" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="880" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SeedRgDirectValueFunctor_1a127c534df1849eed6b6290c81ad6b878" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the functor&apos;s result type (unused, only necessary for use of <ref refid="classvigra_1_1SeedRgDirectValueFunctor" kindref="compound">SeedRgDirectValueFunctor</ref> in <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">vigra::ArrayOfRegionStatistics</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="872" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="872" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1SeedRgDirectValueFunctor_1a04f69f8f2936ff309627511179c1709b" prot="public" static="no">
+        <type>Value</type>
+        <definition>typedef Value value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><xrefsect id="deprecated_1_deprecated000040"><xreftitle>Deprecated</xreftitle><xrefdescription><para>use argument_type </para></xrefdescription></xrefsect></para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="876" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="876" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SeedRgDirectValueFunctor_1a5671d064efe68c116fdc09ec564c8b71" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1SeedRgDirectValueFunctor_1a7012983ccf8d028aa147cf4d1f4e0962" kindref="member">cost_type</ref> const &amp;</type>
+        <definition>cost_type const&amp; cost</definition>
+        <argsstring>(argument_type const &amp;v) const </argsstring>
+        <name>cost</name>
+        <param>
+          <type><ref refid="classvigra_1_1SeedRgDirectValueFunctor_1a5979385fa78b42bc3dbeb8043f62f1e9" kindref="member">argument_type</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return argument (since cost is identical to feature value) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="889" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="888" bodyend="891"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SeedRgDirectValueFunctor_1ad9da6f8e11cece35b188f343ac1e6abd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(argument_type const &amp;) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="classvigra_1_1SeedRgDirectValueFunctor_1a5979385fa78b42bc3dbeb8043f62f1e9" kindref="member">argument_type</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Do nothing (since we need not update region statistics). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="884" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="884" bodyend="884"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Statistics functor to be used for seeded region growing. </para>    </briefdescription>
+    <detaileddescription>
+<para>This functor can be used if the cost of a candidate during <ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref> is equal to the feature value of that candidate and does not depend on properties of the region it is going to be merged with.</para><para><bold>#include</bold> &lt;<ref refid="seededregiongrowing_8hxx_source" kindref="compound">vigra/seededregiongrowing.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><bold> Required Interface:</bold></para><para>no requirements </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" line="863" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/seededregiongrowing.hxx" bodystart="862" bodyend="892"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1a5979385fa78b42bc3dbeb8043f62f1e9" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1a5671d064efe68c116fdc09ec564c8b71" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>cost</name></member>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1a7012983ccf8d028aa147cf4d1f4e0962" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>cost_type</name></member>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1ad9da6f8e11cece35b188f343ac1e6abd" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1a127c534df1849eed6b6290c81ad6b878" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1SeedRgDirectValueFunctor_1a04f69f8f2936ff309627511179c1709b" prot="public" virt="non-virtual"><scope>vigra::SeedRgDirectValueFunctor</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

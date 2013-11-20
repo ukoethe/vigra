@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1detail_1_1DefaultImpl" kind="class" prot="public">
+    <compoundname>vigra::matlab::detail::DefaultImpl</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a0b4339767368001445ee95c86de99524" prot="public" static="no" mutable="yes">
+        <type>bool *</type>
+        <definition>bool* argumentWasProvided_</definition>
+        <argsstring></argsstring>
+        <name>argumentWasProvided_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="555" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a3ede7be1f8d98c2fa4af7860cdcaf787" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T defaultValue_</definition>
+        <argsstring></argsstring>
+        <name>defaultValue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="554" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="554" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a643ddb61388bddab82d84d6e80d650aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void argumentWasProvided</definition>
+        <argsstring>() const </argsstring>
+        <name>argumentWasProvided</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="566" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="565" bodyend="569"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1affee0c8f6693a0f0babd8a64e2690250" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DefaultImpl</definition>
+        <argsstring>(T v, bool *argFlag=0)</argsstring>
+        <name>DefaultImpl</name>
+        <param>
+          <type>T</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>bool *</type>
+          <declname>argFlag</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="557" bodyend="563"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="550" bodyend="570"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a643ddb61388bddab82d84d6e80d650aa" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::DefaultImpl</scope><name>argumentWasProvided</name></member>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a0b4339767368001445ee95c86de99524" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::DefaultImpl</scope><name>argumentWasProvided_</name></member>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1affee0c8f6693a0f0babd8a64e2690250" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::DefaultImpl</scope><name>DefaultImpl</name></member>
+      <member refid="classvigra_1_1matlab_1_1detail_1_1DefaultImpl_1a3ede7be1f8d98c2fa4af7860cdcaf787" prot="public" virt="non-virtual"><scope>vigra::matlab::detail::DefaultImpl</scope><name>defaultValue_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

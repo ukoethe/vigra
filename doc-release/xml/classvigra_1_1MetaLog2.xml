@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MetaLog2" kind="class" prot="public">
+    <compoundname>vigra::MetaLog2</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class X</type>
+        <defval>unsigned long</defval>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>n</declname>
+        <defname>n</defname>
+        <defval>~(X(0))</defval>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>s</declname>
+        <defname>s</defname>
+        <defval>1</defval>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>t</declname>
+        <defname>t</defname>
+        <defval>0</defval>
+      </param>
+      <param>
+        <type>bool</type>
+        <declname>q</declname>
+        <defname>q</defname>
+        <defval>1</defval>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>m</declname>
+        <defname>m</defname>
+        <defval>0</defval>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>z</declname>
+        <defname>z</defname>
+        <defval>0</defval>
+      </param>
+      <param>
+        <type>X</type>
+        <declname>u</declname>
+        <defname>u</defname>
+        <defval>1</defval>
+      </param>
+      <param>
+        <type>class</type>
+        <defval>void</defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="612" bodyend="614"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

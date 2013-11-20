@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="BorderTreatmentMode" kind="page">
+    <compoundname>BorderTreatmentMode</compoundname>
+    <title>BorderTreatmentMode</title>
+    <detaileddescription>
+<para>Choose between different border treatment modes. In the convolution algorithms, these modes apply to all image pixels where the kernel does not completely fit inside the image.</para><para><bold>#include</bold> &lt;<ref refid="bordertreatment_8hxx_source" kindref="compound">vigra/bordertreatment.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>BorderTreatmentMode<sp/></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>not<sp/>operate<sp/>on<sp/>a<sp/>pixel<sp/>where<sp/>the<sp/>kernel<sp/>does<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>not<sp/>fit<sp/>in<sp/>the<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_AVOID,<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>clip<sp/>kernel<sp/>at<sp/>image<sp/>border<sp/>(this<sp/>is<sp/>only<sp/>useful<sp/>if<sp/>the</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>kernel<sp/>is<sp/>&gt;=<sp/>0<sp/>everywhere)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_CLIP,<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>repeat<sp/>the<sp/>nearest<sp/>valid<sp/>pixel</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_REPEAT,</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>reflect<sp/>image<sp/>at<sp/>last<sp/>row/column<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_REFLECT,<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wrap<sp/>image<sp/>around<sp/>(periodic<sp/>boundary<sp/>conditions)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_WRAP</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>assume<sp/>that<sp/>all<sp/>outside<sp/>points<sp/>have<sp/>value<sp/>zero</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/>BORDER_TREATMENT_ZEROPAD</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::max_value&lt; P, Q, nil &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>P</declname>
+        <defname>P</defname>
+      </param>
+      <param>
+        <type>class Q</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4_1a787d5d5f7b5a70f1cb160666becea2c5" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool is_nil</definition>
+        <argsstring></argsstring>
+        <name>is_nil</name>
+        <initializer> true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4_1a2210b03a826376202800b19f5d7042e1" prot="public" static="yes" mutable="no">
+        <type>const Q</type>
+        <definition>const Q value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="249" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="248" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="247" bodyend="251"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4_1a787d5d5f7b5a70f1cb160666becea2c5" prot="public" virt="non-virtual"><scope>vigra::type_lists::max_value&lt; P, Q, nil &gt;</scope><name>is_nil</name></member>
+      <member refid="structvigra_1_1type__lists_1_1max__value_3_01P_00_01Q_00_01nil_01_4_1a2210b03a826376202800b19f5d7042e1" prot="public" virt="non-virtual"><scope>vigra::type_lists::max_value&lt; P, Q, nil &gt;</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

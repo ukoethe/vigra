@@ -1,0 +1,1237 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__InspectAlgo" kind="group">
+    <compoundname>InspectAlgo</compoundname>
+    <title>Algorithms to Inspect Images</title>
+    <innerclass refid="structvigra_1_1inspectImage__binder" prot="public">vigra::inspectImage_binder</innerclass>
+    <innerclass refid="structvigra_1_1inspectImageIf__binder" prot="public">vigra::inspectImageIf_binder</innerclass>
+    <innerclass refid="structvigra_1_1inspectTwoImages__binder" prot="public">vigra::inspectTwoImages_binder</innerclass>
+    <innerclass refid="structvigra_1_1inspectTwoImagesIf__binder" prot="public">vigra::inspectTwoImagesIf_binder</innerclass>
+    <innernamespace refid="namespacevigra_1_1functor">vigra::functor</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>inspectImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply read-only functor to every pixel in the image. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to collect statistics of the image etc. The results must be stored in the functor, which serves as a return value. The function uses an accessor to access the pixel data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">inspectImage</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Accessor<sp/>a,<sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>ImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Accessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">inspectImage</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/inspectimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FindMinMax" kindref="compound" tooltip="Find the minimum and maximum pixel value in an image or ROI.">vigra::FindMinMax&lt;vigra::BImage::PixelType&gt;</ref><sp/>minmax;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gaa055bcaf71c209fdeb006fe3e44b0452" kindref="member" tooltip="Apply read-only functor to every pixel in the image.">vigra::inspectImage</ref>(srcImageRange(img),<sp/>minmax);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Min:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a0ae3408e83fa258f08ece61e194251a9" kindref="member">min</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>Max:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a7a6d5ee26475974260562366c1a71b01" kindref="member">max</ref>;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ConstImageIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ConstImageIterator::row_iterator</ref><sp/>ix<sp/>=<sp/>upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">functor(accessor(ix));<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>not<sp/>used</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="181"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga9bc07bc8e84728b47cf394b2516a564f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, Functor &amp;f)</argsstring>
+        <name>inspectImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="206" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gaf323f2088e8a9b73177898c2f918d28d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImage</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, Functor &amp;f)</argsstring>
+        <name>inspectImage</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="216" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga10873947c0051b6cf5143577741b477f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImage</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectImage</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="230" bodyend="235"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga350510beabfedc6d99de0d7bdf502f1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImage</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectImage</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="242" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="240" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImageIf</definition>
+        <argsstring>(...)</argsstring>
+        <name>inspectImageIf</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply read-only functor to every pixel in the ROI. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to collect statistics of the roi etc. The functor is called whenever the return value of the mask&apos;s accessor is not zero. The results must be stored in the functor, which serves as a return value. Accessors are used to access the pixel and mask data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" kindref="member" tooltip="Apply read-only functor to every pixel in the ROI.">inspectImageIf</ref>(ImageIterator<sp/>upperleft,<sp/>ImageIterator<sp/>lowerright,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mask_upperleft,<sp/>MaskAccessor<sp/>ma,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" kindref="member" tooltip="Apply read-only functor to every pixel in the ROI.">inspectImageIf</ref>(triple&lt;ImageIterator,<sp/>ImageIterator,<sp/>Accessor&gt;<sp/>img,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/inspectimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>img(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>mask(100,<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FindMinMax" kindref="compound" tooltip="Find the minimum and maximum pixel value in an image or ROI.">vigra::FindMinMax&lt;vigra::BImage::PixelType&gt;</ref><sp/>minmax;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1ga8fb06f2d379b65eb3e2a970e38964ecd" kindref="member" tooltip="Apply read-only functor to every pixel in the ROI.">vigra::inspectImageIf</ref>(srcImageRange(img),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maskImage(mask),<sp/>minmax);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Min:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a0ae3408e83fa258f08ece61e194251a9" kindref="member">min</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>Max:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a7a6d5ee26475974260562366c1a71b01" kindref="member">max</ref>;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ConstImageIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator<sp/>mask_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1ImageIteratorBase_1a68b7f1ca083eb038b4810c8926a83fce" kindref="member">ConstImageIterator::row_iterator</ref><sp/>ix<sp/>=<sp/>upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mask_upperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor<sp/>accessor;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask_accessor(mx))<sp/>functor(accessor(ix));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="325"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga9e4f0a6b70edf3a68813c05bfd444023" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImageIf</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, MaskImageIterator mask_upperleft, MaskAccessor ma, Functor &amp;f)</argsstring>
+        <name>inspectImageIf</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mask_upperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>ma</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="359" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga37dc19344c9c220db328b502aea67fd4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImageIf</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, pair&lt; MaskImageIterator, MaskAccessor &gt; mask, Functor &amp;f)</argsstring>
+        <name>inspectImageIf</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="374" bodyend="380"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gaff91d1607d291dc039a360099a7c2677" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImageIf</definition>
+        <argsstring>(ImageIterator upperleft, ImageIterator lowerright, Accessor a, MaskImageIterator mask_upperleft, MaskAccessor ma, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectImageIf</name>
+        <param>
+          <type>ImageIterator</type>
+          <declname>upperleft</declname>
+        </param>
+        <param>
+          <type>ImageIterator</type>
+          <declname>lowerright</declname>
+        </param>
+        <param>
+          <type>Accessor</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mask_upperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>ma</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="389" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="385" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga1b51ca4a79cbc35413dcecf1cadeb966" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator</type>
+          </param>
+          <param>
+            <type>class Accessor</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectImageIf</definition>
+        <argsstring>(triple&lt; ImageIterator, ImageIterator, Accessor &gt; img, pair&lt; MaskImageIterator, MaskAccessor &gt; mask, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectImageIf</name>
+        <param>
+          <type>triple&lt; ImageIterator, ImageIterator, Accessor &gt;</type>
+          <declname>img</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="397" bodyend="403"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gaafc177fe55e222ad129b58f8a1542c15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectLine</definition>
+        <argsstring>(SrcIterator s, SrcIterator send, SrcAccessor src, Functor &amp;f)</argsstring>
+        <name>inspectLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="68" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="65" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gad203a296d773ecf8a7f9dbc229eb7bcb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectLineIf</definition>
+        <argsstring>(SrcIterator s, SrcIterator send, SrcAccessor src, MaskIterator m, MaskAccessor mask, Functor &amp;f)</argsstring>
+        <name>inspectLineIf</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>send</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="81" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="77" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gad70a53a9ab68eab8c6d3371b1269b6ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImages</definition>
+        <argsstring>(...)</argsstring>
+        <name>inspectTwoImages</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply read-only functor to every pixel of both images. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to collect statistics for each region of a labeled image, especially in conjunction with the <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">ArrayOfRegionStatistics</ref> functor. The results must be stored in the functor which serves as a return value. Accessors are used to access the pixel data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gad70a53a9ab68eab8c6d3371b1269b6ac" kindref="member" tooltip="Apply read-only functor to every pixel of both images.">inspectTwoImages</ref>(ImageIterator1<sp/>upperleft1,<sp/>ImageIterator1<sp/>lowerright1,<sp/>Accessor1<sp/>a1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageIterator2<sp/>upperleft2,<sp/>Accessor2<sp/>a2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gad70a53a9ab68eab8c6d3371b1269b6ac" kindref="member" tooltip="Apply read-only functor to every pixel of both images.">inspectTwoImages</ref>(triple&lt;ImageIterator1,<sp/>ImageIterator1,<sp/>Accessor1&gt;<sp/>img1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;ImageIterator2,<sp/>Accessor2&gt;<sp/>img2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/inspectimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>image1;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>image2;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SomeStatisticsFunctor<sp/>stats(...);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gad70a53a9ab68eab8c6d3371b1269b6ac" kindref="member" tooltip="Apply read-only functor to every pixel of both images.">vigra::inspectTwoImages</ref>(srcImageRange(image1),<sp/>srcImage(image2),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stats);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator1<sp/>upperleft1,<sp/>lowerright1;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator2<sp/>upperleft2;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator1::row_iterator<sp/>ix1<sp/>=<sp/>upperleft1.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator2::row_iterator<sp/>ix2<sp/>=<sp/>upperleft2.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor1<sp/>accessor1;</highlight></codeline>
+<codeline><highlight class="normal">Accessor2<sp/>accessor2;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal">functor(accessor1(ix1),<sp/>accessor2(ix2));<sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>not<sp/>used</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="481"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga6e255f5580a7cf0908571b1be5bd9919" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImages</definition>
+        <argsstring>(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, ImageIterator2 upperleft2, Accessor2 a2, Functor &amp;f)</argsstring>
+        <name>inspectTwoImages</name>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>Accessor1</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>ImageIterator2</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>Accessor2</type>
+          <declname>a2</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="519" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="515" bodyend="524"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gae1518b054323b2a7c46b0badfecd0a5e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImages</definition>
+        <argsstring>(triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt; img1, pair&lt; ImageIterator2, Accessor2 &gt; img2, Functor &amp;f)</argsstring>
+        <name>inspectTwoImages</name>
+        <param>
+          <type>triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator2, Accessor2 &gt;</type>
+          <declname>img2</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="534" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="531" bodyend="537"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gadd8eadac6574e8041566bf6033215e2e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImages</definition>
+        <argsstring>(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, ImageIterator2 upperleft2, Accessor2 a2, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectTwoImages</name>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>Accessor1</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>ImageIterator2</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>Accessor2</type>
+          <declname>a2</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="543" bodyend="549"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gaad388a0c33a0159063888fd17b7fc2a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImages</definition>
+        <argsstring>(triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt; img1, pair&lt; ImageIterator2, Accessor2 &gt; img2, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectTwoImages</name>
+        <param>
+          <type>triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator2, Accessor2 &gt;</type>
+          <declname>img2</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="556" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gade5a57c06d2ab13ddf4522c931d9e757" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImagesIf</definition>
+        <argsstring>(...)</argsstring>
+        <name>inspectTwoImagesIf</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Apply read-only functor to those pixels of both images where the mask image is non-zero. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to collect statistics for selected regions of a labeled image, especially in conjunction with the <ref refid="classvigra_1_1ArrayOfRegionStatistics" kindref="compound">ArrayOfRegionStatistics</ref> functor. The results must be stored in the functor which serves as a return value. Accessors are used to access the pixel data.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gade5a57c06d2ab13ddf4522c931d9e757" kindref="member" tooltip="Apply read-only functor to those pixels of both images where the mask image is non-zero.">inspectTwoImagesIf</ref>(ImageIterator1<sp/>upperleft1,<sp/>ImageIterator1<sp/>lowerright1,<sp/>Accessor1<sp/>a1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ImageIterator2<sp/>upperleft2,<sp/>Accessor2<sp/>a2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MaskImageIterator<sp/>mupperleft,<sp/>MaskAccessor<sp/>mask,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator1,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ImageIterator2,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Accessor2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">MaskAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__InspectAlgo_1gade5a57c06d2ab13ddf4522c931d9e757" kindref="member" tooltip="Apply read-only functor to those pixels of both images where the mask image is non-zero.">inspectTwoImagesIf</ref>(triple&lt;ImageIterator1,<sp/>ImageIterator1,<sp/>Accessor1&gt;<sp/>img1,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;ImageIterator2,<sp/>Accessor2&gt;<sp/>img2,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;MaskImageIterator,<sp/>MaskAccessor&gt;<sp/>mimg,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Functor<sp/>&amp;<sp/>f)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/inspectimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>image1;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>image2;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>maskimage;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SomeStatisticsFunctor<sp/>stats(...);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InspectAlgo_1gade5a57c06d2ab13ddf4522c931d9e757" kindref="member" tooltip="Apply read-only functor to those pixels of both images where the mask image is non-zero.">vigra::inspectTwoImagesIf</ref>(srcImageRange(image1),<sp/>srcImage(image2),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcImage(maskimage),<sp/>region_stats);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">ImageIterator1<sp/>upperleft1,<sp/>lowerright1;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator2<sp/>upperleft2;</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator<sp/>upperleftm;</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator1::row_iterator<sp/>ix1<sp/>=<sp/>upperleft1.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">ImageIterator2::row_iterator<sp/>ix2<sp/>=<sp/>upperleft2.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal">MaskImageIterator::row_iterator<sp/>mx<sp/>=<sp/>mupperleft.rowIterator();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Accessor1<sp/>accessor1;</highlight></codeline>
+<codeline><highlight class="normal">Accessor2<sp/>accessor2;</highlight></codeline>
+<codeline><highlight class="normal">MaskAccessor<sp/>mask;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Functor<sp/>functor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(mask(mx))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>functor(accessor1(ix1),<sp/>accessor2(ix2));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="649"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga6f57973adc40a262e420ff684fc20937" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImagesIf</definition>
+        <argsstring>(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, ImageIterator2 upperleft2, Accessor2 a2, MaskImageIterator mupperleft, MaskAccessor mask, Functor &amp;f)</argsstring>
+        <name>inspectTwoImagesIf</name>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>Accessor1</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>ImageIterator2</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>Accessor2</type>
+          <declname>a2</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mupperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="696" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="691" bodyend="702"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gaff93e00365e395b8b9c4499d1e5f1ac0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImagesIf</definition>
+        <argsstring>(triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt; img1, pair&lt; ImageIterator2, Accessor2 &gt; img2, pair&lt; MaskImageIterator, MaskAccessor &gt; m, Functor &amp;f)</argsstring>
+        <name>inspectTwoImagesIf</name>
+        <param>
+          <type>triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator2, Accessor2 &gt;</type>
+          <declname>img2</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="714" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="710" bodyend="719"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga4a345bab3dc290126cc08a48db8429e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImagesIf</definition>
+        <argsstring>(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1, ImageIterator2 upperleft2, Accessor2 a2, MaskImageIterator mupperleft, MaskAccessor mask, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectTwoImagesIf</name>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>upperleft1</declname>
+        </param>
+        <param>
+          <type>ImageIterator1</type>
+          <declname>lowerright1</declname>
+        </param>
+        <param>
+          <type>Accessor1</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>ImageIterator2</type>
+          <declname>upperleft2</declname>
+        </param>
+        <param>
+          <type>Accessor2</type>
+          <declname>a2</declname>
+        </param>
+        <param>
+          <type>MaskImageIterator</type>
+          <declname>mupperleft</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="730" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="726" bodyend="735"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga601588bfdb4315c21b49b036bb282d2e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ImageIterator1</type>
+          </param>
+          <param>
+            <type>class Accessor1</type>
+          </param>
+          <param>
+            <type>class ImageIterator2</type>
+          </param>
+          <param>
+            <type>class Accessor2</type>
+          </param>
+          <param>
+            <type>class MaskImageIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoImagesIf</definition>
+        <argsstring>(triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt; img1, pair&lt; ImageIterator2, Accessor2 &gt; img2, pair&lt; MaskImageIterator, MaskAccessor &gt; m, functor::UnaryAnalyser&lt; Functor &gt; const &amp;f)</argsstring>
+        <name>inspectTwoImagesIf</name>
+        <param>
+          <type>triple&lt; ImageIterator1, ImageIterator1, Accessor1 &gt;</type>
+          <declname>img1</declname>
+        </param>
+        <param>
+          <type>pair&lt; ImageIterator2, Accessor2 &gt;</type>
+          <declname>img2</declname>
+        </param>
+        <param>
+          <type>pair&lt; MaskImageIterator, MaskAccessor &gt;</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>functor::UnaryAnalyser&lt; Functor &gt; const &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="747" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="743" bodyend="752"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1ga6909bbf79a03dc947b1a5230723c8c5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoLines</definition>
+        <argsstring>(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1, SrcIterator2 s2, SrcAccessor2 src2, Functor &amp;f)</argsstring>
+        <name>inspectTwoLines</name>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>SrcIterator2</type>
+          <declname>s2</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="95" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="91" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="group__InspectAlgo_1gae26a13a9a84786a666e4370b2a70ae41" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator1</type>
+          </param>
+          <param>
+            <type>class SrcAccessor1</type>
+          </param>
+          <param>
+            <type>class SrcIterator2</type>
+          </param>
+          <param>
+            <type>class SrcAccessor2</type>
+          </param>
+          <param>
+            <type>class MaskIterator</type>
+          </param>
+          <param>
+            <type>class MaskAccessor</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectTwoLinesIf</definition>
+        <argsstring>(SrcIterator1 s1, SrcIterator1 s1end, SrcAccessor1 src1, SrcIterator2 s2, SrcAccessor2 src2, MaskIterator m, MaskAccessor mask, Functor &amp;f)</argsstring>
+        <name>inspectTwoLinesIf</name>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>SrcIterator1</type>
+          <declname>s1end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor1</type>
+          <declname>src1</declname>
+        </param>
+        <param>
+          <type>SrcIterator2</type>
+          <declname>s2</declname>
+        </param>
+        <param>
+          <type>SrcAccessor2</type>
+          <declname>src2</declname>
+        </param>
+        <param>
+          <type>MaskIterator</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>MaskAccessor</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" line="110" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/inspectimage.hxx" bodystart="105" bodyend="114"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Apply read-only functor to every pixel </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

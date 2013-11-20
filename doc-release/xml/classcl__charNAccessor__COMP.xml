@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classcl__charNAccessor__COMP" kind="class" prot="public">
+    <compoundname>cl_charNAccessor_COMP</compoundname>
+    <includes refid="multi__opencl_8hxx" local="no">vigra/multi_opencl.hxx</includes>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>access the first component. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_opencl.hxx" line="276"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

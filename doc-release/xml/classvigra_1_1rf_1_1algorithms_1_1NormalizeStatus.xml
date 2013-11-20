@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus" kind="class" prot="public">
+    <compoundname>vigra::rf::algorithms::NormalizeStatus</compoundname>
+    <includes refid="rf__algorithm_8hxx" local="no">vigra/random_forest/rf_algorithm.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1abe63e991a7bf5d666068b15c9064428d" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double n</definition>
+        <argsstring></argsstring>
+        <name>n</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="851" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="851" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1a331fcdc15ef4477eeef0319d0f6760b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NormalizeStatus</definition>
+        <argsstring>(double m)</argsstring>
+        <name>NormalizeStatus</name>
+        <param>
+          <type>double</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>normalize status() by m </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="857" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="855" bodyend="857"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Node</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(Node &amp;node)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>Node &amp;</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="860" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="859" bodyend="863"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Normalize the status value in the <ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> tree (<ref refid="classvigra_1_1rf_1_1algorithms_1_1HClustering" kindref="compound">HClustering</ref> Visitor) </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="849" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" bodystart="848" bodyend="864"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1abe63e991a7bf5d666068b15c9064428d" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::NormalizeStatus</scope><name>n</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1a331fcdc15ef4477eeef0319d0f6760b5" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::NormalizeStatus</scope><name>NormalizeStatus</name></member>
+      <member refid="classvigra_1_1rf_1_1algorithms_1_1NormalizeStatus_1a20f8ce29d4952c0ee5d4669365767c6f" prot="public" virt="non-virtual"><scope>vigra::rf::algorithms::NormalizeStatus</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1bad__rational" kind="class" prot="public">
+    <compoundname>vigra::bad_rational</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1bad__rational_1a6b6ea5fc1e5be154e766351a12e05a77" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>bad_rational</definition>
+        <argsstring>()</argsstring>
+        <name>bad_rational</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="143" bodyend="143"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="140" bodyend="144"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1bad__rational_1a6b6ea5fc1e5be154e766351a12e05a77" prot="public" virt="non-virtual"><scope>vigra::bad_rational</scope><name>bad_rational</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

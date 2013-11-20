@@ -1,0 +1,562 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__SeparableConvolution" kind="group">
+    <compoundname>SeparableConvolution</compoundname>
+    <title>One-dimensional and separable convolution functions</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveLine</definition>
+        <argsstring>(...)</argsstring>
+        <name>convolveLine</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1-dimensional convolution of the source signal using the given kernel. </para>        </briefdescription>
+        <detaileddescription>
+<para>The KernelIterator must point to the center iterator, and the kernel&apos;s size is given by its left (kleft &lt;= 0) and right (kright &gt;= 0) borders. The signal must always be larger than the kernel. At those positions where the kernel does not completely fit into the signal&apos;s range, the specified <ref refid="BorderTreatmentMode" kindref="compound">BorderTreatmentMode</ref> is applied.</para><para>The signal&apos;s value_type (SrcAccessor::value_type) must be a linear space over the kernel&apos;s value_type (KernelAccessor::value_type), i.e. addition of source values, multiplication with kernel values, and NumericTraits must be defined. The kernel&apos;s value_type must be an algebraic field, i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined.</para><para>If <computeroutput>start</computeroutput> and <computeroutput>stop</computeroutput> are non-zero, the relation <computeroutput>0 &lt;= start &lt; stop &lt;= width</computeroutput> must hold (where <computeroutput>width</computeroutput> is the length of the input array). The convolution is then restricted to that subrange, and it is assumed that the output array only refers to that subrange (i.e. <computeroutput>id</computeroutput> points to the element corresponding to <computeroutput>start</computeroutput>). If <computeroutput>start</computeroutput> and <computeroutput>stop</computeroutput> are both zero (the default), the entire array is convolved.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member" tooltip="Performs a 1-dimensional convolution of the source signal using the given kernel.">convolveLine</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>isend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ik,<sp/>KernelAccessor<sp/>ka,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kleft,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kright,<sp/>BorderTreatmentMode<sp/>border,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>start<sp/>=<sp/>0,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stop<sp/>=<sp/>0<sp/>)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member" tooltip="Performs a 1-dimensional convolution of the source signal using the given kernel.">convolveLine</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/>BorderTreatmentMode&gt;<sp/>kernel,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>start<sp/>=<sp/>0,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>stop<sp/>=<sp/>0)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="separableconvolution_8hxx_source" kindref="compound">vigra/separableconvolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">std::vector&lt;float&gt;<sp/>src,<sp/>dest;</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>binomial<sp/>filter<sp/>of<sp/>size<sp/>5</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">static<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>kernel[]<sp/>=</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>1.0/16.0,<sp/>4.0/16.0,<sp/>6.0/16.0,<sp/>4.0/16.0,<sp/>1.0/16.0};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1StandardAccessor" kindref="compound" tooltip="Encapsulate access to the values an iterator points to.">vigra::StandardAccessor&lt;float&gt;</ref><sp/>FAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1StandardAccessor" kindref="compound" tooltip="Encapsulate access to the values an iterator points to.">vigra::StandardAccessor&lt;float&gt;</ref><sp/>KernelAccessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member" tooltip="Performs a 1-dimensional convolution of the source signal using the given kernel.">vigra::convolveLine</ref>(src.begin(),<sp/>src.end(),<sp/>FAccessor(),<sp/>dest.begin(),<sp/>FAccessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>kernel+2,<sp/>KernelAccessor(),<sp/>-2,<sp/>2,<sp/>BORDER_TREATMENT_REFLECT);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/>^^^^^^^^<sp/><sp/>this<sp/>is<sp/>the<sp/>center<sp/>of<sp/>the<sp/>kernel</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">RandomAccessIterator<sp/>is,<sp/>isend;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>id;</highlight></codeline>
+<codeline><highlight class="normal">RandomAccessIterator<sp/>ik;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal">KernelAccessor<sp/>kernel_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote<sp/>s<sp/>=<sp/>src_accessor(is);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>s<sp/>+<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal">s<sp/>=<sp/>kernel_accessor(ik)<sp/>*<sp/>s;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(s),<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para><para>If border == BORDER_TREATMENT_CLIP:</para><para><programlisting><codeline><highlight class="normal">NumericTraits&lt;KernelAccessor::value_type&gt;::RealPromote<sp/>k<sp/>=<sp/>kernel_accessor(ik);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>+<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>-<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>*<sp/>k;</highlight></codeline>
+<codeline><highlight class="normal">k<sp/>=<sp/>k<sp/>/<sp/>k;</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">kleft<sp/>&lt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">kright<sp/>&gt;=<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">iend<sp/>-<sp/>is<sp/>&gt;=<sp/>kright<sp/>+<sp/>kleft<sp/>+<sp/>1</highlight></codeline>
+</programlisting></para><para>If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be != 0. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="892"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1ga7266b070d6d10ecb650c8c7648595b83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveLine</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestAccessor da, KernelIterator ik, KernelAccessor ka, int kleft, int kright, BorderTreatmentMode border, int start=0, int stop=0)</argsstring>
+        <name>convolveLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ik</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ka</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kleft</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kright</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>start</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stop</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="902" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="897" bodyend="973"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1ga1586b42b0400d4ed8d106c204e765124" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convolveLine</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt; kernel, int start=0, int stop=0)</argsstring>
+        <name>convolveLine</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>start</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>stop</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="984" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="979" bodyend="989"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveX</definition>
+        <argsstring>(...)</argsstring>
+        <name>separableConvolveX</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1 dimensional convolution in x direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member">convolveLine()</ref> for every row of the image. See <ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member">convolveLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member" tooltip="Performs a 1 dimensional convolution in x direction.">separableConvolveX</ref>(SrcImageIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ik,<sp/>KernelAccessor<sp/>ka,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kleft,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kright,<sp/>BorderTreatmentMode<sp/>border)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member" tooltip="Performs a 1 dimensional convolution in x direction.">separableConvolveX</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/>BorderTreatmentMode&gt;<sp/>kernel)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="separableconvolution_8hxx_source" kindref="compound">vigra/separableconvolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>Gaussian<sp/>kernel<sp/>with<sp/>std.<sp/>deviation<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::Kernel1D&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;<sp/>kernel;</highlight></codeline>
+<codeline><highlight class="normal">kernel.initGaussian(3.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeparableConvolution_1ga34459275af4134198dfc1a75c9993848" kindref="member" tooltip="Performs a 1 dimensional convolution in x direction.">vigra::separableConvolveX</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>kernel1d(kernel));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1050"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1ga8f3115302cd871ed2cf76d791f20d676" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveX</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, KernelIterator ik, KernelAccessor ka, int kleft, int kright, BorderTreatmentMode border)</argsstring>
+        <name>separableConvolveX</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ik</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ka</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kleft</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kright</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1060" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1055" bodyend="1084"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1gad4bc4e99dc87ad933a88c9730c2b508b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveX</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt; kernel)</argsstring>
+        <name>separableConvolveX</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1094" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1090" bodyend="1099"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveY</definition>
+        <argsstring>(...)</argsstring>
+        <name>separableConvolveY</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Performs a 1 dimensional convolution in y direction. </para>        </briefdescription>
+        <detaileddescription>
+<para>It calls <ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member">convolveLine()</ref> for every column of the image. See <ref refid="group__SeparableConvolution_1ga68b1efe52c497cfbaece1452515b6307" kindref="member">convolveLine()</ref> for more information about required interfaces and vigra_preconditions.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member" tooltip="Performs a 1 dimensional convolution in y direction.">separableConvolveY</ref>(SrcImageIterator<sp/>supperleft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>slowerright,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>dupperleft,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>KernelIterator<sp/>ik,<sp/>KernelAccessor<sp/>ka,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kleft,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>kright,<sp/>BorderTreatmentMode<sp/>border)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">KernelAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member" tooltip="Performs a 1 dimensional convolution in y direction.">separableConvolveY</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tuple5&lt;KernelIterator,<sp/>KernelAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">,<sp/>BorderTreatmentMode&gt;<sp/>kernel)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="separableconvolution_8hxx_source" kindref="compound">vigra/separableconvolution.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>src(w,h),<sp/>dest(w,h);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>Gaussian<sp/>kernel<sp/>with<sp/>std.<sp/>deviation<sp/>3.0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vigra::Kernel1D<sp/>kernel;</highlight></codeline>
+<codeline><highlight class="normal">kernel.initGaussian(3.0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__SeparableConvolution_1gaee4f7ee32121e37112a20f5fb8ad4610" kindref="member" tooltip="Performs a 1 dimensional convolution in y direction.">vigra::separableConvolveY</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>kernel1d(kernel));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1162"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1ga6afcdbbdbdef8e59098ff126dcefdda2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveY</definition>
+        <argsstring>(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa, DestIterator dupperleft, DestAccessor da, KernelIterator ik, KernelAccessor ka, int kleft, int kright, BorderTreatmentMode border)</argsstring>
+        <name>separableConvolveY</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>supperleft</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slowerright</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dupperleft</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>KernelIterator</type>
+          <declname>ik</declname>
+        </param>
+        <param>
+          <type>KernelAccessor</type>
+          <declname>ka</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kleft</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>kright</declname>
+        </param>
+        <param>
+          <type>BorderTreatmentMode</type>
+          <declname>border</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1167" bodyend="1196"/>
+      </memberdef>
+      <memberdef kind="function" id="group__SeparableConvolution_1gacb90eb3432a9b86a71e4975d160ac2b8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class KernelIterator</type>
+          </param>
+          <param>
+            <type>class KernelAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::separableConvolveY</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt; kernel)</argsstring>
+        <name>separableConvolveY</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>tuple5&lt; KernelIterator, KernelAccessor, int, int, BorderTreatmentMode &gt;</type>
+          <declname>kernel</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" line="1206" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/separableconvolution.hxx" bodystart="1202" bodyend="1211"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Perform 1D convolution and separable filtering in 2 dimensions.</para><para>These generic convolution functions implement the standard convolution operation for a wide range of images and signals that fit into the required interface. They need a suitable kernel to operate. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

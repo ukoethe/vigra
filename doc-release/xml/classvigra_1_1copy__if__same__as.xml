@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1copy__if__same__as" kind="class" prot="public">
+    <compoundname>vigra::copy_if_same_as</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class A</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1copy__if__same__as_1a384bd8ebff07ff271abe840ac6de60bd" prot="private" static="no" mutable="no">
+        <type>const bool</type>
+        <definition>const bool copied</definition>
+        <argsstring></argsstring>
+        <name>copied</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="551" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1copy__if__same__as_1a10b6e893aee6e0418db0d5bb7f5860e2" prot="private" static="no" mutable="no">
+        <type>const A *const</type>
+        <definition>const A* const data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="552" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1copy__if__same__as_1ae34d86c67eaafee5d10b20746193a990" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>copy_if_same_as</definition>
+        <argsstring>(const copy_if_same_as &amp;)</argsstring>
+        <name>copy_if_same_as</name>
+        <param>
+          <type>const copy_if_same_as &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="553"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1copy__if__same__as_1add50c969dc6c05f3d89fca39e7997a99" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator=</definition>
+        <argsstring>(const copy_if_same_as &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const copy_if_same_as &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="554"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1copy__if__same__as_1ae7b6c7611298230eb89e50e7ece2bc0a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>copy_if_same_as</definition>
+        <argsstring>(const A &amp;x, const A &amp;y)</argsstring>
+        <name>copy_if_same_as</name>
+        <param>
+          <type>const A &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const A &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="557" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="556" bodyend="557"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1copy__if__same__as_1a56e3369ac58e3c857d3163fdcf7c6705" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const A &amp;</type>
+        <definition>const A&amp; operator()</definition>
+        <argsstring>() const </argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="563" bodyend="563"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1copy__if__same__as_1a10a0c7ab953bd04e577cbc6de3bbb5c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~copy_if_same_as</definition>
+        <argsstring>()</argsstring>
+        <name>~copy_if_same_as</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="559" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="558" bodyend="562"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/metaprogramming.hxx" bodystart="549" bodyend="564"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1copy__if__same__as_1a384bd8ebff07ff271abe840ac6de60bd" prot="private" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>copied</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1ae34d86c67eaafee5d10b20746193a990" prot="private" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>copy_if_same_as</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1ae7b6c7611298230eb89e50e7ece2bc0a" prot="public" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>copy_if_same_as</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1a10b6e893aee6e0418db0d5bb7f5860e2" prot="private" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>data</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1a56e3369ac58e3c857d3163fdcf7c6705" prot="public" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1add50c969dc6c05f3d89fca39e7997a99" prot="private" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1copy__if__same__as_1a10a0c7ab953bd04e577cbc6de3bbb5c4" prot="public" virt="non-virtual"><scope>vigra::copy_if_same_as</scope><name>~copy_if_same_as</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

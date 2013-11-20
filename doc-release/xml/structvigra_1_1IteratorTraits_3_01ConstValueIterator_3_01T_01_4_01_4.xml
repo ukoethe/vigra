@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1af9fdae97c604300cb72878ad86abe7df" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a8fb801ae08a56f7dee03b631562baa21" kindref="member">iterator::column_iterator</ref></type>
+        <definition>typedef iterator::column_iterator column_iterator</definition>
+        <argsstring></argsstring>
+        <name>column_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1496" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1496" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a01945addffc1a27e933858e13037096b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardConstAccessor" kindref="compound">StandardConstAccessor</ref>&lt; T &gt;</type>
+        <definition>typedef StandardConstAccessor&lt;T&gt; default_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1498" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1498" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a56e44524f58aa2f1aedd486bfa4524ec" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardConstAccessor" kindref="compound">StandardConstAccessor</ref>&lt; T &gt;</type>
+        <definition>typedef StandardConstAccessor&lt;T&gt; DefaultAccessor</definition>
+        <argsstring></argsstring>
+        <name>DefaultAccessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1497" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a87620e2a4084ce6188670670e9fc2615" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1afe1e2807a8c98a020588d6eeb28a1b7a" kindref="member">iterator::difference_type</ref></type>
+        <definition>typedef iterator::difference_type difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1494" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1494" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a578ba7fe728777d5c68a278732b30a62" prot="public" static="no">
+        <type>VigraTrueType</type>
+        <definition>typedef VigraTrueType hasConstantStrides</definition>
+        <argsstring></argsstring>
+        <name>hasConstantStrides</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1499" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1499" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a5f2af54b83d22c3b24012095756606e4" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a3137295ff5928340d98ae934a935e941" kindref="member">iterator::index_reference</ref></type>
+        <definition>typedef iterator::index_reference index_reference</definition>
+        <argsstring></argsstring>
+        <name>index_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1492" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a210c82b20f1a9030d3f90d118fb6f4f2" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator" kindref="compound">ConstValueIterator</ref>&lt; T &gt;</type>
+        <definition>typedef ConstValueIterator&lt;T&gt; Iterator</definition>
+        <argsstring></argsstring>
+        <name>Iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1487" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a24eac9892806755705990e0fa3d554ef" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator" kindref="compound">Iterator</ref></type>
+        <definition>typedef Iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1488" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1488" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a003269a9876ddf5df074ca53ff0b0ac0" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a93321121482225e0577a134820fc5c6b" kindref="member">iterator::iterator_category</ref></type>
+        <definition>typedef iterator::iterator_category iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1489" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1489" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1ae25503eab63a289091b067e5626b9acd" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a762ea405aed44675de4d4198b8bb4a1c" kindref="member">iterator::pointer</ref></type>
+        <definition>typedef iterator::pointer pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1493" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1493" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a6e997adfc98892497219c84757d0bd6b" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a58b8fc4cc51122a6bfc20e65cc45b6b5" kindref="member">iterator::reference</ref></type>
+        <definition>typedef iterator::reference reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1491" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1491" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1af9751c08e77cdb2ce65996c153f532c7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1a91b545427f869c79d74f4bc6d2115c4f" kindref="member">iterator::row_iterator</ref></type>
+        <definition>typedef iterator::row_iterator row_iterator</definition>
+        <argsstring></argsstring>
+        <name>row_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1495" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1495" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1aac03fcf05950c2c26b7e7d82a5cd6cb5" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ConstValueIterator_1ad618f240f2b743f553b20beac68bbaf8" kindref="member">iterator::value_type</ref></type>
+        <definition>typedef iterator::value_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1490" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" line="1486" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/imageiterator.hxx" bodystart="1485" bodyend="1500"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1af9fdae97c604300cb72878ad86abe7df" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>column_iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a01945addffc1a27e933858e13037096b" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>default_accessor</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a56e44524f58aa2f1aedd486bfa4524ec" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>DefaultAccessor</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a87620e2a4084ce6188670670e9fc2615" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>difference_type</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a578ba7fe728777d5c68a278732b30a62" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>hasConstantStrides</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a5f2af54b83d22c3b24012095756606e4" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>index_reference</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a24eac9892806755705990e0fa3d554ef" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a210c82b20f1a9030d3f90d118fb6f4f2" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>Iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a003269a9876ddf5df074ca53ff0b0ac0" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>iterator_category</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1ae25503eab63a289091b067e5626b9acd" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>pointer</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1a6e997adfc98892497219c84757d0bd6b" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>reference</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1af9751c08e77cdb2ce65996c153f532c7" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>row_iterator</name></member>
+      <member refid="structvigra_1_1IteratorTraits_3_01ConstValueIterator_3_01T_01_4_01_4_1aac03fcf05950c2c26b7e7d82a5cd6cb5" prot="public" virt="non-virtual"><scope>vigra::IteratorTraits&lt; ConstValueIterator&lt; T &gt; &gt;</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1InternalDistanceTransformL1NormFunctor" kind="struct" prot="public">
+    <compoundname>vigra::InternalDistanceTransformL1NormFunctor</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1InternalDistanceTransformL1NormFunctor_1ac69daa7e9ec77ccdd5c2c7022330bb7e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float operator()</definition>
+        <argsstring>(float dx, float dy) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>float</type>
+          <declname>dx</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>dy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/distancetransform.hxx" line="64" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/distancetransform.hxx" bodystart="63" bodyend="66"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/distancetransform.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/distancetransform.hxx" bodystart="61" bodyend="67"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1InternalDistanceTransformL1NormFunctor_1ac69daa7e9ec77ccdd5c2c7022330bb7e" prot="public" virt="non-virtual"><scope>vigra::InternalDistanceTransformL1NormFunctor</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

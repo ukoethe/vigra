@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1AffineMotionEstimationOptions" kind="class" prot="public">
+    <compoundname>vigra::AffineMotionEstimationOptions</compoundname>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>SPLINEORDER</declname>
+        <defname>SPLINEORDER</defname>
+        <defval>2</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1AffineMotionEstimationOptions_1a7025a4dbf1414aed5a8dc622b994ac7b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double burt_filter_strength</definition>
+        <argsstring></argsstring>
+        <name>burt_filter_strength</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1AffineMotionEstimationOptions_1a71223f1eb2fc9602a3b13b4c4c8aea39" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int highest_level</definition>
+        <argsstring></argsstring>
+        <name>highest_level</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1AffineMotionEstimationOptions_1a6d16dc29d33f0f114d1ef1abbfcfd344" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int iterations_per_level</definition>
+        <argsstring></argsstring>
+        <name>iterations_per_level</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1AffineMotionEstimationOptions_1af3f5550fb1b3a3a3fda83c067f3b9cc5" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool use_laplacian_pyramid</definition>
+        <argsstring></argsstring>
+        <name>use_laplacian_pyramid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="141" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a6ec4d7df36b2828ed8fc53b40c8d1d9a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>AffineMotionEstimationOptions</definition>
+        <argsstring>()</argsstring>
+        <name>AffineMotionEstimationOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="148" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="143" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a400cb3a77820a2a5787f190dd57b07a5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>AffineMotionEstimationOptions</definition>
+        <argsstring>(AffineMotionEstimationOptions&lt; ORDER &gt; const &amp;other)</argsstring>
+        <name>AffineMotionEstimationOptions</name>
+        <param>
+          <type>AffineMotionEstimationOptions&lt; ORDER &gt; const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="151" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a6b9750c2201d7337d91a73bfc785db3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AffineMotionEstimationOptions &amp;</type>
+        <definition>AffineMotionEstimationOptions&amp; burtFilterStrength</definition>
+        <argsstring>(double strength)</argsstring>
+        <name>burtFilterStrength</name>
+        <param>
+          <type>double</type>
+          <declname>strength</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="164" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1ad67475c3e0c680ac1aaed714dca1fd40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AffineMotionEstimationOptions &amp;</type>
+        <definition>AffineMotionEstimationOptions&amp; highestPyramidLevel</definition>
+        <argsstring>(unsigned int level)</argsstring>
+        <name>highestPyramidLevel</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>level</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="172" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a54eee312fdd4db1c8b3307005d694ab8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AffineMotionEstimationOptions &amp;</type>
+        <definition>AffineMotionEstimationOptions&amp; iterationsPerLevel</definition>
+        <argsstring>(unsigned int iter)</argsstring>
+        <name>iterationsPerLevel</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="178" bodyend="184"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a75d25f15b459ce2f1ab457de4a258603" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>NEWORDER</declname>
+            <defname>NEWORDER</defname>
+          </param>
+        </templateparamlist>
+        <type>AffineMotionEstimationOptions&lt; NEWORDER &gt;</type>
+        <definition>AffineMotionEstimationOptions&lt;NEWORDER&gt; splineOrder</definition>
+        <argsstring>() const </argsstring>
+        <name>splineOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="160" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="159" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a3214660f1f0f85b1aea11ace9997dca1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AffineMotionEstimationOptions &amp;</type>
+        <definition>AffineMotionEstimationOptions&amp; useGaussianPyramid</definition>
+        <argsstring>(bool f=true)</argsstring>
+        <name>useGaussianPyramid</name>
+        <param>
+          <type>bool</type>
+          <declname>f</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="187" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="186" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1AffineMotionEstimationOptions_1a5dc1f7ce75cda590f9df671f799124bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>AffineMotionEstimationOptions &amp;</type>
+        <definition>AffineMotionEstimationOptions&amp; useLaplacianPyramid</definition>
+        <argsstring>(bool f=true)</argsstring>
+        <name>useLaplacianPyramid</name>
+        <param>
+          <type>bool</type>
+          <declname>f</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="192" bodyend="196"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" line="137" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affine_registration.hxx" bodystart="136" bodyend="197"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a6ec4d7df36b2828ed8fc53b40c8d1d9a" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>AffineMotionEstimationOptions</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a400cb3a77820a2a5787f190dd57b07a5" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>AffineMotionEstimationOptions</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a7025a4dbf1414aed5a8dc622b994ac7b" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>burt_filter_strength</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a6b9750c2201d7337d91a73bfc785db3a" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>burtFilterStrength</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a71223f1eb2fc9602a3b13b4c4c8aea39" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>highest_level</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1ad67475c3e0c680ac1aaed714dca1fd40" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>highestPyramidLevel</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a6d16dc29d33f0f114d1ef1abbfcfd344" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>iterations_per_level</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a54eee312fdd4db1c8b3307005d694ab8" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>iterationsPerLevel</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a75d25f15b459ce2f1ab457de4a258603" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>splineOrder</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1af3f5550fb1b3a3a3fda83c067f3b9cc5" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>use_laplacian_pyramid</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a3214660f1f0f85b1aea11ace9997dca1" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>useGaussianPyramid</name></member>
+      <member refid="classvigra_1_1AffineMotionEstimationOptions_1a5dc1f7ce75cda590f9df671f799124bd" prot="public" virt="non-virtual"><scope>vigra::AffineMotionEstimationOptions</scope><name>useLaplacianPyramid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

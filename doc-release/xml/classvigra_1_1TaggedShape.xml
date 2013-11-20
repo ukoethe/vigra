@@ -1,0 +1,656 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1TaggedShape" kind="class" prot="public">
+    <compoundname>vigra::TaggedShape</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5b" prot="public" static="no">
+        <name>ChannelAxis</name>
+        <enumvalue id="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5baa4500e61db092c2e1719b5d68b047ec3" prot="public">
+          <name>first</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5baa1a074a72eb46dfdde53e589d946ab98" prot="public">
+          <name>last</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5bab7e4e0120a041dbe6528b050c04269e0" prot="public">
+          <name>none</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="400" bodyend="400"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1TaggedShape_1aa1bd3b43ab889220c7ef96a56f55813c" prot="public" static="no" mutable="no">
+        <type>PyAxisTags</type>
+        <definition>PyAxisTags axistags</definition>
+        <argsstring></argsstring>
+        <name>axistags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="403" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="403" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1TaggedShape_1a0c1a3ffb2d49c017a828e8f9b0efe39f" prot="public" static="no" mutable="no">
+        <type>ChannelAxis</type>
+        <definition>ChannelAxis channelAxis</definition>
+        <argsstring></argsstring>
+        <name>channelAxis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="404" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="404" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1TaggedShape_1a1c1d413a89cec7d095de3e7927121082" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string channelDescription</definition>
+        <argsstring></argsstring>
+        <name>channelDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="405" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1TaggedShape_1a8f7ceb15d45475066fb76a88e7ecfa5f" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; npy_intp &gt;</type>
+        <definition>ArrayVector&lt;npy_intp&gt; original_shape</definition>
+        <argsstring></argsstring>
+        <name>original_shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="402" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="402" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1TaggedShape_1a738d9fa0f4d32ec7cad452b01ac5fa79" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; npy_intp &gt;</type>
+        <definition>ArrayVector&lt;npy_intp&gt; shape</definition>
+        <argsstring></argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="402" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="402" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1ac3b015811219c74a6c253ae8f7da7647" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int channelCount</definition>
+        <argsstring>() const </argsstring>
+        <name>channelCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="698" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="697" bodyend="708"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a9ae0a1e26269ad6c9a6d70bdc3651c0f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool compatible</definition>
+        <argsstring>(TaggedShape const &amp;other) const </argsstring>
+        <name>compatible</name>
+        <param>
+          <type>TaggedShape const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="630" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="629" bodyend="655"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a495ad239313088464009e3363a62d50e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; fromFrequencyDomain</definition>
+        <argsstring>()</argsstring>
+        <name>fromFrequencyDomain</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="625" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="624" bodyend="627"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a7c0fd1c1a7be16ffec086c5dc7aad365" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; operator*=</definition>
+        <argsstring>(int factor)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>int</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="521" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="520" bodyend="532"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a68a187a56b2b48ede45f17ac9d811919" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; operator+=</definition>
+        <argsstring>(int v)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="502" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="501" bodyend="513"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1ab9cead8f2855fdc2ca1a037c76269eab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; operator-=</definition>
+        <argsstring>(int v)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="515" bodyend="518"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a8e94d8d3c5e2683c930b6ff1d656fba9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>npy_intp &amp;</type>
+        <definition>npy_intp&amp; operator[]</definition>
+        <argsstring>(int i)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="486" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a253b15e12f5f99a43f0e1f59ee1a9346" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>npy_intp</type>
+        <definition>npy_intp operator[]</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="492" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="491" bodyend="494"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a68bb620fed415874473ba6453b7fb591" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; resize</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;sh)</argsstring>
+        <name>resize</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>sh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="445" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="444" bodyend="463"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1ac8e415dcc31db6261dbd9be4793589fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; resize</definition>
+        <argsstring>(MultiArrayIndex v1)</argsstring>
+        <name>resize</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="466" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="465" bodyend="468"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a1d6f30c134df15ebfd4b271aab198e58" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; resize</definition>
+        <argsstring>(MultiArrayIndex v1, MultiArrayIndex v2)</argsstring>
+        <name>resize</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="471" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="470" bodyend="473"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1aa774eabb24d5752c5aba99331de2a2fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; resize</definition>
+        <argsstring>(MultiArrayIndex v1, MultiArrayIndex v2, MultiArrayIndex v3)</argsstring>
+        <name>resize</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v2</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v3</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="476" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="475" bodyend="478"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a9c1262a4e7142b38f0f032ea222495dd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; resize</definition>
+        <argsstring>(MultiArrayIndex v1, MultiArrayIndex v2, MultiArrayIndex v3, MultiArrayIndex v4)</argsstring>
+        <name>resize</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v2</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v3</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>v4</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="482" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="480" bodyend="484"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1acac40c147f0ec722c8ead7f36e7f5672" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rotateToNormalOrder</definition>
+        <argsstring>()</argsstring>
+        <name>rotateToNormalOrder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="534" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a070a43d7e93d5009914d27c0ba906f63" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; setChannelCount</definition>
+        <argsstring>(int count)</argsstring>
+        <name>setChannelCount</name>
+        <param>
+          <type>int</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="658" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="657" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a80c963e2626f0ecbbb8419f47cd0cf34" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; setChannelDescription</definition>
+        <argsstring>(std::string const &amp;description)</argsstring>
+        <name>setChannelDescription</name>
+        <param>
+          <type>std::string const &amp;</type>
+          <declname>description</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="554" bodyend="560"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1ad0a5380fff8c8a80428c0f639a664585" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; setChannelIndexLast</definition>
+        <argsstring>()</argsstring>
+        <name>setChannelIndexLast</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="563" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="562" bodyend="567"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="496" bodyend="499"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1aeb1dea05515c3225ec53757da060122b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TaggedShape</definition>
+        <argsstring>(MultiArrayIndex size)</argsstring>
+        <name>TaggedShape</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="411" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="407" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a40866eb79187f5e65a5bdc8f16adbf89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TaggedShape</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;sh, PyAxisTags tags)</argsstring>
+        <name>TaggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>sh</declname>
+        </param>
+        <param>
+          <type>PyAxisTags</type>
+          <declname>tags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="419" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="414" bodyend="419"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a1e48ba73a518ac4e34bff639e1c92cae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TaggedShape</definition>
+        <argsstring>(ArrayVector&lt; T &gt; const &amp;sh, PyAxisTags tags)</argsstring>
+        <name>TaggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; const &amp;</type>
+          <declname>sh</declname>
+        </param>
+        <param>
+          <type>PyAxisTags</type>
+          <declname>tags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="422" bodyend="427"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1abc73bc00694b26b996130d151b101111" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TaggedShape</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;sh)</argsstring>
+        <name>TaggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>sh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="434" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="430" bodyend="434"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a4d5a31a6153b88b1f12f179705421cca" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>TaggedShape</definition>
+        <argsstring>(ArrayVector&lt; T &gt; const &amp;sh)</argsstring>
+        <name>TaggedShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; T &gt; const &amp;</type>
+          <declname>sh</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="441" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="437" bodyend="441"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a40b588c9f64c4baa62e43b19f828cb2c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; toFrequencyDomain</definition>
+        <argsstring>(int sign=1)</argsstring>
+        <name>toFrequencyDomain</name>
+        <param>
+          <type>int</type>
+          <declname>sign</declname>
+          <defval>1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="600" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="599" bodyend="622"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TaggedShape_1a98384e5d3f56d13f3250373ad9bffc05" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>TaggedShape &amp;</type>
+        <definition>TaggedShape&amp; transposeShape</definition>
+        <argsstring>(TinyVector&lt; U, N &gt; const &amp;p)</argsstring>
+        <name>transposeShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; U, N &gt; const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="571" bodyend="597"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2513">
+        <label>ArrayVector&lt; npy_intp &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2514" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2512">
+        <label>TaggedShape</label>
+        <childnode refid="2513" relation="usage">
+          <edgelabel>original_shape</edgelabel>
+          <edgelabel>shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2514">
+        <label>ArrayVectorView&lt; npy_intp &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" line="398" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_taggedshape.hxx" bodystart="397" bodyend="709"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TaggedShape_1aa1bd3b43ab889220c7ef96a56f55813c" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>axistags</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5b" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>ChannelAxis</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a0c1a3ffb2d49c017a828e8f9b0efe39f" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>channelAxis</name></member>
+      <member refid="classvigra_1_1TaggedShape_1ac3b015811219c74a6c253ae8f7da7647" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>channelCount</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a1c1d413a89cec7d095de3e7927121082" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>channelDescription</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a9ae0a1e26269ad6c9a6d70bdc3651c0f" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>compatible</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5baa4500e61db092c2e1719b5d68b047ec3" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>first</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a495ad239313088464009e3363a62d50e" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>fromFrequencyDomain</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5baa1a074a72eb46dfdde53e589d946ab98" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>last</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aea3dca2b607cccdf8034479c6553ed5bab7e4e0120a041dbe6528b050c04269e0" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>none</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a7c0fd1c1a7be16ffec086c5dc7aad365" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a68a187a56b2b48ede45f17ac9d811919" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1TaggedShape_1ab9cead8f2855fdc2ca1a037c76269eab" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a8e94d8d3c5e2683c930b6ff1d656fba9" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a253b15e12f5f99a43f0e1f59ee1a9346" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a8f7ceb15d45475066fb76a88e7ecfa5f" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>original_shape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a68bb620fed415874473ba6453b7fb591" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>resize</name></member>
+      <member refid="classvigra_1_1TaggedShape_1ac8e415dcc31db6261dbd9be4793589fc" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>resize</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a1d6f30c134df15ebfd4b271aab198e58" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>resize</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aa774eabb24d5752c5aba99331de2a2fb" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>resize</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a9c1262a4e7142b38f0f032ea222495dd" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>resize</name></member>
+      <member refid="classvigra_1_1TaggedShape_1acac40c147f0ec722c8ead7f36e7f5672" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>rotateToNormalOrder</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a070a43d7e93d5009914d27c0ba906f63" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>setChannelCount</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a80c963e2626f0ecbbb8419f47cd0cf34" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>setChannelDescription</name></member>
+      <member refid="classvigra_1_1TaggedShape_1ad0a5380fff8c8a80428c0f639a664585" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>setChannelIndexLast</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a738d9fa0f4d32ec7cad452b01ac5fa79" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>shape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a90ca964ebcc1b02bbcde225edd49e812" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>size</name></member>
+      <member refid="classvigra_1_1TaggedShape_1aeb1dea05515c3225ec53757da060122b" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>TaggedShape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a40866eb79187f5e65a5bdc8f16adbf89" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>TaggedShape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a1e48ba73a518ac4e34bff639e1c92cae" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>TaggedShape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1abc73bc00694b26b996130d151b101111" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>TaggedShape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a4d5a31a6153b88b1f12f179705421cca" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>TaggedShape</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a40b588c9f64c4baa62e43b19f828cb2c" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>toFrequencyDomain</name></member>
+      <member refid="classvigra_1_1TaggedShape_1a98384e5d3f56d13f3250373ad9bffc05" prot="public" virt="non-virtual"><scope>vigra::TaggedShape</scope><name>transposeShape</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

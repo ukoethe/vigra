@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor_1_1MarginalDistribution" kind="struct" prot="public">
+    <compoundname>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1ga82a1bf14bd71bb895c4cef9172317a86" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gap_left</definition>
+        <argsstring></argsstring>
+        <name>gap_left</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="595" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="595" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaea5fdbdb9c3260950784e38e90690459" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gap_right</definition>
+        <argsstring></argsstring>
+        <name>gap_right</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="596" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="596" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gac80b1b85518b533dc13f2e002ef9976e" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref> &gt;</type>
+        <definition>ArrayVector&lt;Int32&gt; leftCounts</definition>
+        <argsstring></argsstring>
+        <name>leftCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="591" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="591" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga8c75fcdf776c749ea3f299f393680e18" prot="public" static="no" mutable="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>Int32 leftTotalCounts</definition>
+        <argsstring></argsstring>
+        <name>leftTotalCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="592" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1ga5579a37daa083146a5f788b04ad64406" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; <ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref> &gt;</type>
+        <definition>ArrayVector&lt;Int32&gt; rightCounts</definition>
+        <argsstring></argsstring>
+        <name>rightCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="593" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="593" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gac2c41624239f61f56eb0c7cafd090c86" prot="public" static="no" mutable="no">
+        <type><ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref></type>
+        <definition>Int32 rightTotalCounts</definition>
+        <argsstring></argsstring>
+        <name>rightTotalCounts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="594" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="594" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1036">
+        <label>OnlineLearnVisitor::MarginalDistribution</label>
+        <childnode refid="1037" relation="usage">
+          <edgelabel>leftCounts</edgelabel>
+          <edgelabel>rightCounts</edgelabel>
+        </childnode>
+      </node>
+      <node id="1038">
+        <label>ArrayVectorView&lt; Int32 &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="1037">
+        <label>ArrayVector&lt; Int32 &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="1038" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="590" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="589" bodyend="597"/>
+    <listofallmembers>
+      <member refid="group__MachineLearning_1ga82a1bf14bd71bb895c4cef9172317a86" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>gap_left</name></member>
+      <member refid="group__MachineLearning_1gaea5fdbdb9c3260950784e38e90690459" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>gap_right</name></member>
+      <member refid="group__MachineLearning_1gac80b1b85518b533dc13f2e002ef9976e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>leftCounts</name></member>
+      <member refid="group__MachineLearning_1ga8c75fcdf776c749ea3f299f393680e18" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>leftTotalCounts</name></member>
+      <member refid="group__MachineLearning_1ga5579a37daa083146a5f788b04ad64406" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>rightCounts</name></member>
+      <member refid="group__MachineLearning_1gac2c41624239f61f56eb0c7cafd090c86" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::OnlineLearnVisitor::MarginalDistribution</scope><name>rightTotalCounts</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

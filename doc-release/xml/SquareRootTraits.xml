@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="SquareRootTraits" kind="page">
+    <compoundname>SquareRootTraits</compoundname>
+    <title>template&lt;&gt; struct SquareRootTraits&lt;ArithmeticType&gt;</title>
+    <detaileddescription>
+<para>Unary traits for the calculation of the square root of arithmetic objects.</para><para><bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>This traits class is used to determine appropriate argument and result types for the function <ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member">sqrt()</ref>. These traits are typically used like this:</para><para><programlisting><codeline><highlight class="normal">ArithmeticType<sp/>t<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal">SquareRootTraits&lt;ArithmeticType&gt;::SquareRootResult<sp/>r<sp/>=<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">sqrt</ref>((SquareRootTraits&lt;ArithmeticType&gt;::SquareRootArgument)t);</highlight></codeline>
+</programlisting></para><para>This approach avoids &apos;ambiguous overload errors&apos; when taking the square root of an integer type. It also takes care of determining the proper result of the <ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member">sqrt()</ref> function of <ref refid="classvigra_1_1FixedPoint" kindref="compound">vigra::FixedPoint</ref> and of the <ref refid="group__FFTWComplexOperators_1ga396baa79e8bd78a178597d32d5152041" kindref="member">norm()</ref> function, when it is implemented via sqrt(squaredNorm(x)). The following members are defined in <bold> <computeroutput>SquareRootTraits&lt;ArithmeticType&gt;</computeroutput></bold>:</para><para><table rows="3" cols="2"><row>
+<entry thead="no"><para><bold> <computeroutput>typedef ArithmeticType Type;</computeroutput></bold> </para></entry><entry thead="no"><para>the type itself  </para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... SquareRootArgument;</computeroutput></bold> </para></entry><entry thead="no"><para>required argument type for srqt(), i.e. <computeroutput>sqrt((SquareRootArgument)x)</computeroutput>  </para></entry></row>
+<row>
+<entry thead="no"><para><bold> <computeroutput>typedef ... SquareRootResult;</computeroutput></bold> </para></entry><entry thead="no"><para>result of <computeroutput>sqrt((SquareRootArgument)x)</computeroutput>  </para></entry></row>
+</table>
+</para><para>NormTraits for the built-in types are defined in <bold>#include</bold> &lt;<ref refid="numerictraits_8hxx_source" kindref="compound">vigra/numerictraits.hxx</ref>&gt;</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

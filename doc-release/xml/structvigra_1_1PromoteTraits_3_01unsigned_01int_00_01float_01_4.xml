@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01unsigned_01int_00_01float_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; unsigned int, float &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">PromoteType&lt; unsigned int, float &gt;</basecompoundref>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01unsigned_01int_00_01float_01_4_1ac49a5529d29d99ee9e59cdaf876a93b8" prot="public" static="no">
+        <type>detail::PromoteType&lt; unsigned int, float &gt;::Promote</type>
+        <definition>typedef detail::PromoteType&lt;unsigned int, float&gt;::Promote Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="721" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="721" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/promote_traits.hxx" line="720" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="719" bodyend="723"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01unsigned_01int_00_01float_01_4_1ac49a5529d29d99ee9e59cdaf876a93b8" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; unsigned int, float &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

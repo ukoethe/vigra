@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CombinedMultiIterator" kind="struct" prot="public">
+    <compoundname>vigra::CombinedMultiIterator</compoundname>
+    <basecompoundref refid="classvigra_1_1MultiIterator" prot="public" virt="non-virtual">vigra::MultiIterator&lt; N, deref_type, const deref_type &amp;, CoordinateStride &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1a738157903207a5e74f1c5049047576ed" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiIterator" kindref="compound">ptr_type::iterator_type</ref></type>
+        <definition>typedef ptr_type::iterator_type base_type</definition>
+        <argsstring></argsstring>
+        <name>base_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="535" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="535" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1a15656df5378d9b3f0767ddd67efcdcc0" prot="public" static="no">
+        <type>ptr_type::coord_type</type>
+        <definition>typedef ptr_type::coord_type coord_type</definition>
+        <argsstring></argsstring>
+        <name>coord_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="537" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="537" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1a85398730133b92000a81dd707f675439" prot="public" static="no">
+        <type>StridePairPointer&lt; N, T &gt;</type>
+        <definition>typedef StridePairPointer&lt;N, T&gt; pair_type</definition>
+        <argsstring></argsstring>
+        <name>pair_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="533" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="533" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1ad6c2b8348e22ab613f7f3cea5759a771" prot="public" static="no">
+        <type>CoordinateStride&lt; N, pair_type &gt;</type>
+        <definition>typedef CoordinateStride&lt;N, pair_type&gt; ptr_type</definition>
+        <argsstring></argsstring>
+        <name>ptr_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="534" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="534" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1a05519851c42f14685b1ada842e9e6a1a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">pair_type::shape_array_type</ref></type>
+        <definition>typedef pair_type::shape_array_type shape_array_type</definition>
+        <argsstring></argsstring>
+        <name>shape_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="538" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1CombinedMultiIterator_1a5a03a9834387ee1048782b336b3251fe" prot="public" static="no">
+        <type>ptr_type::stride_type</type>
+        <definition>typedef ptr_type::stride_type stride_type</definition>
+        <argsstring></argsstring>
+        <name>stride_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="536" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1CombinedMultiIterator_1af2421ceae996528fefbf9e4a8918546a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CombinedMultiIterator</definition>
+        <argsstring>(const T *raw_pointer, const stride_type &amp;origin, const TinyVector&lt; MultiArrayIndex, N &gt; &amp;pointer_stride, const stride_type &amp;stride, const shape_array_type &amp;shape)</argsstring>
+        <name>CombinedMultiIterator</name>
+        <param>
+          <type>const T *</type>
+          <declname>raw_pointer</declname>
+        </param>
+        <param>
+          <type>const stride_type &amp;</type>
+          <declname>origin</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref>, N &gt; &amp;</type>
+          <declname>pointer_stride</declname>
+        </param>
+        <param>
+          <type>const stride_type &amp;</type>
+          <declname>stride</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classvigra_1_1TinyVector" kindref="compound">shape_array_type</ref> &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="548" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="540" bodyend="548"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1CombinedMultiIterator_1af9caa3c76173c41a2945316749b21ff5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CombinedMultiIterator</definition>
+        <argsstring>(const base_type &amp;x)</argsstring>
+        <name>CombinedMultiIterator</name>
+        <param>
+          <type>const <ref refid="classvigra_1_1MultiIterator" kindref="compound">base_type</ref> &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="550" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="550" bodyend="550"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="223">
+        <label>CombinedMultiIterator&lt; N, T &gt;</label>
+        <childnode refid="224" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="224">
+        <label>iterator_type</label>
+        <link refid="classvigra_1_1MultiIterator"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="225">
+        <label>CombinedMultiIterator&lt; N, T &gt;</label>
+        <childnode refid="226" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="226">
+        <label>iterator_type</label>
+        <link refid="classvigra_1_1MultiIterator"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="530" bodyend="551"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CombinedMultiIterator_1a738157903207a5e74f1c5049047576ed" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>base_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a75e403e20d59da5b177a169be9f5b64f" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>begin</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1af2421ceae996528fefbf9e4a8918546a" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>CombinedMultiIterator</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1af9caa3c76173c41a2945316749b21ff5" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>CombinedMultiIterator</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a13c57dab17e2c903cadfa5e35ba84064" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1MultiIterator_1afdb67657e63a66ed3fae7b0c9fd81b48" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>const_reference</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1a15656df5378d9b3f0767ddd67efcdcc0" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>coord_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ad58401545d290ac6f3be9e2683e782c7" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a16bc7b15c53f6de2ea93d1244cd8f57e" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a5b2bd185b8e86789358bede40fc5b6ae" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim0</name></member>
+      <member refid="classvigra_1_1MultiIterator_1abbf96d3036d202b19c2c245f4a8e59f5" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim1</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a298f7e6c835f7e828bbee83d43cb6069" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim2</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a1b3951409f4ddafef0f221da1c7d361d" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim3</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a887896be87f91ef14e8cc45286539ecf" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>dim4</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aad1c499882f522377548bbbb838070b2" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>end</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ad52c9dbf5fc04799a476822f43a79eb0" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>get</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a2fabb8a210750506234825958ca91556" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a13ca083757a5c2d9c3f8e94efb78fe2a" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1MultiIterator_1af30f8bf10df99b714dc60640997c4c92" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>iteratorForDimension</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aae05225933a42f81e7c4a9fb286596f9a831fc3a2f78e54e3c4ce5251aa1fc268" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>level</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ad6aeac37a55e24551245f9c9f6ab6985" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>multi_difference_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aa4e3816a2898e884b792b5317a422e2f" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>MultiIterator</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a5df926e75247f930b19c653eb7fbf0a9" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>MultiIterator</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a53ac148a952872ab0ade71a10c62f36c" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>next_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aad4c16f7f304f3e2bce6dbc855891c39" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a9974c53571a55d43fb18439569a2fece" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ab674083526e75839d0429bb91d68c4a2" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator+</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a00f008b80917746917b874d00abd02a9" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ae1b0a2e0b8b91522405d9bbb4adf6ce0" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a67fac8d8779088c8ef9bdd5dcfd53290" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ad015750725120a299e2976174e5f4c93" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a129b9335f0ded766e11e669fd90de39c" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aee05e31dee3e966017c46c7d228d74a0" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a1cdcc5dec1c9d23142556a71436dd070" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a59f5b5b0d341cf7bd8d23f8f9f96edce" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1MultiIterator_1af9d637af55148ae44ec92b6fa62ecf72" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1MultiIterator_1abbe6e695ba4d79db1e16ac096611f61b" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a64c9696fd6a5ef644986d0e494203973" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1MultiIterator_1ad13e7ca723d988d266cd83addee616cc" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator&lt;</name></member>
+      <member refid="classvigra_1_1MultiIterator_1af87455a3f1df07201b9000be9fa2f733" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator&lt;=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a0edcbe8044b7ad08a25f9fcaafcf2f35" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aabed43e12ab210019f929655e30e4a2d" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator&gt;</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a4856c618a2daca3bfac77ad1e8f4f35c" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator&gt;=</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a12062603d65db28a259b3e5fb67dae01" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a1d202403bc765e6c831ddd325a73f182" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>operator[]</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1a85398730133b92000a81dd707f675439" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>pair_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1afe70b629b395bd93fb14c8300eabcb43" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>pointer</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1ad6c2b8348e22ab613f7f3cea5759a771" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>ptr_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aabedc6031d7df619a0c453c558af87a0" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>reference</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1a05519851c42f14685b1ada842e9e6a1a" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>shape_array_type</name></member>
+      <member refid="structvigra_1_1CombinedMultiIterator_1a5a03a9834387ee1048782b336b3251fe" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>stride_type</name></member>
+      <member refid="classvigra_1_1MultiIterator_1aecc47ba7f75c2137c117e312e1cc71a1" prot="protected" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>total_stride</name></member>
+      <member refid="classvigra_1_1MultiIterator_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::CombinedMultiIterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

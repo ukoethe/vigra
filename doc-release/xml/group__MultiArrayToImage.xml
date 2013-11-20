@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiArrayToImage" kind="group">
+    <compoundname>MultiArrayToImage</compoundname>
+    <title>Wrap aref vigra::MultiArrayView in</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MultiArrayToImage_1gadaa8ba40a8a1974073a4f3e3e151b06d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>BasicImageView&lt; T &gt;</type>
+        <definition>BasicImageView&lt;T&gt; vigra::makeBasicImageView</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, UnstridedArrayTag &gt; const &amp;array)</argsstring>
+        <name>makeBasicImageView</name>
+        <param>
+          <type>MultiArrayView&lt; 2, T, UnstridedArrayTag &gt; const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> from an unstrided 2-dimensional <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>.</para><para>The <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> will have the same <computeroutput>value_type </computeroutput> as the original <ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="3267" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="3266" bodyend="3270"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayToImage_1ga7b7a8071c5d61465fe214820fa643a6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>BasicImageView&lt; T &gt;</type>
+        <definition>BasicImageView&lt;T&gt; vigra::makeBasicImageView</definition>
+        <argsstring>(MultiArray&lt; 3, T &gt; const &amp;array)</argsstring>
+        <name>makeBasicImageView</name>
+        <param>
+          <type>MultiArray&lt; 3, T &gt; const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> from a 3-dimensional <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref>.</para><para>This wrapper flattens the two innermost dimensions of the array into single rows of the resulting image. The <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> will have the same <computeroutput>value_type </computeroutput> as the original <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="3283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="3282" bodyend="3286"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayToImage_1gac9eacd74b8edba21d4cf2030e09c0f79" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>BasicImageView&lt; RGBValue&lt; T &gt; &gt;</type>
+        <definition>BasicImageView&lt;RGBValue&lt;T&gt; &gt; vigra::makeRGBImageView</definition>
+        <argsstring>(MultiArray&lt; 3, T &gt; const &amp;array)</argsstring>
+        <name>makeRGBImageView</name>
+        <param>
+          <type>MultiArray&lt; 3, T &gt; const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> from a 3-dimensional <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref>.</para><para>This wrapper only works if <computeroutput>T</computeroutput> is a scalar type and the array&apos;s innermost dimension has size 3. It then re-interprets the data array as a 2-dimensional array with value_type <computeroutput>RGBValue&lt;T&gt;</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="3299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="3298" bodyend="3305"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>a <ref refid="classvigra_1_1BasicImageView" kindref="compound">vigra::BasicImageView</ref> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

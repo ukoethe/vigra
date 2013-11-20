@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns" kind="struct" prot="public">
+    <compoundname>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>Accessor</declname>
+        <defname>Accessor</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a268067a172ea9d5f6a327c00f76c945a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1CoordinateConstValueAccessor" kindref="compound">CoordinateConstValueAccessor</ref>&lt; Accessor, coord_type &gt;</type>
+        <definition>typedef CoordinateConstValueAccessor&lt;Accessor, coord_type&gt; access_type</definition>
+        <argsstring></argsstring>
+        <name>access_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="681" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="681" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a19690231af0bf6a00f63be03ff2b5fd7" prot="public" static="no">
+        <type>iterator_type::coord_type</type>
+        <definition>typedef iterator_type::coord_type coord_type</definition>
+        <argsstring></argsstring>
+        <name>coord_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="673" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a4a54a9fd322f38e457a68c9da5c79a80" prot="public" static="no">
+        <type>ptr_type::deref_type</type>
+        <definition>typedef ptr_type::deref_type deref_type</definition>
+        <argsstring></argsstring>
+        <name>deref_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="676" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="676" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a01c77929a26617b398ca37c13fb6ea6e" prot="public" static="no">
+        <type>CombinedMultiIterator&lt; N, T &gt;</type>
+        <definition>typedef CombinedMultiIterator&lt;N, T&gt; iterator_type</definition>
+        <argsstring></argsstring>
+        <name>iterator_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="672" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="672" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a0733f74e97644f122f0f0349f9d0f063" prot="public" static="no">
+        <type>iterator_type::pair_type</type>
+        <definition>typedef iterator_type::pair_type pair_type</definition>
+        <argsstring></argsstring>
+        <name>pair_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="674" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="674" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a27396be93fa7c99b9068e7dc4168fcfc" prot="public" static="no">
+        <type>iterator_type::ptr_type</type>
+        <definition>typedef iterator_type::ptr_type ptr_type</definition>
+        <argsstring></argsstring>
+        <name>ptr_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="675" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="675" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a05519851c42f14685b1ada842e9e6a1a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">pair_type::shape_array_type</ref></type>
+        <definition>typedef pair_type::shape_array_type shape_array_type</definition>
+        <argsstring></argsstring>
+        <name>shape_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="679" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="679" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a5b6acb1f19a929ca23b5051c81b729f5" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">pair_type::stride_array_type</ref></type>
+        <definition>typedef pair_type::stride_array_type stride_array_type</definition>
+        <argsstring></argsstring>
+        <name>stride_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="678" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="678" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a2f774a2afcccf4a718b16381dee6058e" prot="public" static="no">
+        <type>iterator_type::stride_type</type>
+        <definition>typedef iterator_type::stride_type stride_type</definition>
+        <argsstring></argsstring>
+        <name>stride_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="677" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="677" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a97d696904139e7e3365fa9e6cf6d3bcc" prot="public" static="no">
+        <type>triple&lt; iterator_type, <ref refid="classvigra_1_1TinyVector" kindref="compound">stride_array_type</ref>, <ref refid="classvigra_1_1CoordinateConstValueAccessor" kindref="compound">access_type</ref> &gt;</type>
+        <definition>typedef triple&lt;iterator_type, stride_array_type, access_type&gt; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="682" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="682" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="670" bodyend="683"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a268067a172ea9d5f6a327c00f76c945a" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>access_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a19690231af0bf6a00f63be03ff2b5fd7" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>coord_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a4a54a9fd322f38e457a68c9da5c79a80" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>deref_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a01c77929a26617b398ca37c13fb6ea6e" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>iterator_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a0733f74e97644f122f0f0349f9d0f063" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>pair_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a27396be93fa7c99b9068e7dc4168fcfc" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>ptr_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a05519851c42f14685b1ada842e9e6a1a" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>shape_array_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a5b6acb1f19a929ca23b5051c81b729f5" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>stride_array_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a2f774a2afcccf4a718b16381dee6058e" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>stride_type</name></member>
+      <member refid="structvigra_1_1SrcCoordinateMultiArrayRangeAccessorReturns_1a97d696904139e7e3365fa9e6cf6d3bcc" prot="public" virt="non-virtual"><scope>vigra::SrcCoordinateMultiArrayRangeAccessorReturns</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

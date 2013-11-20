@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1VolumeImportInfo" kind="class" prot="public">
+    <compoundname>vigra::VolumeImportInfo</compoundname>
+    <includes refid="multi__impex_8hxx" local="no">vigra/multi_impex.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1VolumeImportInfo_1a072b5e3c5033a58cdd73bfc657c3723c" prot="public" static="no">
+        <type>ImageImportInfo::PixelType</type>
+        <definition>typedef ImageImportInfo::PixelType PixelType</definition>
+        <argsstring></argsstring>
+        <name>PixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="78" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1VolumeImportInfo_1a8315c1e86a47432d2b2b961ad458c0ca" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; float, 3 &gt;</type>
+        <definition>typedef TinyVector&lt;float, 3&gt; Resolution</definition>
+        <argsstring></argsstring>
+        <name>Resolution</name>
+        <briefdescription>
+<para>3D resolution type returned by <ref refid="classvigra_1_1VolumeImportInfo_1a7fa00e2d4c808ff53672c6515aaa24d5" kindref="member">resolution()</ref> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="87" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1VolumeImportInfo_1a16ad375f6d0bb8c5bc6cc2d99d5634cc" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; 3 &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;3&gt;::type ShapeType</definition>
+        <argsstring></argsstring>
+        <name>ShapeType</name>
+        <briefdescription>
+<para>type of volume size returned by shape() </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="81" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1VolumeImportInfo_1a600bbe7d55406f881408fb6c751d281e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1VolumeImportInfo_1a16ad375f6d0bb8c5bc6cc2d99d5634cc" kindref="member">ShapeType</ref></type>
+        <definition>typedef ShapeType size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+<para>provided for backwards-compatibility (deprecated) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1afecc609c81cb5c2276b6157f776464be" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string baseName_</definition>
+        <argsstring></argsstring>
+        <name>baseName_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1ae841a0f62292d2d5f1a1747b0ef8f9fc" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string description_</definition>
+        <argsstring></argsstring>
+        <name>description_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1af56fdb8ab74a4be32b2dcad57c92834f" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string extension_</definition>
+        <argsstring></argsstring>
+        <name>extension_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a4d739cc5d335052eb9f5b2ca559b81d1" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string name_</definition>
+        <argsstring></argsstring>
+        <name>name_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1ab6a24bae495e0997847efc63958efc87" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int numBands_</definition>
+        <argsstring></argsstring>
+        <name>numBands_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a6bdb50c328cce0d7c258690ccaea6e2b" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; numbers_</definition>
+        <argsstring></argsstring>
+        <name>numbers_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="179" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="179" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a679ba61b4152f83a46a4bb88b1cd7ca1" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string path_</definition>
+        <argsstring></argsstring>
+        <name>path_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1ad3a0e0da842b5e31c322516b71ced6d5" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string pixelType_</definition>
+        <argsstring></argsstring>
+        <name>pixelType_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a2136a2de3e8243e75e85c73503975794" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rawFilename_</definition>
+        <argsstring></argsstring>
+        <name>rawFilename_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a0adee29b484f54a5d736d2e485c87d6a" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1VolumeImportInfo_1a8315c1e86a47432d2b2b961ad458c0ca" kindref="member">Resolution</ref></type>
+        <definition>Resolution resolution_</definition>
+        <argsstring></argsstring>
+        <name>resolution_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VolumeImportInfo_1a45e6c0bf029650747e5de52f28c5127c" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1VolumeImportInfo_1a600bbe7d55406f881408fb6c751d281e" kindref="member">size_type</ref></type>
+        <definition>size_type shape_</definition>
+        <argsstring></argsstring>
+        <name>shape_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a235b1317206060b2ceffd8d27bf4ed8e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex depth</definition>
+        <argsstring>() const </argsstring>
+        <name>depth</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get depth of the volume. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a13de1ea456a09ceaa7110537c9cae7db" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string&amp; description</definition>
+        <argsstring>() const </argsstring>
+        <name>description</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="162"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getPixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>getPixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the image.</para><para>Possible values are: <variablelist>
+<varlistentry><term>&quot;UINT8&quot;</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>&quot;INT16&quot;</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>&quot;UINT16&quot;</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>&quot;INT32&quot;</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>&quot;UINT32&quot;</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>&quot;FLOAT&quot;</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>&quot;DOUBLE&quot;</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1addfbe5827fcda9b6b4db6216f15043bd" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get height of the volume. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="100"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VolumeImpex_1ga0c37a23bef258e2fc520dfb00a523b44" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Stride</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void importImpl</definition>
+        <argsstring>(MultiArrayView&lt; 3, T, Stride &gt; &amp;volume) const </argsstring>
+        <name>importImpl</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 3, T, Stride &gt; &amp;</type>
+          <declname>volume</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="413" bodyend="484"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a65a49d7739d9130be8be08b17fb49228" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isColor</definition>
+        <argsstring>() const </argsstring>
+        <name>isColor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a24e25f9d99015bf12136a5cd6774b054" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isGrayscale</definition>
+        <argsstring>() const </argsstring>
+        <name>isGrayscale</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a324e8c54c4c5161913681a1a52fef959" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string&amp; name</definition>
+        <argsstring>() const </argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1adfb26cd3b3749a9e76ea5050736f102a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex numBands</definition>
+        <argsstring>() const </argsstring>
+        <name>numBands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="155"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PixelType</type>
+        <definition>PixelType pixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>pixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the image.</para><para>Same as <ref refid="classvigra_1_1VolumeImportInfo_1a4720882fce62cf0a522a2fceef5757ba" kindref="member">getPixelType()</ref>, but the result is returned as a ImageImportInfo::PixelType enum. This is useful to implement a switch() on the pixel type.</para><para>Possible values are: <variablelist>
+<varlistentry><term>UINT8</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>INT16</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>UINT16</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>INT32</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>UINT32</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>FLOAT</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>DOUBLE</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a7fa00e2d4c808ff53672c6515aaa24d5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1VolumeImportInfo_1a8315c1e86a47432d2b2b961ad458c0ca" kindref="member">Resolution</ref></type>
+        <definition>Resolution resolution</definition>
+        <argsstring>() const </argsstring>
+        <name>resolution</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><ref refid="classvigra_1_1VolumeImportInfo_1a7fa00e2d4c808ff53672c6515aaa24d5" kindref="member">resolution()</ref> contains the alignment and resolution of the volume. <ref refid="classvigra_1_1VolumeImportInfo_1a7fa00e2d4c808ff53672c6515aaa24d5" kindref="member">resolution()</ref>[0] is the x increment in a left-handed world coordinate system of one unstrided step in the volume memory. The [1] and [2] elements contain the y resp. z increments of the strided row resp. slice steps in the volume.</para><para>EXAMPLES: (1.f, 1.f, 4.f) means that the slices are four times thicker than the x/y resolution. (1.f, -1.f, 1.f) means that the volume coordinate system is right-handed. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="119"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a26652122a079b9179e11808a9a3ea1a6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1VolumeImportInfo_1a16ad375f6d0bb8c5bc6cc2d99d5634cc" kindref="member">ShapeType</ref></type>
+        <definition>ShapeType shape</definition>
+        <argsstring>() const </argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1aeb4a9c422a899543d798bf2575c2daf6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>VolumeImportInfo</definition>
+        <argsstring>(const std::string &amp;filename)</argsstring>
+        <name>VolumeImportInfo</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="89"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a4647b13a45527faa86e00847e8d689ad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>VolumeImportInfo</definition>
+        <argsstring>(const std::string &amp;baseName, const std::string &amp;extension)</argsstring>
+        <name>VolumeImportInfo</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>baseName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>extension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a77772834e80c6dc33e78356b985718ff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get width of the volume. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="96"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1VolumeImportInfo_1a3a946a0091ef122804cc5642816d4676" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void getVolumeInfoFromFirstSlice</definition>
+        <argsstring>(const std::string &amp;filename)</argsstring>
+        <name>getVolumeInfoFromFirstSlice</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="168"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Argument object for the function <ref refid="group__VolumeImpex_1ga5966d29fa165f094bd4fbf6d69e5cea3" kindref="member">importVolume()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ref refid="group__VolumeImpex_1ga5966d29fa165f094bd4fbf6d69e5cea3" kindref="member">importVolume()</ref> for usage example. This object can be used to define the properties of a volume data set to be read from disk. Sorry, no detailedDocumentation() available yet.</para><para><bold>#include</bold> &lt;<ref refid="multi__impex_8hxx_source" kindref="compound">vigra/multi_impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="2758">
+        <label>VolumeImportInfo</label>
+        <link refid="classvigra_1_1VolumeImportInfo"/>
+        <childnode refid="2759" relation="usage">
+          <edgelabel>shape_</edgelabel>
+        </childnode>
+        <childnode refid="2761" relation="usage">
+          <edgelabel>resolution_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2762">
+        <label>TinyVectorBase&lt; float, SIZE, float[SIZE], TinyVector&lt; float, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+      <node id="2760">
+        <label>TinyVectorBase&lt; T, SIZE, T[SIZE], TinyVector&lt; T, SIZE &gt; &gt;</label>
+        <link refid="classvigra_1_1TinyVectorBase"/>
+      </node>
+      <node id="2759">
+        <label>TinyVector&lt; T, SIZE &gt;</label>
+        <link refid="classvigra_1_1TinyVector"/>
+        <childnode refid="2760" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2761">
+        <label>TinyVector&lt; float, 3 &gt;</label>
+        <link refid="classvigra_1_1TinyVector"/>
+        <childnode refid="2762" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_impex.hxx" bodystart="75" bodyend="180"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1VolumeImportInfo_1afecc609c81cb5c2276b6157f776464be" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>baseName_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a235b1317206060b2ceffd8d27bf4ed8e" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>depth</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a13de1ea456a09ceaa7110537c9cae7db" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>description</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1ae841a0f62292d2d5f1a1747b0ef8f9fc" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>description_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1af56fdb8ab74a4be32b2dcad57c92834f" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>extension_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>getPixelType</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a3a946a0091ef122804cc5642816d4676" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>getVolumeInfoFromFirstSlice</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1addfbe5827fcda9b6b4db6216f15043bd" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>height</name></member>
+      <member refid="group__VolumeImpex_1ga0c37a23bef258e2fc520dfb00a523b44" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>importImpl</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a65a49d7739d9130be8be08b17fb49228" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>isColor</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a24e25f9d99015bf12136a5cd6774b054" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>isGrayscale</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a324e8c54c4c5161913681a1a52fef959" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>name</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a4d739cc5d335052eb9f5b2ca559b81d1" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>name_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1adfb26cd3b3749a9e76ea5050736f102a" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>numBands</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1ab6a24bae495e0997847efc63958efc87" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>numBands_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a6bdb50c328cce0d7c258690ccaea6e2b" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>numbers_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a679ba61b4152f83a46a4bb88b1cd7ca1" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>path_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>pixelType</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a072b5e3c5033a58cdd73bfc657c3723c" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1ad3a0e0da842b5e31c322516b71ced6d5" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>pixelType_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a2136a2de3e8243e75e85c73503975794" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>rawFilename_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a8315c1e86a47432d2b2b961ad458c0ca" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>Resolution</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a7fa00e2d4c808ff53672c6515aaa24d5" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>resolution</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a0adee29b484f54a5d736d2e485c87d6a" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>resolution_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a26652122a079b9179e11808a9a3ea1a6" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>shape</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a45e6c0bf029650747e5de52f28c5127c" prot="protected" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>shape_</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a16ad375f6d0bb8c5bc6cc2d99d5634cc" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>ShapeType</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a600bbe7d55406f881408fb6c751d281e" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1aeb4a9c422a899543d798bf2575c2daf6" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>VolumeImportInfo</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a4647b13a45527faa86e00847e8d689ad" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>VolumeImportInfo</name></member>
+      <member refid="classvigra_1_1VolumeImportInfo_1a77772834e80c6dc33e78356b985718ff" prot="public" virt="non-virtual"><scope>vigra::VolumeImportInfo</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1HDF5File_1_1SplitString" kind="class" prot="private">
+    <compoundname>vigra::HDF5File::SplitString</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1HDF5File_1_1SplitString_1ad80e8bdc5a8f2ba5fc85517202464c2e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string first</definition>
+        <argsstring>(char delimiter= &apos;/&apos;)</argsstring>
+        <name>first</name>
+        <param>
+          <type>char</type>
+          <declname>delimiter</declname>
+          <defval>&apos;/&apos;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="1506" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="1505" bodyend="1512"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5File_1_1SplitString_1aeafb78bd13ae8d3bd5297af8bd1bb344" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string last</definition>
+        <argsstring>(char delimiter= &apos;/&apos;)</argsstring>
+        <name>last</name>
+        <param>
+          <type>char</type>
+          <declname>delimiter</declname>
+          <defval>&apos;/&apos;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="1516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="1515" bodyend="1521"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5File_1_1SplitString_1a0048e76d50df7f017434a62f8367cacf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SplitString</definition>
+        <argsstring>(std::string &amp;sstring)</argsstring>
+        <name>SplitString</name>
+        <param>
+          <type>std::string &amp;</type>
+          <declname>sstring</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="1502" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="1502" bodyend="1502"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="1500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="1500" bodyend="1522"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1HDF5File_1_1SplitString_1ad80e8bdc5a8f2ba5fc85517202464c2e" prot="public" virt="non-virtual"><scope>vigra::HDF5File::SplitString</scope><name>first</name></member>
+      <member refid="classvigra_1_1HDF5File_1_1SplitString_1aeafb78bd13ae8d3bd5297af8bd1bb344" prot="public" virt="non-virtual"><scope>vigra::HDF5File::SplitString</scope><name>last</name></member>
+      <member refid="classvigra_1_1HDF5File_1_1SplitString_1a0048e76d50df7f017434a62f8367cacf" prot="public" virt="non-virtual"><scope>vigra::HDF5File::SplitString</scope><name>SplitString</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

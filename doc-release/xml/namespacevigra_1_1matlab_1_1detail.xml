@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1matlab_1_1detail" kind="namespace">
+    <compoundname>vigra::matlab::detail</compoundname>
+    <innerclass refid="classvigra_1_1matlab_1_1detail_1_1DefaultImpl" prot="public">vigra::matlab::detail::DefaultImpl</innerclass>
+    <innerclass refid="classvigra_1_1matlab_1_1detail_1_1OptionalImpl" prot="public">vigra::matlab::detail::OptionalImpl</innerclass>
+    <innerclass refid="classvigra_1_1matlab_1_1detail_1_1Required" prot="public">vigra::matlab::detail::Required</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="540"/>
+  </compounddef>
+</doxygen>

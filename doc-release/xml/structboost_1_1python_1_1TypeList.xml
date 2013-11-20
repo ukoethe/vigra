@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structboost_1_1python_1_1TypeList" kind="struct" prot="public">
+    <compoundname>boost::python::TypeList</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Head</type>
+      </param>
+      <param>
+        <type>class Tail</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structboost_1_1python_1_1TypeList_1a895906c76020cbf730b1f8ff3698914a" prot="public" static="no">
+        <type>Head</type>
+        <definition>typedef Head head</definition>
+        <argsstring></argsstring>
+        <name>head</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="240" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="240" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structboost_1_1python_1_1TypeList_1a6fadeea24127a7e5f34557c4ab12028d" prot="public" static="no">
+        <type>Tail</type>
+        <definition>typedef Tail tail</definition>
+        <argsstring></argsstring>
+        <name>tail</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="241" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="238" bodyend="242"/>
+    <listofallmembers>
+      <member refid="structboost_1_1python_1_1TypeList_1a895906c76020cbf730b1f8ff3698914a" prot="public" virt="non-virtual"><scope>boost::python::TypeList</scope><name>head</name></member>
+      <member refid="structboost_1_1python_1_1TypeList_1a6fadeea24127a7e5f34557c4ab12028d" prot="public" virt="non-virtual"><scope>boost::python::TypeList</scope><name>tail</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1082 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__RationalOperations" kind="group">
+    <compoundname>RationalOperations</compoundname>
+    <title>Functions for Rational</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__RationalOperations_1gae9ca079686cdebf4fbe92a666b72598a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt; IntType &gt; abs</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>absolute value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1170" bodyend="1176"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga9c3bc30f7e0a5dea1bdcb60d3dee04c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt; IntType &gt; ceil</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>ceil</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>smallest integer not smaller than <computeroutput>r</computeroutput> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1262" bodyend="1270"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga00dbbcef01fb68816089d85e6332dbe5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt; IntType &gt; floor</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>floor</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>largest integer not larger than <computeroutput>r</computeroutput> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="154" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1249" bodyend="1257"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gad9c83ada5074f95e030cf5e774d9ccf1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::norm</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>norm</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>norm (same as <computeroutput>abs(r)</computeroutput>) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1181" bodyend="1184"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga97958d015915989451ddc7c28daa0c8c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>inequality </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="982" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="981" bodyend="986"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaa0e894d0367337f440c7b9eb5e045157" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, IntType2 const &amp;i)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>inequality with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="992" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="991" bodyend="994"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga5bfb2105733941a385882631be999bee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator!=</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>inequality with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1000" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="999" bodyend="1002"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga4db72780e2c1065114e179823754f133" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator*</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>multiplication </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="867" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="866" bodyend="869"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaf0329f6f30df694d802591c667810f15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator*</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, typename Rational&lt; IntType &gt;::param_type r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with right-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="898" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="897" bodyend="900"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga0255914f77a9d75aa0f0437bd352c0c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator*</definition>
+        <argsstring>(typename Rational&lt; IntType &gt;::param_type l, Rational&lt; IntType &gt; r)</argsstring>
+        <name>operator*</name>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>multiplication with left-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="930" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="929" bodyend="932"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gabb5ab7ca8675f3ceb1364aed2790b931" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator+</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>unary plus </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="839" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="838" bodyend="841"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaf0c389a2806529a1c3180011b8d43430" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator+</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>addition </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="853" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="852" bodyend="855"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gafa0019d0c7c5570da496e8cc1d532ee4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator+</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, typename Rational&lt; IntType &gt;::param_type r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>addition of right-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="882" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="881" bodyend="884"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga0c566c857a355a5e8920eabf8d320891" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator+</definition>
+        <argsstring>(typename Rational&lt; IntType &gt;::param_type l, Rational&lt; IntType &gt; r)</argsstring>
+        <name>operator+</name>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>addition of left-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="914" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="913" bodyend="916"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga0809bb4cb9a7b804fce33ba1ec74cbf9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator-</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>unary minus (negation) </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="846" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="845" bodyend="848"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga6a3a4787f12788a01707347ffcc0d213" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator-</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>subtraction </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="860" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="859" bodyend="862"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga2fe238c8ba5f3173a66ba7a6cde7bbe4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator-</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, typename Rational&lt; IntType &gt;::param_type r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>subtraction of right-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="890" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="889" bodyend="892"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga8dc3bdc13d09ae15c2b7e1e2a1cf91cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator-</definition>
+        <argsstring>(typename Rational&lt; IntType &gt;::param_type l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator-</name>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>subtraction from left-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="922" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="921" bodyend="924"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gad9464662037b250d97b80bb12ac55cba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator/</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>division </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="874" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="873" bodyend="876"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga5733c7dd1e51502d7f5c46fcbcb03a7c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator/</definition>
+        <argsstring>(Rational&lt; IntType &gt; l, typename Rational&lt; IntType &gt;::param_type r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>Rational&lt; IntType &gt;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>division by right-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="906" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="905" bodyend="908"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gab6ad7be37eb62b881e9d35565ab308e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt;IntType&gt; vigra::operator/</definition>
+        <argsstring>(typename Rational&lt; IntType &gt;::param_type l, Rational&lt; IntType &gt; const &amp;r)</argsstring>
+        <name>operator/</name>
+        <param>
+          <type>typename Rational&lt; IntType &gt;::param_type</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>division of left-hand <computeroutput>IntType</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="938" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="937" bodyend="943"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga5dd4e237a725bb4353ab70f94132d266" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, const Rational&lt; IntType2 &gt; &amp;r)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>const Rational&lt; IntType2 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less-than </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1008" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1007" bodyend="1042"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga42ecce5ecb66183a0b8095c86d511165" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, IntType2 const &amp;i)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>less-than with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1048" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1047" bodyend="1074"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gac83e993970f34eb305dde31c49fa34be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less-than with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1080" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1079" bodyend="1082"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga8c0e1e285247020c13726b99c1b33580" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;=</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less-equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1116" bodyend="1119"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaade2accfab99c5d97d43bbd85805ce23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;=</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, IntType2 const &amp;r)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less-equal with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1124" bodyend="1127"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga8b9d885c4a6d3ce993c44a79c5f382a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&lt;=</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>less-equal with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1132" bodyend="1135"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gae0f327c3a58e9a60ccae929aadf42bc3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, const Rational&lt; IntType2 &gt; &amp;r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>const Rational&lt; IntType2 &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>equality </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="956" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="955" bodyend="960"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga5ef13c2d85b678100cf7df108ee40983" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, IntType2 const &amp;i)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>equality with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="966" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="965" bodyend="968"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gadd8b88ddbd3e4e9114e2907cbddd4872" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator==</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>equality with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="974" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="973" bodyend="976"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga2946ffa1ec8b6d02b8a15f361755b3e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater-than </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1088" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1087" bodyend="1090"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga719bcf3d7b89a4a8c0095eb1d4ebb5e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;</definition>
+        <argsstring>(const Rational&lt; IntType1 &gt; &amp;l, IntType2 const &amp;i)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>const Rational&lt; IntType1 &gt; &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+<para>greater-than with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1096" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1095" bodyend="1103"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaa9603be3f4235c8650e2adb9bbbd27ca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater-than with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1109" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1108" bodyend="1111"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gabc0d7fd362c006305cb6d68076703af6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;=</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater-equal </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1140" bodyend="1143"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga0bc71efeac21bbb9c83ce5f094bf4dad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;=</definition>
+        <argsstring>(Rational&lt; IntType1 &gt; const &amp;l, IntType2 const &amp;r)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>Rational&lt; IntType1 &gt; const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>IntType2 const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater-equal with right-hand <computeroutput>IntType2</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1148" bodyend="1151"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga6aae5b6b09ed46cf7f3517736a4f0c89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType1</type>
+          </param>
+          <param>
+            <type>typename IntType2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::operator&gt;=</definition>
+        <argsstring>(IntType1 const &amp;l, Rational&lt; IntType2 &gt; const &amp;r)</argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>IntType1 const &amp;</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Rational&lt; IntType2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>greater-equal with left-hand <computeroutput>IntType1</computeroutput> argument </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1156" bodyend="1159"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gaba43b6f85c1ae2dc67ab8150268a346b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>Rational&lt; IntType &gt;</type>
+        <definition>Rational&lt; IntType &gt; pow</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r, int n)</argsstring>
+        <name>pow</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+          <defname>e</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>integer powers</para><para><computeroutput>throws bad_rational</computeroutput> if indeterminate expression. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1200" bodyend="1244"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga0de10b17bd103b0a03ffb23f44019592" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::rational_cast</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;src)</argsstring>
+        <name>rational_cast</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Type conversion</para><para>Executes <computeroutput>static_cast&lt;T&gt;(numerator()) / denominator()</computeroutput>.</para><para><bold>Usage:</bold></para><para><programlisting><codeline><highlight class="normal">Rational&lt;int&gt;<sp/>r;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal">i<sp/>=<sp/><ref refid="group__RationalOperations_1ga0de10b17bd103b0a03ffb23f44019592" kindref="member">rational_cast</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(r);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>round<sp/>r<sp/>downwards</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">d<sp/>=<sp/><ref refid="group__RationalOperations_1ga0de10b17bd103b0a03ffb23f44019592" kindref="member">rational_cast</ref>&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(r);<sp/><sp/></highlight><highlight class="comment">//<sp/>represent<sp/>rational<sp/>as<sp/>a<sp/>double</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">r<sp/>=<sp/><ref refid="group__RationalOperations_1ga0de10b17bd103b0a03ffb23f44019592" kindref="member">rational_cast</ref>&lt;Rational&lt;int&gt;<sp/>&gt;(r);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>change</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1289" bodyend="1292"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1gab2cda05d53ae105c9af1d4ba5a40de5a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>T const &amp;</type>
+        <definition>T const&amp; vigra::rational_cast</definition>
+        <argsstring>(T const &amp;v)</argsstring>
+        <name>rational_cast</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1296" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1295" bodyend="1298"/>
+      </memberdef>
+      <memberdef kind="function" id="group__RationalOperations_1ga821cb2d1bdfae5df5d4b97855358eaa9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>NormTraits&lt; Rational&lt; IntType &gt; &gt;::SquaredNormType</type>
+        <definition>NormTraits&lt;Rational&lt;IntType&gt; &gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(const Rational&lt; IntType &gt; &amp;r)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>const Rational&lt; IntType &gt; &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+<para>squared norm </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="1190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="1189" bodyend="1192"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><bold>#include</bold> &lt;<ref refid="rational_8hxx_source" kindref="compound">vigra/rational.hxx</ref>&gt;<linebreak/>
+ </para>    </briefdescription>
+    <detaileddescription>
+<para>These functions fulfill the requirements of an <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref>.</para><para>Namespace: vigra </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

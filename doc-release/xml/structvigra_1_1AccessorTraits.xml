@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1AccessorTraits" kind="struct" prot="public">
+    <compoundname>vigra::AccessorTraits</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1AccessorTraits_1ada3f24bb1e628797d4a1ec9fc059c722" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardAccessor" kindref="compound">StandardAccessor</ref>&lt; T &gt;</type>
+        <definition>typedef StandardAccessor&lt;T&gt; default_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="914" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="914" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1AccessorTraits_1a74e7aa2d72caa1c5120138fb60fd18d1" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StandardConstAccessor" kindref="compound">StandardConstAccessor</ref>&lt; T &gt;</type>
+        <definition>typedef StandardConstAccessor&lt;T&gt; default_const_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_const_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="915" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="915" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="913" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="912" bodyend="916"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1AccessorTraits_1ada3f24bb1e628797d4a1ec9fc059c722" prot="public" virt="non-virtual"><scope>vigra::AccessorTraits</scope><name>default_accessor</name></member>
+      <member refid="structvigra_1_1AccessorTraits_1a74e7aa2d72caa1c5120138fb60fd18d1" prot="public" virt="non-virtual"><scope>vigra::AccessorTraits</scope><name>default_const_accessor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

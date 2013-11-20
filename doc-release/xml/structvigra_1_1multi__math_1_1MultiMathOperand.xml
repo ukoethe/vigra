@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1MultiMathOperand" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::MultiMathOperand</compoundname>
+    <derivedcompoundref refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4" prot="public" virt="non-virtual">MultiMathOperand&lt; MultiArray&lt; N, T, A &gt; &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ARG</declname>
+        <defname>ARG</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1multi__math_1_1MultiMathOperand_1a63c5e7ff46bc981ea76145bf27b4f519" prot="public" static="no">
+        <type>ARG::result_type</type>
+        <definition>typedef ARG::result_type result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_1a77c66c97503b5c80d04b38a78fba81f8" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int ndim</definition>
+        <argsstring></argsstring>
+        <name>ndim</name>
+        <initializer> ARG::ndim</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_1a6b4a1cb35b4db995cd6e70f443def6cd" prot="public" static="no" mutable="no">
+        <type>ARG</type>
+        <definition>ARG arg_</definition>
+        <argsstring></argsstring>
+        <name>arg_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1ab5c468eb2e4d15f5a452e465c98366c3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SHAPE</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool checkShape</definition>
+        <argsstring>(SHAPE &amp;s) const </argsstring>
+        <name>checkShape</name>
+        <param>
+          <type>SHAPE &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="114" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1accc388c814aa361008150cca507e3632" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void inc</definition>
+        <argsstring>(unsigned int axis) const </argsstring>
+        <name>inc</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>axis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="120" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1af72e7e173ebafae63fdde7e8befc92dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiMathOperand</definition>
+        <argsstring>(ARG const &amp;a)</argsstring>
+        <name>MultiMathOperand</name>
+        <param>
+          <type>ARG const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="106" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="104" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1ad2efdacdb7457d0c4ecf8cfd706516a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>result_type</type>
+        <definition>result_type operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="133" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="132" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1a67694ed09d2aebfcc2f9097d64003cc6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SHAPE</type>
+          </param>
+        </templateparamlist>
+        <type>result_type</type>
+        <definition>result_type operator[]</definition>
+        <argsstring>(SHAPE const &amp;s) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>SHAPE const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="139" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_1abe0bf4c19b4de79601338cd86bd2d926" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>(unsigned int axis) const </argsstring>
+        <name>reset</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>axis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="127" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="126" bodyend="129"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="99" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="98" bodyend="145"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a6b4a1cb35b4db995cd6e70f443def6cd" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>arg_</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1ab5c468eb2e4d15f5a452e465c98366c3" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>checkShape</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1accc388c814aa361008150cca507e3632" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>inc</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1af72e7e173ebafae63fdde7e8befc92dc" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>MultiMathOperand</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a77c66c97503b5c80d04b38a78fba81f8" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>ndim</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1ad2efdacdb7457d0c4ecf8cfd706516a2" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>operator*</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a67694ed09d2aebfcc2f9097d64003cc6" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>operator[]</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1abe0bf4c19b4de79601338cd86bd2d926" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>reset</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_1a63c5e7ff46bc981ea76145bf27b4f519" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand</scope><name>result_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

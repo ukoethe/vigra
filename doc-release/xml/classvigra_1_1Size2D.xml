@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1Size2D" kind="class" prot="public">
+    <compoundname>vigra::Size2D</compoundname>
+    <basecompoundref refid="classvigra_1_1Diff2D" prot="public" virt="non-virtual">Diff2D</basecompoundref>
+    <includes refid="diff2d_8hxx" local="no">vigra/diff2d.hxx</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a93dbb554c75a0bded227ab0320be72eb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int area</definition>
+        <argsstring>() const </argsstring>
+        <name>area</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns <ref refid="classvigra_1_1Size2D_1a369399896761e31ae71db57fdd0ba431" kindref="member">width()</ref>*height(), the area of a rectangle of this size. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="538" bodyend="541"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int height</definition>
+        <argsstring>() const </argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the height. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="518" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="517" bodyend="520"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1ae3ece8f57a80e041ca0e97171c42cbfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> &amp;</type>
+        <definition>Size2D&amp; operator+=</definition>
+        <argsstring>(Diff2D const &amp;offset)</argsstring>
+        <name>operator+=</name>
+        <reimplements refid="classvigra_1_1Diff2D_1a69ed612c274f5deda7d307e7f02fed49">operator+=</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Increase size by specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="559" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1aa3bd5e6da423a788323c00866a490cd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref></type>
+        <definition>Size2D operator-</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-</name>
+        <reimplements refid="classvigra_1_1Diff2D_1a18027bba15ec3d0f6cea668b48694692">operator-</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Unary negation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="552" bodyend="555"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a4c49b6f76c146c9ecd45940fdb42ca5f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> &amp;</type>
+        <definition>Size2D&amp; operator-=</definition>
+        <argsstring>(Diff2D const &amp;offset)</argsstring>
+        <name>operator-=</name>
+        <reimplements refid="classvigra_1_1Diff2D_1a7cccf0c092ce5b68a7c45cff5d587aca">operator-=</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Decrease size by specified offset. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="567" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="566" bodyend="569"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1ab16632a69a99f173974659206b03c7f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> &amp;</type>
+        <definition>Size2D&amp; operator=</definition>
+        <argsstring>(Diff2D const &amp;v)</argsstring>
+        <name>operator=</name>
+        <reimplements refid="classvigra_1_1Diff2D_1aa8adfe3206eb2cb4581e3b4c8aaa17b4">operator=</reimplements>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy Assigment. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="546" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="545" bodyend="548"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a1a373ee12c2cd3f5407f9316ccce36bd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setHeight</definition>
+        <argsstring>(int h)</argsstring>
+        <name>setHeight</name>
+        <param>
+          <type>int</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change the height. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="531" bodyend="534"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a672336d61d7de5c03d4dae8193ff1268" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setWidth</definition>
+        <argsstring>(int w)</argsstring>
+        <name>setWidth</name>
+        <param>
+          <type>int</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Change the width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="525" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="524" bodyend="527"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a44efe216ab2b960ea89f2dea7227f2f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Size2D</definition>
+        <argsstring>()</argsstring>
+        <name>Size2D</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Default Constructor. Init point at position (0,0) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="488" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="487" bodyend="488"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a550ec66cd85b110ea8830cf2459d9adc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Size2D</definition>
+        <argsstring>(int width, int height)</argsstring>
+        <name>Size2D</name>
+        <param>
+          <type>int</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct point at given position. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="494" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="492" bodyend="494"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a60a426c5666ffea3077a30c7c729bb5b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Size2D</definition>
+        <argsstring>(Size2D const &amp;v)</argsstring>
+        <name>Size2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Size2D" kindref="compound">Size2D</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy Constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="500" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="498" bodyend="500"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a2e349070c1f564e16a012647a3d7a98d" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Size2D</definition>
+        <argsstring>(Diff2D const &amp;v)</argsstring>
+        <name>Size2D</name>
+        <param>
+          <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Explicit conversion Constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="506" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="504" bodyend="506"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1Size2D_1a369399896761e31ae71db57fdd0ba431" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int width</definition>
+        <argsstring>() const </argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the width. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="511" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="510" bodyend="513"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Two dimensional size object. </para>    </briefdescription>
+    <detaileddescription>
+<para>Specializes <ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> for the specification of a 2-dimensional extent, in contrast to a point or position (for the latter use <ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref>).</para><para><programlisting><codeline><highlight class="comment">//<sp/>create<sp/>an<sp/>image<sp/>that<sp/>is<sp/>10<sp/>pixels<sp/>squared</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Image<sp/>new_image(<ref refid="classvigra_1_1Size2D_1a44efe216ab2b960ea89f2dea7227f2f2" kindref="member">Size2D</ref>(10,10));</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="diff2d_8hxx_source" kindref="compound">vigra/diff2d.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2299">
+        <label>Size2D</label>
+        <link refid="classvigra_1_1Size2D"/>
+        <childnode refid="2300" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2300">
+        <label>Diff2D</label>
+        <link refid="classvigra_1_1Diff2D"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2301">
+        <label>Size2D</label>
+        <link refid="classvigra_1_1Size2D"/>
+        <childnode refid="2302" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2302">
+        <label>Diff2D</label>
+        <link refid="classvigra_1_1Diff2D"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" line="483" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/diff2d.hxx" bodystart="482" bodyend="570"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1Size2D_1a93dbb554c75a0bded227ab0320be72eb" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>area</name></member>
+      <member refid="classvigra_1_1Diff2D_1ac75bad7e399418ac4061dd934993e1bf" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>column_iterator</name></member>
+      <member refid="classvigra_1_1Diff2D_1a54e53eb066a57f8b02249326e9529957" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>columnIterator</name></member>
+      <member refid="classvigra_1_1Diff2D_1aac99e480ad99dbcc8fd502715e714034" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Diff2D</name></member>
+      <member refid="classvigra_1_1Diff2D_1af14023a8559c6614348048a852a198cb" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Diff2D</name></member>
+      <member refid="classvigra_1_1Diff2D_1a64c276f16f038f94f67b1c0246c4a87b" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Diff2D</name></member>
+      <member refid="classvigra_1_1Diff2D_1afe1e2807a8c98a020588d6eeb28a1b7a" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1Size2D_1ae26bcfe2f33f5873dbdfb6948cf1f59f" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>height</name></member>
+      <member refid="classvigra_1_1Diff2D_1a6a40fe33dbf4ec6dce362f1ebed51fc8" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>index_reference</name></member>
+      <member refid="classvigra_1_1Diff2D_1a93321121482225e0577a134820fc5c6b" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1Diff2D_1a66be88f1c07706c722c731ed15a4d453" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1Diff2D_1aa4c4fefd2a5efebe5e42a52e92c83a7c" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>MoveX</name></member>
+      <member refid="classvigra_1_1Diff2D_1a105936e41da9adee6af55d3bad567faa" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>MoveY</name></member>
+      <member refid="classvigra_1_1Diff2D_1ab50e8ed35a34a6fff881e9eeca10a961" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1Diff2D_1aa5ebce36aadac3924e9add5d340e6b90" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1Diff2D_1a7c3e8de962bc7e7ef87b4cee1525c0da" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1Diff2D_1a51eaa81e4c12aa0ea10df638b3d050ac" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1Diff2D_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1Diff2D_1aa70f971a79858489d51d2a9e17cf68c0" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Diff2D_1a425136f122d7aa0a6fe3f3c77d9ed1d7" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1Size2D_1ae3ece8f57a80e041ca0e97171c42cbfb" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1Size2D_1aa3bd5e6da423a788323c00866a490cd0" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator-</name></member>
+      <member refid="classvigra_1_1Size2D_1a4c49b6f76c146c9ecd45940fdb42ca5f" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1Diff2D_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1Diff2D_1a0dd8633f56ceaf4e327be29f7ff22dfd" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator/</name></member>
+      <member refid="classvigra_1_1Diff2D_1aec51b08e7c6d87e4e15e3586eb1b95c5" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator/</name></member>
+      <member refid="classvigra_1_1Diff2D_1a750b020504cccde2fc0d8aed74ff2805" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Diff2D_1af22639e9d08eb45aa272ab3f08ec88b1" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1Size2D_1ab16632a69a99f173974659206b03c7f4" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1Diff2D_1a75ccadcef03a495f697ff2c8d03d6c26" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1Diff2D_1af04f83e2f2d7f59f556a80874d9dfb79" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Diff2D_1a54a631002648be1e37329d1db4d47d44" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1Diff2D_1aaf502dce6d2ef8121a3f304328ba1a5f" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1Diff2D_1a8d2fe1a221037bbf75f37e76cc37660f" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1Diff2D_1abf455d8c2da42e8ac3789512a3e45fd5" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>reference</name></member>
+      <member refid="classvigra_1_1Diff2D_1a5dbf61d6be79bdde2b8312cb86ebb759" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>row_iterator</name></member>
+      <member refid="classvigra_1_1Diff2D_1aa2bdf3366707a82f91662aa6be95c089" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>rowIterator</name></member>
+      <member refid="classvigra_1_1Size2D_1a1a373ee12c2cd3f5407f9316ccce36bd" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>setHeight</name></member>
+      <member refid="classvigra_1_1Size2D_1a672336d61d7de5c03d4dae8193ff1268" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>setWidth</name></member>
+      <member refid="classvigra_1_1Size2D_1a44efe216ab2b960ea89f2dea7227f2f2" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Size2D</name></member>
+      <member refid="classvigra_1_1Size2D_1a550ec66cd85b110ea8830cf2459d9adc" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Size2D</name></member>
+      <member refid="classvigra_1_1Size2D_1a60a426c5666ffea3077a30c7c729bb5b" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Size2D</name></member>
+      <member refid="classvigra_1_1Size2D_1a2e349070c1f564e16a012647a3d7a98d" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>Size2D</name></member>
+      <member refid="classvigra_1_1Diff2D_1ad5397096abc6a073cc05024b96b2cd90" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1Diff2D_1ad9f0e1f6ec90dd3417c628b3f30e77c0" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1Size2D_1a369399896761e31ae71db57fdd0ba431" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>width</name></member>
+      <member refid="classvigra_1_1Diff2D_1a6150e0515f7202e2fb518f7206ed97dc" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>x</name></member>
+      <member refid="classvigra_1_1Diff2D_1a0a2f84ed7838f07779ae24c5a9086d33" prot="public" virt="non-virtual"><scope>vigra::Size2D</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

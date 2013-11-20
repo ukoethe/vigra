@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1DimensionNotEqual" kind="class" prot="public">
+    <compoundname>vigra::DimensionNotEqual</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class DataMatrix</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1DimensionNotEqual_1abaa8134f48160073cc59674c57f4263e" prot="private" static="no" mutable="no">
+        <type>DataMatrix const &amp;</type>
+        <definition>DataMatrix const&amp; data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1DimensionNotEqual_1a1de6102e6d91e491dc6e6546821e0754" prot="private" static="no" mutable="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex sortColumn_</definition>
+        <argsstring></argsstring>
+        <name>sortColumn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="239" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1DimensionNotEqual_1a1aaf51d26267f9a51b19e09be512c966" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>DimensionNotEqual</definition>
+        <argsstring>(DataMatrix const &amp;data, MultiArrayIndex sortColumn)</argsstring>
+        <name>DimensionNotEqual</name>
+        <param>
+          <type>DataMatrix const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>sortColumn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="247" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="243" bodyend="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1DimensionNotEqual_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(MultiArrayIndex l, MultiArrayIndex r) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="255" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="254" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1DimensionNotEqual_1a0b6322675e50131299077d14ed240ad0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setColumn</definition>
+        <argsstring>(MultiArrayIndex sortColumn)</argsstring>
+        <name>setColumn</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>sortColumn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="249" bodyend="252"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="236" bodyend="258"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1DimensionNotEqual_1abaa8134f48160073cc59674c57f4263e" prot="private" virt="non-virtual"><scope>vigra::DimensionNotEqual</scope><name>data_</name></member>
+      <member refid="classvigra_1_1DimensionNotEqual_1a1aaf51d26267f9a51b19e09be512c966" prot="public" virt="non-virtual"><scope>vigra::DimensionNotEqual</scope><name>DimensionNotEqual</name></member>
+      <member refid="classvigra_1_1DimensionNotEqual_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" virt="non-virtual"><scope>vigra::DimensionNotEqual</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1DimensionNotEqual_1a0b6322675e50131299077d14ed240ad0" prot="public" virt="non-virtual"><scope>vigra::DimensionNotEqual</scope><name>setColumn</name></member>
+      <member refid="classvigra_1_1DimensionNotEqual_1a1de6102e6d91e491dc6e6546821e0754" prot="private" virt="non-virtual"><scope>vigra::DimensionNotEqual</scope><name>sortColumn_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

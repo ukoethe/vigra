@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1OnlinePredictionSet" kind="class" prot="public">
+    <compoundname>vigra::OnlinePredictionSet</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1OnlinePredictionSet_1a44d2052a17b339774482a4060c361f5f" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; int &gt;</type>
+        <definition>std::vector&lt;int&gt; cumulativePredTime</definition>
+        <argsstring></argsstring>
+        <name>cumulativePredTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="72" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1OnlinePredictionSet_1a53f96875e90e81fe731cfc53d6916312" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, T &gt;</type>
+        <definition>MultiArray&lt;2,T&gt; features</definition>
+        <argsstring></argsstring>
+        <name>features</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="73" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1OnlinePredictionSet_1aa14d914e1c0a53392341148b7594c56f" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::vector&lt; int &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;int&gt; &gt; indices</definition>
+        <argsstring></argsstring>
+        <name>indices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="71" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1OnlinePredictionSet_1a877ce61622158a7f9c530149e78343ed" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::set&lt; SampleRange&lt; T &gt; &gt; &gt;</type>
+        <definition>std::vector&lt;std::set&lt;SampleRange&lt;T&gt; &gt; &gt; ranges</definition>
+        <argsstring></argsstring>
+        <name>ranges</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="70" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1OnlinePredictionSet_1aaf05f8af315a98d6d2b0ebe541f5833c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int get_worsed_tree</definition>
+        <argsstring>()</argsstring>
+        <name>get_worsed_tree</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="49" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="48" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1OnlinePredictionSet_1a6c5569531933288af72fadfb4312ba2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>OnlinePredictionSet</definition>
+        <argsstring>(MultiArrayView&lt; 2, T, U &gt; &amp;features, int num_sets)</argsstring>
+        <name>OnlinePredictionSet</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, U &gt; &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>num_sets</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="36" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="35" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1OnlinePredictionSet_1a2254b020a5faefc3d346347803936b4b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset_tree</definition>
+        <argsstring>(int index)</argsstring>
+        <name>reset_tree</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="62" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="61" bodyend="68"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1345">
+        <label>MultiArray&lt; 2, T &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="1346" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1346">
+        <label>MultiArrayView&lt; N, T &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="1347" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="1344">
+        <label>OnlinePredictionSet&lt; T &gt;</label>
+        <childnode refid="1345" relation="usage">
+          <edgelabel>features</edgelabel>
+        </childnode>
+      </node>
+      <node id="1347">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" line="32" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_online_prediction_set.hxx" bodystart="31" bodyend="74"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1OnlinePredictionSet_1a44d2052a17b339774482a4060c361f5f" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>cumulativePredTime</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1a53f96875e90e81fe731cfc53d6916312" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>features</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1aaf05f8af315a98d6d2b0ebe541f5833c" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>get_worsed_tree</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1aa14d914e1c0a53392341148b7594c56f" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>indices</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1a6c5569531933288af72fadfb4312ba2a" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>OnlinePredictionSet</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1a877ce61622158a7f9c530149e78343ed" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>ranges</name></member>
+      <member refid="classvigra_1_1OnlinePredictionSet_1a2254b020a5faefc3d346347803936b4b" prot="public" virt="non-virtual"><scope>vigra::OnlinePredictionSet</scope><name>reset_tree</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

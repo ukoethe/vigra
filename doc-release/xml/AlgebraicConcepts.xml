@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="AlgebraicConcepts" kind="page">
+    <compoundname>AlgebraicConcepts</compoundname>
+    <title>Algebraic Concepts</title>
+    <detaileddescription>
+<para>The algebraic concepts describe requirements for algebraic types, that is for types that support arithmetic operations. The built-in types are concepts of <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref> and <ref refid="AlgebraicConcepts_1DivisionAlgebra" kindref="member">DivisionAlgebra</ref>.</para><para><anchor id="AlgebraicConcepts_1AlgebraicRing"/> <heading level="3">Algebraic Ring</heading>
+</para><para><itemizedlist>
+<listitem>
+<para>A model of Algebraic Ring implements <computeroutput>Assignable</computeroutput>, <computeroutput>Default Constructible</computeroutput>, <computeroutput>Equality Comparable</computeroutput> and <computeroutput>Strict Weakly Comparable</computeroutput> as defined in the C++ standard (cf. the <ulink url="http://www.sgi.com/tech/stl/">Standard Template Library documentation</ulink>).</para><para></para></listitem>
+<listitem>
+<para>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated <ref refid="NumericTraits" kindref="compound">NumericTraits </ref> define a &apos;zero&apos; element, the type of the result of addition and subtraction, and a type conversion function. Addition must be commutative.</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>a,<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;ModelOfAlgebraicRing&gt;::Promote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>zero<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::zero();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">b<sp/>+=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">b<sp/>-=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">b<sp/>=<sp/>-a;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>+<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>-<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">a<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::fromPromote(c);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>+<sp/>zero<sp/>==<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>+<sp/>b<sp/>==<sp/>b<sp/>+<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>-<sp/>b<sp/>==<sp/>a<sp/>+<sp/>(-b));</highlight></codeline>
+</programlisting></para><para></para></listitem>
+<listitem>
+<para>If mixed-type addition and subtraction are supported, <ref refid="PromoteTraits" kindref="compound">PromoteTraits </ref> define the result type:</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing1<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicRing2<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">PromoteTraits&lt;ModelOfAlgebraicRing1,<sp/>ModelOfAlgebraicRing2&gt;::Promote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>+<sp/>b;</highlight></codeline>
+</programlisting></para><para></para></listitem>
+<listitem>
+<para>A model of Algebraic Ring implements multiplication. The associated <ref refid="NumericTraits" kindref="compound">NumericTraits </ref> define a &apos;one&apos; element, the type of the result of multiplication, and a type conversion function.</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>a,<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;ModelOfAlgebraicRing&gt;::RealPromote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>one<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::one();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">b<sp/>*=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>*<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">a<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::fromRealPromote(c);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>*<sp/>one<sp/>==<sp/>a);</highlight></codeline>
+</programlisting> </para></listitem>
+</itemizedlist>
+</para><para><anchor id="AlgebraicConcepts_1AlgebraicField"/><heading level="3">Algebraic Field</heading>
+</para><para><itemizedlist>
+<listitem>
+<para>A model of Algebraic Field implements <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref> as defined above.</para><para></para></listitem>
+<listitem>
+<para>A model of Algebraic Field implements division. Division is undefined if and only if the right operand is &apos;zero&apos;.</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicField<sp/>a,<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>NumericTraits&lt;ModelOfAlgebraicField&gt;::RealPromote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicField<sp/>zero<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicField&gt;::zero();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(a<sp/>!=<sp/>zero)<sp/>b<sp/>/=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(a<sp/>!=<sp/>zero)<sp/>c<sp/>=<sp/>b<sp/>/<sp/>a;</highlight></codeline>
+</programlisting></para><para></para></listitem>
+</itemizedlist>
+</para><para><anchor id="AlgebraicConcepts_1LinearSpace"/> <heading level="3">Linear Space</heading>
+</para><para><itemizedlist>
+<listitem>
+<para>A model of Linear Space implements <computeroutput>Assignable</computeroutput>, <computeroutput>Default Constructible</computeroutput> and <computeroutput>Equality Comparable</computeroutput> as defined in the C++ standard (cf. the <ulink url="http://www.sgi.com/tech/stl/">Standard Template Library documentation</ulink>).</para><para></para></listitem>
+<listitem>
+<para>A model of Algebraic Ring implements addition, subtraction and unary negation. The associated <ref refid="NumericTraits" kindref="compound">NumericTraits </ref> define a &apos;zero&apos; element, the type of the result of addition and subtraction, and a type conversion function. Addition must be commutative. (This part of the requirements is identical to <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref> above.)</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>a,<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;ModelOfAlgebraicRing&gt;::Promote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>zero<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::zero();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">b<sp/>+=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">b<sp/>-=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">b<sp/>=<sp/>-a;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>+<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>-<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">a<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::fromPromote(c);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>+<sp/>zero<sp/>==<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>+<sp/>b<sp/>==<sp/>b<sp/>+<sp/>a);</highlight></codeline>
+<codeline><highlight class="normal">assert(a<sp/>-<sp/>b<sp/>==<sp/>a<sp/>+<sp/>(-b));</highlight></codeline>
+</programlisting></para><para></para></listitem>
+<listitem>
+<para>If mixed-type addition and subtraction are supported, <ref refid="PromoteTraits" kindref="compound">PromoteTraits </ref> define the result type:</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing1<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">ModelOfAlgebraicRing2<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">PromoteTraits&lt;ModelOfAlgebraicRing1,<sp/>ModelOfAlgebraicRing2&gt;::Promote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>+<sp/>b;</highlight></codeline>
+</programlisting></para><para></para></listitem>
+<listitem>
+<para>A model of Algebraic Ring implements multiplication and division with &apos;double&apos;. (Note that the outer product could be defined with an arbitrary model of <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref>. For simplicity, VIGRA restricts this to only &apos;double&apos;.) The associated <ref refid="NumericTraits" kindref="compound">NumericTraits </ref> define the type of the results, and a type conversion function.</para><para><programlisting><codeline><highlight class="normal">ModelOfAlgebraicRing<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>f;</highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;ModelOfAlgebraicRing&gt;::RealPromote<sp/>c;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">a<sp/>*=<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a<sp/>*<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>f<sp/>*<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(f<sp/>!=<sp/>0.0)<sp/>a<sp/>/=<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(f<sp/>!=<sp/>0.0)<sp/>c<sp/>=<sp/>a<sp/>/<sp/>f;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">c<sp/>=<sp/>a;</highlight></codeline>
+<codeline><highlight class="normal">a<sp/>=<sp/>NumericTraits&lt;ModelOfAlgebraicRing&gt;::fromRealPromote(c);</highlight></codeline>
+</programlisting> </para></listitem>
+</itemizedlist>
+</para><para><anchor id="AlgebraicConcepts_1LinearAlgebraConcept"/><heading level="3">Linear Algebra</heading>
+</para><para><itemizedlist>
+<listitem>
+<para>A model of Linear Algebra implements <ref refid="AlgebraicConcepts_1LinearSpace" kindref="member">LinearSpace</ref> and <ref refid="AlgebraicConcepts_1AlgebraicRing" kindref="member">AlgebraicRing</ref> as defined above.</para><para></para></listitem>
+</itemizedlist>
+</para><para><anchor id="AlgebraicConcepts_1DivisionAlgebra"/><heading level="3">Division Algebra</heading>
+</para><para><itemizedlist>
+<listitem>
+<para>A model of Division Algebra implements <ref refid="AlgebraicConcepts_1LinearSpace" kindref="member">LinearSpace</ref> and <ref refid="AlgebraicConcepts_1AlgebraicField" kindref="member">AlgebraicField</ref> as defined above.</para><para></para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

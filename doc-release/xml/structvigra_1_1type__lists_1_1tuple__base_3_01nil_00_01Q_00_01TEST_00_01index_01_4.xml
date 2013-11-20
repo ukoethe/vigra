@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;</compoundname>
+    <innerclass refid="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1_1has__element" prot="public">vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;::has_element</innerclass>
+    <templateparamlist>
+      <param>
+        <type>class Q</type>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>index</declname>
+        <defname>index</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1a187e352912e084795e57680e89b49cc8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void call_bound_op</definition>
+        <argsstring>(B &amp;, const TBASE &amp;)</argsstring>
+        <name>call_bound_op</name>
+        <param>
+          <type>B &amp;</type>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1805" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1805" bodyend="1805"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1afe631706471980da0323ef187ca816dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void exec_bound_op</definition>
+        <argsstring>(B &amp;, const TBASE &amp;)</argsstring>
+        <name>exec_bound_op</name>
+        <param>
+          <type>B &amp;</type>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1803" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1803" bodyend="1803"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1a71ddde86942fff537f25c7e7b2b0d400" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITL2</type>
+          </param>
+          <param>
+            <type>class Q2</type>
+          </param>
+          <param>
+            <type>template&lt; class &gt; class</type>
+            <declname>TEST2</declname>
+            <defname>TEST2</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void transfer_set_to</definition>
+        <argsstring>(tuple_base&lt; ITL2, Q2, TEST2 &gt; &amp;) const </argsstring>
+        <name>transfer_set_to</name>
+        <param>
+          <type>tuple_base&lt; ITL2, Q2, TEST2 &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1807" bodyend="1807"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1796" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1795" bodyend="1808"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1a187e352912e084795e57680e89b49cc8" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;</scope><name>call_bound_op</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1afe631706471980da0323ef187ca816dc" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;</scope><name>exec_bound_op</name></member>
+      <member refid="structvigra_1_1type__lists_1_1tuple__base_3_01nil_00_01Q_00_01TEST_00_01index_01_4_1a71ddde86942fff537f25c7e7b2b0d400" prot="public" virt="non-virtual"><scope>vigra::type_lists::tuple_base&lt; nil, Q, TEST, index &gt;</scope><name>transfer_set_to</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

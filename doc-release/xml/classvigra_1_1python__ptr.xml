@@ -1,0 +1,457 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1python__ptr" kind="class" prot="public">
+    <compoundname>vigra::python_ptr</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1python__ptr_1aa407eb079982e03b7f8ae010e76efa6d" prot="public" static="no">
+        <type>PyObject</type>
+        <definition>typedef PyObject element_type</definition>
+        <argsstring></argsstring>
+        <name>element_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="81" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1python__ptr_1a8665f4ae75351e0420aa2dfc0e6ee44f" prot="public" static="no">
+        <type>PyObject *</type>
+        <definition>typedef PyObject* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="83" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="enum" id="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4" prot="public" static="no">
+        <name>refcount_policy</name>
+        <enumvalue id="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a562b7264500b245d6ece2332c63e978a" prot="public">
+          <name>increment_count</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a8436ef610f29741fcb960aee8a0f67e6" prot="public">
+          <name>borrowed_reference</name>
+          <initializer> increment_count</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a289a34d3199d7c0d04927a45c9cd231b" prot="public">
+          <name>keep_count</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4af255eee948f1e8ca751df50c75a686c0" prot="public">
+          <name>new_reference</name>
+          <initializer> keep_count</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="86" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="86" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1python__ptr_1a2be0ba87214744ecb4d651fdb2469bcb" prot="public" static="no">
+        <type>PyObject &amp;</type>
+        <definition>typedef PyObject&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1python__ptr_1a80e36c86eb262ff835ff935c23f187b9" prot="public" static="no">
+        <type>PyObject</type>
+        <definition>typedef PyObject value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1python__ptr_1a77595f62bfeb57575dd84e1ebc8f3273" prot="private" static="no" mutable="no">
+        <type>PyObject *</type>
+        <definition>PyObject* ptr_</definition>
+        <argsstring></argsstring>
+        <name>ptr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="77" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1ad52c9dbf5fc04799a476822f43a79eb0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>pointer</type>
+        <definition>pointer get</definition>
+        <argsstring>() const </argsstring>
+        <name>get</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="161" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a2b63f78490c70e8dcbc2e68c9a7268fa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>operator pointer</definition>
+        <argsstring>() const </argsstring>
+        <name>operator pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="167" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="166" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!</definition>
+        <argsstring>() const </argsstring>
+        <name>operator!</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="171" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1ab590e52cc623152ba578915808a9c4d2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(python_ptr const &amp;p) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>python_ptr const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="197" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="196" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a49cbb4119d816710b0a0b677d0c81436" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(pointer p) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>pointer</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="201" bodyend="204"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1aa149c2249879e7727f33688b76bf2c99" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>reference</type>
+        <definition>reference operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="145" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="144" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>pointer</type>
+        <definition>pointer operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="150" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a0b5b6dff57d14247ec437202d995e1bf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr &amp;</type>
+        <definition>python_ptr&amp; operator=</definition>
+        <argsstring>(pointer p)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>pointer</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="105" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="104" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a0307127703808b6bc83a7ed1864b3bb4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr &amp;</type>
+        <definition>python_ptr&amp; operator=</definition>
+        <argsstring>(python_ptr const &amp;r)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>python_ptr const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="111" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="110" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1abbaa4cab0a2e89d43723ae2b3cac9593" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(python_ptr const &amp;p) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>python_ptr const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="187" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="186" bodyend="189"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a93c63e0f4580dfdf951b69f33f274f2d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(pointer p) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>pointer</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="191" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a9fe840b2eb51b375a972ffcbb5f0a9aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>pointer</type>
+        <definition>pointer ptr</definition>
+        <argsstring>() const </argsstring>
+        <name>ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="157" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="156" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1afc5496a0cb529a05fd6a33d5e4267b0d" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>python_ptr</definition>
+        <argsstring>(pointer p=0, refcount_policy rp=increment_count)</argsstring>
+        <name>python_ptr</name>
+        <param>
+          <type>pointer</type>
+          <declname>p</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>refcount_policy</type>
+          <declname>rp</declname>
+          <defval>increment_count</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="91" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="89" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1aa43a7f9ca7ba99c36b0b35227faec1ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>python_ptr</definition>
+        <argsstring>(python_ptr const &amp;p)</argsstring>
+        <name>python_ptr</name>
+        <param>
+          <type>python_ptr const &amp;</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="98" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a196c41b6382121f07be64f6d91dbe77b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>pointer</type>
+        <definition>pointer release</definition>
+        <argsstring>(bool return_borrowed_reference=false)</argsstring>
+        <name>release</name>
+        <param>
+          <type>bool</type>
+          <declname>return_borrowed_reference</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="134" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="133" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1aee6218c58704737701d438a98599f423" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>(pointer p=0, refcount_policy rp=increment_count)</argsstring>
+        <name>reset</name>
+        <param>
+          <type>pointer</type>
+          <declname>p</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>refcount_policy</type>
+          <declname>rp</declname>
+          <defval>increment_count</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="122" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="121" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a60592fe5943f7507a5a26e083309f791" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void swap</definition>
+        <argsstring>(python_ptr &amp;other)</argsstring>
+        <name>swap</name>
+        <param>
+          <type>python_ptr &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="182" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="181" bodyend="184"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a5a822e3282cde93f44fe0d33170bc6e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool unique</definition>
+        <argsstring>() const </argsstring>
+        <name>unique</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="176" bodyend="179"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1python__ptr_1a99549c3614e35fe7a5ec5082237ef4d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>~python_ptr</definition>
+        <argsstring>()</argsstring>
+        <name>~python_ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="116" bodyend="119"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" line="75" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/python_utility.hxx" bodystart="74" bodyend="205"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a8436ef610f29741fcb960aee8a0f67e6" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>borrowed_reference</name></member>
+      <member refid="classvigra_1_1python__ptr_1aa407eb079982e03b7f8ae010e76efa6d" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>element_type</name></member>
+      <member refid="classvigra_1_1python__ptr_1ad52c9dbf5fc04799a476822f43a79eb0" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>get</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a562b7264500b245d6ece2332c63e978a" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>increment_count</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4a289a34d3199d7c0d04927a45c9cd231b" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>keep_count</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4af255eee948f1e8ca751df50c75a686c0" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>new_reference</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2b63f78490c70e8dcbc2e68c9a7268fa" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator pointer</name></member>
+      <member refid="classvigra_1_1python__ptr_1ac8b1d32dbd52d431450c70b151cfa205" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator!</name></member>
+      <member refid="classvigra_1_1python__ptr_1ab590e52cc623152ba578915808a9c4d2" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1python__ptr_1a49cbb4119d816710b0a0b677d0c81436" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1python__ptr_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1python__ptr_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1python__ptr_1a0b5b6dff57d14247ec437202d995e1bf" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1python__ptr_1a0307127703808b6bc83a7ed1864b3bb4" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1python__ptr_1abbaa4cab0a2e89d43723ae2b3cac9593" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1python__ptr_1a93c63e0f4580dfdf951b69f33f274f2d" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1python__ptr_1a8665f4ae75351e0420aa2dfc0e6ee44f" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1python__ptr_1a9fe840b2eb51b375a972ffcbb5f0a9aa" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>ptr</name></member>
+      <member refid="classvigra_1_1python__ptr_1a77595f62bfeb57575dd84e1ebc8f3273" prot="private" virt="non-virtual"><scope>vigra::python_ptr</scope><name>ptr_</name></member>
+      <member refid="classvigra_1_1python__ptr_1afc5496a0cb529a05fd6a33d5e4267b0d" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>python_ptr</name></member>
+      <member refid="classvigra_1_1python__ptr_1aa43a7f9ca7ba99c36b0b35227faec1ff" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>python_ptr</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2842a671e2249313895c3d535ed48fe4" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>refcount_policy</name></member>
+      <member refid="classvigra_1_1python__ptr_1a2be0ba87214744ecb4d651fdb2469bcb" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>reference</name></member>
+      <member refid="classvigra_1_1python__ptr_1a196c41b6382121f07be64f6d91dbe77b" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>release</name></member>
+      <member refid="classvigra_1_1python__ptr_1aee6218c58704737701d438a98599f423" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>reset</name></member>
+      <member refid="classvigra_1_1python__ptr_1a60592fe5943f7507a5a26e083309f791" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>swap</name></member>
+      <member refid="classvigra_1_1python__ptr_1a5a822e3282cde93f44fe0d33170bc6e3" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>unique</name></member>
+      <member refid="classvigra_1_1python__ptr_1a80e36c86eb262ff835ff935c23f187b9" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1python__ptr_1a99549c3614e35fe7a5ec5082237ef4d4" prot="public" virt="non-virtual"><scope>vigra::python_ptr</scope><name>~python_ptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

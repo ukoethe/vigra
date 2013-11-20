@@ -1,0 +1,431 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1CoordinateStride" kind="class" prot="public">
+    <compoundname>vigra::CoordinateStride</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>S</declname>
+        <defname>S</defname>
+        <defval>StridePair&lt;N&gt;</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1aa814bdd713480d2c1b90f882ef544ae4" prot="public" static="no">
+        <type>S::coord_type</type>
+        <definition>typedef S::coord_type coord_type</definition>
+        <argsstring></argsstring>
+        <name>coord_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="357" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="357" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1af6ec651846fb6a5d268784c882bbe0ae" prot="public" static="no">
+        <type>S::deref_type</type>
+        <definition>typedef S::deref_type deref_type</definition>
+        <argsstring></argsstring>
+        <name>deref_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="355" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="355" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1ad58401545d290ac6f3be9e2683e782c7" prot="public" static="no">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>typedef MultiArrayIndex difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="353" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1a1e95bf109313520a252370db1fa0dedd" prot="public" static="no">
+        <type>S::index_type</type>
+        <definition>typedef S::index_type index_type</definition>
+        <argsstring></argsstring>
+        <name>index_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="358" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="358" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1a1ab227c3845eaa0e769efd89b1280f3c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref>&lt; N, deref_type, const deref_type &amp;, CoordinateStride &gt;</type>
+        <definition>typedef MultiIterator&lt;N, deref_type, const deref_type &amp;, CoordinateStride&gt; iterator_type</definition>
+        <argsstring></argsstring>
+        <name>iterator_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="451" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="451" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1a8ba2302a2b75c0e6578db3e9621a1a8c" prot="public" static="no">
+        <type>S::shape_array_type</type>
+        <definition>typedef S::shape_array_type shape_array_type</definition>
+        <argsstring></argsstring>
+        <name>shape_array_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="359" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="359" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1a5728edf7a9fe7ab94dfdb4c7990a84e1" prot="public" static="no">
+        <type>S::stride_type</type>
+        <definition>typedef S::stride_type stride_type</definition>
+        <argsstring></argsstring>
+        <name>stride_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="354" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="354" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CoordinateStride_1ae2d88115a803fec372b840d83c11c89f" prot="public" static="no">
+        <type>CoordinateStride&lt; N &gt;</type>
+        <definition>typedef CoordinateStride&lt;N&gt; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="356" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="356" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1CoordinateStride_1ae15d5e5aad21dbc6211273ac2fcbc1d1" prot="protected" static="no" mutable="no">
+        <type>double</type>
+        <definition>double stride_0</definition>
+        <argsstring></argsstring>
+        <name>stride_0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1acfceffbda751489ba6eafb1008e0dfc2" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CoordinateStride</definition>
+        <argsstring>(void *)</argsstring>
+        <name>CoordinateStride</name>
+        <param>
+          <type>void *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="364" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="364" bodyend="364"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a13dbd8f5e3688b05490db24740298938" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CoordinateStride</definition>
+        <argsstring>(const S &amp;x, double s0)</argsstring>
+        <name>CoordinateStride</name>
+        <param>
+          <type>const S &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>s0</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="368" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="367" bodyend="368"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a754a8bed2389f3d78ebd82c3b1b10e42" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="412" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="411" bodyend="414"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a00f008b80917746917b874d00abd02a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="378" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="377" bodyend="381"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a52e55366eae3c7f0a65f69d1d562aece" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator+=</definition>
+        <argsstring>(difference_type n)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="388" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="387" bodyend="391"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a59f5b5b0d341cf7bd8d23f8f9f96edce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator--</definition>
+        <argsstring>()</argsstring>
+        <name>operator--</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="382" bodyend="386"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a90a3f6915559f9da779810d48aa6acef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator-=</definition>
+        <argsstring>(difference_type n)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="393" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="392" bodyend="396"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a0eaa65aaa1b70ababb2f5bee6b52599e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator&lt;</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="422" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="421" bodyend="424"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a5016b9e052da84f21c49dc26253ef61d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&lt;=</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator&lt;=</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="426" bodyend="431"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1ae122bdd34f6b7e87b12731f4914c6af6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="416" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="415" bodyend="420"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a984ab4d75bd73e9112d062ca4089c4d0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator&gt;</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="433" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="432" bodyend="435"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1ae03f5e263b1b8f87537b14bd747a43a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator&gt;=</definition>
+        <argsstring>(const CoordinateStride &amp;y) const </argsstring>
+        <name>operator&gt;=</name>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="437" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="436" bodyend="441"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a6fc752e9b8fa24781d861db2a48b2429" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>stride_type</type>
+        <definition>stride_type operator[]</definition>
+        <argsstring>(difference_type n) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>difference_type</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="399" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="398" bodyend="403"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CoordinateStride_1a4a3083c8359d1acbaea4cf57f6d5c1e5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>stride_type</type>
+        <definition>stride_type operator[]</definition>
+        <argsstring>(stride_type x) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>stride_type</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="406" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="405" bodyend="408"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classvigra_1_1CoordinateStride_1aedebad56e48631ec66b30bbbadfe09f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>friend std::ostream &amp;</type>
+        <definition>std::ostream&amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;os, const CoordinateStride &amp;x)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>os</declname>
+        </param>
+        <param>
+          <type>const CoordinateStride &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="445" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="444" bodyend="448"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" line="351" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/coordinate_iterator.hxx" bodystart="350" bodyend="452"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1CoordinateStride_1aa814bdd713480d2c1b90f882ef544ae4" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>coord_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1acfceffbda751489ba6eafb1008e0dfc2" prot="protected" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>CoordinateStride</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a13dbd8f5e3688b05490db24740298938" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>CoordinateStride</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1af6ec651846fb6a5d268784c882bbe0ae" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>deref_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1ad58401545d290ac6f3be9e2683e782c7" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a1e95bf109313520a252370db1fa0dedd" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>index_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a1ab227c3845eaa0e769efd89b1280f3c" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>iterator_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a754a8bed2389f3d78ebd82c3b1b10e42" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a00f008b80917746917b874d00abd02a9" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a52e55366eae3c7f0a65f69d1d562aece" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a59f5b5b0d341cf7bd8d23f8f9f96edce" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator--</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a90a3f6915559f9da779810d48aa6acef" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a0eaa65aaa1b70ababb2f5bee6b52599e" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator&lt;</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1aedebad56e48631ec66b30bbbadfe09f4" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a5016b9e052da84f21c49dc26253ef61d" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator&lt;=</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1ae122bdd34f6b7e87b12731f4914c6af6" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a984ab4d75bd73e9112d062ca4089c4d0" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator&gt;</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1ae03f5e263b1b8f87537b14bd747a43a2" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator&gt;=</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a6fc752e9b8fa24781d861db2a48b2429" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a4a3083c8359d1acbaea4cf57f6d5c1e5" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a8ba2302a2b75c0e6578db3e9621a1a8c" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>shape_array_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1ae15d5e5aad21dbc6211273ac2fcbc1d1" prot="protected" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>stride_0</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1a5728edf7a9fe7ab94dfdb4c7990a84e1" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>stride_type</name></member>
+      <member refid="classvigra_1_1CoordinateStride_1ae2d88115a803fec372b840d83c11c89f" prot="public" virt="non-virtual"><scope>vigra::CoordinateStride</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

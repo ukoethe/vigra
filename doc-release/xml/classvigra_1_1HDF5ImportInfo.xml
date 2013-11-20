@@ -1,0 +1,409 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1HDF5ImportInfo" kind="class" prot="public">
+    <compoundname>vigra::HDF5ImportInfo</compoundname>
+    <includes refid="hdf5impex_8hxx" local="no">vigra/hdf5impex.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3d" prot="public" static="no">
+        <name>PixelType</name>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da13759b5b800cc50a6e10f73681f6fe9b" prot="public">
+          <name>UINT8</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da8ed234b18120112ac09d0219a8f60d1b" prot="public">
+          <name>UINT16</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da473815478d857d6a0dbe1f84f44a8592" prot="public">
+          <name>UINT32</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3daae02b38d081e82eaead9cf34aeb081ce" prot="public">
+          <name>UINT64</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dada138aad097eaac8697fe3661c91af95" prot="public">
+          <name>INT8</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dac4a99142c241d04e1607af8a319c201b" prot="public">
+          <name>INT16</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dac1081c62db14e24ef35a1c3c36cba2e7" prot="public">
+          <name>INT32</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da423a1db7cbc915478f654b15f87f3aac" prot="public">
+          <name>INT64</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da9cf4a0866224b0bb4a7a895da27c9c4c" prot="public">
+          <name>FLOAT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da33465d1d419b1074fb259ef444609e92" prot="public">
+          <name>DOUBLE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="276" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="276" bodyend="278"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1ad84449020bf94dd08810b80ee774e6f6" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1HDF5Handle" kindref="compound">HDF5Handle</ref></type>
+        <definition>HDF5Handle m_dataset_handle</definition>
+        <argsstring></argsstring>
+        <name>m_dataset_handle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="360" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1a1cefa0e180959fa11644e6748d6a2c7e" prot="private" static="no" mutable="no">
+        <type>hssize_t</type>
+        <definition>hssize_t m_dimensions</definition>
+        <argsstring></argsstring>
+        <name>m_dimensions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="362" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1a2828cd57903bb8a87604251af03a102c" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; hsize_t &gt;</type>
+        <definition>ArrayVector&lt;hsize_t&gt; m_dims</definition>
+        <argsstring></argsstring>
+        <name>m_dims</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="363" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="363" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1ae712f03d1e0347b4c20c779d6ce67349" prot="private" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1HDF5Handle" kindref="compound">HDF5Handle</ref></type>
+        <definition>HDF5Handle m_file_handle</definition>
+        <argsstring></argsstring>
+        <name>m_file_handle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="360" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1abeab36922e15d948509bdf36c5a46cd9" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_filename</definition>
+        <argsstring></argsstring>
+        <name>m_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="361" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1a7a820ad5cf838eda18973257bbd6eb8e" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_path</definition>
+        <argsstring></argsstring>
+        <name>m_path</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="361" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1HDF5ImportInfo_1a85c4f51253224662173b694ec003ac87" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string m_pixeltype</definition>
+        <argsstring></argsstring>
+        <name>m_pixeltype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="361" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="361" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a15661b1f776663ed47ef6065cd66b526" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>hid_t</type>
+        <definition>hid_t getDatasetHandle</definition>
+        <argsstring>() const </argsstring>
+        <name>getDatasetHandle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a handle to the dataset represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="308"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a8ff54ba4a30139bdb7264d374e8b185d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string&amp; getFilePath</definition>
+        <argsstring>() const </argsstring>
+        <name>getFilePath</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the filename of this HDF5 object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a9d42ebb4ec1f13254efa4f1b2022dc2f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>hid_t</type>
+        <definition>hid_t getH5FileHandle</definition>
+        <argsstring>() const </argsstring>
+        <name>getH5FileHandle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a handle to the file represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="304"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a1e5792010c56af183671d996d49b0363" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string&amp; getPathInFile</definition>
+        <argsstring>() const </argsstring>
+        <name>getPathInFile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the dataset&apos;s full name in the HDF5 file. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="300"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* getPixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>getPixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the dataset.</para><para>Possible values are: <variablelist>
+<varlistentry><term>&quot;UINT8&quot;</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>&quot;INT16&quot;</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>&quot;UINT16&quot;</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>&quot;INT32&quot;</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>&quot;UINT32&quot;</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>&quot;FLOAT&quot;</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>&quot;DOUBLE&quot;</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="338"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a078c1ca5952378467cb629bbfab290c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>HDF5ImportInfo</definition>
+        <argsstring>(const char *filePath, const char *pathInFile)</argsstring>
+        <name>HDF5ImportInfo</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct <ref refid="classvigra_1_1HDF5ImportInfo" kindref="compound">HDF5ImportInfo</ref> object.</para><para>The dataset <emphasis>pathInFile</emphasis> in the HDF5 file <emphasis>filename</emphasis> is accessed to read its properties. <emphasis>pathInFile</emphasis> may contain &apos;/&apos;-separated group names, but must end with the name of the desired dataset:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1HDF5ImportInfo_1a078c1ca5952378467cb629bbfab290c9" kindref="member">HDF5ImportInfo</ref><sp/>info(filename,<sp/></highlight><highlight class="stringliteral">&quot;/group1/group2/my_dataset&quot;</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a9d9a0fea1dafecfb3169daacb20a3df1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex numDimensions</definition>
+        <argsstring>() const </argsstring>
+        <name>numDimensions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the number of dimensions of the dataset represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="312"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>PixelType</type>
+        <definition>PixelType pixelType</definition>
+        <argsstring>() const </argsstring>
+        <name>pixelType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Query the pixel type of the dataset.</para><para>Same as <ref refid="classvigra_1_1HDF5ImportInfo_1a4720882fce62cf0a522a2fceef5757ba" kindref="member">getPixelType()</ref>, but the result is returned as a ImageImportInfo::PixelType enum. This is useful to implement a switch() on the pixel type.</para><para>Possible values are: <variablelist>
+<varlistentry><term>UINT8</term></varlistentry>
+<listitem><para>8-bit unsigned integer (unsigned char) </para></listitem>
+<varlistentry><term>INT16</term></varlistentry>
+<listitem><para>16-bit signed integer (short) </para></listitem>
+<varlistentry><term>UINT16</term></varlistentry>
+<listitem><para>16-bit unsigned integer (unsigned short) </para></listitem>
+<varlistentry><term>INT32</term></varlistentry>
+<listitem><para>32-bit signed integer (long) </para></listitem>
+<varlistentry><term>UINT32</term></varlistentry>
+<listitem><para>32-bit unsigned integer (unsigned long) </para></listitem>
+<varlistentry><term>FLOAT</term></varlistentry>
+<listitem><para>32-bit floating point (float) </para></listitem>
+<varlistentry><term>DOUBLE</term></varlistentry>
+<listitem><para>64-bit floating point (double) </para></listitem>
+</variablelist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="357"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a9f15ad3029a630404d8823c5153f0ee8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; hsize_t &gt; const &amp;</type>
+        <definition>ArrayVector&lt;hsize_t&gt; const&amp; shape</definition>
+        <argsstring>() const </argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the shape of the dataset represented by this info object. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="316" bodyend="319"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a870279e82e759db5f6bc7747077e23c8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex shapeOfDimension</definition>
+        <argsstring>(const int dim) const </argsstring>
+        <name>shapeOfDimension</name>
+        <param>
+          <type>const int</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the shape (length) of the dataset along dimension <emphasis>dim</emphasis>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="323"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1HDF5ImportInfo_1a75d9616e7d98bbecec41b767ef4372ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>~HDF5ImportInfo</definition>
+        <argsstring>()</argsstring>
+        <name>~HDF5ImportInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="292"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Argument object for the function <ref refid="group__VigraHDF5Impex_1ga8ccb383ad5d24064f31fab265bc07439" kindref="member">readHDF5()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para>See <ref refid="group__VigraHDF5Impex_1ga8ccb383ad5d24064f31fab265bc07439" kindref="member">readHDF5()</ref> for a usage example. This object must be used to read an image or array from an HDF5 file and enquire about its properties.</para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="274" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="273" bodyend="364"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da33465d1d419b1074fb259ef444609e92" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>DOUBLE</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da9cf4a0866224b0bb4a7a895da27c9c4c" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>FLOAT</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a15661b1f776663ed47ef6065cd66b526" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>getDatasetHandle</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a8ff54ba4a30139bdb7264d374e8b185d" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>getFilePath</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a9d42ebb4ec1f13254efa4f1b2022dc2f" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>getH5FileHandle</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a1e5792010c56af183671d996d49b0363" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>getPathInFile</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a4720882fce62cf0a522a2fceef5757ba" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>getPixelType</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a078c1ca5952378467cb629bbfab290c9" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>HDF5ImportInfo</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dac4a99142c241d04e1607af8a319c201b" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>INT16</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dac1081c62db14e24ef35a1c3c36cba2e7" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>INT32</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da423a1db7cbc915478f654b15f87f3aac" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>INT64</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3dada138aad097eaac8697fe3661c91af95" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>INT8</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1ad84449020bf94dd08810b80ee774e6f6" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_dataset_handle</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a1cefa0e180959fa11644e6748d6a2c7e" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_dimensions</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a2828cd57903bb8a87604251af03a102c" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_dims</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1ae712f03d1e0347b4c20c779d6ce67349" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_file_handle</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1abeab36922e15d948509bdf36c5a46cd9" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_filename</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a7a820ad5cf838eda18973257bbd6eb8e" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_path</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a85c4f51253224662173b694ec003ac87" prot="private" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>m_pixeltype</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a9d9a0fea1dafecfb3169daacb20a3df1" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>numDimensions</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3d" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>PixelType</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a0b17a5b8221ccb2a14043b5427ddc764" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>pixelType</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a9f15ad3029a630404d8823c5153f0ee8" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>shape</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a870279e82e759db5f6bc7747077e23c8" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>shapeOfDimension</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da8ed234b18120112ac09d0219a8f60d1b" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>UINT16</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da473815478d857d6a0dbe1f84f44a8592" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>UINT32</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3daae02b38d081e82eaead9cf34aeb081ce" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>UINT64</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a37140413518dff2aa63096a2e31b9b3da13759b5b800cc50a6e10f73681f6fe9b" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>UINT8</name></member>
+      <member refid="classvigra_1_1HDF5ImportInfo_1a75d9616e7d98bbecec41b767ef4372ef" prot="public" virt="non-virtual"><scope>vigra::HDF5ImportInfo</scope><name>~HDF5ImportInfo</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

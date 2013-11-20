@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1CanSkipInitialization_3_01std_1_1complex_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::CanSkipInitialization&lt; std::complex&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1CanSkipInitialization_3_01std_1_1complex_3_01T_01_4_01_4_1a3cecd3df6f295c954f8e37089caf3de2" prot="public" static="no">
+        <type>CanSkipInitialization&lt; T &gt;::type</type>
+        <definition>typedef CanSkipInitialization&lt;T&gt;::type type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="612" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="612" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1CanSkipInitialization_3_01std_1_1complex_3_01T_01_4_01_4_1a11ddd051208250c32dc4985abcafa86d" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <initializer> type::asBool</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="613" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="613" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="611" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="610" bodyend="614"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1CanSkipInitialization_3_01std_1_1complex_3_01T_01_4_01_4_1a3cecd3df6f295c954f8e37089caf3de2" prot="public" virt="non-virtual"><scope>vigra::CanSkipInitialization&lt; std::complex&lt; T &gt; &gt;</scope><name>type</name></member>
+      <member refid="structvigra_1_1CanSkipInitialization_3_01std_1_1complex_3_01T_01_4_01_4_1a11ddd051208250c32dc4985abcafa86d" prot="public" virt="non-virtual"><scope>vigra::CanSkipInitialization&lt; std::complex&lt; T &gt; &gt;</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

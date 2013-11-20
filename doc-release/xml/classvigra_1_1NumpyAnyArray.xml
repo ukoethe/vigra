@@ -1,0 +1,428 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1NumpyAnyArray" kind="class" prot="public">
+    <compoundname>vigra::NumpyAnyArray</compoundname>
+    <derivedcompoundref refid="classvigra_1_1NumpyArray" prot="public" virt="non-virtual">NumpyArray&lt; N, T, Stride &gt;</derivedcompoundref>
+    <includes refid="numpy__array_8hxx" local="no">vigra/numpy_array.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1NumpyAnyArray_1a34455770254dcbf1de8a4204c3db3932" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; npy_intp &gt;</type>
+        <definition>typedef ArrayVector&lt;npy_intp&gt; difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+<para>difference type </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1NumpyAnyArray_1a6254655f96d6ebd96f84c3a9cc962541" prot="protected" static="no" mutable="no">
+        <type>python_ptr</type>
+        <definition>python_ptr pyArray_</definition>
+        <argsstring></argsstring>
+        <name>pyArray_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="167" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1adb2a999cc67c0a576d3f924c930ee365" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr</type>
+        <definition>static python_ptr defaultAxistags</definition>
+        <argsstring>(int ndim, std::string order=&quot;&quot;)</argsstring>
+        <name>defaultAxistags</name>
+        <param>
+          <type>int</type>
+          <declname>ndim</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>order</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="185" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="184" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a63a65514063024a4dc841b77000019d9" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string defaultOrder</definition>
+        <argsstring>(std::string defaultValue=&quot;C&quot;)</argsstring>
+        <name>defaultOrder</name>
+        <param>
+          <type>std::string</type>
+          <declname>defaultValue</declname>
+          <defval>&quot;C&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="179" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a59abd6101cc61a5a585a70001e087d2b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr</type>
+        <definition>static python_ptr emptyAxistags</definition>
+        <argsstring>(int ndim)</argsstring>
+        <name>emptyAxistags</name>
+        <param>
+          <type>int</type>
+          <declname>ndim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="189" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a1532151c68105dd7c925ab13231193a5" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr</type>
+        <definition>static python_ptr getArrayTypeObject</definition>
+        <argsstring>()</argsstring>
+        <name>getArrayTypeObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="174" bodyend="177"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1aaf7ce231a8fdec98196c2721d97004db" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>python_ptr</type>
+        <definition>python_ptr axistags</definition>
+        <argsstring>() const </argsstring>
+        <name>axistags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the AxisTags of this array or a NULL pointer when the attribute &apos;axistags&apos; is missing in the Python object or this array has no data. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="401" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="400" bodyend="412"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a41c4094bd90316412b901085edc23956" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex channelIndex</definition>
+        <argsstring>() const </argsstring>
+        <name>channelIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="306" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="305" bodyend="310"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a87c42aefaf56bb0283010649979c3b3e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int dtype</definition>
+        <argsstring>() const </argsstring>
+        <name>dtype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the the permutation that will transpose this array into canonical ordering (currently: F-order). The size of the returned permutation equals <ref refid="classvigra_1_1NumpyAnyArray_1ab0c2b5386194068f8801a5af758f7a30" kindref="member">ndim()</ref>. Returns the value type of the elements in this array, or -1 when <ref refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" kindref="member">hasData()</ref> is false. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="389" bodyend="394"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1ab42ca379e0454eccf39ec72ace7ab51f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasChannelAxis</definition>
+        <argsstring>() const </argsstring>
+        <name>hasChannelAxis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="298" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasData</definition>
+        <argsstring>() const </argsstring>
+        <name>hasData</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check whether this <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> actually points to a Python array. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="475" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="474" bodyend="477"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a96eba6b60c2f8b154ea1de0a54199e9e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex innerNonchannelIndex</definition>
+        <argsstring>() const </argsstring>
+        <name>innerNonchannelIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="313" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="312" bodyend="317"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1aa49a3e01404313e8bf16705cceffd229" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void makeCopy</definition>
+        <argsstring>(PyObject *obj, PyTypeObject *type=0)</argsstring>
+        <name>makeCopy</name>
+        <param>
+          <type>PyObject *</type>
+          <declname>obj</declname>
+        </param>
+        <param>
+          <type>PyTypeObject *</type>
+          <declname>type</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a copy of the given array object. If <emphasis>obj</emphasis> is a numpy array object, a copy is created via the C-equivalent of &apos;obj-&gt;copy()&apos;. If this call fails, or obj was not an array, an exception is thrown and the <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> remains unchanged. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="461" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="460" bodyend="469"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1acf8a71971e005683ba7de36b23ff4336" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool makeReference</definition>
+        <argsstring>(PyObject *obj, PyTypeObject *type=0)</argsstring>
+        <name>makeReference</name>
+        <param>
+          <type>PyObject *</type>
+          <declname>obj</declname>
+        </param>
+        <param>
+          <type>PyTypeObject *</type>
+          <declname>type</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Reset the <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> to the given object. If <emphasis>obj</emphasis> is a numpy array object, a new reference to that array is created, and the function returns true. Otherwise, it returns false and the <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> remains unchanged. If <emphasis>type</emphasis> is given, the new reference will be a view with that type, provided that <emphasis>type</emphasis> is a numpy ndarray or a subclass thereof. Otherwise, an exception is thrown. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="440" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="439" bodyend="452"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1ab0c2b5386194068f8801a5af758f7a30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex ndim</definition>
+        <argsstring>() const </argsstring>
+        <name>ndim</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the number of dimensions of this array, or 0 if <ref refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" kindref="member">hasData()</ref> is false. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="280" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="279" bodyend="284"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1aff5e0bf796e2afb9a1a45443e75c1125" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NumpyAnyArray</definition>
+        <argsstring>(PyObject *obj=0, bool createCopy=false, PyTypeObject *type=0)</argsstring>
+        <name>NumpyAnyArray</name>
+        <param>
+          <type>PyObject *</type>
+          <declname>obj</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>createCopy</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>PyTypeObject *</type>
+          <declname>type</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Construct from a Python object. If <emphasis>obj</emphasis> is NULL, or is not a subclass of numpy.ndarray, the resulting <ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> will have no data (i.e. <ref refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" kindref="member">hasData()</ref> returns false). Otherwise, it creates a new reference to the array <emphasis>obj</emphasis>, unless <emphasis>createCopy</emphasis> is true, where a new array is created by calling the C-equivalent of obj-&gt;copy(). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="201" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1acb3ad6e964a2a05b04eb33cc0cfd6267" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>NumpyAnyArray</definition>
+        <argsstring>(NumpyAnyArray const &amp;other, bool createCopy=false, PyTypeObject *type=0)</argsstring>
+        <name>NumpyAnyArray</name>
+        <param>
+          <type><ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>createCopy</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>PyTypeObject *</type>
+          <declname>type</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy constructor. By default, it creates a new reference to the array <emphasis>other</emphasis>. When <emphasis>createCopy</emphasis> is true, a new array is created by calling the C-equivalent of other.copy(). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="219" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="218" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a0ac78180c68d1f31b83fa5e88cc2026e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> &amp;</type>
+        <definition>NumpyAnyArray&amp; operator=</definition>
+        <argsstring>(NumpyAnyArray const &amp;other)</argsstring>
+        <name>operator=</name>
+        <reimplementedby refid="classvigra_1_1NumpyArray_1a84403a9738641959850475337c59c0b5">operator=</reimplementedby>
+        <param>
+          <type><ref refid="classvigra_1_1NumpyAnyArray" kindref="compound">NumpyAnyArray</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignment operator. If this is already a view with data (i.e. <ref refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" kindref="member">hasData()</ref> is true) and the shapes match, the RHS array contents are copied via the C-equivalent of &apos;self[...] = other[...]&apos;. If the shapes don&apos;t matched, broadcasting is tried on the trailing (i.e. channel) dimension. If the LHS is an empty view, assignment is identical to makeReference(other.pyObject()). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="243" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="242" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a922380903d2aed672819a1ab2216f155" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PyArrayObject *</type>
+        <definition>PyArrayObject* pyArray</definition>
+        <argsstring>() const </argsstring>
+        <name>pyArray</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a borrowed reference to the internal PyArrayObject. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="418" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="417" bodyend="420"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1af27abedf257a55f66c007533c9916884" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>PyObject *</type>
+        <definition>PyObject* pyObject</definition>
+        <argsstring>() const </argsstring>
+        <name>pyObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return a borrowed reference to the internal PyArrayObject (see <ref refid="classvigra_1_1NumpyAnyArray_1a922380903d2aed672819a1ab2216f155" kindref="member">pyArray()</ref>), cast to PyObject for your convenience. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="427" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="426" bodyend="429"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1ae76c6448fcb8351b75a0f6cab85116da" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NumpyAnyArray_1a34455770254dcbf1de8a4204c3db3932" kindref="member">difference_type</ref></type>
+        <definition>difference_type shape</definition>
+        <argsstring>() const </argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the shape of this array. The size of the returned shape equals <ref refid="classvigra_1_1NumpyAnyArray_1ab0c2b5386194068f8801a5af758f7a30" kindref="member">ndim()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="324" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="323" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a26c340b03772d978c03338e308249f20" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+        <definition>MultiArrayIndex spatialDimensions</definition>
+        <argsstring>() const </argsstring>
+        <name>spatialDimensions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the number of spatial dimensions of this array, or 0 if <ref refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" kindref="member">hasData()</ref> is false. If the enclosed Python array does not define the attribute spatialDimensions, <ref refid="classvigra_1_1NumpyAnyArray_1ab0c2b5386194068f8801a5af758f7a30" kindref="member">ndim()</ref> is returned. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="291" bodyend="296"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1NumpyAnyArray_1a614a382ab304114f19a2c1168502647d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1NumpyAnyArray_1a34455770254dcbf1de8a4204c3db3932" kindref="member">difference_type</ref></type>
+        <definition>difference_type strideOrdering</definition>
+        <argsstring>() const </argsstring>
+        <name>strideOrdering</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the ordering of the strides of this array. The result is describes the current permutation of the axes relative to an ascending stride order. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="334" bodyend="361"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Wrapper class for a Python array.</para><para>This class stores a reference-counted pointer to an Python numpy array object, i.e. an object where <computeroutput>PyArray_Check(object)</computeroutput> returns true (in Python, the object is then a subclass of <computeroutput>numpy.ndarray</computeroutput>). This class is mainly used as a smart pointer to these arrays, but some basic access and conversion functions are also provided.</para><para><bold>#include</bold> &lt;<ref refid="numpy__array_8hxx_source" kindref="compound">vigra/numpy_array.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="1302">
+        <label>NumpyArray&lt; N, T, Stride &gt;</label>
+        <link refid="classvigra_1_1NumpyArray"/>
+        <childnode refid="1301" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1301">
+        <label>NumpyAnyArray</label>
+        <link refid="classvigra_1_1NumpyAnyArray"/>
+      </node>
+    </inheritancegraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array.hxx" bodystart="164" bodyend="478"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1NumpyAnyArray_1aaf7ce231a8fdec98196c2721d97004db" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>axistags</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a41c4094bd90316412b901085edc23956" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>channelIndex</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1adb2a999cc67c0a576d3f924c930ee365" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>defaultAxistags</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a63a65514063024a4dc841b77000019d9" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>defaultOrder</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a34455770254dcbf1de8a4204c3db3932" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a87c42aefaf56bb0283010649979c3b3e" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>dtype</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a59abd6101cc61a5a585a70001e087d2b" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>emptyAxistags</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a1532151c68105dd7c925ab13231193a5" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>getArrayTypeObject</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1ab42ca379e0454eccf39ec72ace7ab51f" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>hasChannelAxis</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a0effbd4cf91891700ac41e86defe4aa6" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>hasData</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a96eba6b60c2f8b154ea1de0a54199e9e" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>innerNonchannelIndex</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1aa49a3e01404313e8bf16705cceffd229" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>makeCopy</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1acf8a71971e005683ba7de36b23ff4336" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>makeReference</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1ab0c2b5386194068f8801a5af758f7a30" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>ndim</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1aff5e0bf796e2afb9a1a45443e75c1125" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>NumpyAnyArray</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1acb3ad6e964a2a05b04eb33cc0cfd6267" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>NumpyAnyArray</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a0ac78180c68d1f31b83fa5e88cc2026e" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a922380903d2aed672819a1ab2216f155" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>pyArray</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a6254655f96d6ebd96f84c3a9cc962541" prot="protected" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>pyArray_</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1af27abedf257a55f66c007533c9916884" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>pyObject</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1ae76c6448fcb8351b75a0f6cab85116da" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>shape</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a26c340b03772d978c03338e308249f20" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>spatialDimensions</name></member>
+      <member refid="classvigra_1_1NumpyAnyArray_1a614a382ab304114f19a2c1168502647d" prot="public" virt="non-virtual"><scope>vigra::NumpyAnyArray</scope><name>strideOrdering</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

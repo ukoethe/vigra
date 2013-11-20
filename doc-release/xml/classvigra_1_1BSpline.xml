@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1BSpline" kind="class" prot="public">
+    <compoundname>vigra::BSpline</compoundname>
+    <basecompoundref refid="classvigra_1_1BSplineBase" prot="public" virt="non-virtual">vigra::BSplineBase&lt; ORDER, T &gt;</basecompoundref>
+    <includes refid="splines_8hxx" local="no">vigra/splines.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>ORDER</declname>
+        <defname>ORDER</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+        <defval>double</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1BSpline_1af6740493fe4679085b232abc04a9502a" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>BSpline</definition>
+        <argsstring>(unsigned int derivativeOrder=0)</argsstring>
+        <name>BSpline</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>derivativeOrder</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor forwarded to the base class constructor.. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="260" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="258" bodyend="260"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Spline functors for arbitrary orders.</para><para>Provides the interface of <ref refid="classvigra_1_1BSplineBase" kindref="compound">vigra::BSplineBase</ref> with a more convenient name <ndash/> see there for more documentation. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="136">
+        <label>BSplineBase&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSplineBase"/>
+      </node>
+      <node id="135">
+        <label>BSpline&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSpline"/>
+        <childnode refid="136" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="138">
+        <label>BSplineBase&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSplineBase"/>
+      </node>
+      <node id="137">
+        <label>BSpline&lt; ORDER, T &gt;</label>
+        <link refid="classvigra_1_1BSpline"/>
+        <childnode refid="138" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="254" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="252" bodyend="261"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1BSplineBase_1ae45326fbc1e2bb968bbb688bd8da81f1" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>argument_type</name></member>
+      <member refid="classvigra_1_1BSpline_1af6740493fe4679085b232abc04a9502a" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>BSpline</name></member>
+      <member refid="classvigra_1_1BSplineBase_1ac1446c627cf7a8ec2abd195412759663" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>BSplineBase</name></member>
+      <member refid="group__MathFunctions_1ga293714b6ca3b96e88f09c9ea1bb78008" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>calculatePrefilterCoefficients</name></member>
+      <member refid="group__MathFunctions_1ga5671955d955116c14907bc3ae490e4ea" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>calculateWeightMatrix</name></member>
+      <member refid="classvigra_1_1BSplineBase_1adb43d0799ebe95a4baa5adda651f0aa7" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>derivativeOrder</name></member>
+      <member refid="group__MathFunctions_1gae431ca135e885013a1010228aa0c190b" prot="protected" virt="non-virtual"><scope>vigra::BSpline</scope><name>exec</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a9e9bfdf07be793850c9f72f5907c5ab9" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>first_argument_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a125f66e1a3dfd9e5621235e8d4fb8b58" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a319112fc035f4ba4f23c5e875130fa73" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a9c891605cda7d9543e8ee3e60118a551" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5ca26130503b8ca5a4cf2bacfaf8666e522" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>order</name></member>
+      <member refid="classvigra_1_1BSplineBase_1af9d4bbcb7073e260ae97ad6d2bacfbf0" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>prefilterCoefficients</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a57d76ea64cd2523fcf4d19cc73af0093" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>radius</name></member>
+      <member refid="classvigra_1_1BSplineBase_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>result_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aede889ebf114de2a4c420d79c1231a8b" prot="protected" virt="non-virtual"><scope>vigra::BSpline</scope><name>s1_</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a0b7ba84ad055a593f010a3c16905b5f1" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>second_argument_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1aa971a2a3247c4ab1b630623281659c5c" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>StaticOrder</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a265a253612b46abed17c61b0a5e5ce30" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1BSplineBase_1abba02cf27af42ca7921c62ed71ce8fa7" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>WeightMatrix</name></member>
+      <member refid="classvigra_1_1BSplineBase_1a7d9f5a994381dc8e0b76a4d645dc314f" prot="public" virt="non-virtual"><scope>vigra::BSpline</scope><name>weights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

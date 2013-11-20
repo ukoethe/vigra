@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits&lt; Rational&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a550fcf8c433e243870bf58723476436a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Type</ref></type>
+        <definition>typedef Type NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="776" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="776" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a607931594138e3df135e2ddade3bd5f4" prot="public" static="no">
+        <type>NumericTraits&lt; <ref refid="classvigra_1_1Rational" kindref="compound">Type</ref> &gt;::Promote</type>
+        <definition>typedef NumericTraits&lt;Type&gt;::Promote SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="775" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="775" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a193c0e7fa0df0e2b473cf1b661768404" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Rational" kindref="compound">Rational</ref>&lt; T &gt;</type>
+        <definition>typedef Rational&lt;T&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="774" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="774" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="773" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="772" bodyend="777"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a550fcf8c433e243870bf58723476436a" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Rational&lt; T &gt; &gt;</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a607931594138e3df135e2ddade3bd5f4" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Rational&lt; T &gt; &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01Rational_3_01T_01_4_01_4_1a193c0e7fa0df0e2b473cf1b661768404" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; Rational&lt; T &gt; &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

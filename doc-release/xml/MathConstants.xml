@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="MathConstants" kind="page">
+    <compoundname>MathConstants</compoundname>
+    <title>Mathematical Constants</title>
+    <detaileddescription>
+<para><computeroutput>M_PI, M_SQRT2 etc.</computeroutput></para><para><bold>#include</bold> &lt;<ref refid="mathutil_8hxx_source" kindref="compound">vigra/mathutil.hxx</ref>&gt;</para><para>Since mathematical constants such as <computeroutput>M_PI</computeroutput> and <computeroutput>M_SQRT2</computeroutput> are not officially standardized, we provide definitions here for those compilers that don&apos;t support them.</para><para><programlisting><codeline><highlight class="preprocessor">#ifndef<sp/>M_PI</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_PI<sp/><sp/><sp/><sp/><sp/>3.14159265358979323846</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>M_SQRT2</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_2_PI<sp/><sp/><sp/>0.63661977236758134308</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>M_PI_2</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_PI_2<sp/><sp/><sp/>1.57079632679489661923</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>M_PI_4</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_PI_4<sp/><sp/><sp/>0.78539816339744830962</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>M_SQRT2</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_SQRT2<sp/><sp/>1.41421356237309504880</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>M_EULER_GAMMA</highlight></codeline>
+<codeline><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/><sp/>define<sp/>M_EULER_GAMMA<sp/><sp/>0.5772156649015329</highlight></codeline>
+<codeline><highlight class="preprocessor">#endif</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1StopBase" kind="class" prot="public">
+    <compoundname>vigra::StopBase</compoundname>
+    <derivedcompoundref refid="classvigra_1_1StopAfterTree" prot="public" virt="non-virtual">StopAfterTree</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StopAfterVoteCount" prot="public" virt="non-virtual">StopAfterVoteCount</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StopIfBinTest" prot="public" virt="non-virtual">StopIfBinTest</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StopIfConverging" prot="public" virt="non-virtual">StopIfConverging</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StopIfMargin" prot="public" virt="non-virtual">StopIfMargin</derivedcompoundref>
+    <derivedcompoundref refid="classvigra_1_1StopIfProb" prot="public" virt="non-virtual">StopIfProb</derivedcompoundref>
+    <includes refid="rf__earlystopping_8hxx" local="no">vigra/random_forest/rf_earlystopping.hxx</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1StopBase_1a99db359c49053ebe05644db4810bba24" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref></type>
+        <definition>ProblemSpec ext_param_</definition>
+        <argsstring></argsstring>
+        <name>ext_param_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="28" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1StopBase_1acf3de57c3731277817b02853efb8d48a" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool is_weighted_</definition>
+        <argsstring></argsstring>
+        <name>is_weighted_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="30" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1StopBase_1ac648afda832826f3e0fa454bba5c263e" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tree_count_</definition>
+        <argsstring></argsstring>
+        <name>tree_count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="29" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1StopBase_1a289ea1591011505e9e891401cde546fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set_external_parameters</definition>
+        <argsstring>(ProblemSpec&lt; T &gt; const &amp;prob, int tree_count=0, bool is_weighted=false)</argsstring>
+        <name>set_external_parameters</name>
+        <reimplementedby refid="classvigra_1_1StopAfterTree_1a289ea1591011505e9e891401cde546fd">set_external_parameters</reimplementedby>
+        <reimplementedby refid="classvigra_1_1StopIfConverging_1a289ea1591011505e9e891401cde546fd">set_external_parameters</reimplementedby>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; T &gt; const &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>tree_count</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>is_weighted</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="35" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="34" bodyend="39"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Base class from which all EarlyStopping Functors derive. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2411">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+      </node>
+      <node id="2412">
+        <label>StopAfterTree</label>
+        <link refid="classvigra_1_1StopAfterTree"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2413">
+        <label>StopAfterVoteCount</label>
+        <link refid="classvigra_1_1StopAfterVoteCount"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2414">
+        <label>StopIfBinTest</label>
+        <link refid="classvigra_1_1StopIfBinTest"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2417">
+        <label>StopIfProb</label>
+        <link refid="classvigra_1_1StopIfProb"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2415">
+        <label>StopIfConverging</label>
+        <link refid="classvigra_1_1StopIfConverging"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2416">
+        <label>StopIfMargin</label>
+        <link refid="classvigra_1_1StopIfMargin"/>
+        <childnode refid="2411" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2423">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2418">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+        <childnode refid="2419" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2419">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="2420" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2422" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="2420">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2421" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2421">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2422">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2423" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="26" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="25" bodyend="55"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1StopBase_1a99db359c49053ebe05644db4810bba24" prot="protected" virt="non-virtual"><scope>vigra::StopBase</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1StopBase_1acf3de57c3731277817b02853efb8d48a" prot="protected" virt="non-virtual"><scope>vigra::StopBase</scope><name>is_weighted_</name></member>
+      <member refid="classvigra_1_1StopBase_1a289ea1591011505e9e891401cde546fd" prot="public" virt="non-virtual"><scope>vigra::StopBase</scope><name>set_external_parameters</name></member>
+      <member refid="classvigra_1_1StopBase_1ac648afda832826f3e0fa454bba5c263e" prot="protected" virt="non-virtual"><scope>vigra::StopBase</scope><name>tree_count_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

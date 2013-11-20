@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits</compoundname>
+    <derivedcompoundref refid="structvigra_1_1NormTraits_3_01linalg_1_1TemporaryMatrix_3_01T_00_01ALLOC_01_4_01_4" prot="public" virt="non-virtual">NormTraits&lt; linalg::TemporaryMatrix&lt; T, ALLOC &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1NormTraits_3_01Matrix_3_01T_00_01ALLOC_01_4_01_4" prot="public" virt="non-virtual">NormTraits&lt; Matrix&lt; T, ALLOC &gt; &gt;</derivedcompoundref>
+    <derivedcompoundref refid="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4" prot="public" virt="non-virtual">NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_1a7a64982e013dde2b73c5159fbd88133c" prot="public" static="no">
+        <type>Error_NormTraits_not_specialized_for_this_case</type>
+        <definition>typedef Error_NormTraits_not_specialized_for_this_case NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1141" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1141" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_1ae5b8a0992a255de0fc26877ea2db7a3b" prot="public" static="no">
+        <type>Error_NormTraits_not_specialized_for_this_case</type>
+        <definition>typedef Error_NormTraits_not_specialized_for_this_case SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1140" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_1a685b7a70f0ae1f2881cf8937d951c3b1" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1139" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1139" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1138" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1137" bodyend="1142"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_1a7a64982e013dde2b73c5159fbd88133c" prot="public" virt="non-virtual"><scope>vigra::NormTraits</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_1ae5b8a0992a255de0fc26877ea2db7a3b" prot="public" virt="non-virtual"><scope>vigra::NormTraits</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_1a685b7a70f0ae1f2881cf8937d951c3b1" prot="public" virt="non-virtual"><scope>vigra::NormTraits</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

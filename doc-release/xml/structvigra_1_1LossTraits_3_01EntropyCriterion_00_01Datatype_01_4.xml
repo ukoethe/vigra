@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1LossTraits_3_01EntropyCriterion_00_01Datatype_01_4" kind="struct" prot="public">
+    <compoundname>vigra::LossTraits&lt; EntropyCriterion, Datatype &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Datatype</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1LossTraits_3_01EntropyCriterion_00_01Datatype_01_4_1ad4cf05b1b5f144e90bb4db28da2f6d3a" prot="public" static="no">
+        <type>ImpurityLoss&lt; Datatype, <ref refid="classvigra_1_1EntropyCriterion" kindref="compound">EntropyCriterion</ref> &gt;</type>
+        <definition>typedef ImpurityLoss&lt;Datatype, EntropyCriterion&gt; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="819" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="819" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="818" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="817" bodyend="820"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1LossTraits_3_01EntropyCriterion_00_01Datatype_01_4_1ad4cf05b1b5f144e90bb4db28da2f6d3a" prot="public" virt="non-virtual"><scope>vigra::LossTraits&lt; EntropyCriterion, Datatype &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

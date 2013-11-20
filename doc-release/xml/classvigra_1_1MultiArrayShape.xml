@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MultiArrayShape" kind="class" prot="public">
+    <compoundname>vigra::MultiArrayShape</compoundname>
+    <includes refid="multi__iterator_8hxx" local="no">vigra/multi_iterator.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1MultiArrayShape_1a9332e35fe85b77b01fdeeacdea0f3504" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref>, N &gt;</type>
+        <definition>typedef TinyVector&lt;MultiArrayIndex, N&gt; type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The difference type of all <ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref>, <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>, and <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> variants. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="358" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="358" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Traits class for the difference type of all <ref refid="classvigra_1_1MultiIterator" kindref="compound">MultiIterator</ref>, <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>, and <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> variants. </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" line="353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_iterator.hxx" bodystart="352" bodyend="359"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultiArrayShape_1a9332e35fe85b77b01fdeeacdea0f3504" prot="public" virt="non-virtual"><scope>vigra::MultiArrayShape</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

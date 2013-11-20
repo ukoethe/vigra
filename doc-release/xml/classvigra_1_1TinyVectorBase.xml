@@ -1,0 +1,702 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1TinyVectorBase" kind="class" prot="public">
+    <compoundname>vigra::TinyVectorBase</compoundname>
+    <includes refid="tinyvector_8hxx" local="no">vigra/tinyvector.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>VALUETYPE</declname>
+        <defname>VALUETYPE</defname>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>SIZE</declname>
+        <defname>SIZE</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>DATA</declname>
+        <defname>DATA</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>DERIVED</declname>
+        <defname>DERIVED</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1TinyVectorBase_1a84627a72058502328269676b81780f89" prot="public" static="no">
+        <name>@46</name>
+        <enumvalue id="classvigra_1_1TinyVectorBase_1a84627a72058502328269676b81780f89ad4a8f9f8c603d29a20ca6f9c056dd4da" prot="public">
+          <name>static_size</name>
+          <initializer> SIZE</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector&apos;s size </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="560" bodyend="560"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a8d3921909325ec56e10da00c0d6b1f08" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref> const *</type>
+        <definition>typedef value_type const* const_iterator</definition>
+        <argsstring></argsstring>
+        <name>const_iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>STL-compatible definition of const iterator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="536" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="536" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1ab652b7cfcfeac13226e0ee07931da4d4" prot="public" static="no">
+        <type>VALUETYPE const *</type>
+        <definition>typedef VALUETYPE const* const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const pointer (return of operator-&gt; const). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="528" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="528" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a4bc49d740bad1cb75776bcfac2c40f26" prot="public" static="no">
+        <type>VALUETYPE const &amp;</type>
+        <definition>typedef VALUETYPE const&amp; const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>const reference (return of operator[] const). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="520" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="520" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1ad319fc54a93a2c7058c70e40428ed2e2" prot="public" static="no">
+        <type>std::ptrdiff_t</type>
+        <definition>typedef std::ptrdiff_t difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>STL-compatible definition of difference_type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="544" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a4b0424da8c99197075d119ba0959bf1e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref> *</type>
+        <definition>typedef value_type* iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>STL-compatible definition of iterator </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="532" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="532" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a3aaf2f56b74ba07badf36ce76715e460" prot="public" static="no">
+        <type>SquareRootTraits&lt; <ref refid="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" kindref="member">SquaredNormType</ref> &gt;::SquareRootResult</type>
+        <definition>typedef SquareRootTraits&lt;SquaredNormType&gt;::SquareRootResult NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector&apos;s norm type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="556" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="556" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1abf6e21ead96acfe1ce6770f74a6685fc" prot="public" static="no">
+        <type>VALUETYPE *</type>
+        <definition>typedef VALUETYPE* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>pointer (return of operator-&gt;). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="524" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="524" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a5cc9035ae36e93a575d4fe8e1dbfe55d" prot="public" static="no">
+        <type>VALUETYPE &amp;</type>
+        <definition>typedef VALUETYPE&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>reference (return of operator[]). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="516" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1add69d58b47c0e2e51b5c1cdad6d51fd8" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double scalar_multiplier</definition>
+        <argsstring></argsstring>
+        <name>scalar_multiplier</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the scalar type for the outer product </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="548" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="548" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1ada51e68d31936547d3729c82daf6b7c6" prot="public" static="no">
+        <type>unsigned int</type>
+        <definition>typedef unsigned int size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>STL-compatible definition of size_type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="540" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" prot="public" static="no">
+        <type>NormTraits&lt; VALUETYPE &gt;::<ref refid="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" kindref="member">SquaredNormType</ref></type>
+        <definition>typedef NormTraits&lt;VALUETYPE&gt;::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the vector&apos;s squared norm type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="552" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" static="no">
+        <type>VALUETYPE</type>
+        <definition>typedef VALUETYPE value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>STL-compatible definition of valuetype </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="512" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="512" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-type">
+      <memberdef kind="typedef" id="classvigra_1_1TinyVectorBase_1ac6101e8dbe09a492f583e6ce7134b709" prot="protected" static="no">
+        <type>detail::LoopType&lt; SIZE &gt;::type</type>
+        <definition>typedef detail::LoopType&lt;SIZE&gt;::type Loop</definition>
+        <argsstring></argsstring>
+        <name>Loop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="504" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="504" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1TinyVectorBase_1a64ea5854d043d6a5ae6987e997ee39fb" prot="protected" static="no" mutable="no">
+        <type>DATA</type>
+        <definition>DATA data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="701" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="701" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a6c6f9e93da20749019a4641bd3e608d5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref> &amp;</type>
+        <definition>TinyVectorBase&amp; operator=</definition>
+        <argsstring>(TinyVectorBase const &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref> const &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="500"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1afc144041a7df37de9114dbc42f08d7ab" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>TinyVectorBase</definition>
+        <argsstring>(TinyVectorBase const &amp;)</argsstring>
+        <name>TinyVectorBase</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref> const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="498"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a355d5e31ff587c46c78e44be3db7da83" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TinyVectorBase</definition>
+        <argsstring>()</argsstring>
+        <name>TinyVectorBase</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="507" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="506" bodyend="507"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1ad69bd11391be1a1dba5c8202259664f8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a4b0424da8c99197075d119ba0959bf1e" kindref="member">iterator</ref></type>
+        <definition>iterator begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get random access iterator to begin of vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="678" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="678" bodyend="678"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1aa4b02d4f1a8500fb07a551069060709f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a8d3921909325ec56e10da00c0d6b1f08" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get const random access iterator to begin of vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="685" bodyend="685"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a36e4d11a00a3572c87bf7e913e9b5ca1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1abf6e21ead96acfe1ce6770f74a6685fc" kindref="member">pointer</ref></type>
+        <definition>pointer data</definition>
+        <argsstring>()</argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="695" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="695" bodyend="695"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ab652b7cfcfeac13226e0ee07931da4d4" kindref="member">const_pointer</ref></type>
+        <definition>const_pointer data</definition>
+        <argsstring>() const </argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="697" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="697" bodyend="697"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1acad38d52497a975bfb6f2f6acd76631f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a4b0424da8c99197075d119ba0959bf1e" kindref="member">iterator</ref></type>
+        <definition>iterator end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get random access iterator past-the-end of vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="681" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="681" bodyend="681"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a350132543d80a1c1e5be844e6d2878ea" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a8d3921909325ec56e10da00c0d6b1f08" kindref="member">const_iterator</ref></type>
+        <definition>const_iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get const random access iterator past-the-end of vector. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="689" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="689" bodyend="689"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a5cdf4fd70a8962218c77deb30edce0b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(Iterator i, Iterator end)</argsstring>
+        <name>init</name>
+        <param>
+          <type>Iterator</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>end</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize from another sequence (must have length SIZE!) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="566" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="565" bodyend="570"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1ad8e08b8eaa8d5765d11de7344a018613" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void init</definition>
+        <argsstring>(value_type initial)</argsstring>
+        <name>init</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" kindref="member">value_type</ref></type>
+          <declname>initial</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize with constant value </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="574" bodyend="577"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a3aaf2f56b74ba07badf36ce76715e460" kindref="member">NormType</ref></type>
+        <definition>NormType magnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>magnitude</name>
+        <reimplementedby refid="classvigra_1_1RGBValue_1aa9f35e702c4ae0fb038461f6af25fc9f">magnitude</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate magnitude. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="634" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="633" bodyend="637"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a0626973e733c59d2dcf29679b6542db3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>VALUETYPE const &amp;</type>
+        <definition>VALUETYPE const&amp; maximum</definition>
+        <argsstring>() const </argsstring>
+        <name>maximum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the maximal element. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="656" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="655" bodyend="658"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1ac5b93cc371537a7772a60cc0d3be43f8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>VALUETYPE const &amp;</type>
+        <definition>VALUETYPE const&amp; minimum</definition>
+        <argsstring>() const </argsstring>
+        <name>minimum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the minimal element. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="649" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="648" bodyend="651"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1aa88a2ee7578dac50baf55ab6ec2532e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator*=</definition>
+        <argsstring>(TinyVectorBase&lt; T1, SIZE, D1, D2 &gt; const &amp;r)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise multiply-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="601" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="600" bodyend="604"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a79a2f305963885081f260ab8354bb3e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator*=</definition>
+        <argsstring>(double r)</argsstring>
+        <name>operator*=</name>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise scalar multiply-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="618" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="617" bodyend="621"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a9bde39ba39082812af1ec50d7dbe8436" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator+=</definition>
+        <argsstring>(TinyVectorBase&lt; T1, SIZE, D1, D2 &gt; const &amp;r)</argsstring>
+        <name>operator+=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise add-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="583" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="582" bodyend="586"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a5b918c0cb3d061b9ceb9968ad0bb0e5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator-=</definition>
+        <argsstring>(TinyVectorBase&lt; T1, SIZE, D1, D2 &gt; const &amp;r)</argsstring>
+        <name>operator-=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise subtract-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="591" bodyend="595"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a2b5024ff0b4ffe93430cf14e39584929" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class D1</type>
+          </param>
+          <param>
+            <type>class D2</type>
+          </param>
+        </templateparamlist>
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator/=</definition>
+        <argsstring>(TinyVectorBase&lt; T1, SIZE, D1, D2 &gt; const &amp;r)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase" kindref="compound">TinyVectorBase</ref>&lt; T1, SIZE, D1, D2 &gt; const &amp;</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise divide-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="610" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="609" bodyend="613"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a050b22df740bf19289a2ef06d33fdab1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DERIVED &amp;</type>
+        <definition>DERIVED&amp; operator/=</definition>
+        <argsstring>(double r)</argsstring>
+        <name>operator/=</name>
+        <param>
+          <type>double</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Component-wise scalar divide-assignment </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="626" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="625" bodyend="629"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1aa2454492558f0f1b146ed554017ca033" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a5cc9035ae36e93a575d4fe8e1dbfe55d" kindref="member">reference</ref></type>
+        <definition>reference operator[]</definition>
+        <argsstring>(difference_type i)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase_1ad319fc54a93a2c7058c70e40428ed2e2" kindref="member">difference_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access component by index. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="663" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="662" bodyend="666"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a3b782fefbfb41b6f90a060a292839975" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a4bc49d740bad1cb75776bcfac2c40f26" kindref="member">const_reference</ref></type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(difference_type i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVectorBase_1ad319fc54a93a2c7058c70e40428ed2e2" kindref="member">difference_type</ref></type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get component by index. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="670" bodyend="674"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1a503ab01f6c0142145d3434f6924714e7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1ada51e68d31936547d3729c82daf6b7c6" kindref="member">size_type</ref></type>
+        <definition>size_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Size of <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> vector always equals the template parameter SIZE. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="693" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="693" bodyend="693"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1TinyVectorBase_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" kindref="member">SquaredNormType</ref></type>
+        <definition>SquaredNormType squaredMagnitude</definition>
+        <argsstring>() const </argsstring>
+        <name>squaredMagnitude</name>
+        <reimplementedby refid="classvigra_1_1RGBValue_1ad3541cb08b6fe60edd5c2532f5c167c8">squaredMagnitude</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate squared magnitude. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="642" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="641" bodyend="644"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Base class for fixed size vectors. </para>    </briefdescription>
+    <detaileddescription>
+<para>This class contains functionality shared by <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref> and <ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref>, and enables these classes to be freely mixed within expressions. It is typically not used directly.</para><para><bold>#include</bold> &lt;<ref refid="tinyvector_8hxx_source" kindref="compound">vigra/tinyvector.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" line="497" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/tinyvector.hxx" bodystart="496" bodyend="702"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1TinyVectorBase_1ad69bd11391be1a1dba5c8202259664f8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa4b02d4f1a8500fb07a551069060709f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>begin</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a8d3921909325ec56e10da00c0d6b1f08" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>const_iterator</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ab652b7cfcfeac13226e0ee07931da4d4" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a4bc49d740bad1cb75776bcfac2c40f26" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a36e4d11a00a3572c87bf7e913e9b5ca1" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a794bbc6c3888bcfe88fb961f527c3563" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>data</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a64ea5854d043d6a5ae6987e997ee39fb" prot="protected" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>data_</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad319fc54a93a2c7058c70e40428ed2e2" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1acad38d52497a975bfb6f2f6acd76631f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>end</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a350132543d80a1c1e5be844e6d2878ea" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>end</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5cdf4fd70a8962218c77deb30edce0b5" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad8e08b8eaa8d5765d11de7344a018613" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>init</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a4b0424da8c99197075d119ba0959bf1e" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ac6101e8dbe09a492f583e6ce7134b709" prot="protected" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>Loop</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa9f35e702c4ae0fb038461f6af25fc9f" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>magnitude</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a0626973e733c59d2dcf29679b6542db3" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>maximum</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ac5b93cc371537a7772a60cc0d3be43f8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>minimum</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a3aaf2f56b74ba07badf36ce76715e460" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>NormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa88a2ee7578dac50baf55ab6ec2532e5" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a79a2f305963885081f260ab8354bb3e2" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator*=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a9bde39ba39082812af1ec50d7dbe8436" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator+=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5b918c0cb3d061b9ceb9968ad0bb0e5c" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator-=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a2b5024ff0b4ffe93430cf14e39584929" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a050b22df740bf19289a2ef06d33fdab1" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator/=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a6c6f9e93da20749019a4641bd3e608d5" prot="private" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator=</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1aa2454492558f0f1b146ed554017ca033" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a3b782fefbfb41b6f90a060a292839975" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1abf6e21ead96acfe1ce6770f74a6685fc" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a5cc9035ae36e93a575d4fe8e1dbfe55d" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>reference</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1add69d58b47c0e2e51b5c1cdad6d51fd8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>scalar_multiplier</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>size</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ada51e68d31936547d3729c82daf6b7c6" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad3541cb08b6fe60edd5c2532f5c167c8" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>squaredMagnitude</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a687349cd43a37b847414648089fd0a6a" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>SquaredNormType</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a84627a72058502328269676b81780f89ad4a8f9f8c603d29a20ca6f9c056dd4da" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>static_size</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1afc144041a7df37de9114dbc42f08d7ab" prot="private" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>TinyVectorBase</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1a355d5e31ff587c46c78e44be3db7da83" prot="protected" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>TinyVectorBase</name></member>
+      <member refid="classvigra_1_1TinyVectorBase_1ad81add7f462b51d2bedbccd43c12e32a" prot="public" virt="non-virtual"><scope>vigra::TinyVectorBase</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

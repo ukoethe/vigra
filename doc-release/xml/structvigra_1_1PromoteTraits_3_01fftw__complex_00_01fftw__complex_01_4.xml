@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01fftw__complex_00_01fftw__complex_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; fftw_complex, fftw_complex &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01fftw__complex_00_01fftw__complex_01_4_1a757e655f3a669a953f09a922614d33a7" prot="public" static="no">
+        <type>fftw_complex</type>
+        <definition>typedef fftw_complex Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="576" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="576" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fftw3.hxx" bodystart="574" bodyend="577"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01fftw__complex_00_01fftw__complex_01_4_1a757e655f3a669a953f09a922614d33a7" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; fftw_complex, fftw_complex &gt;</scope><name>Promote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

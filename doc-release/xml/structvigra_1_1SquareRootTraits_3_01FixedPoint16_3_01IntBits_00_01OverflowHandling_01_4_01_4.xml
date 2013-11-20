@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::SquareRootTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>int</type>
+        <declname>IntBits</declname>
+        <defname>IntBits</defname>
+      </param>
+      <param>
+        <type>FPOverflowHandling</type>
+        <declname>OverflowHandling</declname>
+        <defname>OverflowHandling</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1aa457eac61bf0460231d30eec5bed16d7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">Type</ref></type>
+        <definition>typedef Type SquareRootArgument</definition>
+        <argsstring></argsstring>
+        <name>SquareRootArgument</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="931" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="931" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1a5e0871e7b2b86311323b9f244cc8c41c" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">FixedPoint16</ref>&lt;(IntBits+1)/2, OverflowHandling &gt;</type>
+        <definition>typedef FixedPoint16&lt;(IntBits + 1) / 2, OverflowHandling&gt; SquareRootResult</definition>
+        <argsstring></argsstring>
+        <name>SquareRootResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="930" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="930" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1a2d3d46dd85531f66be27b75bad1ee3f7" prot="public" static="no">
+        <type><ref refid="classvigra_1_1FixedPoint16" kindref="compound">FixedPoint16</ref>&lt; IntBits, OverflowHandling &gt;</type>
+        <definition>typedef FixedPoint16&lt;IntBits, OverflowHandling&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="929" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="929" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" line="928" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/fixedpoint.hxx" bodystart="927" bodyend="932"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1aa457eac61bf0460231d30eec5bed16d7" prot="public" virt="non-virtual"><scope>vigra::SquareRootTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</scope><name>SquareRootArgument</name></member>
+      <member refid="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1a5e0871e7b2b86311323b9f244cc8c41c" prot="public" virt="non-virtual"><scope>vigra::SquareRootTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</scope><name>SquareRootResult</name></member>
+      <member refid="structvigra_1_1SquareRootTraits_3_01FixedPoint16_3_01IntBits_00_01OverflowHandling_01_4_01_4_1a2d3d46dd85531f66be27b75bad1ee3f7" prot="public" virt="non-virtual"><scope>vigra::SquareRootTraits&lt; FixedPoint16&lt; IntBits, OverflowHandling &gt; &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

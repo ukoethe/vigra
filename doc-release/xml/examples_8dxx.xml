@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="examples_8dxx" kind="file">
+    <compoundname>examples.dxx</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**<sp/>\page<sp/>Examples<sp/>Examples</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/><sp/><sp/><sp/>Demonstration<sp/>programs<sp/>for<sp/>VIGRA&apos;s<sp/>usage.</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/><sp/><sp/>Click<sp/>on<sp/>the<sp/>hyperlinks<sp/>to<sp/>view<sp/>the<sp/>commented<sp/>source<sp/>code<sp/>for<sp/>the<sp/>demos.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/><sp/><sp/>Most<sp/>examples<sp/>can<sp/>be<sp/>applied<sp/>to<sp/>both<sp/>gray-scale<sp/>and<sp/>RGB<sp/>images.<sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/><sp/><sp/>See<sp/>&lt;a<sp/>href=&quot;Installation.html&quot;&gt;Installation&lt;/a&gt;<sp/>for<sp/>instructions<sp/>on<sp/>how<sp/>these</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/><sp/><sp/>programs<sp/>can<sp/>be<sp/>compiled.<sp/>For<sp/>convenience,<sp/>the<sp/>directory<sp/>contains<sp/>the<sp/>test<sp/>images<sp/></highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;lenna_gray.gif&quot;&gt;lenna_gray.gif&lt;/a&gt;<sp/>and<sp/></highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;lenna_color.gif&quot;&gt;lenna_color.gif&lt;/a&gt;.</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;ul&gt;</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Convert<sp/>an<sp/>image<sp/>file<sp/>into<sp/>another<sp/>file<sp/>type:</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;convert.cxx-example.html&quot;&gt;convert.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;convert<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Read<sp/>an<sp/>image<sp/>file<sp/>and<sp/>write<sp/>out<sp/>a<sp/>subimage:</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;subimage.cxx-example.html&quot;&gt;subimage.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;subimage<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Invert<sp/>an<sp/>image<sp/>file<sp/>(create<sp/>a<sp/>negative)<sp/>using<sp/>the<sp/>function<sp/></highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>transformImage():</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;invert.cxx-example.html&quot;&gt;invert.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;invert<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Invert<sp/>an<sp/>image<sp/>file<sp/>(create<sp/>a<sp/>negative)<sp/>by<sp/>coding<sp/>the<sp/>loop</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/>explicitly:</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;invert__explicitly.cxx-example.html&quot;&gt;invert_explicitly.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;invert_explicitly<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Resize<sp/>an<sp/>image<sp/>using<sp/>\ref<sp/>resizeImageSplineInterpolation():</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;resize.cxx-example.html&quot;&gt;resize.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;resize<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Smooth<sp/>an<sp/>image<sp/>using<sp/>\ref<sp/>RecursiveConvolution<sp/>functions:</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;smooth.cxx-example.html&quot;&gt;smooth.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;smooth<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Find<sp/>the<sp/>gray<sp/>value<sp/>profile<sp/>along<sp/>the<sp/>image<sp/>diagonal<sp/></highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/>by<sp/>means<sp/>of<sp/>a<sp/>\ref<sp/>vigra::LineIterator<sp/>:</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;profile.cxx-example.html&quot;&gt;profile.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;profile<sp/>infile&lt;/TT&gt;,<sp/>generates<sp/>&lt;TT&gt;profile.gif&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Create<sp/>series<sp/>of<sp/>slices<sp/>through<sp/>different<sp/>color<sp/>spaces.:</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;palette.cxx-example.html&quot;&gt;palette.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;palette<sp/>lab&lt;/TT&gt;,<sp/>generates<sp/>&lt;TT&gt;lab_*.gif&lt;/TT&gt;<sp/>(44<sp/>images)</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"></highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Reduce<sp/>image<sp/>size<sp/>by<sp/>mean<sp/>of<sp/>a<sp/>Gaussian<sp/>pyramid:</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;pyramid.cxx-example.html&quot;&gt;pyramid.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;pyramid<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="53"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Find<sp/>edges<sp/>by<sp/>means<sp/>of<sp/>a<sp/></highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>differenceOfExponentialEdgeImage():</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;edge.cxx-example.html&quot;&gt;edge.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;edge<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Segment<sp/>image<sp/>by<sp/>means<sp/>of<sp/>the<sp/>watershed<sp/>algorithm,<sp/>using<sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>seededRegionGrowing():</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;watershed.cxx-example.html&quot;&gt;watershed.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;watershed<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Generate<sp/>a<sp/>Voronoi<sp/>diagram,<sp/>using<sp/>\ref<sp/>distanceTransform()<sp/>and</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>seededRegionGrowing():</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;voronoi.cxx-example.html&quot;&gt;voronoi.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;voronoi&lt;/TT&gt;,<sp/>generates:<sp/>&lt;TT&gt;distances.gif&lt;/TT&gt;<sp/>(Euclidean<sp/>distance<sp/>transform)<sp/>and<sp/>&lt;TT&gt;voronoi.gif&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/><sp/>(Voronoi<sp/>diagram)</highlight></codeline>
+<codeline lineno="67"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="68"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Measure<sp/>boundary<sp/>and<sp/>corner<sp/>strengths<sp/>with<sp/>the<sp/></highlight></codeline>
+<codeline lineno="69"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>boundaryTensor():</highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;boundarytensor.cxx-example.html&quot;&gt;boundarytensor.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;boundarytensor<sp/>infile&lt;/TT&gt;,<sp/>creates<sp/>&lt;tt&gt;boundarystrength.tif&lt;/tt&gt;<sp/>and<sp/>&lt;tt&gt;cornerstrength.tif&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;li&gt;<sp/>Total<sp/>Variation<sp/>(TV)<sp/>Regularization</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;total__variation.cxx-example.html&quot;&gt;total_variation.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;total_variation<sp/>parameterfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/>(cf.<sp/>example<sp/>parameter<sp/>files<sp/>*.par<sp/>for<sp/>standard<sp/>TV<sp/>regularization,<sp/>anisotropic<sp/>and<sp/>second<sp/>order<sp/>TV)</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;/ul&gt;</highlight></codeline>
+<codeline lineno="79"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="81"><highlight class="comment">/**<sp/>\example<sp/>convert.cxx</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/>Convert<sp/>an<sp/>image<sp/>file<sp/>into<sp/>another<sp/>file<sp/>type</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;convert<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="85"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="87"><highlight class="comment">/**<sp/>\example<sp/>subimage.cxx</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/>Read<sp/>an<sp/>image<sp/>file<sp/>and<sp/>write<sp/>out<sp/>a<sp/>subimage</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;subimage<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="91"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="93"><highlight class="comment">/**<sp/>\example<sp/>invert.cxx</highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/>Invert<sp/>an<sp/>image<sp/>file<sp/>(create<sp/>a<sp/>negative)<sp/>using<sp/>the<sp/>function<sp/></highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>transformImage()</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;invert<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="98"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment">/**<sp/>\example<sp/>invert_explicitly.cxx</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/><sp/>Invert<sp/>an<sp/>image<sp/>file<sp/>(create<sp/>a<sp/>negative)<sp/>by<sp/>coding<sp/>the<sp/>loop</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/><sp/>explicitly</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;invert_explicitly<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="105"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="107"><highlight class="comment">/**<sp/>\example<sp/>resize.cxx</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/>Resize<sp/>an<sp/>image<sp/>using<sp/>\ref<sp/>resizeImageSplineInterpolation()&lt;br&gt;</highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;resize<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="110"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="112"><highlight class="comment">/**<sp/>\example<sp/>smooth.cxx</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/>Smooth<sp/>an<sp/>image<sp/>using<sp/>\ref<sp/>RecursiveConvolution<sp/>functions:</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;smooth.cxx-example.html&quot;&gt;smooth.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;smooth<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="116"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="118"><highlight class="comment">/**<sp/>\example<sp/>profile.cxx</highlight></codeline>
+<codeline lineno="119"><highlight class="comment"><sp/><sp/><sp/><sp/>Find<sp/>the<sp/>gray<sp/>value<sp/>profile<sp/>along<sp/>the<sp/>image<sp/>diagonal<sp/></highlight></codeline>
+<codeline lineno="120"><highlight class="comment"><sp/><sp/><sp/><sp/>by<sp/>means<sp/>of<sp/>a<sp/>\ref<sp/>vigra::LineIterator&lt;br&gt;</highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;profile<sp/>infile&lt;/TT&gt;,<sp/>generates<sp/>&lt;TT&gt;profile.gif&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="122"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="124"><highlight class="comment">/**<sp/>\example<sp/>palette.cxx</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/>Create<sp/>series<sp/>of<sp/>slices<sp/>through<sp/>different<sp/>color<sp/>spaces.</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;palette<sp/>luv&lt;/TT&gt;,<sp/>generates<sp/>&lt;TT&gt;luv_*.gif&lt;/TT&gt;<sp/>(44<sp/>images)</highlight></codeline>
+<codeline lineno="127"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="129"><highlight class="comment">/**<sp/>\example<sp/>pyramid.cxx</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/>Reduce<sp/>image<sp/>size<sp/>by<sp/>mean<sp/>of<sp/>a<sp/>Gaussian<sp/>pyramid&lt;br&gt;</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;pyramid<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="132"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="134"><highlight class="comment">/**<sp/>\example<sp/>edge.cxx</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/>Find<sp/>edges<sp/>by<sp/>means<sp/>of<sp/>a<sp/></highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>differenceOfExponentialEdgeImage()&lt;br&gt;</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;edge<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="138"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="140"><highlight class="comment">/**<sp/>\example<sp/>watershed.cxx</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/>Segment<sp/>image<sp/>by<sp/>means<sp/>of<sp/>the<sp/>watershed<sp/>algorithm,<sp/>using<sp/></highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>seededRegionGrowing()&lt;br&gt;</highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;watershed<sp/>infile<sp/>outfile&lt;/TT&gt;</highlight></codeline>
+<codeline lineno="144"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="146"><highlight class="comment">/**<sp/>\example<sp/>voronoi.cxx</highlight></codeline>
+<codeline lineno="147"><highlight class="comment"><sp/><sp/><sp/><sp/>Generate<sp/>a<sp/>Voronoi<sp/>diagram,<sp/>using<sp/>\ref<sp/>distanceTransform()<sp/>and</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>seededRegionGrowing()&lt;br&gt;</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;voronoi&lt;/TT&gt;,<sp/>generates:<sp/>&lt;TT&gt;distances.gif&lt;/TT&gt;<sp/>(Euclidean<sp/>distance<sp/>transform)<sp/>and<sp/>&lt;TT&gt;voronoi.gif&lt;/TT&gt;<sp/>(Voronoi<sp/>diagram)</highlight></codeline>
+<codeline lineno="150"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="152"><highlight class="comment">/**<sp/>\example<sp/>boundarytensor.cxx<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="153"><highlight class="comment"><sp/><sp/><sp/><sp/>Measure<sp/>boundary<sp/>and<sp/>corner<sp/>strengths<sp/>with<sp/>the<sp/></highlight></codeline>
+<codeline lineno="154"><highlight class="comment"><sp/><sp/><sp/><sp/>\ref<sp/>boundaryTensor():</highlight></codeline>
+<codeline lineno="155"><highlight class="comment"><sp/><sp/><sp/><sp/>&lt;a<sp/>href=&quot;boundarytensor.cxx-example.html&quot;&gt;boundarytensor.cxx&lt;/a&gt;<sp/>&lt;br&gt;</highlight></codeline>
+<codeline lineno="156"><highlight class="comment"><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;boundarytensor<sp/>infile&lt;/TT&gt;,<sp/>creates<sp/>&lt;tt&gt;boundarystrength.tif&lt;/tt&gt;<sp/>and<sp/>&lt;tt&gt;cornerstrength.tif&lt;/tt&gt;</highlight></codeline>
+<codeline lineno="157"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="159"><highlight class="comment">/**<sp/>\example<sp/>total_variation.cxx</highlight></codeline>
+<codeline lineno="160"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Smooth<sp/>an<sp/>image<sp/>with<sp/>Total<sp/>Variation<sp/>(TV)<sp/>regularization<sp/>(standard<sp/>ROF<sp/>model,<sp/>anisotropic,<sp/>second<sp/>order)&lt;br&gt;</highlight></codeline>
+<codeline lineno="161"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Usage:<sp/>&lt;TT&gt;example_total_variation&lt;/TT&gt;<sp/>reads<sp/>a<sp/>given<sp/>parameter<sp/>file<sp/>(see<sp/>tv.par,<sp/>aniso_tv.par,<sp/>secondo_oder_tv.par<sp/></highlight></codeline>
+<codeline lineno="162"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>in<sp/>the<sp/>examples<sp/>subfolder)<sp/>and<sp/>performes<sp/>a<sp/>smoothing<sp/>with<sp/>TV<sp/>regularization<sp/>with<sp/>the<sp/>parameters<sp/>given<sp/>in<sp/>this<sp/>file.</highlight></codeline>
+<codeline lineno="163"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/docsrc/examples.dxx"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,996 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1InputArray" kind="class" prot="public">
+    <compoundname>vigra::matlab::InputArray</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1a22f97bc8b9e266eff61cab07ef38eabd" prot="public" static="no">
+        <type>value_type const *</type>
+        <definition>typedef value_type const* const_pointer</definition>
+        <argsstring></argsstring>
+        <name>const_pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="653" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="653" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1a6e5dd840ebfcc997e984193eab900a21" prot="public" static="no">
+        <type>value_type const &amp;</type>
+        <definition>typedef value_type const&amp; const_reference</definition>
+        <argsstring></argsstring>
+        <name>const_reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="651" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="651" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1ae1e359864f6fce787ce08ee3d43ebf34" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int difference_type</definition>
+        <argsstring></argsstring>
+        <name>difference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="655" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="655" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1ad25b518036b886d8f35a3c059301d007" prot="public" static="no">
+        <type>value_type *</type>
+        <definition>typedef value_type* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="652" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="652" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1abe8933d436779a43cb5c1896ff5f2918" prot="public" static="no">
+        <type>value_type &amp;</type>
+        <definition>typedef value_type&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="650" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="650" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1aafd1e3ba4133ad908bdbc99c4b356e5f" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int size_type</definition>
+        <argsstring></argsstring>
+        <name>size_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="654" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="654" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1matlab_1_1InputArray_1a96de96b9a9c28799f4c562346d018da5" prot="public" static="no">
+        <type>const mxArray *</type>
+        <definition>typedef const mxArray* value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="649" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="649" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1InputArray_1a5cace4e1b344512eb44a3d548ad4c6e7" prot="private" static="no" mutable="no">
+        <type>const mxArray **</type>
+        <definition>const mxArray** data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="628" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="628" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1InputArray_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="627" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="627" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1InputArray_1a5fa28953c1a014c4241c61e3a0a2dd61" prot="public" static="no" mutable="no">
+        <type>ConstStructArray</type>
+        <definition>ConstStructArray options_</definition>
+        <argsstring></argsstring>
+        <name>options_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="646" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="646" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a8ecf00ff497839cfccf7f1c45a0be440" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string createErrMsg</definition>
+        <argsstring>(std::string name)</argsstring>
+        <name>createErrMsg</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="631" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="630" bodyend="635"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a786511e5c2dcc826394e4da05658bd10" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string createErrMsg</definition>
+        <argsstring>(int pos)</argsstring>
+        <name>createErrMsg</name>
+        <param>
+          <type>int</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="637" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="636" bodyend="642"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a8176df290d8840a461323861c7ebad9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T errorOrDefault</definition>
+        <argsstring>(detail::DefaultImpl&lt; U &gt; const &amp;o, Place posOrName)</argsstring>
+        <name>errorOrDefault</name>
+        <param>
+          <type>detail::DefaultImpl&lt; U &gt; const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="728" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="727" bodyend="730"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a35ba473f277e47c6c5e3af1de08987fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T errorOrDefault</definition>
+        <argsstring>(detail::OptionalImpl, Place posOrName)</argsstring>
+        <name>errorOrDefault</name>
+        <param>
+          <type>detail::OptionalImpl</type>
+        </param>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="734" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="733" bodyend="736"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a0545434a660db7f65b4c3f2f84e653be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T errorOrDefault</definition>
+        <argsstring>(detail::Required r, Place posOrName)</argsstring>
+        <name>errorOrDefault</name>
+        <param>
+          <type>detail::Required</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="740" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="739" bodyend="744"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ac113c4f803ce9a56b2382160d4057817" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool getBool</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getBool</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="848" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="847" bodyend="850"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a424d55cde5c79bc9f45b8499aa4ba06b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>ConstCellArray</type>
+        <definition>ConstCellArray getCellArray</definition>
+        <argsstring>(int posOrName, ReqType req)</argsstring>
+        <name>getCellArray</name>
+        <param>
+          <type>int</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="930" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="929" bodyend="941"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ae5d204061560e6698700bcd0016a3308" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>ConstCellArray</type>
+        <definition>ConstCellArray getCellArray</definition>
+        <argsstring>(std::string posOrName, ReqType req)</argsstring>
+        <name>getCellArray</name>
+        <param>
+          <type>std::string</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="945" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="944" bodyend="948"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a9037fb89935db4024418d3f866b39438" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int getDimOfInput</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getDimOfInput</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="916" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="915" bodyend="926"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1af124a5956148dec19a10820d54cc8e11" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int getEnum</definition>
+        <argsstring>(Place posOrName, ReqType req, std::map&lt; std::string, int &gt; const &amp;converter)</argsstring>
+        <name>getEnum</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <param>
+          <type>std::map&lt; std::string, int &gt; const &amp;</type>
+          <declname>converter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="749" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="748" bodyend="764"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ab4eaf44c5825dabb9610f1d002b44c2f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1BasicImageView" kindref="compound">BasicImageView</ref>&lt; T &gt;</type>
+        <definition>BasicImageView&lt;T&gt; getImage</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getImage</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="870" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="869" bodyend="881"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a4f6307bba30e0f7ea571db46b63b0614" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T &gt;</type>
+        <definition>MultiArrayView&lt;N,T&gt; getMultiArray</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getMultiArray</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="855" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="854" bodyend="866"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a1c0abf774be61c1f0294866e19fef3e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T getScalar</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getScalar</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="785" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="784" bodyend="795"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ab4fa89472cd8f0e37af2ed9544f4c930" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+          <param>
+            <type>class minClass</type>
+          </param>
+          <param>
+            <type>class maxClass</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T getScalarMinMax</definition>
+        <argsstring>(Place posOrName, ReqType req, minClass min_, maxClass max_)</argsstring>
+        <name>getScalarMinMax</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <param>
+          <type>minClass</type>
+          <declname>min_</declname>
+        </param>
+        <param>
+          <type>maxClass</type>
+          <declname>max_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="800" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="799" bodyend="805"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a752e5a916aa90599b804a0047218b1eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+          <param>
+            <type>class iteratorType</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T getScalarVals</definition>
+        <argsstring>(Place posOrName, ReqType req, iteratorType begin_, iteratorType end_)</argsstring>
+        <name>getScalarVals</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>begin_</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>end_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="809" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="808" bodyend="816"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a4fcd48328f59ab889d83f5aea830c0ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+          <param>
+            <type>class iteratorType</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T getScalarVals2D3D</definition>
+        <argsstring>(Place posOrName, ReqType req, iteratorType begin2D_, iteratorType end2D_, iteratorType begin3D_, iteratorType end3D_, int dimVar)</argsstring>
+        <name>getScalarVals2D3D</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>begin2D_</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>end2D_</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>begin3D_</declname>
+        </param>
+        <param>
+          <type>iteratorType</type>
+          <declname>end3D_</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dimVar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="824" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="821" bodyend="844"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ace63a0a93af189d368b895f07c96e3fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>sze</declname>
+            <defname>sze</defname>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref>&lt; <ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref>, sze &gt;</type>
+        <definition>TinyVectorView&lt;MultiArrayIndex, sze&gt; getShape</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getShape</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="900" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="899" bodyend="911"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a83c190a96fb8aed17368d2029e80f0b1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type>std::string</type>
+        <definition>std::string getString</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getString</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="770" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="769" bodyend="780"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a367113ca776935f5bd4f93449e33bf33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>unsigned int</type>
+            <declname>sze</declname>
+            <defname>sze</defname>
+          </param>
+          <param>
+            <type>class Place</type>
+          </param>
+          <param>
+            <type>class ReqType</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1TinyVectorView" kindref="compound">TinyVectorView</ref>&lt; T, sze &gt;</type>
+        <definition>TinyVectorView&lt; T, sze&gt; getTinyVector</definition>
+        <argsstring>(Place posOrName, ReqType req)</argsstring>
+        <name>getTinyVector</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <param>
+          <type>ReqType</type>
+          <declname>req</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="885" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="884" bodyend="896"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a7c69afc1efd4ddf19b792d5b3ced9b96" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasData</definition>
+        <argsstring>(difference_type i) const </argsstring>
+        <name>hasData</name>
+        <param>
+          <type>difference_type</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="710" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="709" bodyend="712"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a3886a5c14af79dcb20b10e079bc31ec0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasData</definition>
+        <argsstring>(std::string name) const </argsstring>
+        <name>hasData</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="715" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="714" bodyend="717"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1ae6b9566451341147d4065021e46e67d4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>InputArray</definition>
+        <argsstring>(size_type size, pointer data)</argsstring>
+        <name>InputArray</name>
+        <param>
+          <type>size_type</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>pointer</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="664" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="658" bodyend="664"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1af529a2f00ea8431a6a169cefef91a2de" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isEmpty</definition>
+        <argsstring>(difference_type i) const </argsstring>
+        <name>isEmpty</name>
+        <param>
+          <type>difference_type</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="700" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="699" bodyend="702"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1aedbfe10b0151ebf0f9943558779ad0a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isEmpty</definition>
+        <argsstring>(std::string name) const </argsstring>
+        <name>isEmpty</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="705" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="704" bodyend="707"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1afcfb42e559bbc308a8e36087806f7a7f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isValid</definition>
+        <argsstring>(difference_type i) const </argsstring>
+        <name>isValid</name>
+        <param>
+          <type>difference_type</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="690" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="689" bodyend="692"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a70b2896edbc4eb71dca9fe046da32c65" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isValid</definition>
+        <argsstring>(std::string name) const </argsstring>
+        <name>isValid</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="695" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="694" bodyend="697"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a3b782fefbfb41b6f90a060a292839975" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const_reference</type>
+        <definition>const_reference operator[]</definition>
+        <argsstring>(difference_type i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>difference_type</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="668" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="667" bodyend="672"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1af4a2ccc9525d2b2bef28715757394938" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type</type>
+        <definition>value_type operator[]</definition>
+        <argsstring>(std::string name) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="675" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="674" bodyend="680"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a503ab01f6c0142145d3434f6924714e7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_type</type>
+        <definition>size_type size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="685" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="684" bodyend="687"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1InputArray_1a325ffba54eddf76a0a1ccec7cb7b7d4f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Place</type>
+          </param>
+        </templateparamlist>
+        <type>mxClassID</type>
+        <definition>mxClassID typeOf</definition>
+        <argsstring>(Place posOrName)</argsstring>
+        <name>typeOf</name>
+        <param>
+          <type>Place</type>
+          <declname>posOrName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="721" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="720" bodyend="723"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="626" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="625" bodyend="950"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a22f97bc8b9e266eff61cab07ef38eabd" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>const_pointer</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a6e5dd840ebfcc997e984193eab900a21" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>const_reference</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a8ecf00ff497839cfccf7f1c45a0be440" prot="private" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>createErrMsg</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a786511e5c2dcc826394e4da05658bd10" prot="private" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>createErrMsg</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a5cace4e1b344512eb44a3d548ad4c6e7" prot="private" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>data_</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ae1e359864f6fce787ce08ee3d43ebf34" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>difference_type</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a8176df290d8840a461323861c7ebad9f" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>errorOrDefault</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a35ba473f277e47c6c5e3af1de08987fe" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>errorOrDefault</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a0545434a660db7f65b4c3f2f84e653be" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>errorOrDefault</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ac113c4f803ce9a56b2382160d4057817" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getBool</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a424d55cde5c79bc9f45b8499aa4ba06b" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getCellArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ae5d204061560e6698700bcd0016a3308" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getCellArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a9037fb89935db4024418d3f866b39438" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getDimOfInput</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1af124a5956148dec19a10820d54cc8e11" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getEnum</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ab4eaf44c5825dabb9610f1d002b44c2f" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getImage</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a4f6307bba30e0f7ea571db46b63b0614" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getMultiArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a1c0abf774be61c1f0294866e19fef3e7" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getScalar</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ab4fa89472cd8f0e37af2ed9544f4c930" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getScalarMinMax</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a752e5a916aa90599b804a0047218b1eb" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getScalarVals</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a4fcd48328f59ab889d83f5aea830c0ee" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getScalarVals2D3D</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ace63a0a93af189d368b895f07c96e3fb" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getShape</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a83c190a96fb8aed17368d2029e80f0b1" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getString</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a367113ca776935f5bd4f93449e33bf33" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>getTinyVector</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a7c69afc1efd4ddf19b792d5b3ced9b96" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>hasData</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a3886a5c14af79dcb20b10e079bc31ec0" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>hasData</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ae6b9566451341147d4065021e46e67d4" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>InputArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1af529a2f00ea8431a6a169cefef91a2de" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>isEmpty</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1aedbfe10b0151ebf0f9943558779ad0a7" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>isEmpty</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1afcfb42e559bbc308a8e36087806f7a7f" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>isValid</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a70b2896edbc4eb71dca9fe046da32c65" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>isValid</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a3b782fefbfb41b6f90a060a292839975" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1af4a2ccc9525d2b2bef28715757394938" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a5fa28953c1a014c4241c61e3a0a2dd61" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>options_</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1ad25b518036b886d8f35a3c059301d007" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1abe8933d436779a43cb5c1896ff5f2918" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>reference</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a503ab01f6c0142145d3434f6924714e7" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>size</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="private" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>size_</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1aafd1e3ba4133ad908bdbc99c4b356e5f" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>size_type</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a325ffba54eddf76a0a1ccec7cb7b7d4f" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>typeOf</name></member>
+      <member refid="classvigra_1_1matlab_1_1InputArray_1a96de96b9a9c28799f4c562346d018da5" prot="public" virt="non-virtual"><scope>vigra::matlab::InputArray</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

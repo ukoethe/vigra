@@ -1,0 +1,581 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MultiArrayMorphology" kind="group">
+    <compoundname>MultiArrayMorphology</compoundname>
+    <title>Morphological operators for multi-dimensional arrays.</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga601e8a57c988253d39576c2a95e38ee5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryDilation</definition>
+        <argsstring>(...)</argsstring>
+        <name>multiBinaryDilation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Binary dilation on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function applies a flat circular dilation operator with a given radius. The operation is isotropic. The input is interpreted as a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. In the output, foreground is always represented by ones (i.e. NumericTrais&lt;typename DestAccessor::value_type&gt;::one()).</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A temporary internal array is only allocated if working on the destination array directly would cause overflow errors (that is if <computeroutput> <ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">NumericTraits&lt;typename DestAccessor::value_type&gt;::max()</ref> &lt; squaredNorm(shape)</computeroutput>, i.e. the squared length of the image diagonal doesn&apos;t fit into the destination type).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1ga601e8a57c988253d39576c2a95e38ee5" kindref="member" tooltip="Binary dilation on multi-dimensional arrays.">multiBinaryDilation</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1ga601e8a57c988253d39576c2a95e38ee5" kindref="member" tooltip="Binary dilation on multi-dimensional arrays.">multiBinaryDilation</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__morphology_8hxx_source" kindref="compound">vigra/multi_morphology.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>isotropic<sp/>binary<sp/>erosion</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">multiBinaryDilation(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>3);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__Morphology_1gaa6b2b4e1d0fab80e25aa7bb349ac3da3" kindref="member">vigra::discDilation()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="306"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga6afd96ef75c88398926b4bf22f3ea0ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryDilation</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, double radius)</argsstring>
+        <name>multiBinaryDilation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="313" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="311" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga5c8fb12706ed1fcd076439c3f0c365bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryDilation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double radius)</argsstring>
+        <name>multiBinaryDilation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="336" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="333" bodyend="339"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1gab108c6fbf1d13b3f37a43527529c196b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryErosion</definition>
+        <argsstring>(...)</argsstring>
+        <name>multiBinaryErosion</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Binary erosion on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function applies a flat circular erosion operator with a given radius. The operation is isotropic. The input is interpreted as a binary multi-dimensional array where non-zero pixels represent foreground and zero pixels represent background. In the output, foreground is always represented by ones (i.e. NumericTrais&lt;typename DestAccessor::value_type&gt;::one()).</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A temporary internal array is only allocated if working on the destination array directly would cause overflow errors (that is if <computeroutput> <ref refid="group__TinyVectorOperators_1ga5bc03ab0e1ce5b0a6560bcb19d6b3a66" kindref="member">NumericTraits&lt;typename DestAccessor::value_type&gt;::max()</ref> &lt; squaredNorm(shape)</computeroutput>, i.e. the squared length of the image diagonal doesn&apos;t fit into the destination type).</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1gab108c6fbf1d13b3f37a43527529c196b" kindref="member" tooltip="Binary erosion on multi-dimensional arrays.">multiBinaryErosion</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1gab108c6fbf1d13b3f37a43527529c196b" kindref="member" tooltip="Binary erosion on multi-dimensional arrays.">multiBinaryErosion</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__morphology_8hxx_source" kindref="compound">vigra/multi_morphology.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>isotropic<sp/>binary<sp/>erosion</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">multiBinaryErosion(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>3);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" kindref="member">vigra::discErosion()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="207"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga73c6b50984fa74bac56aa1b5271d7088" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryErosion</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, double radius)</argsstring>
+        <name>multiBinaryErosion</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="214" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="212" bodyend="229"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1gacf9664d88929ba91f515685b74fe312b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiBinaryErosion</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double radius)</argsstring>
+        <name>multiBinaryErosion</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radius</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="234" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga1075198bb23aafabb017b2eae2ed5670" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleDilation</definition>
+        <argsstring>(...)</argsstring>
+        <name>multiGrayscaleDilation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Parabolic grayscale dilation on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function applies a parabolic dilation operator with a given spread (sigma) on a grayscale array. The operation is isotropic. The input is a grayscale multi-dimensional array.</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A full-sized internal array is only allocated if working on the destination array directly would cause overflow errors (i.e. if <computeroutput> typeid(typename DestAccessor::value_type) &lt; N * M*M</computeroutput>, where M is the size of the largest dimension of the array.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1ga1075198bb23aafabb017b2eae2ed5670" kindref="member" tooltip="Parabolic grayscale dilation on multi-dimensional arrays.">multiGrayscaleDilation</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1ga1075198bb23aafabb017b2eae2ed5670" kindref="member" tooltip="Parabolic grayscale dilation on multi-dimensional arrays.">multiGrayscaleDilation</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__morphology_8hxx_source" kindref="compound">vigra/multi_morphology.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>isotropic<sp/>grayscale<sp/>erosion</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">multiGrayscaleDilation(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>3.0);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" kindref="member">vigra::discErosion()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="520"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga8d98efbd952004642b245af7bb1cc580" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleDilation</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, double sigma)</argsstring>
+        <name>multiGrayscaleDilation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="526" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="524" bodyend="565"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga589708211b85a1d644e4b795dd38c452" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleDilation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma)</argsstring>
+        <name>multiGrayscaleDilation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="571" bodyend="577"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1gae4c9408742bbc670b23817d716279ab3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleErosion</definition>
+        <argsstring>(...)</argsstring>
+        <name>multiGrayscaleErosion</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Parabolic grayscale erosion on multi-dimensional arrays. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function applies a parabolic erosion operator with a given spread (sigma) on a grayscale array. The operation is isotropic. The input is a grayscale multi-dimensional array.</para><para>This function may work in-place, which means that <computeroutput>siter == diter</computeroutput> is allowed. A full-sized internal array is only allocated if working on the destination array directly would cause overflow errors (i.e. if <computeroutput> typeid(typename DestAccessor::value_type) &lt; N * M*M</computeroutput>, where M is the size of the largest dimension of the array.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1gae4c9408742bbc670b23817d716279ab3" kindref="member" tooltip="Parabolic grayscale erosion on multi-dimensional arrays.">multiGrayscaleErosion</ref>(SrcIterator<sp/>siter,<sp/>SrcShape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>shape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>diter,<sp/>DestAccessor<sp/>dest,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcShape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MultiArrayMorphology_1gae4c9408742bbc670b23817d716279ab3" kindref="member" tooltip="Parabolic grayscale erosion on multi-dimensional arrays.">multiGrayscaleErosion</ref>(triple&lt;SrcIterator,<sp/>SrcShape,<sp/>SrcAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>source,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>sigma);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="multi__morphology_8hxx_source" kindref="compound">vigra/multi_morphology.hxx</ref>&gt;</para><para><programlisting><codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;::size_type<sp/>shape(width,<sp/>height,<sp/>depth);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>source(shape);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>unsigned<sp/>char&gt;<sp/>dest(shape);</highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>isotropic<sp/>grayscale<sp/>erosion</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">multiGrayscaleErosion(srcMultiArrayRange(source),<sp/>destMultiArray(dest),<sp/>3.0);</highlight></codeline>
+</programlisting></para><para><simplesect kind="see"><para><ref refid="group__Morphology_1gaeaa85e48818f2026b07cbac969cc2390" kindref="member">vigra::discErosion()</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="401"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga9b1e5330bb259a9740be524d3d362bc9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleErosion</definition>
+        <argsstring>(SrcIterator s, SrcShape const &amp;shape, SrcAccessor src, DestIterator d, DestAccessor dest, double sigma)</argsstring>
+        <name>multiGrayscaleErosion</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>SrcShape const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="408" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="406" bodyend="447"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MultiArrayMorphology_1ga6e8ec69c4af89fadf5c12c7e5dd1ad1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcShape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::multiGrayscaleErosion</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;source, pair&lt; DestIterator, DestAccessor &gt; const &amp;dest, double sigma)</argsstring>
+        <name>multiGrayscaleErosion</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcShape, SrcAccessor &gt; const &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt; const &amp;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" line="455" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_morphology.hxx" bodystart="452" bodyend="458"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>These functions perform morphological operations on an arbitrary dimensional array that is specified by iterators (compatible to <ref refid="MultiIteratorPage" kindref="compound">Multi-dimensional Array Iterators</ref>) and shape objects. It can therefore be applied to a wide range of data structures (<ref refid="classvigra_1_1MultiArrayView" kindref="compound">vigra::MultiArrayView</ref>, <ref refid="classvigra_1_1MultiArray" kindref="compound">vigra::MultiArray</ref> etc.). </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

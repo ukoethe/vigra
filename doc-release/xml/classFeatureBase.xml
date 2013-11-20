@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classFeatureBase" kind="class" prot="public">
+    <compoundname>FeatureBase</compoundname>
+    <derivedcompoundref refid="classBindFeatureColumn" prot="public" virt="non-virtual">BindFeatureColumn</derivedcompoundref>
+    <derivedcompoundref refid="classCompositFeatures" prot="public" virt="non-virtual">CompositFeatures</derivedcompoundref>
+    <derivedcompoundref refid="classNeighborFeatures" prot="public" virt="non-virtual">NeighborFeatures&lt; N, T, C &gt;</derivedcompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classFeatureBase_1acdccd3d4f4f4cac87b8a16a625930aa8" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>double &amp;</type>
+        <definition>double&amp; operator()</definition>
+        <argsstring>(int i, int j)=0</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>j</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classFeatureBase_1a6a6a49d99461b1de37f7e636a38e29c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>MultiArrayShape&lt; 2 &gt;::type</type>
+        <definition>MultiArrayShape&lt;2&gt;::type shape</definition>
+        <argsstring>()=0</argsstring>
+        <name>shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="11"/>
+      </memberdef>
+      <memberdef kind="function" id="classFeatureBase_1a60ba1f15bb1a37be91ca3cc8fbe4c0c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int shape</definition>
+        <argsstring>(int index)</argsstring>
+        <name>shape</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="13" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="12" bodyend="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" line="9" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/features.hxx" bodystart="8" bodyend="17"/>
+    <listofallmembers>
+      <member refid="classFeatureBase_1acdccd3d4f4f4cac87b8a16a625930aa8" prot="public" virt="pure-virtual"><scope>FeatureBase</scope><name>operator()</name></member>
+      <member refid="classFeatureBase_1a6a6a49d99461b1de37f7e636a38e29c7" prot="public" virt="pure-virtual"><scope>FeatureBase</scope><name>shape</name></member>
+      <member refid="classFeatureBase_1a60ba1f15bb1a37be91ca3cc8fbe4c0c4" prot="public" virt="non-virtual"><scope>FeatureBase</scope><name>shape</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

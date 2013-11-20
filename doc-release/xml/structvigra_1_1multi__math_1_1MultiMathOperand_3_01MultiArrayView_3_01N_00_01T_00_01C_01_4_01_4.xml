@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class C</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a6e6ff321faad3dcda63d9e8127241f21" prot="public" static="no">
+        <type>MultiMathOperand</type>
+        <definition>typedef MultiMathOperand AllowOverload</definition>
+        <argsstring></argsstring>
+        <name>AllowOverload</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T result_type</definition>
+        <argsstring></argsstring>
+        <name>result_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1aba07bb5648bfa4b1f01f02b1a53d7128" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArrayShape" kindref="compound">MultiArrayShape</ref>&lt; N &gt;::type</type>
+        <definition>typedef MultiArrayShape&lt;N&gt;::type Shape</definition>
+        <argsstring></argsstring>
+        <name>Shape</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a77c66c97503b5c80d04b38a78fba81f8" prot="public" static="yes" mutable="no">
+        <type>const int</type>
+        <definition>const int ndim</definition>
+        <argsstring></argsstring>
+        <name>ndim</name>
+        <initializer> (int)N</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a155eb2c2c139eb2073a323b2f51046fc" prot="public" static="no" mutable="yes">
+        <type>T const *</type>
+        <definition>T const* p_</definition>
+        <argsstring></argsstring>
+        <name>p_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a3eef894068d783f3f0402a07cb75358c" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Shape</ref></type>
+        <definition>Shape shape_</definition>
+        <argsstring></argsstring>
+        <name>shape_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="212" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ad46a52014378efcb4948c3ba2e59f7f6" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Shape</ref></type>
+        <definition>Shape strides_</definition>
+        <argsstring></argsstring>
+        <name>strides_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="212" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a64c4d9d4e0fcdc72d9c60cf4b0a32104" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool checkShape</definition>
+        <argsstring>(Shape &amp;s) const </argsstring>
+        <name>checkShape</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Shape</ref> &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="169" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="168" bodyend="189"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1accc388c814aa361008150cca507e3632" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void inc</definition>
+        <argsstring>(unsigned int axis) const </argsstring>
+        <name>inc</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>axis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="197" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="196" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a6ff3f220f94f4ac57cae10b636b8f89f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiMathOperand</definition>
+        <argsstring>(MultiArrayView&lt; N, T, C &gt; const &amp;a)</argsstring>
+        <name>MultiMathOperand</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, C &gt; const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="157" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ad2efdacdb7457d0c4ecf8cfd706516a2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>result_type</type>
+        <definition>result_type operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="207" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="206" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a67887cf357a598ac5b38e5c4f78939f5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>T const &amp;</type>
+        <definition>T const&amp; operator[]</definition>
+        <argsstring>(Shape const &amp;s) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="classvigra_1_1TinyVector" kindref="compound">Shape</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="192" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="191" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1abe0bf4c19b4de79601338cd86bd2d926" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>(unsigned int axis) const </argsstring>
+        <name>reset</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>axis</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="202" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="201" bodyend="204"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="148" bodyend="213"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a6e6ff321faad3dcda63d9e8127241f21" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>AllowOverload</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a64c4d9d4e0fcdc72d9c60cf4b0a32104" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>checkShape</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1accc388c814aa361008150cca507e3632" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>inc</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a6ff3f220f94f4ac57cae10b636b8f89f" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>MultiMathOperand</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a77c66c97503b5c80d04b38a78fba81f8" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>ndim</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ad2efdacdb7457d0c4ecf8cfd706516a2" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>operator*</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a67887cf357a598ac5b38e5c4f78939f5" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>operator[]</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a155eb2c2c139eb2073a323b2f51046fc" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>p_</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1abe0bf4c19b4de79601338cd86bd2d926" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>reset</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ab774fc5d25855517e772c39f7d9d5f09" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>result_type</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1aba07bb5648bfa4b1f01f02b1a53d7128" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>Shape</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1a3eef894068d783f3f0402a07cb75358c" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>shape_</name></member>
+      <member refid="structvigra_1_1multi__math_1_1MultiMathOperand_3_01MultiArrayView_3_01N_00_01T_00_01C_01_4_01_4_1ad46a52014378efcb4948c3ba2e59f7f6" prot="public" virt="non-virtual"><scope>vigra::multi_math::MultiMathOperand&lt; MultiArrayView&lt; N, T, C &gt; &gt;</scope><name>strides_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

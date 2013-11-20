@@ -1,0 +1,2506 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__GeometricTransformations" kind="group">
+    <compoundname>GeometricTransformations</compoundname>
+    <title>Geometric Transformations</title>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__GeometricTransformations_1ga34777acf326d6c68068757a95990dde5" prot="public" static="no">
+        <name>Reflect</name>
+        <enumvalue id="group__GeometricTransformations_1gga34777acf326d6c68068757a95990dde5ac84387af3365dd0e5cffb2705e68b585" prot="public">
+          <name>horizontal</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__GeometricTransformations_1gga34777acf326d6c68068757a95990dde5a270a1cbccb65bff055850369d8494b4c" prot="public">
+          <name>vertical</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="203" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="203" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="enum" id="group__GeometricTransformations_1gaf790fdaad41a2d30a2c932d7eaadf3ec" prot="public" static="no">
+        <name>Transpose</name>
+        <enumvalue id="group__GeometricTransformations_1ggaf790fdaad41a2d30a2c932d7eaadf3ecadc8c3476e4d3526d10210987c7131cb5" prot="public">
+          <name>major</name>
+          <initializer> 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__GeometricTransformations_1ggaf790fdaad41a2d30a2c932d7eaadf3eca252026d6db6e81a42ef18bfd98b45a11" prot="public">
+          <name>minor</name>
+          <initializer> 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="352" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="352" bodyend="352"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::affineWarpImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>affineWarpImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Warp an image according to an affine transformation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member" tooltip="Warp an image according to an affine transformation.">affineWarpImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestIterator<sp/>dlr,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>double,<sp/>C&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>affineMatrix);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">C&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member" tooltip="Warp an image according to an affine transformation.">affineWarpImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;2,<sp/>double,<sp/>C&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>affineMatrix);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The algorithm applies the given <emphasis>affineMatrix</emphasis> to the <emphasis>destination coordinates</emphasis> and copies the image value from the resulting source coordinates, using the given <ref refid="classvigra_1_1SplineImageView" kindref="compound">SplineImageView</ref> <emphasis>src</emphasis> for interpolation. If the resulting coordinate is outside the source image, nothing will be written at that destination point.</para><para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>all<sp/>dest<sp/>pixels:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>currentSrcCoordinate<sp/>=<sp/>affineMatrix<sp/>*<sp/>currentDestCoordinate;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>src.isInside(currentSrcCoordinate):</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest[currentDestCoordinate]<sp/>=<sp/>src[currentSrcCoordinate];<sp/></highlight><highlight class="comment">//<sp/>copy<sp/>an<sp/>interpolated<sp/>value</highlight></codeline>
+</programlisting></para><para>The matrix represent a 2-dimensional affine transform by means of homogeneous coordinates, i.e. it must be a 3x3 matrix whose last row is (0,0,1).</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/affinegeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal">Image<sp/>src(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1SplineImageView" kindref="compound" tooltip="Create a continuous view onto a discrete image using splines.">vigra::SplineImageView&lt;3, Image::value_type&gt;</ref><sp/>spline(srcImageRange(src));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Image<sp/>dest1(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>equivalent<sp/>(up<sp/>to<sp/>round-off<sp/>errors)<sp/>with<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/>rotateImage(spline,<sp/>destImage(dest1),<sp/>45.0);</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">TinyVector&lt;double,<sp/>2&gt;<sp/>center((width-1.0)/2.0,<sp/>(height-1.0)/2.0);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member" tooltip="Warp an image according to an affine transformation.">affineWarpImage</ref>(spline,<sp/>destImageRange(dest1),<sp/><ref refid="group__GeometricTransformations_1gacc7041b192dfb4a79de8d168abd495c9" kindref="member" tooltip="Create homogeneous matrix representing a 2D rotation about the coordinate origin.">rotationMatrix2DDegrees</ref>(45.0,<sp/>center));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Image<sp/>dest2(2*width-1,<sp/>2*height-1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>equivalent<sp/>(up<sp/>to<sp/>round-off<sp/>errors)<sp/>with<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/>resizeImageSplineInterpolation(srcImageRange(img),<sp/>destImageRange(dest2));</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>note<sp/>that<sp/>scaleFactor<sp/>=<sp/>0.5,<sp/>because<sp/>we<sp/>must<sp/>pass<sp/>the<sp/>transformation<sp/>from<sp/>destination<sp/>to<sp/>source</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member" tooltip="Warp an image according to an affine transformation.">affineWarpImage</ref>(spline,<sp/>destImageRange(dest2),<sp/><ref refid="group__GeometricTransformations_1ga41cb093e4faa9a00db19571790530b86" kindref="member" tooltip="Create homogeneous matrix representing a 2D uniform scaling about the coordinate origin.">scalingMatrix2D</ref>(0.5));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>...,<sp/>y<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(spline.isInside(x,y))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dest_accessor.set(spline(x,<sp/>y),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold>See also:</bold> Functions to specify affine transformation: <ref refid="group__GeometricTransformations_1ga18dd969f7e355a60a1ade6517944457d" kindref="member">translationMatrix2D()</ref>, <ref refid="group__GeometricTransformations_1ga41cb093e4faa9a00db19571790530b86" kindref="member">scalingMatrix2D()</ref>, <ref refid="group__GeometricTransformations_1ga42a408803035022f33ce0dae2cff5e81" kindref="member">shearMatrix2D()</ref>, <ref refid="group__GeometricTransformations_1ga814c2b60d8b8579e159e939a76cd6db3" kindref="member">rotationMatrix2DRadians()</ref>, <ref refid="group__GeometricTransformations_1gacc7041b192dfb4a79de8d168abd495c9" kindref="member">rotationMatrix2DDegrees()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="404"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga4d00052f6430c7baa2a6c15f999f99a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::affineWarpImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, DestIterator dul, DestIterator dlr, DestAccessor dest, MultiArrayView&lt; 2, double, C &gt; const &amp;affineMatrix)</argsstring>
+        <name>affineWarpImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dlr</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, C &gt; const &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="412" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="409" bodyend="432"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga7b0614bea007577aefec53e01ef5e5a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::affineWarpImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, MultiArrayView&lt; 2, double, C &gt; const &amp;affineMatrix)</argsstring>
+        <name>affineWarpImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; 2, double, C &gt; const &amp;</type>
+          <declname>affineMatrix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="441" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="438" bodyend="443"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga3374379ad23c97bd3ca73e13a5c2ce07" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Reflect</type>
+        <definition>Reflect vigra::operator|</definition>
+        <argsstring>(Reflect l, Reflect r)</argsstring>
+        <name>operator|</name>
+        <param>
+          <type>Reflect</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>Reflect</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="207" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="206" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga02b427bf3ae88c68505d5e18518d99b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::reflectImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>reflectImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Reflect image horizontally or vertically. </para>        </briefdescription>
+        <detaileddescription>
+<para>The reflection direction refers to the reflection axis, i.e. horizontal reflection turns the image upside down, vertical reflection changes left for right. The directions are selected by the enum values <computeroutput>vigra::horizontal</computeroutput> and <computeroutput>vigra::vertical</computeroutput>. The two directions can also be &quot;or&quot;ed together to perform both reflections simultaneously (see example below) <ndash/> this is the same as a 180 degree rotation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga02b427bf3ae88c68505d5e18518d99b0" kindref="member" tooltip="Reflect image horizontally or vertically.">reflectImage</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>end,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/>Reflect<sp/>axis);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga02b427bf3ae88c68505d5e18518d99b0" kindref="member" tooltip="Reflect image horizontally or vertically.">reflectImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/>Reflect<sp/>axis);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/basicgeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal">Image<sp/>dest(src.width(),<sp/>src.height());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga02b427bf3ae88c68505d5e18518d99b0" kindref="member" tooltip="Reflect image horizontally or vertically.">vigra::reflectImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>vigra::horizontal<sp/>|<sp/>vigra::vertical);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(src_accessor(src_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="276"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga49c3682f59d022f1fbb144b432e2ae96" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::reflectImage</definition>
+        <argsstring>(SrcIterator is, SrcIterator end, SrcAccessor as, DestIterator id, DestAccessor ad, Reflect reflect)</argsstring>
+        <name>reflectImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>Reflect</type>
+          <declname>reflect</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="282" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="280" bodyend="334"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gab96eb1cca1f129fef649799fb809d524" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::reflectImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, Reflect reflect)</argsstring>
+        <name>reflectImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Reflect</type>
+          <declname>reflect</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="341" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="339" bodyend="343"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>resampleImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resample image by a given factor. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm is very fast and does not require any arithmetic on the pixel types. The input image must have a size of at least 2x2. Destiniation pixels are directly copied from the appropriate source pixels. The size of the result image is the product of <computeroutput>factor</computeroutput> and the original size, where we round up if <computeroutput>factor &lt; 1.0</computeroutput> and down otherwise. This size calculation is the main difference to the convention used in the similar function <ref refid="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" kindref="member">resizeImageNoInterpolation()</ref>: there, the result size is calculated as <computeroutput>n*(old_width-1)+1</computeroutput> and <computeroutput>n*(old_height-1)+1</computeroutput>. This is because <ref refid="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" kindref="member">resizeImageNoInterpolation()</ref> does not replicate the last pixel in every row/column in order to make it compatible with the other functions of the <computeroutput>resizeImage...</computeroutput> family.</para><para>The function can be called with different resampling factors for x and y, or with a single factor to be used for both directions.</para><para>It should also be noted that <ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member">resampleImage()</ref> is implemented so that an enlargement followed by the corresponding shrinking reproduces the original image. The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member" tooltip="Resample image by a given factor.">resampleImage</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>iend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>factor);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member" tooltip="Resample image by a given factor.">resampleImage</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>iend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>xfactor,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>yfactor);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member" tooltip="Resample image by a given factor.">resampleImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>factor);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member" tooltip="Resample image by a given factor.">resampleImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>xfactor,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>yfactor);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/basicgeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>factor<sp/>=<sp/>2.0;</highlight></codeline>
+<codeline><highlight class="normal">Image<sp/>dest((</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">)(factor*src.width()),<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">)(factor*src.height()));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member" tooltip="Resample image by a given factor.">vigra::resampleImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>factor);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(src_accessor(src_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="672"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gabc5db540b291035bc68dc11b3e24ac87" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleImage</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestAccessor ad, double xfactor, double yfactor)</argsstring>
+        <name>resampleImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>xfactor</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>yfactor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="679" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="677" bodyend="723"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gad9d806642c00b7a0c7204c7d3ede955c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleImage</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestAccessor ad, double factor)</argsstring>
+        <name>resampleImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="730" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="728" bodyend="732"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga896ee35bd358bc0c6aedeabeed64ba74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double factor)</argsstring>
+        <name>resampleImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="739" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="737" bodyend="741"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga6cda72a1ffe72d189ba8487eab1f4519" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, double xfactor, double yfactor)</argsstring>
+        <name>resampleImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>xfactor</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>yfactor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="748" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="746" bodyend="750"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga020c911e035d83f1e67449ffdc0b9dbc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resampleLine</definition>
+        <argsstring>(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc, DestIterator dest_iter, DestAccessor dest_acc, double factor)</argsstring>
+        <name>resampleLine</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter_end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="516" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="514" bodyend="567"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga8c2f8475feaeaf94dcb5df8fd4679d30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCatmullRomInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeImageCatmullRomInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize image using the Catmull/Rom interpolation function. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function calls like <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> with <ref refid="classvigra_1_1CatmullRomSpline" kindref="compound">vigra::CatmullRomSpline</ref> as an interpolation kernel. The interpolated function has one continuous derivative. (See <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> for more documentation)</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga8c2f8475feaeaf94dcb5df8fd4679d30" kindref="member" tooltip="Resize image using the Catmull/Rom interpolation function.">resizeImageCatmullRomInterpolation</ref>(SrcIterator<sp/>src_iter,<sp/>SrcIterator<sp/>src_iter_end,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_iter,<sp/>DestIterator<sp/>dest_iter_end,<sp/>DestAccessor<sp/>dest_acc);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga8c2f8475feaeaf94dcb5df8fd4679d30" kindref="member" tooltip="Resize image using the Catmull/Rom interpolation function.">resizeImageCatmullRomInterpolation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="resizeimage_8hxx_source" kindref="compound">vigra/resizeimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="889"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gadba7abbb34b13237e22cded0e9ef1738" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCatmullRomInterpolation</definition>
+        <argsstring>(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc, DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)</argsstring>
+        <name>resizeImageCatmullRomInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter_end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter_end</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="896" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="894" bodyend="899"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga3c9de0af25a8948ab916fe7715b7ce26" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCatmullRomInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>resizeImageCatmullRomInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="907" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="905" bodyend="910"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga725f478e6b802647d77f19c528273947" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCoscotInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeImageCoscotInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize image using the Coscot interpolation function. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function calls <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> with <ref refid="classvigra_1_1CoscotFunction" kindref="compound">vigra::CoscotFunction</ref> as an interpolation kernel. The interpolated function has one continuous derivative. (See <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref> for more documentation)</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga725f478e6b802647d77f19c528273947" kindref="member" tooltip="Resize image using the Coscot interpolation function.">resizeImageCoscotInterpolation</ref>(SrcIterator<sp/>src_iter,<sp/>SrcIterator<sp/>src_iter_end,<sp/>SrcAccessor<sp/>src_acc,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dest_iter,<sp/>DestIterator<sp/>dest_iter_end,<sp/>DestAccessor<sp/>dest_acc);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga725f478e6b802647d77f19c528273947" kindref="member" tooltip="Resize image using the Coscot interpolation function.">resizeImageCoscotInterpolation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>DestIterator,<sp/>DestAccessor&gt;<sp/>dest);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="resizeimage_8hxx_source" kindref="compound">vigra/resizeimage.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="995"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gaf70c2055cdc2d7feec809389db096326" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCoscotInterpolation</definition>
+        <argsstring>(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc, DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)</argsstring>
+        <name>resizeImageCoscotInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter_end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter_end</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="1002" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="1000" bodyend="1005"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga97fbbdb4116b04c200276ce824c31b5e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageCoscotInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>resizeImageCoscotInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="1013" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="1011" bodyend="1016"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga5269b1cd9d82b394fa7cda279a42423b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageLinearInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeImageLinearInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize image using linear interpolation. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function uses the standard separable bilinear interpolation algorithm to obtain a good compromise between quality and speed.</para><para>The range must of both the input and output images (resp. regions) must be given. Both images must have a size of at least 2x2. The scaling factors are then calculated accordingly. If the source image is larger than the destination, it is smoothed (band limited) using a recursive exponential filter. The source value_type (SrcAccessor::value_type) must be a linear space, i.e. it must support addition, multiplication with a scalar real number and <ref refid="NumericTraits" kindref="compound">NumericTraits</ref>. The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga5269b1cd9d82b394fa7cda279a42423b" kindref="member" tooltip="Resize image using linear interpolation.">resizeImageLinearInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>is,<sp/>SrcImageIterator<sp/>iend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestImageIterator<sp/>idend,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga5269b1cd9d82b394fa7cda279a42423b" kindref="member" tooltip="Resize image using linear interpolation.">resizeImageLinearInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestImageIterator,<sp/>DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/resizeimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga5269b1cd9d82b394fa7cda279a42423b" kindref="member" tooltip="Resize image using linear interpolation.">vigra::resizeImageLinearInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src.upperLeft(),<sp/>src.lowerRight(),<sp/>src.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.upperLeft(),<sp/>dest.lowerRight(),<sp/>dest.accessor());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>u<sp/>=<sp/>src_accessor(src_upperleft),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>v<sp/>=<sp/>src_accessor(src_upperleft,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>d<sp/>*<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>+<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(u),</highlight></codeline>
+<codeline><highlight class="normal">dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.x<sp/>-<sp/>dest_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.y<sp/>-<sp/>dest_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="459"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga6daa39da0d16d817a6592575c28184ad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageLinearInterpolation</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestIterator idend, DestAccessor da)</argsstring>
+        <name>resizeImageLinearInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>idend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="466" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="464" bodyend="536"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga1338b0fcb684ebb0021874540905e69a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageLinearInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>resizeImageLinearInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="544" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="542" bodyend="547"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageNoInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeImageNoInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize image by repeating the nearest pixel values. </para>        </briefdescription>
+        <detaileddescription>
+<para>This algorithm is very fast and does not require any arithmetic on the pixel types.</para><para>The range of both the input and output images (resp. regions) must be given. Both images must have a size of at least 2x2 pixels. The scaling factors are then calculated accordingly. Destination pixels are directly copied from the appropriate source pixels.</para><para>The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" kindref="member" tooltip="Resize image by repeating the nearest pixel values.">resizeImageNoInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>is,<sp/>SrcImageIterator<sp/>iend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestImageIterator<sp/>idend,<sp/>DestAccessor<sp/>da)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" kindref="member" tooltip="Resize image by repeating the nearest pixel values.">resizeImageNoInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestImageIterator,<sp/>DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/resizeimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1gaad7f1a2f1e089f2e29b486d81741c9f6" kindref="member" tooltip="Resize image by repeating the nearest pixel values.">vigra::resizeImageNoInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src.upperLeft(),<sp/>src.lowerRight(),<sp/>src.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.upperLeft(),<sp/>dest.lowerRight(),<sp/>dest.accessor());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(src_accessor(src_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.x<sp/>-<sp/>dest_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.y<sp/>-<sp/>dest_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="264"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gae54a904aaebceca20226e8c4de0e08fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageNoInterpolation</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestIterator idend, DestAccessor da)</argsstring>
+        <name>resizeImageNoInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>idend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="271" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="269" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga726d979171b407193b8ad772305a9f31" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageNoInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>resizeImageNoInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="315" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageSplineInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeImageSplineInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize image using B-spline interpolation. </para>        </briefdescription>
+        <detaileddescription>
+<para>The function implements separable spline interpolation algorithm described in</para><para>M. Unser, A. Aldroubi, M. Eden, <emphasis>&quot;B-Spline Signal Processing&quot;</emphasis> IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I), pp. 834-848 (part II), 1993.</para><para>to obtain optimal interpolation quality and speed. You may pass the function a spline of arbitrary order (e.g. <computeroutput><ref refid="classvigra_1_1BSpline" kindref="compound">BSpline&lt;ORDER, double&gt;</ref></computeroutput> or <computeroutput>CatmullRomSpline&lt;double&gt;</computeroutput>). The default is a third order spline which gives a twice continuously differentiable interpolant. The implementation ensures that image values are interpolated rather than smoothed by first calling a recursive (sharpening) prefilter as described in the above paper. Then the actual interpolation is done using <ref refid="group__ResamplingConvolutionFilters_1gaa9dc5f38f7cb55b8539de6f1648191f8" kindref="member">resamplingConvolveLine()</ref>.</para><para>The range of both the input and output images (resp. regions) must be given. The input image must have a size of at least 4x4, the destination of at least 2x2. The scaling factors are then calculated accordingly. If the source image is larger than the destination, it is smoothed (band limited) using a recursive exponential filter. The source value_type (SrcAccessor::value_type) must be a linear algebra, i.e. it must support addition, subtraction, and multiplication (+, -, *), multiplication with a scalar real number and <ref refid="NumericTraits" kindref="compound">NumericTraits</ref>. The function uses accessors.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SPLINE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member" tooltip="Resize image using B-spline interpolation.">resizeImageSplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcImageIterator<sp/>is,<sp/>SrcImageIterator<sp/>iend,<sp/>SrcAccessor<sp/>sa,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestImageIterator<sp/>idend,<sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SPLINE<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SPLINE&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member" tooltip="Resize image using B-spline interpolation.">resizeImageSplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestImageIterator,<sp/>DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SPLINE<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;())</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/resizeimage.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member" tooltip="Resize image using B-spline interpolation.">vigra::resizeImageSplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>src.upperLeft(),<sp/>src.lowerRight(),<sp/>src.accessor(),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest.upperLeft(),<sp/>dest.lowerRight(),<sp/>dest.accessor());</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal">DestAccessor<sp/>dest_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">NumericTraits&lt;SrcAccessor::value_type&gt;::RealPromote</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>u<sp/>=<sp/>src_accessor(src_upperleft),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>v<sp/>=<sp/>src_accessor(src_upperleft,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>d;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>d<sp/>*<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>+<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>-<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>=<sp/>u<sp/>*<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>+=<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal">u<sp/>-=<sp/>v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>NumericTraits&lt;DestAccessor::value_type&gt;::fromRealPromote(u),</highlight></codeline>
+<codeline><highlight class="normal">dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>3</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>3</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.x<sp/>-<sp/>dest_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">dest_lowerright.y<sp/>-<sp/>dest_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="663"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga188587da2b47b227bba906e901aa629a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class SPLINE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageSplineInterpolation</definition>
+        <argsstring>(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc, DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc, SPLINE const &amp;spline)</argsstring>
+        <name>resizeImageSplineInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>src_iter_end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src_acc</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dest_iter_end</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest_acc</declname>
+        </param>
+        <param>
+          <type>SPLINE const &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="673" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="669" bodyend="811"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gabd065817251e87a345c71570aa9a86f1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class SPLINE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageSplineInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest, SPLINE const &amp;spline)</argsstring>
+        <name>resizeImageSplineInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>SPLINE const &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="821" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="818" bodyend="824"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gafa64947530f07284f13ab0f94853b8fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageSplineInterpolation</definition>
+        <argsstring>(SrcIterator is, SrcIterator iend, SrcAccessor sa, DestIterator id, DestIterator idend, DestAccessor da)</argsstring>
+        <name>resizeImageSplineInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>sa</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>idend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="831" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="829" bodyend="833"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gaee9f26e00f2b3808b416747dc6e5b170" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeImageSplineInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, triple&lt; DestIterator, DestIterator, DestAccessor &gt; dest)</argsstring>
+        <name>resizeImageSplineInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="841" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="839" bodyend="844"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga5cda4a8724c6c54cabd3b32d38bc7b8a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeLineLinearInterpolation</definition>
+        <argsstring>(SrcIterator i1, SrcIterator iend, SrcAccessor as, DestIterator id, DestIterator idend, DestAccessor ad)</argsstring>
+        <name>resizeLineLinearInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>idend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="333" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="331" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga006a11d73a984ba95553197ec3fb921b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeLineNoInterpolation</definition>
+        <argsstring>(SrcIterator i1, SrcIterator iend, SrcAccessor as, DestIterator id, DestIterator idend, DestAccessor ad)</argsstring>
+        <name>resizeLineNoInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>i1</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>iend</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>idend</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" line="165" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/resizeimage.hxx" bodystart="163" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeMultiArraySplineInterpolation</definition>
+        <argsstring>(...)</argsstring>
+        <name>resizeMultiArraySplineInterpolation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Resize <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> using B-spline interpolation. </para>        </briefdescription>
+        <detaileddescription>
+<para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>SrcIterator<sp/>si,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>sshape,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>di,<sp/>Shape<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>dshape,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Shape,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Kernel<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;<sp/>&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">resizeMultiArraySplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;SrcIterator,<sp/>Shape,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>triple&lt;DestIterator,<sp/>Shape,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Kernel<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>spline<sp/>=<sp/>BSpline&lt;3,<sp/>double&gt;());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>The function implements separable spline interpolation algorithm described in</para><para>M. Unser, A. Aldroubi, M. Eden, <emphasis>&quot;B-Spline Signal Processing&quot;</emphasis> IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I), pp. 834-848 (part II), 1993.</para><para>to obtain optimal interpolation quality and speed. You may pass the function a spline of arbitrary order (e.g. <computeroutput><ref refid="classvigra_1_1BSpline" kindref="compound">BSpline&lt;ORDER, double&gt;</ref></computeroutput> or <computeroutput>CatmullRomSpline&lt;double&gt;</computeroutput>). The default is a third order spline which gives a twice continuously differentiable interpolant. The implementation ensures that image values are interpolated rather than smoothed by first calling a recursive (sharpening) prefilter as described in the above paper. Then the actual interpolation is done using <ref refid="group__ResamplingConvolutionFilters_1gaa9dc5f38f7cb55b8539de6f1648191f8" kindref="member">resamplingConvolveLine()</ref>.</para><para>The range of both the input and output images (resp. regions) must be given. The input image must have a size of at least 4x4, the destination of at least 2x2. The scaling factors are then calculated accordingly. If the source image is larger than the destination, it is smoothed (band limited) using a recursive exponential filter. The source value_type (SrcAccessor::value_type) must be a linear algebra, i.e. it must support addition, subtraction, and multiplication (+, -, *), multiplication with a scalar real number and <ref refid="NumericTraits" kindref="compound">NumericTraits</ref>. The function uses accessors.</para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/multi_resize.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classvigra_1_1MultiArray_1a7a3c9714bbd0b64760c377a88fd36c63" kindref="member">vigra::MultiArray&lt;3, float&gt;::difference_type</ref><sp/>Shape;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArray" kindref="compound" tooltip="Main MultiArray class containing the memory management.">vigra::MultiArray&lt;3, float&gt;</ref><sp/>src(Shape(5,<sp/>7,<sp/>10)),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dest(Shape(9,<sp/>13,<sp/>19));<sp/></highlight><highlight class="comment">//<sp/>double<sp/>the<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>default<sp/>cubic<sp/>spline<sp/>interpolator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member" tooltip="Resize MultiArray using B-spline interpolation.">vigra::resizeMultiArraySplineInterpolation</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srcMultiArrayRange(src),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>destMultiArrayRange(dest));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>The source and destination iterators must be compatible with <ref refid="classvigra_1_1MultiIterator" kindref="compound">vigra::MultiIterator</ref>. The array value types must be models of <ref refid="AlgebraicConcepts_1LinearSpace" kindref="member">LinearSpace</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" line="197"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga293ea152c381a3ef2a613274842316e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeMultiArraySplineInterpolation</definition>
+        <argsstring>(SrcIterator si, Shape const &amp;sshape, SrcAccessor src, DestIterator di, Shape const &amp;dshape, DestAccessor dest, Kernel const &amp;spline)</argsstring>
+        <name>resizeMultiArraySplineInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>sshape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>dshape</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" line="207" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" bodystart="203" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga835d9116f508b8414ff00bf32ecfce17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+          <param>
+            <type>class Kernel</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeMultiArraySplineInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, Shape, SrcAccessor &gt; src, triple&lt; DestIterator, Shape, DestAccessor &gt; dest, Kernel const &amp;spline)</argsstring>
+        <name>resizeMultiArraySplineInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, Shape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, Shape, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Kernel const &amp;</type>
+          <declname>spline</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" line="250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" bodystart="247" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gacfe8f920246af4417a90f3d08238b243" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeMultiArraySplineInterpolation</definition>
+        <argsstring>(SrcIterator si, Shape const &amp;sshape, SrcAccessor src, DestIterator di, Shape const &amp;dshape, DestAccessor dest)</argsstring>
+        <name>resizeMultiArraySplineInterpolation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>si</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>sshape</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>di</declname>
+        </param>
+        <param>
+          <type>Shape const &amp;</type>
+          <declname>dshape</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" line="261" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" bodystart="258" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga7ab884c5d8e3c9bd553211ed1578c904" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class Shape</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::resizeMultiArraySplineInterpolation</definition>
+        <argsstring>(triple&lt; SrcIterator, Shape, SrcAccessor &gt; src, triple&lt; DestIterator, Shape, DestAccessor &gt; dest)</argsstring>
+        <name>resizeMultiArraySplineInterpolation</name>
+        <param>
+          <type>triple&lt; SrcIterator, Shape, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>triple&lt; DestIterator, Shape, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" line="270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_resize.hxx" bodystart="268" bodyend="273"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga2bb4bd234033985846d90d55162d7ba4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(SrcIterator is, SrcIterator end, SrcAccessor as, DestIterator id, DestAccessor ad, int rotation)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>rotation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="121" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gaf642f4c5bf48b1033644c34d0efd525f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, int rotation)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>rotation</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="191" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void rotateImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Rotate image by an arbitrary angle. </para>        </briefdescription>
+        <detaileddescription>
+<para>Rotate image by a multiple of 90 degrees.</para><para>The algorithm performs a rotation about the given center point (the image center by default) using the given <ref refid="classvigra_1_1SplineImageView" kindref="compound">SplineImageView</ref> for interpolation. The destination image must have the same size as the source <ref refid="classvigra_1_1SplineImageView" kindref="compound">SplineImageView</ref>. The rotation is counter-clockwise, and the angle must be given in degrees.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>rotate<sp/>about<sp/>given<sp/>center<sp/>point</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angleInDegree,<sp/>TinyVector&lt;double,<sp/>2&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>center);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>rotate<sp/>about<sp/>image<sp/>center</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angleInDegree)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>rotate<sp/>about<sp/>given<sp/>center<sp/>point</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angleInDegree,<sp/>TinyVector&lt;double,<sp/>2&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>center);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>rotate<sp/>about<sp/>image<sp/>center</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>ORDER,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">T,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(SplineImageView&lt;ORDER,<sp/>T&gt;<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angleInDegree);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/affinegeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal">Image<sp/>src(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1SplineImageView" kindref="compound" tooltip="Create a continuous view onto a discrete image using splines.">vigra::SplineImageView&lt;3, Image::value_type&gt;</ref><sp/>spline(srcImageRange(src));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Image<sp/>dest(width,<sp/>height);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">vigra::rotateImage</ref>(spline,<sp/>destImage(dest),<sp/>38.5);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>...,<sp/>y<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(spline.isInside(x,y))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dest_accessor.set(spline(x,<sp/>y),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para>This algorithm just copies the pixels in the appropriate new order. It expects the destination image to have the correct shape for the desired rotation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>end,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>rotation);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">rotateImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>rotation);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/basicgeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal">Image<sp/>dest(src.height(),<sp/>src.width());<sp/></highlight><highlight class="comment">//<sp/>note<sp/>that<sp/>width<sp/>and<sp/>height<sp/>are<sp/>exchanged</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1gacd7813ea87e0cc3026cb6a8dbaca5fc5" kindref="member" tooltip="Rotate image by an arbitrary angle.">vigra::rotateImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>90);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(src_accessor(src_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="239"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga2f9d18d47f830a022d8c57032f51ae53" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, DestIterator id, DestAccessor dest, double angleInDegree, TinyVector&lt; double, 2 &gt; const &amp;center)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angleInDegree</declname>
+        </param>
+        <param>
+          <type>TinyVector&lt; double, 2 &gt; const &amp;</type>
+          <declname>center</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="246" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="243" bodyend="281"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga5e7e2fc6a6dbda537661d5f537bca613" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, pair&lt; DestIterator, DestAccessor &gt; dest, double angleInDegree, TinyVector&lt; double, 2 &gt; const &amp;center)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angleInDegree</declname>
+        </param>
+        <param>
+          <type>TinyVector&lt; double, 2 &gt; const &amp;</type>
+          <declname>center</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="289" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="286" bodyend="291"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga43ed85853bc0d00c2e0639c6f5f60be6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, DestIterator id, DestAccessor dest, double angleInDegree)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angleInDegree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="299" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="296" bodyend="302"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga96e025c0131dd42e542649a33bd89e16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>int</type>
+            <declname>ORDER</declname>
+            <defname>ORDER</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::rotateImage</definition>
+        <argsstring>(SplineImageView&lt; ORDER, T &gt; const &amp;src, pair&lt; DestIterator, DestAccessor &gt; dest, double angleInDegree)</argsstring>
+        <name>rotateImage</name>
+        <param>
+          <type>SplineImageView&lt; ORDER, T &gt; const &amp;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angleInDegree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="307" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gacc7041b192dfb4a79de8d168abd495c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::rotationMatrix2DDegrees</definition>
+        <argsstring>(double angle)</argsstring>
+        <name>rotationMatrix2DDegrees</name>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D rotation about the coordinate origin. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. Angle must be in degrees. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="132" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="131" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gac5db2aa94b116d3cc1b67b96e4ac96b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::rotationMatrix2DDegrees</definition>
+        <argsstring>(double angle, TinyVector&lt; double, 2 &gt; const &amp;center)</argsstring>
+        <name>rotationMatrix2DDegrees</name>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <param>
+          <type>TinyVector&lt; double, 2 &gt; const &amp;</type>
+          <declname>center</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D rotation about the given point. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. Angle must be in degrees. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="151" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga814c2b60d8b8579e159e939a76cd6db3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::rotationMatrix2DRadians</definition>
+        <argsstring>(double angle)</argsstring>
+        <name>rotationMatrix2DRadians</name>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D rotation about the coordinate origin. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. Angle must be in radians. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="115" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="114" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gafdb14c737ca2c1587eeb2ac7d040542e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::rotationMatrix2DRadians</definition>
+        <argsstring>(double angle, TinyVector&lt; double, 2 &gt; const &amp;center)</argsstring>
+        <name>rotationMatrix2DRadians</name>
+        <param>
+          <type>double</type>
+          <declname>angle</declname>
+        </param>
+        <param>
+          <type>TinyVector&lt; double, 2 &gt; const &amp;</type>
+          <declname>center</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D rotation about the given point. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. Angle must be in radians. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="141" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga41cb093e4faa9a00db19571790530b86" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::scalingMatrix2D</definition>
+        <argsstring>(double scalingFactor)</argsstring>
+        <name>scalingMatrix2D</name>
+        <param>
+          <type>double</type>
+          <declname>scalingFactor</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D uniform scaling about the coordinate origin. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="76" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="75" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga0ed2998d9b3c103c07d005ca15a84316" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::scalingMatrix2D</definition>
+        <argsstring>(double sx, double sy)</argsstring>
+        <name>scalingMatrix2D</name>
+        <param>
+          <type>double</type>
+          <declname>sx</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>sy</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D non-uniform scaling about the coordinate origin. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="89" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="88" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga42a408803035022f33ce0dae2cff5e81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::shearMatrix2D</definition>
+        <argsstring>(double s01, double s10)</argsstring>
+        <name>shearMatrix2D</name>
+        <param>
+          <type>double</type>
+          <declname>s01</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>s10</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D shearing. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="101" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga31dc11c404f6e6f80ac444b6a8453c08" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int vigra::sizeForResamplingFactor</definition>
+        <argsstring>(int oldsize, double factor)</argsstring>
+        <name>sizeForResamplingFactor</name>
+        <param>
+          <type>int</type>
+          <declname>oldsize</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="570" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="569" bodyend="574"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga18dd969f7e355a60a1ade6517944457d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>linalg::TemporaryMatrix&lt; double &gt;</type>
+        <definition>linalg::TemporaryMatrix&lt;double&gt; vigra::translationMatrix2D</definition>
+        <argsstring>(TinyVector&lt; double, 2 &gt; const &amp;shift)</argsstring>
+        <name>translationMatrix2D</name>
+        <param>
+          <type>TinyVector&lt; double, 2 &gt; const &amp;</type>
+          <declname>shift</declname>
+        </param>
+        <briefdescription>
+<para>Create homogeneous matrix representing a 2D translation. </para>        </briefdescription>
+        <detaileddescription>
+<para>For use with <ref refid="group__GeometricTransformations_1ga8b1b4684a0bb3572df7b580f05ecd07c" kindref="member">affineWarpImage()</ref>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" line="63" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/affinegeometry.hxx" bodystart="62" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1ga50e76dbde3e1b541755604f72e9eb090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transposeImage</definition>
+        <argsstring>(...)</argsstring>
+        <name>transposeImage</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Transpose an image over the major or minor diagonal. </para>        </briefdescription>
+        <detaileddescription>
+<para>The transposition direction refers to the axis, i.e. major transposition turns the upper right corner into the lower left one, whereas minor transposition changes the upper left corner into the lower right one. The directions are selected by the enum values <computeroutput>vigra::major</computeroutput> and <computeroutput>vigra::minor</computeroutput>. The two directions can also be &quot;or&quot;ed together to perform both reflections simultaneously (see example below) <ndash/> this is the same as a 180 degree rotation. (Caution: When doing multi-platform development, you should be aware that some &lt;sys/types.h&gt; define major/minor, too. Do not omit the vigra namespace prefix.)</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga50e76dbde3e1b541755604f72e9eb090" kindref="member" tooltip="Transpose an image over the major or minor diagonal.">transposeImage</ref>(SrcIterator<sp/>is,<sp/>SrcIterator<sp/>end,<sp/>SrcAccessor<sp/>as,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>DestAccessor<sp/>ad,<sp/>Transpose<sp/>axis);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestImageIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__GeometricTransformations_1ga50e76dbde3e1b541755604f72e9eb090" kindref="member" tooltip="Transpose an image over the major or minor diagonal.">transposeImage</ref>(triple&lt;SrcImageIterator,<sp/>SrcImageIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestImageIterator,<sp/>DestAccessor&gt;<sp/>dest,<sp/>Transpose<sp/>axis);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/basicgeometry.hxx\&gt;&lt;br&gt;
+Namespace: vigra
+</verbatim></para><para><programlisting><codeline><highlight class="normal">Image<sp/>dest(src.width(),<sp/>src.height());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GeometricTransformations_1ga50e76dbde3e1b541755604f72e9eb090" kindref="member" tooltip="Transpose an image over the major or minor diagonal.">vigra::transposeImage</ref>(srcImageRange(src),<sp/>destImage(dest),<sp/>vigra::major<sp/>|<sp/>vigra::minor);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcImageIterator<sp/>src_upperleft,<sp/>src_lowerright;</highlight></codeline>
+<codeline><highlight class="normal">DestImageIterator<sp/>dest_upperleft;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src_accessor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">dest_accessor.set(src_accessor(src_upperleft),<sp/>dest_upperleft);</highlight></codeline>
+</programlisting></para><para><bold> Preconditions:</bold></para><para><programlisting><codeline><highlight class="normal">src_lowerright.x<sp/>-<sp/>src_upperleft.x<sp/>&gt;<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">src_lowerright.y<sp/>-<sp/>src_upperleft.y<sp/>&gt;<sp/>1</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="423"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gad7434f27e62bcb581145743d88a32269" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transposeImage</definition>
+        <argsstring>(SrcIterator is, SrcIterator end, SrcAccessor as, DestIterator id, DestAccessor ad, Transpose transpose)</argsstring>
+        <name>transposeImage</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>is</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>as</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>ad</declname>
+        </param>
+        <param>
+          <type>Transpose</type>
+          <declname>transpose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="429" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="427" bodyend="483"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GeometricTransformations_1gab097c106d7d5d0fb20b468ed06e50040" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcImageIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::transposeImage</definition>
+        <argsstring>(triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt; src, pair&lt; DestImageIterator, DestAccessor &gt; dest, Transpose transpose)</argsstring>
+        <name>transposeImage</name>
+        <param>
+          <type>triple&lt; SrcImageIterator, SrcImageIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>Transpose</type>
+          <declname>transpose</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" line="490" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/basicgeometry.hxx" bodystart="488" bodyend="492"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Zoom up and down by repeating pixels, or using various interpolation schemes.</para><para>See also: <ref refid="group__ResamplingConvolutionFilters_1gac820754f8e34277afa6f098a2d51303a" kindref="member">resamplingConvolveImage()</ref>, <ref refid="group__GeometricTransformations_1ga823eb2815225a1fc8771c4138a5ccb1b" kindref="member">resampleImage()</ref>, <ref refid="group__GeometricTransformations_1ga2cd9b31e7f0c8648bc0d9e1a8f1a3305" kindref="member">resizeMultiArraySplineInterpolation()</ref></para><para><bold>#include</bold> &lt;<ref refid="stdimagefunctions_8hxx_source" kindref="compound">vigra/stdimagefunctions.hxx</ref>&gt;<linebreak/>
+ <bold>or</bold><linebreak/>
+ <bold>#include</bold> &lt;<ref refid="resizeimage_8hxx_source" kindref="compound">vigra/resizeimage.hxx</ref>&gt;<linebreak/>
+ </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

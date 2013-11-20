@@ -1,0 +1,2113 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__MathFunctions" kind="group">
+    <compoundname>MathFunctions</compoundname>
+    <title>Mathematical Functions</title>
+    <innerclass refid="classvigra_1_1BSpline" prot="public">vigra::BSpline</innerclass>
+    <innerclass refid="classvigra_1_1BSpline_3_011_00_01T_01_4" prot="public">vigra::BSpline&lt; 1, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BSpline_3_012_00_01T_01_4" prot="public">vigra::BSpline&lt; 2, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BSpline_3_013_00_01T_01_4" prot="public">vigra::BSpline&lt; 3, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BSpline_3_014_00_01T_01_4" prot="public">vigra::BSpline&lt; 4, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BSpline_3_015_00_01T_01_4" prot="public">vigra::BSpline&lt; 5, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1BSplineBase" prot="public">vigra::BSplineBase</innerclass>
+    <innerclass refid="classvigra_1_1BSplineBase_3_010_00_01T_01_4" prot="public">vigra::BSplineBase&lt; 0, T &gt;</innerclass>
+    <innerclass refid="classvigra_1_1CatmullRomSpline" prot="public">vigra::CatmullRomSpline</innerclass>
+    <innerclass refid="classvigra_1_1CoscotFunction" prot="public">vigra::CoscotFunction</innerclass>
+    <innerclass refid="classvigra_1_1Gaussian" prot="public">vigra::Gaussian</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group__MathFunctions_1ga78e3a51ac788c686e64c2fedb8d99982" prot="public" static="no">
+        <type>BSpline&lt; 3, double &gt;</type>
+        <definition>typedef BSpline&lt;3, double&gt; CubicBSplineKernel</definition>
+        <argsstring></argsstring>
+        <name>CubicBSplineKernel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="716" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="716" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MathFunctions_1ga85c77a8c55e87bb61d1ae6a2f537461d" prot="public" static="no">
+        <type>BSpline&lt; 4, double &gt;</type>
+        <definition>typedef BSpline&lt;4, double&gt; QuarticBSplineKernel</definition>
+        <argsstring></argsstring>
+        <name>QuarticBSplineKernel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="911" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="911" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group__MathFunctions_1gaadc1104cdb89204a8e6387be8158f5fc" prot="public" static="no">
+        <type>BSpline&lt; 5, double &gt;</type>
+        <definition>typedef BSpline&lt;5, double&gt; QuinticBSplineKernel</definition>
+        <argsstring></argsstring>
+        <name>QuinticBSplineKernel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="1129" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="1129" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__MathFunctions_1ga8686fee88c6f46f3e19a76f00826dc10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class IndexIterator</type>
+          </param>
+          <param>
+            <type>class InIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::applyPermutation</definition>
+        <argsstring>(IndexIterator index_first, IndexIterator index_last, InIterator in, OutIterator out)</argsstring>
+        <name>applyPermutation</name>
+        <param>
+          <type>IndexIterator</type>
+          <declname>index_first</declname>
+        </param>
+        <param>
+          <type>IndexIterator</type>
+          <declname>index_last</declname>
+        </param>
+        <param>
+          <type>InIterator</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sort an array according to the given index permutation. <verbatim>   The iterators \a in and \a out may not refer to the same array, as
+   this would overwrite the input prematurely.
+
+   &lt;b&gt; Declaration:&lt;/b&gt;
+
+   @code 
+   namespace vigra {
+       template &lt;class IndexIterator, class InIterator, class OutIterator&gt;
+       void applyPermutation(IndexIterator index_first, IndexIterator index_last, 
+                             InIterator in, OutIterator out);
+   }
+   \endcode
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   OutIterator and IndexIterators are forward iterators.
+   InIterator is a random access iterator.
+
+   *out = in[*index_first];
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="390" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="388" bodyend="393"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaf658d43400902a049a289c4e5ded84d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>Iterator</type>
+        <definition>Iterator vigra::argMax</definition>
+        <argsstring>(Iterator first, Iterator last)</argsstring>
+        <name>argMax</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Find the maximum element in a sequence. <verbatim>   The function returns the iterator referring to the maximum element.
+   This is identical to the function &lt;tt&gt;std::max_element()&lt;/tt&gt;.
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator is a standard forward iterator.
+
+   bool f = NumericTraits&lt;typename std::iterator_traits&lt;Iterator&gt;::value_type&gt;::min() &lt; *first;
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="96" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gafe67abfb62abdfc09a8e1e47a87485ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class UnaryFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>Iterator</type>
+        <definition>Iterator vigra::argMaxIf</definition>
+        <argsstring>(Iterator first, Iterator last, UnaryFunctor condition)</argsstring>
+        <name>argMaxIf</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>UnaryFunctor</type>
+          <declname>condition</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Find the maximum element in a sequence conforming to a condition. <verbatim>   The function returns the iterator referring to the maximum element,
+   where only elements conforming to the condition (i.e. where 
+   &lt;tt&gt;condition(*iterator)&lt;/tt&gt; evaluates to &lt;tt&gt;true&lt;/tt&gt;) are considered.
+   If no element conforms to the condition, or the sequence is empty,
+   the end iterator \a last is returned.
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator is a standard forward iterator.
+
+   bool c = condition(*first);
+
+   bool f = NumericTraits&lt;typename std::iterator_traits&lt;Iterator&gt;::value_type&gt;::min() &lt; *first;
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="166" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="165" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gad84c74edbd392ac2035df2a6d583fc05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>Iterator</type>
+        <definition>Iterator vigra::argMin</definition>
+        <argsstring>(Iterator first, Iterator last)</argsstring>
+        <name>argMin</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Find the minimum element in a sequence. <verbatim>   The function returns the iterator referring to the minimum element.
+   This is identical to the function &lt;tt&gt;std::min_element()&lt;/tt&gt;.
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator is a standard forward iterator.
+
+   bool f = *first &lt; NumericTraits&lt;typename std::iterator_traits&lt;Iterator&gt;::value_type&gt;::max();
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="69" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="68" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga45d791e8c9cac48509aa4e1557ecf676" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class UnaryFunctor</type>
+          </param>
+        </templateparamlist>
+        <type>Iterator</type>
+        <definition>Iterator vigra::argMinIf</definition>
+        <argsstring>(Iterator first, Iterator last, UnaryFunctor condition)</argsstring>
+        <name>argMinIf</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>UnaryFunctor</type>
+          <declname>condition</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Find the minimum element in a sequence conforming to a condition. <verbatim>   The function returns the iterator referring to the minimum element,
+   where only elements conforming to the condition (i.e. where 
+   &lt;tt&gt;condition(*iterator)&lt;/tt&gt; evaluates to &lt;tt&gt;true&lt;/tt&gt;) are considered.
+   If no element conforms to the condition, or the sequence is empty,
+   the end iterator \a last is returned.
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator is a standard forward iterator.
+
+   bool c = condition(*first);
+
+   bool f = *first &lt; NumericTraits&lt;typename std::iterator_traits&lt;Iterator&gt;::value_type&gt;::max();
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="130" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="129" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9cf8d64d518f2d493bee81d886906cdf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::besselJ</definition>
+        <argsstring>(int n, double x)</argsstring>
+        <name>besselJ</name>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Bessel function of the first kind. <verbatim>   Computes the value of BesselJ of integer order &lt;tt&gt;n&lt;/tt&gt; and argument &lt;tt&gt;x&lt;/tt&gt;.
+   Negative &lt;tt&gt;x&lt;/tt&gt; are unsupported and will result in a &lt;tt&gt;std::domain_error&lt;/tt&gt;.
+
+   This function wraps a number of existing implementations and falls back to 
+   a rather slow algorithm if none of them is available. In particular,
+   it uses boost::math when &lt;tt&gt;HasBoostMath&lt;/tt&gt; is \#defined, or native 
+   implementations on gcc and MSVC otherwise.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/bessel.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bessel.hxx" line="275" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bessel.hxx" bodystart="274" bodyend="295"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga84d85515af4527b6922f14a853fe40d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::besselY</definition>
+        <argsstring>(int n, double x)</argsstring>
+        <name>besselY</name>
+        <param>
+          <type>int</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Bessel function of the second kind. <verbatim>   Computes the value of BesselY of integer order &lt;tt&gt;n&lt;/tt&gt; and argument &lt;tt&gt;x&lt;/tt&gt;.
+   Negative &lt;tt&gt;x&lt;/tt&gt; are unsupported and will result in a &lt;tt&gt;std::domain_error&lt;/tt&gt;.
+
+   This function wraps a number of existing implementations and falls back to 
+   a rather slow algorithm if none of them is available. In particular,
+   it uses boost::math when &lt;tt&gt;HasBoostMath&lt;/tt&gt; is \#defined, or native 
+   implementations on gcc and MSVC otherwise.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/bessel.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bessel.hxx" line="311" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/bessel.hxx" bodystart="310" bodyend="331"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga293714b6ca3b96e88f09c9ea1bb78008" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>ArrayVector&lt; double &gt; const &amp;</type>
+        <definition>ArrayVector&lt; double &gt; const &amp; calculatePrefilterCoefficients</definition>
+        <argsstring>()</argsstring>
+        <name>calculatePrefilterCoefficients</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="163" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="203" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga5671955d955116c14907bc3ae490e4ea" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>WeightMatrix &amp;</type>
+        <definition>BSplineBase&lt; ORDER, T &gt;::WeightMatrix &amp; calculateWeightMatrix</definition>
+        <argsstring>()</argsstring>
+        <name>calculateWeightMatrix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="224" bodyend="238"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga54aeb0113ef25c8a4f2e72a1acc794c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>UInt32</type>
+        <definition>UInt32 vigra::ceilPower2</definition>
+        <argsstring>(UInt32 x)</argsstring>
+        <name>ceilPower2</name>
+        <param>
+          <type>UInt32</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Round up to the nearest power of 2. <verbatim>   Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x
+   (function clp2() from Henry Warren: &quot;Hacker&apos;s Delight&quot;, Addison-Wesley, 2003,
+    see http://www.hackersdelight.org/).
+   If \a x &gt; 2^31, the function will return 0 because integer arithmetic is defined modulo 2^32.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="240" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="239" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga482d2e82f374a8758cd516d19f4c3424" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>UInt32</type>
+        <definition>UInt32 vigra::checksum</definition>
+        <argsstring>(const char *data, unsigned int size)</argsstring>
+        <name>checksum</name>
+        <param>
+          <type>const char *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the CRC-32 checksum of a byte array. <verbatim>   Implementation note: This function is slower on big-endian machines
+   because the &quot;4 bytes at a time&quot; optimization is only implemented for 
+   little-endian.</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="681" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="680" bodyend="683"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga0f6a2804ceaf785495472fb9bf2dd5bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::chi2</definition>
+        <argsstring>(unsigned int degreesOfFreedom, double arg, double accuracy=1e-7)</argsstring>
+        <name>chi2</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>degreesOfFreedom</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>arg</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>accuracy</declname>
+          <defval>1e-7</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Chi square distribution. <verbatim>   Computes the density of a chi square distribution with \a degreesOfFreedom 
+   and tolerance \a accuracy at the given argument \a arg
+   by calling &lt;tt&gt;noncentralChi2(degreesOfFreedom, 0.0, arg, accuracy)&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="988" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="987" bodyend="990"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaa94c7af27b4aecda8a764beb89dbc2a6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::chi2CDF</definition>
+        <argsstring>(unsigned int degreesOfFreedom, double arg, double accuracy=1e-7)</argsstring>
+        <name>chi2CDF</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>degreesOfFreedom</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>arg</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>accuracy</declname>
+          <defval>1e-7</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cumulative chi square distribution. <verbatim>   Computes the cumulative density of a chi square distribution with \a degreesOfFreedom 
+   and tolerance \a accuracy at the given argument \a arg, i.e. the probability that
+   a random number drawn from the distribution is below \a arg
+   by calling &lt;tt&gt;noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy)&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1003" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1002" bodyend="1005"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga10235727f77f6dfa6af756ce20eec2f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::closeAtTolerance</definition>
+        <argsstring>(T1 l, T2 r, typename PromoteTraits&lt; T1, T2 &gt;::Promote epsilon)</argsstring>
+        <name>closeAtTolerance</name>
+        <param>
+          <type>T1</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>T2</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>typename PromoteTraits&lt; T1, T2 &gt;::Promote</type>
+          <declname>epsilon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Tolerance based floating-point comparison. <verbatim>   Check whether two floating point numbers are equal within the given tolerance.
+   This is useful because floating point numbers that should be equal in theory are
+   rarely exactly equal in practice. If the tolerance \a epsilon is not given,
+   twice the machine epsilon is used.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1537" bodyend="1549"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga1e299a6be89f9b63ea9449c717ffbe0f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::closeAtTolerance</definition>
+        <argsstring>(T1 l, T2 r)</argsstring>
+        <name>closeAtTolerance</name>
+        <param>
+          <type>T1</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>T2</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1553" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1552" bodyend="1556"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga46be68464b972df67e1396fd3a398de7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>UInt32</type>
+        <definition>UInt32 vigra::concatenateChecksum</definition>
+        <argsstring>(UInt32 checksum, const char *data, unsigned int size)</argsstring>
+        <name>concatenateChecksum</name>
+        <param>
+          <type>UInt32</type>
+          <declname>checksum</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Concatenate a byte array to an existing CRC-32 checksum. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="688" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="687" bodyend="691"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga8ba489a131e75016f32095b106659d22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PointArray1</type>
+          </param>
+          <param>
+            <type>class PointArray2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::convexHull</definition>
+        <argsstring>(const PointArray1 &amp;points, PointArray2 &amp;convex_hull)</argsstring>
+        <name>convexHull</name>
+        <param>
+          <type>const PointArray1 &amp;</type>
+          <declname>points</declname>
+        </param>
+        <param>
+          <type>PointArray2 &amp;</type>
+          <declname>convex_hull</declname>
+        </param>
+        <briefdescription>
+<para>Compute convex hull of a 2D polygon. </para>        </briefdescription>
+        <detaileddescription>
+<para>The input array <emphasis>points</emphasis> contains a (not necessarily ordered) set of 2D points whose convex hull is to be computed. The array&apos;s <computeroutput>value_type</computeroutput> (i.e. the point type) must be compatible with std::vector (in particular, it must support indexing, copying, and have <computeroutput>size() == 2</computeroutput>). The points of the convex hull will be appended to the output array <emphasis>convex_hull</emphasis> (which must support <computeroutput>std::back_inserter(convex_hull)</computeroutput>). Since the convex hull is a closed polygon, the first and last point of the output will be the same (i.e. the first point will simply be inserted at the end again). The points of the convex hull will be ordered counter-clockwise, starting with the leftmost point of the input. The function implements Andrew&apos;s Monotone Chain algorithm. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polygon.hxx" line="84" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/polygon.hxx" bodystart="83" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga7ce9a27a70c7341a29c4637cddf26f8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class REAL</type>
+          </param>
+        </templateparamlist>
+        <type>REAL</type>
+        <definition>REAL vigra::cos_pi</definition>
+        <argsstring>(REAL x)</argsstring>
+        <name>cos_pi</name>
+        <param>
+          <type>REAL</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>cos(pi*x). <verbatim>   Essentially calls &lt;tt&gt;std::cos(M_PI*x)&lt;/tt&gt; but uses a more accurate implementation
+   to make sure that &lt;tt&gt;cos_pi(1.0) == -1.0&lt;/tt&gt; and &lt;tt&gt;cos_pi(0.5) == 0.0&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1188" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1187" bodyend="1190"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga29d6193bd95ec54c5f25dd0470f58215" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::ellipticIntegralE</definition>
+        <argsstring>(double x, double k)</argsstring>
+        <name>ellipticIntegralE</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The incomplete elliptic integral of the second kind. <verbatim>   Computes
+</verbatim></para><para><formula id="56">\[ \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt \]</formula> <verbatim>  according to the algorithm given in Press et al. &quot;Numerical Recipes&quot;. The
+  complete elliptic integral of the second kind is simply &lt;tt&gt;ellipticIntegralE(M_PI/2, k)&lt;/TT&gt;.
+
+  Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
+  functions must be k^2 rather than k. Check the documentation when results disagree!
+
+  &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+  Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="825" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="824" bodyend="830"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga7e909bd1d07e846d5d3ba78eaed7c520" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::ellipticIntegralF</definition>
+        <argsstring>(double x, double k)</argsstring>
+        <name>ellipticIntegralF</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>k</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The incomplete elliptic integral of the first kind. <verbatim>   Computes
+</verbatim></para><para><formula id="55">\[ \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt \]</formula> <verbatim>  according to the algorithm given in Press et al. &quot;Numerical Recipes&quot;. 
+
+  Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
+  functions must be k^2 rather than k. Check the documentation when results disagree!
+
+  &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+  Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="801" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="800" bodyend="805"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga3cf86b8d2300cd08b69024eb89f90115" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool vigra::even</definition>
+        <argsstring>(int t)</argsstring>
+        <name>even</name>
+        <param>
+          <type>int</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check if an integer is even. <verbatim>   Defined for all integral types.</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="584"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gae431ca135e885013a1010228aa0c190b" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>BSplineBase&lt; ORDER, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>first_argument_type</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>second_argument_type</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="181" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="188" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9cb94043124344e66618c1fab496eb0c" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T exec</definition>
+        <argsstring>(T x, unsigned int derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>T</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="405" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="411" bodyend="435"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga3b57124c7dbd038a45dad27927300594" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>BSpline&lt; 2, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>first_argument_type</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>second_argument_type</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="517" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="524" bodyend="564"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaa7984eac025397f1d62aacdb14f74f53" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>BSpline&lt; 3, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>first_argument_type</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>second_argument_type</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="650" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="657" bodyend="714"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9f6fa52c87b2d5f3941e3da9bcdd4188" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>BSpline&lt; 4, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>first_argument_type</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>second_argument_type</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="796" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="803" bodyend="909"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga17ce92a637beb24c47e9a6f4adcd62f6" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>BSpline&lt; 5, T &gt;::result_type exec</definition>
+        <argsstring>(first_argument_type x, second_argument_type derivative_order) const </argsstring>
+        <name>exec</name>
+        <param>
+          <type>first_argument_type</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>second_argument_type</type>
+          <declname>derivative_order</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="995" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="1002" bodyend="1127"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga73c914923c1c096cef574906d6169329" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>UInt32</type>
+        <definition>UInt32 vigra::floorPower2</definition>
+        <argsstring>(UInt32 x)</argsstring>
+        <name>floorPower2</name>
+        <param>
+          <type>UInt32</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Round down to the nearest power of 2. <verbatim>   Efficient algorithm for finding the largest power of 2 which is not greater than \a x
+   (function flp2() from Henry Warren: &quot;Hacker&apos;s Delight&quot;, Addison-Wesley, 2003,
+    see http://www.hackersdelight.org/).
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="261" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga441c9e4bf9f952c0fe94836634bcf976" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::gamma</definition>
+        <argsstring>(double x)</argsstring>
+        <name>gamma</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The gamma function. <verbatim>   This function implements the algorithm from&lt;br&gt;
+   Zhang and Jin: &quot;Computation of Special Functions&quot;, John Wiley and Sons, 1996.
+
+   The argument must be &lt;= 171.0 and cannot be zero or a negative integer. An
+   exception is thrown when these conditions are violated.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1487" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1486" bodyend="1489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga5825d3973169fc0c90404849a5906697" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>IntType</type>
+        <definition>IntType vigra::gcd</definition>
+        <argsstring>(IntType n, IntType m)</argsstring>
+        <name>gcd</name>
+        <param>
+          <type>IntType</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>IntType</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate the greatest common divisor.</para><para>This function works for arbitrary integer types, including user-defined (e.g. infinite precision) ones.</para><para><bold>#include</bold> &lt;<ref refid="rational_8hxx_source" kindref="compound">vigra/rational.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="82" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="81" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga643a6681534ba7611545eecca201666a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class IndexIterator</type>
+          </param>
+          <param>
+            <type>class Compare</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::indexSort</definition>
+        <argsstring>(Iterator first, Iterator last, IndexIterator index_first, Compare c)</argsstring>
+        <name>indexSort</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>IndexIterator</type>
+          <declname>index_first</declname>
+        </param>
+        <param>
+          <type>Compare</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the index permutation that would sort the input array. <verbatim>   To actually sort an array according to the ordering thus determined, use 
+   \ref applyPermutation().
+
+   &lt;b&gt; Declarations:&lt;/b&gt;
+
+   @code 
+   namespace vigra {
+       // compare using std::less
+       template &lt;class Iterator, class IndexIterator&gt;
+       void indexSort(Iterator first, Iterator last, IndexIterator index_first);
+
+       // compare using functor Compare
+       template &lt;class Iterator, class IndexIterator, class Compare&gt;
+       void indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare compare);
+   }
+   \endcode
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator and IndexIterators are random access iterators.
+
+   bool res = compare(first[*index_first], first[*index_first]);
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="345" bodyend="351"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga3ba5faf4893308c4d460081594100354" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class IndexIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::indexSort</definition>
+        <argsstring>(Iterator first, Iterator last, IndexIterator index_first)</argsstring>
+        <name>indexSort</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>IndexIterator</type>
+          <declname>index_first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="355" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="354" bodyend="358"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaf26349c51c03a24f22baab0138374c77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectSequence</definition>
+        <argsstring>(...)</argsstring>
+        <name>inspectSequence</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Call an analyzing functor at every element of a sequence. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function can be used to collect statistics of the sequence <computeroutput>[first, last)</computeroutput> defined by these two input interators. The results must be stored in the functor, which serves as a return value.</para><para><bold> Declarations:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>InputIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Functor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__MathFunctions_1gaf26349c51c03a24f22baab0138374c77" kindref="member" tooltip="Call an analyzing functor at every element of a sequence.">inspectSequence</ref>(InputIterator<sp/>first,<sp/>InputIterator<sp/>last,<sp/>Functor<sp/>&amp;<sp/>f);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="algorithm_8hxx_source" kindref="compound">vigra/algorithm.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">std::vector<sp/>array(100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>functor</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1FindMinMax" kindref="compound" tooltip="Find the minimum and maximum pixel value in an image or ROI.">vigra::FindMinMax&lt;int&gt;</ref><sp/>minmax;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__MathFunctions_1gaf26349c51c03a24f22baab0138374c77" kindref="member" tooltip="Call an analyzing functor at every element of a sequence.">vigra::inspectSequence</ref>(array.begin(),<sp/>array.end(),<sp/>minmax);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Min:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a0ae3408e83fa258f08ece61e194251a9" kindref="member">min</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>Max:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>minmax.<ref refid="classvigra_1_1FindMinMax_1a7a6d5ee26475974260562366c1a71b01" kindref="member">max</ref>;</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="263"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9e356f875d05fca63bf602b0467ad62b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+          <param>
+            <type>class Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inspectSequence</definition>
+        <argsstring>(InputIterator first, InputIterator last, Functor &amp;f)</argsstring>
+        <name>inspectSequence</name>
+        <param>
+          <type>InputIterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>InputIterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>Functor &amp;</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="286" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga89c0801ae0f386bade8dbc77fa485301" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InIterator</type>
+          </param>
+          <param>
+            <type>class OutIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::inversePermutation</definition>
+        <argsstring>(InIterator first, InIterator last, OutIterator out)</argsstring>
+        <name>inversePermutation</name>
+        <param>
+          <type>InIterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>InIterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>OutIterator</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the inverse of a given permutation. <verbatim>   This is just another name for \ref indexSort(), referring to
+   another semantics.
+
+   &lt;b&gt; Declaration:&lt;/b&gt;
+
+   @code 
+   namespace vigra {
+       template &lt;class InIterator, class OutIterator&gt;
+       void inversePermutation(InIterator first, InIterator last, 
+                               OutIterator out);
+   }
+   \endcode
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   InIterator and OutIterator are random access iterators.
+
+   *out = in[*index_first];
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="425" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="423" bodyend="427"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga1aa613671eda401daa90a686497c27da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename IntType</type>
+          </param>
+        </templateparamlist>
+        <type>IntType</type>
+        <definition>IntType vigra::lcm</definition>
+        <argsstring>(IntType n, IntType m)</argsstring>
+        <name>lcm</name>
+        <param>
+          <type>IntType</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>IntType</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Calculate the lowest common multiple.</para><para>This function works for arbitrary integer types, including user-defined (e.g. infinite precision) ones.</para><para><bold>#include</bold> &lt;<ref refid="rational_8hxx_source" kindref="compound">vigra/rational.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" line="123" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/rational.hxx" bodystart="122" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga53853aa76befa82637051ecbadc9a10b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class REAL</type>
+          </param>
+        </templateparamlist>
+        <type>REAL</type>
+        <definition>REAL vigra::legendre</definition>
+        <argsstring>(unsigned int l, int m, REAL x)</argsstring>
+        <name>legendre</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>REAL</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Associated Legendre polynomial. <verbatim>   Computes the value of the associated Legendre polynomial of order &lt;tt&gt;l, m&lt;/tt&gt; 
+   for argument &lt;tt&gt;x&lt;/tt&gt;. &lt;tt&gt;x&lt;/tt&gt; must be in the range &lt;tt&gt;[-1.0, 1.0]&lt;/tt&gt;, 
+   otherwise an exception is thrown. The standard Legendre polynomials are the 
+   special case &lt;tt&gt;m == 0&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1088" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1087" bodyend="1123"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga0197e622433399bc9792bb1a884c0b8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class REAL</type>
+          </param>
+        </templateparamlist>
+        <type>REAL</type>
+        <definition>REAL vigra::legendre</definition>
+        <argsstring>(unsigned int l, REAL x)</argsstring>
+        <name>legendre</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>REAL</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Legendre polynomial. <verbatim>   Computes the value of the Legendre polynomial of order &lt;tt&gt;l&lt;/tt&gt; for argument &lt;tt&gt;x&lt;/tt&gt;.
+   &lt;tt&gt;x&lt;/tt&gt; must be in the range &lt;tt&gt;[-1.0, 1.0]&lt;/tt&gt;, otherwise an exception is thrown.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1134" bodyend="1137"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gad4ed6110df5e4258d0a4541bcf85c762" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class Value</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linearSequence</definition>
+        <argsstring>(Iterator first, Iterator last, Value start, Value step)</argsstring>
+        <name>linearSequence</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>Value</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>Value</type>
+          <declname>step</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Fill an array with a sequence of numbers. <verbatim>   The sequence starts at \a start and is incremented with \a step. Default start
+   and stepsize are 0 and 1 respectively.
+
+   &lt;b&gt; Declaration:&lt;/b&gt;
+
+   @code 
+   namespace vigra {
+       template &lt;class Iterator, class Value&gt;
+       void linearSequence(Iterator first, Iterator last, 
+                     Value const &amp; start = 0, Value const &amp; step = 1);
+   }
+   \endcode
+
+   &lt;b&gt;Required Interface:&lt;/b&gt;
+
+   @code 
+   Iterator is a standard forward iterator.
+
+   *first = start;
+   start += step;
+   \endcode
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/algorithm.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="207" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaaaf14db9fd1b3cefa1c86d1ca4c2dd7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+          <param>
+            <type>class Value</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linearSequence</definition>
+        <argsstring>(Iterator first, Iterator last, Value start)</argsstring>
+        <name>linearSequence</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>Value</type>
+          <declname>start</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="215" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="214" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9f860d3e2208bdd2aaf6d63501d35bcd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linearSequence</definition>
+        <argsstring>(Iterator first, Iterator last)</argsstring>
+        <name>linearSequence</name>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="222" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="221" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga0271fdd97b849704cded72b31cce3c83" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Int32</type>
+        <definition>Int32 vigra::log2i</definition>
+        <argsstring>(UInt32 x)</argsstring>
+        <name>log2i</name>
+        <param>
+          <type>UInt32</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the base-2 logarithm of an integer. <verbatim>   Returns the position of the left-most 1-bit in the given number \a x, or
+   -1 if \a x == 0. That is,
+
+   @code 
+   assert(k &gt;= 0 &amp;&amp; k &lt; 32 &amp;&amp; log2i(1 &lt;&lt; k) == k);
+   \endcode
+
+   The function uses Robert Harley&apos;s algorithm to determine the number of leading zeros
+   in \a x (algorithm nlz10() at http://www.hackersdelight.org/). But note that the functions
+   \ref floorPower2() or \ref ceilPower2() are more efficient and should be preferred when possible.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="307" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="306" bodyend="316"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gafc5038616b325ecfd12b4ef51318aa26" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::loggamma</definition>
+        <argsstring>(double x)</argsstring>
+        <name>loggamma</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The natural logarithm of the gamma function. <verbatim>   This function is based on a free implementation by Sun Microsystems, Inc., see
+   &lt;a href=&quot;http://www.sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libm/mathfp/er_lgamma.c?rev=1.6&amp;content-type=text/plain&amp;cvsroot=src&quot;&gt;sourceware.org&lt;/a&gt; archive. It can be removed once all compilers support the new C99
+   math functions.
+
+   The argument must be positive and &lt; 1e30. An exception is thrown when these conditions are violated.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1503" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1502" bodyend="1505"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga074ace0a87d00243c85a52e5071a1ad4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::noncentralChi2</definition>
+        <argsstring>(unsigned int degreesOfFreedom, double noncentrality, double arg, double accuracy=1e-7)</argsstring>
+        <name>noncentralChi2</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>degreesOfFreedom</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>noncentrality</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>arg</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>accuracy</declname>
+          <defval>1e-7</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Non-central chi square distribution. <verbatim>   Computes the density of a non-central chi square distribution with \a degreesOfFreedom, 
+   noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
+   \a arg. It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+   http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
+   degrees of freedom.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1020" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1018" bodyend="1022"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga4e01fc59c3d8455e8ccbbd8824230226" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::noncentralChi2CDF</definition>
+        <argsstring>(unsigned int degreesOfFreedom, double noncentrality, double arg, double accuracy=1e-7)</argsstring>
+        <name>noncentralChi2CDF</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>degreesOfFreedom</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>noncentrality</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>arg</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>accuracy</declname>
+          <defval>1e-7</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cumulative non-central chi square distribution. <verbatim>   Computes the cumulative density of a chi square distribution with \a degreesOfFreedom, 
+   noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
+   \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
+   It uses Algorithm AS 231 from Appl. Statist. (1987) Vol.36, No.3 (code ported from 
+   http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
+   degrees of freedom (see noncentralChi2CDFApprox() for a constant-time algorithm).
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1038" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1036" bodyend="1040"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaddeff01bf2aa44ad74399a1888a6bbfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::noncentralChi2CDFApprox</definition>
+        <argsstring>(unsigned int degreesOfFreedom, double noncentrality, double arg)</argsstring>
+        <name>noncentralChi2CDFApprox</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>degreesOfFreedom</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>noncentrality</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>arg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cumulative non-central chi square distribution (approximate). <verbatim>   Computes approximate values of the cumulative density of a chi square distribution with \a degreesOfFreedom, 
+   and noncentrality parameter \a noncentrality at the given argument 
+   \a arg, i.e. the probability that a random number drawn from the distribution is below \a arg
+   It uses the approximate transform into a normal distribution due to Wilson and Hilferty 
+   (see Abramovitz, Stegun: &quot;Handbook of Mathematical Functions&quot;, formula 26.3.32). 
+   The algorithm&apos;s running time is independent of the inputs, i.e. is should be used
+   when noncentralChi2CDF() is too slow, and approximate values are sufficient. The accuracy is only 
+   about 0.1 for few degrees of freedom, but reaches about 0.001 above dof = 5.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1057" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1056" bodyend="1059"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga794eb2a920016363c5e9653b6b2b6eb2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>NormTraits&lt; T &gt;::NormType</type>
+        <definition>NormTraits&lt;T&gt;::NormType vigra::norm</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>norm</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The norm of a numerical object. <verbatim>   For scalar types: implemented as &lt;tt&gt;abs(t)&lt;/tt&gt;&lt;br&gt;
+   otherwise: implemented as &lt;tt&gt;sqrt(squaredNorm(t))&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="662" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="661" bodyend="665"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga48f661149941ebaa90ddd99ee5eee145" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool vigra::odd</definition>
+        <argsstring>(int t)</argsstring>
+        <name>odd</name>
+        <param>
+          <type>int</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check if an integer is odd. <verbatim>   Defined for all integral types.</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="590"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gaebd375194b3220beebe0a22e67d7a4e8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>result_type</type>
+        <definition>CatmullRomSpline&lt; T &gt;::result_type operator()</definition>
+        <argsstring>(argument_type x) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>argument_type</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>function (functor) call </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" line="1178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/splines.hxx" bodystart="1209" bodyend="1224"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga203e71c46fd7f38f8139eed3072f6c78" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned</type>
+            <declname>n</declname>
+            <defname>n</defname>
+          </param>
+          <param>
+            <type>class V</type>
+          </param>
+        </templateparamlist>
+        <type>V</type>
+        <definition>V vigra::power</definition>
+        <argsstring>(const V &amp;x)</argsstring>
+        <name>power</name>
+        <param>
+          <type>const V &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Exponentiation to a positive integer power by squaring. <verbatim>   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="373" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="372" bodyend="375"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga3fd73560e02ff2f241ebfdf38daf1740" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>REAL</type>
+        <definition>REAL vigra::round</definition>
+        <argsstring>(REAL v)</argsstring>
+        <name>round</name>
+        <param>
+          <type>REAL</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The rounding function. <verbatim>   Defined for all floating point types. Rounds towards the nearest integer 
+   such that &lt;tt&gt;abs(round(t)) == round(abs(t))&lt;/tt&gt; for all &lt;tt&gt;t&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="189"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga23027b5a14396e8f6a0559e8db50cc41" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float vigra::round</definition>
+        <argsstring>(float t)</argsstring>
+        <name>round</name>
+        <param>
+          <type>float</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="192" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga832978a9df2b3272121fd2eb5bb7d138" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::round</definition>
+        <argsstring>(double t)</argsstring>
+        <name>round</name>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="200" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="199" bodyend="204"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga8dfda514e9854efd14e41181df5e4e12" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>long double</type>
+        <definition>long double vigra::round</definition>
+        <argsstring>(long double t)</argsstring>
+        <name>round</name>
+        <param>
+          <type>long double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="207" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="206" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga97048e053a17edc953036936e59ce88e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int vigra::roundi</definition>
+        <argsstring>(double t)</argsstring>
+        <name>roundi</name>
+        <param>
+          <type>double</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Round and cast to integer. <verbatim>   Rounds to the nearest integer like round(), but casts the result to 
+   &lt;tt&gt;int&lt;/tt&gt; (this will be faster and is usually needed anyway).
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="222" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga99756ca23b738bdc82afba3b0e49df74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T vigra::sign</definition>
+        <argsstring>(T t)</argsstring>
+        <name>sign</name>
+        <param>
+          <type>T</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The sign function. <verbatim>   Returns 1, 0, or -1 depending on the sign of \a t, but with the same type as \a t.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="538" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="537" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1gab97607c505b78dde9e45ce4f11ad20ea" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+        </templateparamlist>
+        <type>T1</type>
+        <definition>T1 vigra::sign</definition>
+        <argsstring>(T1 t1, T2 t2)</argsstring>
+        <name>sign</name>
+        <param>
+          <type>T1</type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type>T2</type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The binary sign function. <verbatim>   Transfers the sign of \a t2 to \a t1.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="572" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="571" bodyend="576"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga2d6f0e128653deb42a47a8f379b4b9a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int vigra::signi</definition>
+        <argsstring>(T t)</argsstring>
+        <name>signi</name>
+        <param>
+          <type>T</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The integer sign function. <verbatim>   Returns 1, 0, or -1 depending on the sign of \a t, converted to int.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="555" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="554" bodyend="561"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga8fe78db7b7769819568aeafbfbc2ffd0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class REAL</type>
+          </param>
+        </templateparamlist>
+        <type>REAL</type>
+        <definition>REAL vigra::sin_pi</definition>
+        <argsstring>(REAL x)</argsstring>
+        <name>sin_pi</name>
+        <param>
+          <type>REAL</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>sin(pi*x). <verbatim>   Essentially calls &lt;tt&gt;std::sin(M_PI*x)&lt;/tt&gt; but uses a more accurate implementation
+   to make sure that &lt;tt&gt;sin_pi(1.0) == 0.0&lt;/tt&gt; (which does not hold for
+   &lt;tt&gt;std::sin(M_PI)&lt;/tt&gt; due to round-off error), and &lt;tt&gt;sin_pi(0.5) == 1.0&lt;/tt&gt;.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="1150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="1149" bodyend="1176"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>NumericTraits&lt; T &gt;::Promote</type>
+        <definition>NumericTraits&lt;T&gt;::Promote vigra::sq</definition>
+        <argsstring>(T t)</argsstring>
+        <name>sq</name>
+        <param>
+          <type>T</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The square function. <verbatim>   &lt;tt&gt;sq(x) = x*x&lt;/tt&gt; is needed so often that it makes sense to define it as a function.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="327" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga540e54c778be63996a0f61f7117c2903" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Int32</type>
+        <definition>UInt32 sqrti</definition>
+        <argsstring>(Int32 v)</argsstring>
+        <name>sqrti</name>
+        <param>
+          <type>Int32</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Signed integer square root. <verbatim>   Useful for fast fixed-point computations.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim></para><para>Unsigned integer square root. <verbatim>   Useful for fast fixed-point computations.
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="485" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="484" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga4f9c389f31cf428a2c4c6f0f883d436a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>NormTraits&lt; std::complex&lt; T &gt; &gt;::SquaredNormType</type>
+        <definition>NormTraits&lt;std::complex&lt;T&gt; &gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(std::complex&lt; T &gt; const &amp;t)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>std::complex&lt; T &gt; const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="635" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="634" bodyend="637"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga38870065d4c6e12602b9154c7e69df1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>NormTraits&lt; T &gt;::SquaredNormType</type>
+        <definition>NormTraits&lt;T&gt;::SquaredNormType vigra::squaredNorm</definition>
+        <argsstring>(T const &amp;t)</argsstring>
+        <name>squaredNorm</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The squared norm of a numerical object. <verbatim>   For scalar types: equals &lt;tt&gt;vigra::sq(t)&lt;/tt&gt;&lt;br&gt;.
+   For vectorial types: equals &lt;tt&gt;vigra::dot(t, t)&lt;/tt&gt;&lt;br&gt;.
+   For complex types: equals &lt;tt&gt;vigra::sq(t.real()) + vigra::sq(t.imag())&lt;/tt&gt;&lt;br&gt;.
+   For matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="647"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga9210561d31f03b4fa1656bafc7182c0b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::symmetric2x2Eigenvalues</definition>
+        <argsstring>(T a00, T a01, T a11, T *r0, T *r1)</argsstring>
+        <name>symmetric2x2Eigenvalues</name>
+        <param>
+          <type>T</type>
+          <declname>a00</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a01</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a11</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>r0</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>r1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the eigenvalues of a 2x2 real symmetric matrix. <verbatim>   This uses the analytical eigenvalue formula 
+</verbatim> <formula id="54">\[ \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right) \]</formula> <verbatim>  &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+  Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="679" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="678" bodyend="685"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga2c49eca66b2ba5c308d04fa324dcc230" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::symmetric3x3Eigenvalues</definition>
+        <argsstring>(T a00, T a01, T a02, T a11, T a12, T a22, T *r0, T *r1, T *r2)</argsstring>
+        <name>symmetric3x3Eigenvalues</name>
+        <param>
+          <type>T</type>
+          <declname>a00</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a01</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a02</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a11</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a12</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>a22</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>r0</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>r1</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>r2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the eigenvalues of a 3x3 real symmetric matrix. <verbatim>   This uses a numerically stable version of the analytical eigenvalue formula according to
+   &lt;p&gt;
+   David Eberly: &lt;a href=&quot;http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf&quot;&gt;
+   &lt;em&gt;&quot;Eigensystems for 3 × 3 Symmetric Matrices (Revisited)&quot;&lt;/em&gt;&lt;/a&gt;, Geometric Tools Documentation, 2006
+
+   &lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/mathutil.hxx\&gt;&lt;br&gt;
+   Namespace: vigra</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="701" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="699" bodyend="728"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga44fb52c0d326e90e4b0da196f54535da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::updateMax</definition>
+        <argsstring>(T &amp;x, const T &amp;y)</argsstring>
+        <name>updateMax</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="702" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="701" bodyend="705"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MathFunctions_1ga0403d55d185f347b22ed8c8a1086fff5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::updateMin</definition>
+        <argsstring>(T &amp;x, const T &amp;y)</argsstring>
+        <name>updateMin</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" line="695" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/algorithm.hxx" bodystart="694" bodyend="698"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__MathFunctions_1ga62d66314976cfe858e559df44dd15479" prot="public" static="no">
+        <name>VIGRA_DEFINE_MISSING_ABS</name>
+        <param><defname>T</defname></param>
+        <initializer>inline T abs(T t) { return t &lt; 0 ? -t : t; }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="147" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__MathFunctions_1ga1340fa97f0e27d10ba5658a1dcc908aa" prot="public" static="no">
+        <name>VIGRA_DEFINE_NORM</name>
+        <param><defname>T</defname></param>
+        <initializer>inline NormTraits&lt;T&gt;::SquaredNormType squaredNorm(T t) { return sq(t); } \
+    inline NormTraits&lt;T&gt;::NormType norm(T t) { return abs(t); }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="613" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="611" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__MathFunctions_1gad91dc07c20718fcd959623e24c89b045" prot="public" static="no">
+        <name>VIGRA_DEFINE_ODD_EVEN</name>
+        <param><defname>T</defname></param>
+        <initializer>inline bool even(T t) { return (t&amp;1) == 0; } \
+    inline bool odd(T t)  { return (t&amp;1) == 1; }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="596" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="594" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__MathFunctions_1gae2e5ba696069cf28af3dfcf922e17fef" prot="public" static="no">
+        <name>VIGRA_DEFINE_SCALAR_DOT</name>
+        <param><defname>T</defname></param>
+        <initializer>inline NumericTraits&lt;T&gt;::Promote dot(T l, T r) { return l*r; }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="162" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__MathFunctions_1ga18782b7f44071d750474d63098a05323" prot="public" static="no">
+        <name>VIGRA_DEFINE_UNSIGNED_ABS</name>
+        <param><defname>T</defname></param>
+        <initializer>inline T abs(T t) { return t; }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" line="135" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/mathutil.hxx" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Useful mathematical functions and functors. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

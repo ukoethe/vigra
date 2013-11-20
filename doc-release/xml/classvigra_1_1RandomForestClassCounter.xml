@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RandomForestClassCounter" kind="class" prot="public">
+    <compoundname>vigra::RandomForestClassCounter</compoundname>
+    <includes refid="rf__split_8hxx" local="no">vigra/random_forest/rf_split.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class DataSource</type>
+      </param>
+      <param>
+        <type>class CountArray</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RandomForestClassCounter_1a23d62b39f6a68ab9a50957a8aeaff677" prot="private" static="no" mutable="no">
+        <type>CountArray &amp;</type>
+        <definition>CountArray&amp; counts_</definition>
+        <argsstring></argsstring>
+        <name>counts_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="308" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="308" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForestClassCounter_1ae37c58a5ed278fb26fe56eed8a487869" prot="private" static="no" mutable="no">
+        <type>DataSource const &amp;</type>
+        <definition>DataSource const&amp; labels_</definition>
+        <argsstring></argsstring>
+        <name>labels_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="307" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="307" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RandomForestClassCounter_1aa934760e782220868cc50112644c9f01" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator()</definition>
+        <argsstring>(MultiArrayIndex l) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="326" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="325" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestClassCounter_1a963bc7a1b70baac4a077c44b910ac006" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomForestClassCounter</definition>
+        <argsstring>(DataSource const &amp;labels, CountArray &amp;counts)</argsstring>
+        <name>RandomForestClassCounter</name>
+        <param>
+          <type>DataSource const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>CountArray &amp;</type>
+          <declname>counts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="316" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="312" bodyend="318"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForestClassCounter_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="320" bodyend="323"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>makes a Class Histogram given indices in a labels_ array usage: <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView&lt;2, T2, C2&gt;</ref> labels = makeSomeLabels() <ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector&lt;int&gt;</ref> hist(numberOfLabels(labels), 0); RandomForestClassCounter&lt;T2, C2, ArrayVector&gt; counter(labels, hist);</para><para>Container&lt;int&gt; indices = getSomeIndices() std::for_each(indices, counter); </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="306" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="305" bodyend="329"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RandomForestClassCounter_1a23d62b39f6a68ab9a50957a8aeaff677" prot="private" virt="non-virtual"><scope>vigra::RandomForestClassCounter</scope><name>counts_</name></member>
+      <member refid="classvigra_1_1RandomForestClassCounter_1ae37c58a5ed278fb26fe56eed8a487869" prot="private" virt="non-virtual"><scope>vigra::RandomForestClassCounter</scope><name>labels_</name></member>
+      <member refid="classvigra_1_1RandomForestClassCounter_1aa934760e782220868cc50112644c9f01" prot="public" virt="non-virtual"><scope>vigra::RandomForestClassCounter</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1RandomForestClassCounter_1a963bc7a1b70baac4a077c44b910ac006" prot="public" virt="non-virtual"><scope>vigra::RandomForestClassCounter</scope><name>RandomForestClassCounter</name></member>
+      <member refid="classvigra_1_1RandomForestClassCounter_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::RandomForestClassCounter</scope><name>reset</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

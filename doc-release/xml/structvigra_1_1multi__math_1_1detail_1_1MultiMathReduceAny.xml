@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduceAny" kind="struct" prot="public">
+    <compoundname>vigra::multi_math::detail::MultiMathReduceAny</compoundname>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduceAny_1a1e281504e1c83aa7a6377c16dc63c8a3" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Expression</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void assign</definition>
+        <argsstring>(T *data, Expression const &amp;e)</argsstring>
+        <name>assign</name>
+        <param>
+          <type>T *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>Expression const &amp;</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="811" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="810" bodyend="813"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" line="808" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_math.hxx" bodystart="807" bodyend="814"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1multi__math_1_1detail_1_1MultiMathReduceAny_1a1e281504e1c83aa7a6377c16dc63c8a3" prot="public" virt="non-virtual"><scope>vigra::multi_math::detail::MultiMathReduceAny</scope><name>assign</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

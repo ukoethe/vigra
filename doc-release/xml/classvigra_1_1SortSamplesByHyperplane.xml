@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1SortSamplesByHyperplane" kind="class" prot="public">
+    <compoundname>vigra::SortSamplesByHyperplane</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class DataMatrix</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1SortSamplesByHyperplane_1abaa8134f48160073cc59674c57f4263e" prot="private" static="no" mutable="no">
+        <type>DataMatrix const &amp;</type>
+        <definition>DataMatrix const&amp; data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1SortSamplesByHyperplane_1a59d4dcee97051ccf2b983bfa056ae145" prot="private" static="no" mutable="no">
+        <type>Node&lt; i_HyperplaneNode &gt; const &amp;</type>
+        <definition>Node&lt;i_HyperplaneNode&gt; const&amp; node_</definition>
+        <argsstring></argsstring>
+        <name>node_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="264" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByHyperplane_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator()</definition>
+        <argsstring>(MultiArrayIndex l, MultiArrayIndex r) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="289" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="288" bodyend="291"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByHyperplane_1a9347d35283aae23e84c43c86320ce315" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double operator[]</definition>
+        <argsstring>(MultiArrayIndex l) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type><ref refid="group__MultiIteratorGroup_1gac436173a0374e960a463a9186496ab70" kindref="member">MultiArrayIndex</ref></type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate the distance of a sample point to a hyperplane </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="277" bodyend="286"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1SortSamplesByHyperplane_1a445f4a2a3c4eea6017e0191d8899fd4b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>SortSamplesByHyperplane</definition>
+        <argsstring>(DataMatrix const &amp;data, Node&lt; i_HyperplaneNode &gt; const &amp;node)</argsstring>
+        <name>SortSamplesByHyperplane</name>
+        <param>
+          <type>DataMatrix const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>Node&lt; i_HyperplaneNode &gt; const &amp;</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="273" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="268" bodyend="273"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" line="262" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_split.hxx" bodystart="261" bodyend="293"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1SortSamplesByHyperplane_1abaa8134f48160073cc59674c57f4263e" prot="private" virt="non-virtual"><scope>vigra::SortSamplesByHyperplane</scope><name>data_</name></member>
+      <member refid="classvigra_1_1SortSamplesByHyperplane_1a59d4dcee97051ccf2b983bfa056ae145" prot="private" virt="non-virtual"><scope>vigra::SortSamplesByHyperplane</scope><name>node_</name></member>
+      <member refid="classvigra_1_1SortSamplesByHyperplane_1a2cdf7d7c0d3b2e4e38c15c0700f85150" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByHyperplane</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1SortSamplesByHyperplane_1a9347d35283aae23e84c43c86320ce315" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByHyperplane</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1SortSamplesByHyperplane_1a445f4a2a3c4eea6017e0191d8899fd4b" prot="public" virt="non-virtual"><scope>vigra::SortSamplesByHyperplane</scope><name>SortSamplesByHyperplane</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

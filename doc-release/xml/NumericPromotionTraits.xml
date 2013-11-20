@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="NumericPromotionTraits" kind="page">
+    <compoundname>NumericPromotionTraits</compoundname>
+    <title>Numeric and Promotion Traits</title>
+    <detaileddescription>
+<para>Meta-information about arithmetic types.</para><para><itemizedlist>
+<listitem>
+<para><ref refid="NumericTraits" kindref="compound">template&lt;&gt; struct NumericTraits&lt;ArithmeticType&gt;</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Unary traits for promotion, conversion, creation of arithmetic objects</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="PromoteTraits" kindref="compound">template&lt;&gt; struct PromoteTraits&lt;ArithmeticType1, ArithmeticType2&gt;</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Binary traits for promotion of arithmetic objects</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="SquareRootTraits" kindref="compound">template&lt;&gt; struct SquareRootTraits&lt;ArithmeticType&gt;</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Unary traits for the calculation of the square root of arithmetic objects</emphasis> </para></listitem>
+<listitem>
+<para><ref refid="NormTraits" kindref="compound">template&lt;&gt; struct NormTraits&lt;ArithmeticType&gt;</ref> <linebreak/>
+<nonbreakablespace/><nonbreakablespace/><nonbreakablespace/><emphasis>Unary traits for the calculation of the norm and squared norm of arithmetic objects</emphasis> </para></listitem>
+</itemizedlist>
+</para><para>These traits classes contain information that is used by generic algorithms and data structures to determine intermediate and result types of numerical calculations, to convert between different representations of arithmetic types, and to create certain important constants of each type. Thus, algorithms and data structures operating that need arithmetic operations can be made more independent from the actual data representation.</para><para>NumericTraits are implemented as template specializations of one arithmetic type, while PromoteTraits are specialized for a pair of arithmetic types that shall be combined in one operation. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1RegisterNumpyArrayConverters" kind="struct" prot="public">
+    <compoundname>vigra::RegisterNumpyArrayConverters</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class Iter</type>
+      </param>
+      <param>
+        <type>class End</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1RegisterNumpyArrayConverters_1af900e5d8c1caec7ee511b5ea9d549e41" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>()</argsstring>
+        <name>exec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="143" bodyend="148"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" line="142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numpy_array_converters.hxx" bodystart="141" bodyend="149"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1RegisterNumpyArrayConverters_1af900e5d8c1caec7ee511b5ea9d549e41" prot="public" virt="non-virtual"><scope>vigra::RegisterNumpyArrayConverters</scope><name>exec</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

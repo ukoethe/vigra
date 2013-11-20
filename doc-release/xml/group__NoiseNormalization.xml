@@ -1,0 +1,932 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__NoiseNormalization" kind="group">
+    <compoundname>NoiseNormalization</compoundname>
+    <title>Noise Normalization</title>
+    <innerclass refid="classvigra_1_1NoiseNormalizationOptions" prot="public">vigra::NoiseNormalizationOptions</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__NoiseNormalization_1ga80cb9f7fd09e1c63906252df1d1cec4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>void linearNoiseNormalization</definition>
+        <argsstring>(...)</argsstring>
+        <name>linearNoiseNormalization</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Noise normalization by means of an estimated linear noise model. </para>        </briefdescription>
+        <detaileddescription>
+<para>Noise normalization by means of a given linear noise model.</para><para>This function works in the same way as <ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member">nonparametricNoiseNormalization()</ref> with the exception of the model for the dependency between intensity and noise variance: it assumes that this dependency is a linear function rather than a piecewise linear function. If the linear model is applicable, it leads to a very simple transformation which is similar to the familiar gamma correction.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga80cb9f7fd09e1c63906252df1d1cec4e" kindref="member" tooltip="Noise normalization by means of an estimated linear noise model.">linearNoiseNormalization</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga80cb9f7fd09e1c63906252df1d1cec4e" kindref="member" tooltip="Noise normalization by means of an estimated linear noise model.">linearNoiseNormalization</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>src(w,h),<sp/>dest(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::linearNoiseNormalization(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().windowRadius(9).noiseVarianceInitialGuess(25.0).</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>clusterCount(15));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>same as <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref></para><para>This function works similar to <ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member">nonparametricNoiseNormalization()</ref> with the exception that the functional dependency of the noise variance from the intensity is given (as a linear function) rather than estimated:</para><para><programlisting><codeline><highlight class="normal">variance<sp/>=<sp/>a0<sp/>+<sp/>a1<sp/>*<sp/>intensity</highlight></codeline>
+</programlisting></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga80cb9f7fd09e1c63906252df1d1cec4e" kindref="member" tooltip="Noise normalization by means of an estimated linear noise model.">linearNoiseNormalization</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a0,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a1);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga80cb9f7fd09e1c63906252df1d1cec4e" kindref="member" tooltip="Noise normalization by means of an estimated linear noise model.">linearNoiseNormalization</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a0,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a1);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>src(w,h),<sp/>dest(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::linearNoiseNormalization(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>100,<sp/>0.02);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>The source value type must be convertible to <computeroutput>double</computeroutput> or must be a vector whose elements are convertible to <computeroutput>double</computeroutput>. Likewise, the destination type must be assignable from <computeroutput>double</computeroutput> or a vector whose elements are assignable from <computeroutput>double</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1459"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga72a0bd118c2d41d607b990ee7a1d1877" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linearNoiseNormalization</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>linearNoiseNormalization</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1467" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1464" bodyend="1472"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gadbf9398f8d3ae73bfab737c04893ad40" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::linearNoiseNormalization</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>linearNoiseNormalization</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1480" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1477" bodyend="1482"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga103e87be8f63cf21b3f1b932abf152eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linearNoiseNormalization</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, double a0, double a1)</argsstring>
+        <name>linearNoiseNormalization</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a0</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1551" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1548" bodyend="1556"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga6da3571a779e64dbadbcaea8b02820e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::linearNoiseNormalization</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double a0, double a1)</argsstring>
+        <name>linearNoiseNormalization</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a0</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a1</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1564" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1561" bodyend="1566"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga78d48b96e66ee00680567fe9b84d2b71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceClustering</definition>
+        <argsstring>(...)</argsstring>
+        <name>noiseVarianceClustering</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Determine the noise variance as a function of the image intensity and cluster the results. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator first calls <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref> to obtain a sequence of intensity/variance pairs, which are then clustered using the median cut algorithm. Then the cluster centers (i.e. average variance vs. average intensity) are determined and returned in the <emphasis>result</emphasis> sequence.</para><para>In addition to the options valid for <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref>, the following options can be set via the <emphasis>options</emphasis> object (see <ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">vigra::NoiseNormalizationOptions</ref> for details):<linebreak/>
+<linebreak/>
+</para><para><computeroutput>clusterCount</computeroutput>, <computeroutput>averagingQuantile</computeroutput></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga78d48b96e66ee00680567fe9b84d2b71" kindref="member" tooltip="Determine the noise variance as a function of the image intensity and cluster the results...">noiseVarianceClustering</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>result,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga78d48b96e66ee00680567fe9b84d2b71" kindref="member" tooltip="Determine the noise variance as a function of the image intensity and cluster the results...">noiseVarianceClustering</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>result,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::noiseVarianceClustering(srcImageRange(src),<sp/>result,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().windowRadius(9).noiseVarianceInitialGuess(25.0).</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>clusterCount(15));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>print<sp/>the<sp/>intensity<sp/>/<sp/>variance<sp/>pairs<sp/>representing<sp/>the<sp/>cluster<sp/>centers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;result.size();<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Cluster:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>k<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>intensity:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>result[k][0]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>estimated<sp/>variance:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>result[k][1]<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>same as <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1124"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gaa8fa5076e0e98da1d83d5168e7d539a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceClustering</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable &amp;result, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>noiseVarianceClustering</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1131" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1128" bodyend="1135"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga4fbaba1168b5410031f2c86b3d4d5d4f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceClustering</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;result, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>noiseVarianceClustering</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1142" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1139" bodyend="1144"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceEstimation</definition>
+        <argsstring>(...)</argsstring>
+        <name>noiseVarianceEstimation</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Determine the noise variance as a function of the image intensity. </para>        </briefdescription>
+        <detaileddescription>
+<para>This operator applies an algorithm described in</para><para>W. F<umlaut char="o"/>rstner: <emphasis>&quot;Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images&quot;</emphasis>, Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics, Lecture Notes in Earth Science, Berlin: Springer, 1999</para><para>in order to estimate the noise variance as a function of the image intensity in a robust way, i.e. so that intensity changes due to edges do not bias the estimate. The source value type (<computeroutput>SrcAccessor::value_type</computeroutput>) must be a scalar type which is convertible to <computeroutput>double</computeroutput>. The result is written into the <emphasis>result</emphasis> sequence, whose <computeroutput>value_type</computeroutput> must be constructible from two <computeroutput>double</computeroutput> values. The following options can be set via the <emphasis>options</emphasis> object (see <ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">vigra::NoiseNormalizationOptions</ref> for details):<linebreak/>
+<linebreak/>
+</para><para><computeroutput>useGradient</computeroutput>, <computeroutput>windowRadius</computeroutput>, <computeroutput>noiseEstimationQuantile</computeroutput>, <computeroutput>noiseVarianceInitialGuess</computeroutput></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member" tooltip="Determine the noise variance as a function of the image intensity.">noiseVarianceEstimation</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>result,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>SrcAccessor,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>BackInsertable&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member" tooltip="Determine the noise variance as a function of the image intensity.">noiseVarianceEstimation</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>BackInsertable<sp/>&amp;<sp/>result,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BImage</ref><sp/>src(w,h);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vigra::TinyVector&lt;double,<sp/>2&gt;<sp/>&gt;<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::noiseVarianceEstimation(srcImageRange(src),<sp/>result,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().windowRadius(9).noiseVarianceInitialGuess(25.0));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>print<sp/>the<sp/>intensity<sp/>/<sp/>variance<sp/>pairs<sp/>found</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;result.size();<sp/>++k)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Intensity:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>result[k][0]<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>estimated<sp/>variance:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>result[k][1]<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para><programlisting><codeline><highlight class="normal">SrcIterator<sp/>upperleft,<sp/>lowerright;</highlight></codeline>
+<codeline><highlight class="normal">SrcAccessor<sp/>src;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>SrcAccessor::value_type<sp/>SrcType;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>NumericTraits&lt;SrcType&gt;::isScalar<sp/>isScalar;</highlight></codeline>
+<codeline><highlight class="normal">assert(isScalar::asBool<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value<sp/>=<sp/>src(uperleft);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">BackInsertable<sp/>result;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>BackInsertable::value_type<sp/>ResultType;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>intensity,<sp/>variance;</highlight></codeline>
+<codeline><highlight class="normal">result.push_back(ResultType(intensity,<sp/>variance));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1035"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga38d0e48a02880f84695b4be51efad5e8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceEstimation</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable &amp;result, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>noiseVarianceEstimation</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1042" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1039" bodyend="1051"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gabe607cf85a2a2dc907e6d63a38b43f67" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class BackInsertable</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::noiseVarianceEstimation</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, BackInsertable &amp;result, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>noiseVarianceEstimation</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>BackInsertable &amp;</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1058" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1055" bodyend="1060"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::nonparametricNoiseNormalization</definition>
+        <argsstring>(...)</argsstring>
+        <name>nonparametricNoiseNormalization</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Noise normalization by means of an estimated non-parametric noise model. </para>        </briefdescription>
+        <detaileddescription>
+<para>The original image is assumed to be corrupted by noise whose variance depends on the intensity in an unknown way. The present functions first calls <ref refid="group__NoiseNormalization_1ga78d48b96e66ee00680567fe9b84d2b71" kindref="member">noiseVarianceClustering()</ref> to obtain a sequence of intensity/variance pairs (cluster centers) which estimate this dependency. The cluster centers are connected into a piecewise linear function which is the inverted according to the formula derived in</para><para>W. F<umlaut char="o"/>rstner: <emphasis>&quot;Image Preprocessing for Feature Extraction in Digital Intensity, Color and Range Images&quot;</emphasis>, Proc. Summer School on Data Analysis and the Statistical Foundations of Geomatics, Lecture Notes in Earth Science, Berlin: Springer, 1999</para><para>The inverted formula defines a pixel-wise intensity transformation whose application turns the original image into one that is corrupted by additive <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> noise with unit variance. Most subsequent algorithms will be able to handle this type of noise much better than the original noise.</para><para>RGB and other multiband images will be processed one band at a time. The function returns <computeroutput>true</computeroutput> on success. Noise normalization will fail if the original image does not contain sufficiently homogeneous regions that allow robust estimation of the noise variance.</para><para>The <emphasis>options</emphasis> object may use all options described in <ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound">vigra::NoiseNormalizationOptions</ref>.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member" tooltip="Noise normalization by means of an estimated non-parametric noise model.">nonparametricNoiseNormalization</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member" tooltip="Noise normalization by means of an estimated non-parametric noise model.">nonparametricNoiseNormalization</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>src(w,h),<sp/>dest(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::nonparametricNoiseNormalization(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().windowRadius(9).noiseVarianceInitialGuess(25.0).</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>clusterCount(15));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>same as <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1215"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga04617b58c9cd85ea842d853585bfaa9e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::nonparametricNoiseNormalization</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>nonparametricNoiseNormalization</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1220" bodyend="1228"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga322cba7a2314dfc8687b8fe317a700a3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::nonparametricNoiseNormalization</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>nonparametricNoiseNormalization</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1236" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1233" bodyend="1238"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1ga3852da06f4a02d4dbad49740f53cb43d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>void quadraticNoiseNormalization</definition>
+        <argsstring>(...)</argsstring>
+        <name>quadraticNoiseNormalization</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Noise normalization by means of an estimated quadratic noise model. </para>        </briefdescription>
+        <detaileddescription>
+<para>Noise normalization by means of a given quadratic noise model.</para><para>This function works in the same way as <ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member">nonparametricNoiseNormalization()</ref> with the exception of the model for the dependency between intensity and noise variance: it assumes that this dependency is a quadratic function rather than a piecewise linear function. If the quadratic model is applicable, it leads to a somewhat smoother transformation.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga3852da06f4a02d4dbad49740f53cb43d" kindref="member" tooltip="Noise normalization by means of an estimated quadratic noise model.">quadraticNoiseNormalization</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga3852da06f4a02d4dbad49740f53cb43d" kindref="member" tooltip="Noise normalization by means of an estimated quadratic noise model.">quadraticNoiseNormalization</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NoiseNormalizationOptions<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;<sp/>options<sp/>=<sp/>NoiseNormalizationOptions());</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>src(w,h),<sp/>dest(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::quadraticNoiseNormalization(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classvigra_1_1NoiseNormalizationOptions" kindref="compound" tooltip="Pass options to one of the noise normalization functions.">vigra::NoiseNormalizationOptions</ref>().windowRadius(9).noiseVarianceInitialGuess(25.0).</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>clusterCount(15));</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>same as <ref refid="group__NoiseNormalization_1gac7a0f3b1b8de238ad40a4925f9e62d3f" kindref="member">noiseVarianceEstimation()</ref></para><para>This function works similar to <ref refid="group__NoiseNormalization_1ga1d937331b5773114d6c1187560bb901e" kindref="member">nonparametricNoiseNormalization()</ref> with the exception that the functional dependency of the noise variance from the intensity is given (by a quadratic function) rather than estimated:</para><para><programlisting><codeline><highlight class="normal">variance<sp/>=<sp/>a0<sp/>+<sp/>a1<sp/>*<sp/>intensity<sp/>+<sp/>a2<sp/>*<sp/><ref refid="group__MathFunctions_1ga5fe62e7b0dc6f379dd436c9c8338c93e" kindref="member">sq</ref>(intensity)</highlight></codeline>
+</programlisting></para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga3852da06f4a02d4dbad49740f53cb43d" kindref="member" tooltip="Noise normalization by means of an estimated quadratic noise model.">quadraticNoiseNormalization</ref>(SrcIterator<sp/>sul,<sp/>SrcIterator<sp/>slr,<sp/>SrcAccessor<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestIterator<sp/>dul,<sp/>DestAccessor<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a0,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a2);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">SrcAccessor,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestIterator,<sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__NoiseNormalization_1ga3852da06f4a02d4dbad49740f53cb43d" kindref="member" tooltip="Noise normalization by means of an estimated quadratic noise model.">quadraticNoiseNormalization</ref>(triple&lt;SrcIterator,<sp/>SrcIterator,<sp/>SrcAccessor&gt;<sp/>src,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pair&lt;DestIterator,<sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a0,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a2);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold> <verbatim>&lt;b&gt;\#include&lt;/b&gt; \&lt;vigra/noise_normalization.hxx\&gt;&lt;br&gt;
+</verbatim> Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>src(w,h),<sp/>dest(w,<sp/>h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">...</highlight></codeline>
+<codeline><highlight class="normal">vigra::quadraticNoiseNormalization(srcImageRange(src),<sp/>destImage(dest),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>100,<sp/>0.02,<sp/>1e-6);</highlight></codeline>
+</programlisting></para><para><bold> Required Interface:</bold></para><para>The source value type must be convertible to <computeroutput>double</computeroutput> or must be a vector whose elements are convertible to <computeroutput>double</computeroutput>. Likewise, the destination type must be assignable from <computeroutput>double</computeroutput> or a vector whose elements are assignable from <computeroutput>double</computeroutput>. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1295"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gadef72fb632815f98f30bf0a9916eda84" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::quadraticNoiseNormalization</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>quadraticNoiseNormalization</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1300" bodyend="1308"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gae7f7199178abba810c833f096a241a1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool vigra::quadraticNoiseNormalization</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, NoiseNormalizationOptions const &amp;options=NoiseNormalizationOptions())</argsstring>
+        <name>quadraticNoiseNormalization</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>NoiseNormalizationOptions const &amp;</type>
+          <declname>options</declname>
+          <defval>NoiseNormalizationOptions()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1316" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1313" bodyend="1318"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gad53c33b56a002902246cbacb4c32a2ce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::quadraticNoiseNormalization</definition>
+        <argsstring>(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestIterator dul, DestAccessor dest, double a0, double a1, double a2)</argsstring>
+        <name>quadraticNoiseNormalization</name>
+        <param>
+          <type>SrcIterator</type>
+          <declname>sul</declname>
+        </param>
+        <param>
+          <type>SrcIterator</type>
+          <declname>slr</declname>
+        </param>
+        <param>
+          <type>SrcAccessor</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>DestIterator</type>
+          <declname>dul</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a0</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1387" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1384" bodyend="1392"/>
+      </memberdef>
+      <memberdef kind="function" id="group__NoiseNormalization_1gaced927d09af594b30da4bf2a6f6a68df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class SrcIterator</type>
+          </param>
+          <param>
+            <type>class SrcAccessor</type>
+          </param>
+          <param>
+            <type>class DestIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::quadraticNoiseNormalization</definition>
+        <argsstring>(triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt; src, pair&lt; DestIterator, DestAccessor &gt; dest, double a0, double a1, double a2)</argsstring>
+        <name>quadraticNoiseNormalization</name>
+        <param>
+          <type>triple&lt; SrcIterator, SrcIterator, SrcAccessor &gt;</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>pair&lt; DestIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a0</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a1</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>a2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" line="1400" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/noise_normalization.hxx" bodystart="1397" bodyend="1402"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Estimate noise with intensity-dependent variance and transform it into additive <ref refid="classvigra_1_1Gaussian" kindref="compound">Gaussian</ref> noise. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

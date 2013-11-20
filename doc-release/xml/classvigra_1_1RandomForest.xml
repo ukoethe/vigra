@@ -1,0 +1,1614 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1RandomForest" kind="class" prot="public">
+    <compoundname>vigra::RandomForest</compoundname>
+    <includes refid="random__forest_8hxx" local="no">vigra/random_forest.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>LabelType</declname>
+        <defname>LabelType</defname>
+        <defval>double</defval>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>PreprocessorTag</declname>
+        <defname>PreprocessorTag</defname>
+        <defval>ClassificationTag</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="user-defined">
+      <header>Constructors</header>
+      <description><para>Note: No copy Constructor specified as no pointers are manipulated in this class </para></description>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a333e71f47b2197ab6b6db18d50e7fc3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>RandomForest</definition>
+        <argsstring>(Options_t const &amp;options=Options_t(), ProblemSpec_t const &amp;ext_param=ProblemSpec_t())</argsstring>
+        <name>RandomForest</name>
+        <param>
+          <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref> const &amp;</type>
+          <declname>options</declname>
+          <defval><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref>()</defval>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref> const &amp;</type>
+          <declname>ext_param</declname>
+          <defval><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>default constructor </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>general options to the Random Forest. Must be of Type Options_t </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ext_param</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>problem specific values that can be supplied additionally. (class weights , labels etc) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">RandomForestOptions</ref>, <ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="204" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="198" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a04b9a3f032fdb72129dc22bc1781860b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TopologyIterator</type>
+          </param>
+          <param>
+            <type>class ParameterIterator</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>RandomForest</definition>
+        <argsstring>(int treeCount, TopologyIterator topology_begin, ParameterIterator parameter_begin, ProblemSpec_t const &amp;problem_spec, Options_t const &amp;options=Options_t())</argsstring>
+        <name>RandomForest</name>
+        <param>
+          <type>int</type>
+          <declname>treeCount</declname>
+        </param>
+        <param>
+          <type>TopologyIterator</type>
+          <declname>topology_begin</declname>
+        </param>
+        <param>
+          <type>ParameterIterator</type>
+          <declname>parameter_begin</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref> const &amp;</type>
+          <declname>problem_spec</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref> const &amp;</type>
+          <declname>options</declname>
+          <defval><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref>()</defval>
+        </param>
+        <briefdescription>
+<para>Create RF from external source. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>treeCount</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of trees to add. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>topology_begin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to a Container where the topology_ data of the trees are stored. Iterator should support at least treeCount forward iterations. (i.e. topology_end - topology_begin &gt;= treeCount </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>parameter_begin</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to a Container where the parameters_ data of the trees are stored. Iterator should support at least treeCount forward iterations. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>problem_spec</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Extrinsic parameters that specify the problem e.g. ClassCount, featureCount etc. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>options</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(optional) specify options used to train the original Random forest. This parameter is not used anywhere during prediction and thus is optional. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="241" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="232" bodyend="247"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Data Access</header>
+      <description><para>data access interface - usage of member variables is deprecated </para></description>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a8be3a3faa1f6c460f44a5a39439e2534" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref> const &amp;</type>
+        <definition>ProblemSpec_t const&amp; ext_param</definition>
+        <argsstring>() const </argsstring>
+        <name>ext_param</name>
+        <briefdescription>
+<para>return external parameters for viewing </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>ProblemSpec_t </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="263" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="262" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a278cd4498ffaa9e513b5c4248fff68be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void set_ext_param</definition>
+        <argsstring>(ProblemSpec_t const &amp;in)</argsstring>
+        <name>set_ext_param</name>
+        <param>
+          <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref> const &amp;</type>
+          <declname>in</declname>
+        </param>
+        <briefdescription>
+<para>set external parameters </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>in</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>external parameters to be set</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+set external parameters explicitly. If Random Forest has not been trained the preprocessor will either ignore filling values set this way or will throw an exception if values specified manually do not match the value calculated &amp; during the preparation step. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="281" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="280" bodyend="286"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1acf93289f0400da36167d02532ee786f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref> &amp;</type>
+        <definition>Options_t&amp; set_options</definition>
+        <argsstring>()</argsstring>
+        <name>set_options</name>
+        <briefdescription>
+<para>access random forest options </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>random forest options </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="293" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="292" bodyend="295"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a8eae2156ea49cc300405359243b44e23" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref> const &amp;</type>
+        <definition>Options_t const&amp; options</definition>
+        <argsstring>() const </argsstring>
+        <name>options</name>
+        <briefdescription>
+<para>access const random forest options </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>const Option_t </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="303" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="302" bodyend="305"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a2782c3291acfa66c8f306288fc8e7196" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>DecisionTree_t const &amp;</type>
+        <definition>DecisionTree_t const&amp; tree</definition>
+        <argsstring>(int index) const </argsstring>
+        <name>tree</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>access const trees </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="310" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="309" bodyend="312"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1aad23f94673a4f0a72328a1a4c16adfee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DecisionTree_t &amp;</type>
+        <definition>DecisionTree_t&amp; tree</definition>
+        <argsstring>(int index)</argsstring>
+        <name>tree</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>access trees </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="317" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="316" bodyend="319"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Learning</header>
+      <description><para>Following functions differ in the degree of customization allowed </para></description>
+      <memberdef kind="function" id="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Split_t</type>
+          </param>
+          <param>
+            <type>class Stop_t</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+          <param>
+            <type>class Random_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void learn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;response, Visitor_t visitor, Split_t split, Stop_t stop, Random_t const &amp;random)</argsstring>
+        <name>learn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor</declname>
+        </param>
+        <param>
+          <type>Split_t</type>
+          <declname>split</declname>
+        </param>
+        <param>
+          <type>Stop_t</type>
+          <declname>stop</declname>
+        </param>
+        <param>
+          <type>Random_t const &amp;</type>
+          <declname>random</declname>
+        </param>
+        <briefdescription>
+<para>learn on data with custom config and random number generator </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a N x M matrix containing N samples with M features </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>response</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a N x D matrix containing the corresponding response. Current split functors assume D to be 1 and ignore any additional columns. This is not enforced to allow future support for uncertain labels, label independent strata etc. The Preprocessor specified during construction should be able to handle features and labels features and the labels. see also: SplitFunctor, Preprocessing</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>visitor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>visitor which is to be applied after each split, tree and at the end. Use rf_default for using default value. (No Visitors) see also: <ref refid="namespacevigra_1_1rf_1_1visitors" kindref="compound">rf::visitors</ref> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>split</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>split functor to be used to calculate each split use <ref refid="namespacevigra_1ae19ed2482e705ffa14000822902fc131" kindref="member">rf_default()</ref> for using default value. (GiniSplit) see also: <ref refid="namespacevigra_1_1rf_1_1split" kindref="compound">rf::split</ref> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stop</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>predicate to be used to calculate each split use <ref refid="namespacevigra_1ae19ed2482e705ffa14000822902fc131" kindref="member">rf_default()</ref> for using default value. (<ref refid="classvigra_1_1EarlyStoppStd" kindref="compound">EarlyStoppStd</ref>) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>random</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classvigra_1_1RandomNumberGenerator" kindref="compound">RandomNumberGenerator</ref> to be used. Use <ref refid="namespacevigra_1ae19ed2482e705ffa14000822902fc131" kindref="member">rf_default()</ref> to use default value.(RandomMT19337) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="464" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="893" bodyend="996"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga05c80b7f7ca5fa44ed88fc627f465f5c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Split_t</type>
+          </param>
+          <param>
+            <type>class Stop_t</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void learn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;response, Visitor_t visitor, Split_t split, Stop_t stop)</argsstring>
+        <name>learn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor</declname>
+        </param>
+        <param>
+          <type>Split_t</type>
+          <declname>split</declname>
+        </param>
+        <param>
+          <type>Stop_t</type>
+          <declname>stop</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="477" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="471" bodyend="485"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gaea1c7a3bf92fb7685a8add6194a835fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void learn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;labels, Visitor_t visitor)</argsstring>
+        <name>learn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="491" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="488" bodyend="497"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga8119c7a745c08e7f855090749755377d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+          <param>
+            <type>class Split_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void learn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;labels, Visitor_t visitor, Split_t split)</argsstring>
+        <name>learn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor</declname>
+        </param>
+        <param>
+          <type>Split_t</type>
+          <declname>split</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="505" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="501" bodyend="511"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gae480948c60eee838463b03a4593ee507" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void learn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;labels)</argsstring>
+        <name>learn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+<para>learn on data with default configuration </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a N x M matrix containing N samples with M features </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labels</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a N x D matrix containing the corresponding N labels. Current split functors assume D to be 1 and ignore any additional columns. this is not enforced to allow future support for uncertain labels.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+learning is done with:</para><para><simplesect kind="see"><para><ref refid="namespacevigra_1_1rf_1_1split" kindref="compound">rf::split</ref>, <ref refid="classvigra_1_1EarlyStoppStd" kindref="compound">EarlyStoppStd</ref></para></simplesect>
+<itemizedlist>
+<listitem><para>Randomly seeded random number generator</para></listitem><listitem><para>default gini split functor as described by Breiman</para></listitem><listitem><para>default The standard early stopping criterion </para></listitem></itemizedlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="534" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="532" bodyend="540"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>prediction</header>
+      <memberdef kind="function" id="group__MachineLearning_1gaf79cd1eb1287d9d26dd90be5cb971645" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+          <param>
+            <type>class Stop</type>
+          </param>
+        </templateparamlist>
+        <type>LabelType</type>
+        <definition>LabelType predictLabel</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt;const &amp;features, Stop &amp;stop) const </argsstring>
+        <name>predictLabel</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>Stop &amp;</type>
+          <declname>stop</declname>
+        </param>
+        <briefdescription>
+<para>predict a label given a feature. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a 1 by featureCount matrix containing data point to be predicted (this only works in classification setting) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stop</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>early stopping criterion </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>double value representing class. You can use the <ref refid="group__MachineLearning_1gaa2a5fc3a96d247c319c27c5bde7fab4e" kindref="member">predictLabels()</ref> function together with the rf.external_parameter().class_type_ attribute to get back the same type used during learning. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="560" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="1004" bodyend="1018"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga2ebe9f99d22454bdec33f1a330494241" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>LabelType</type>
+        <definition>LabelType predictLabel</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt;const &amp;features)</argsstring>
+        <name>predictLabel</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="564" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="563" bodyend="566"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga75ac70b9d658f75208f5ffb5a15adbe2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>LabelType</type>
+        <definition>LabelType predictLabel</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C &gt; const &amp;features, ArrayVectorView&lt; double &gt; prior) const </argsstring>
+        <name>predictLabel</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; double &gt;</type>
+          <declname>prior</declname>
+        </param>
+        <briefdescription>
+<para>predict a label with features and class priors </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>same as above. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prior</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to prior weighting of classes </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>sam as above. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="575" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="1025" bodyend="1042"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gaa2a5fc3a96d247c319c27c5bde7fab4e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictLabels</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;labels) const </argsstring>
+        <name>predictLabels</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+<para>predict multiple labels with given features </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a n by featureCount matrix containing data point to be predicted (this only works in classification setting) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>labels</parametername>
+<parametername>:</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a n by 1 matrix passed by reference to store output. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="588" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="586" bodyend="593"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga20542164f24478948190079e3ba311b2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Stop</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictLabels</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;labels, Stop &amp;stop) const </argsstring>
+        <name>predictLabels</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>Stop &amp;</type>
+          <declname>stop</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="599" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="596" bodyend="604"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga30e310de1642021af2e24d56be57a37d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Stop</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictProbabilities</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;prob, Stop &amp;stop) const </argsstring>
+        <name>predictProbabilities</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <param>
+          <type>Stop &amp;</type>
+          <declname>stop</declname>
+        </param>
+        <briefdescription>
+<para>predict the class probabilities for multiple labels </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>same as above </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prob</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a n x class_count_ matrix. passed by reference to save class probabilities </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stop</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>earlystopping criterion </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para>EarlyStopping </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="616"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga1e4d4fa6fafeba4bc5c23726096fe0d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T1</type>
+          </param>
+          <param>
+            <type>class T2</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictProbabilities</definition>
+        <argsstring>(OnlinePredictionSet&lt; T1 &gt; &amp;predictionSet, MultiArrayView&lt; 2, T2, C &gt; &amp;prob)</argsstring>
+        <name>predictProbabilities</name>
+        <param>
+          <type>OnlinePredictionSet&lt; T1 &gt; &amp;</type>
+          <declname>predictionSet</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T2, C &gt; &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="619" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="1047" bodyend="1183"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gaf3fb598fb45d272f6f6745321cbc8b81" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictProbabilities</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;prob) const </argsstring>
+        <name>predictProbabilities</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <briefdescription>
+<para>predict the class probabilities for multiple labels </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>features</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>same as above </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>prob</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a n x class_count_ matrix. passed by reference to save class probabilities </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="630" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="628" bodyend="632"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga1d2fe9c3d73b17a8a3c6eefe2d704ed2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictRaw</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;prob) const </argsstring>
+        <name>predictRaw</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="636" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="1269" bodyend="1327"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1a2e33bf0ae7827ff5aba120620efdd87d" prot="public" static="no">
+        <type>detail::DecisionTree</type>
+        <definition>typedef detail::DecisionTree DecisionTree_t</definition>
+        <argsstring></argsstring>
+        <name>DecisionTree_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="149" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1a2f3b687d51dec8160bce5768643d70ae" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ThresholdSplit" kindref="compound">GiniSplit</ref></type>
+        <definition>typedef GiniSplit Default_Split_t</definition>
+        <argsstring></argsstring>
+        <name>Default_Split_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="151" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1ad05ece18e611d1a3f46d4dd55d320263" prot="public" static="no">
+        <type><ref refid="classvigra_1_1EarlyStoppStd" kindref="compound">EarlyStoppStd</ref></type>
+        <definition>typedef EarlyStoppStd Default_Stop_t</definition>
+        <argsstring></argsstring>
+        <name>Default_Stop_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="152" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1a772cb2b1710b18b8af31ca9a3d1b6c54" prot="public" static="no">
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1StopVisiting" kindref="compound">rf::visitors::StopVisiting</ref></type>
+        <definition>typedef rf::visitors::StopVisiting Default_Visitor_t</definition>
+        <argsstring></argsstring>
+        <name>Default_Visitor_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="153" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1adfdab4ac881f02883519851a13b0fa49" prot="public" static="no">
+        <type>LabelType</type>
+        <definition>typedef LabelType LabelT</definition>
+        <argsstring></argsstring>
+        <name>LabelT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="156" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1ad2abe01d59ed1f4a52f9192a4bba76b2" prot="public" static="no">
+        <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">RandomForestOptions</ref></type>
+        <definition>typedef RandomForestOptions Options_t</definition>
+        <argsstring></argsstring>
+        <name>Options_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="148" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1a88e561dd1c88ec59716c18b4da7bd8b1" prot="public" static="no">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec</ref>&lt; LabelType &gt;</type>
+        <definition>typedef ProblemSpec&lt;LabelType&gt; ProblemSpec_t</definition>
+        <argsstring></argsstring>
+        <name>ProblemSpec_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1RandomForest_1ae4e6c2145a29a421feaa6a8c6220840e" prot="public" static="no">
+        <type><ref refid="classvigra_1_1DT__StackEntry" kindref="compound">DT_StackEntry</ref>&lt; <ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref>&lt; <ref refid="group__FixedSizeInt_1ga92f05c4b6944ec5926841e34f03a9060" kindref="member">Int32</ref> &gt;::iterator &gt;</type>
+        <definition>typedef DT_StackEntry&lt;ArrayVectorView&lt;Int32&gt;::iterator&gt; StackEntry_t</definition>
+        <argsstring></argsstring>
+        <name>StackEntry_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="155" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RandomForest_1aa36a498af8431ce34e5664189b22114c" prot="protected" static="no" mutable="yes">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; garbage_prediction_</definition>
+        <argsstring></argsstring>
+        <name>garbage_prediction_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>optimisation for predictLabels </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="161" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="161" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1RandomForest_1af5c4a6588020b72ddd338e85586b20d6" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ProblemSpec" kindref="compound">ProblemSpec_t</ref></type>
+        <definition>ProblemSpec_t ext_param_</definition>
+        <argsstring></argsstring>
+        <name>ext_param_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForest_1a8fe00d44428391710828f555c4e0d18b" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor" kindref="compound">rf::visitors::OnlineLearnVisitor</ref></type>
+        <definition>rf::visitors::OnlineLearnVisitor online_visitor_</definition>
+        <argsstring></argsstring>
+        <name>online_visitor_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForest_1a8d4e72143cdf28be6488bb7843d0d024" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1RandomForestOptions" kindref="compound">Options_t</ref></type>
+        <definition>Options_t options_</definition>
+        <argsstring></argsstring>
+        <name>options_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="166" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1RandomForest_1a60cca7371fc1b7a78d33a005c09b6850" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; DecisionTree_t &gt;</type>
+        <definition>ArrayVector&lt;DecisionTree_t&gt; trees_</definition>
+        <argsstring></argsstring>
+        <name>trees_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="170" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1aa923211d8be473d9ea70329ed9e2e72d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int class_count</definition>
+        <argsstring>() const </argsstring>
+        <name>class_count</name>
+        <briefdescription>
+<para>return number of classes used while training. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="346" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="345" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1acd888c75c503a4f3d2ede13bf1d714c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int column_count</definition>
+        <argsstring>() const </argsstring>
+        <name>column_count</name>
+        <briefdescription>
+<para>return number of features used while training. </para>        </briefdescription>
+        <detaileddescription>
+<para>deprecated. Use <ref refid="classvigra_1_1RandomForest_1a9bd0ac979ee86f839b3c4574e6f95f58" kindref="member">feature_count()</ref> instead. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="338" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="337" bodyend="340"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a9bd0ac979ee86f839b3c4574e6f95f58" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int feature_count</definition>
+        <argsstring>() const </argsstring>
+        <name>feature_count</name>
+        <briefdescription>
+<para>return number of features used while training. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="327" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="326" bodyend="329"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga77d1223c066081fc17ca28a9c9623875" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Split_t</type>
+          </param>
+          <param>
+            <type>class Stop_t</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+          <param>
+            <type>class Random_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void onlineLearn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;response, int new_start_index, Visitor_t visitor_, Split_t split_, Stop_t stop_, Random_t &amp;random, bool adjust_thresholds=false)</argsstring>
+        <name>onlineLearn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>new_start_index</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor_</declname>
+        </param>
+        <param>
+          <type>Split_t</type>
+          <declname>split_</declname>
+        </param>
+        <param>
+          <type>Stop_t</type>
+          <declname>stop_</declname>
+        </param>
+        <param>
+          <type>Random_t &amp;</type>
+          <declname>random</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>adjust_thresholds</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="372" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="651" bodyend="781"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1aff8530ce3e597a0b1fba4c8d3c561c66" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void onlineLearn</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;labels, int new_start_index, bool adjust_thresholds=false)</argsstring>
+        <name>onlineLearn</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>new_start_index</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>adjust_thresholds</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="377" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="375" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga58eff83a90ab5b8ee0d887d6e52ce796" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Stop_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void predictProbabilities</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt;const &amp;features, MultiArrayView&lt; 2, T, C2 &gt; &amp;prob, Stop_t &amp;stop_) const </argsstring>
+        <name>predictProbabilities</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt;const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C2 &gt; &amp;</type>
+          <declname>prob</declname>
+        </param>
+        <param>
+          <type>Stop_t &amp;</type>
+          <declname>stop_</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="1191" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="1188" bodyend="1264"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1gae1ccc1e1d0b2d4aaec94005e775b4db2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+          <param>
+            <type>class Split_t</type>
+          </param>
+          <param>
+            <type>class Stop_t</type>
+          </param>
+          <param>
+            <type>class Visitor_t</type>
+          </param>
+          <param>
+            <type>class Random_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void reLearnTree</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;response, int treeId, Visitor_t visitor_, Split_t split_, Stop_t stop_, Random_t &amp;random)</argsstring>
+        <name>reLearnTree</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>response</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>treeId</declname>
+        </param>
+        <param>
+          <type>Visitor_t</type>
+          <declname>visitor_</declname>
+        </param>
+        <param>
+          <type>Split_t</type>
+          <declname>split_</declname>
+        </param>
+        <param>
+          <type>Stop_t</type>
+          <declname>stop_</declname>
+        </param>
+        <param>
+          <type>Random_t &amp;</type>
+          <declname>random</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para><xrefsect id="todo_1_todo000005"><xreftitle>Todo</xreftitle><xrefdescription><para>replace this crappy class out. It uses function pointers. and is making code slower according to me. Comment from Nathan: This is copied from Rahul, so me=Rahul </para></xrefdescription></xrefsect></para>        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="401" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="790" bodyend="883"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1ad140c08779ec8eaaedb3ea8352fa5343" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class U</type>
+          </param>
+          <param>
+            <type>class C1</type>
+          </param>
+          <param>
+            <type>class U2</type>
+          </param>
+          <param>
+            <type>class C2</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void reLearnTree</definition>
+        <argsstring>(MultiArrayView&lt; 2, U, C1 &gt; const &amp;features, MultiArrayView&lt; 2, U2, C2 &gt; const &amp;labels, int treeId)</argsstring>
+        <name>reLearnTree</name>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U, C1 &gt; const &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, U2, C2 &gt; const &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>treeId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="407" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="404" bodyend="416"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="176" bodyend="180"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1RandomForest_1a230d05321ffe94cb138c13bd4ed71e76" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int tree_count</definition>
+        <argsstring>() const </argsstring>
+        <name>tree_count</name>
+        <briefdescription>
+<para>return number of trees </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="353" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="352" bodyend="355"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Random Forest class</para><para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>&lt;PrprocessorTag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>= ClassificationTag&gt; Class used to preprocess the input while learning and predicting. Currently Available: ClassificationTag and RegressionTag. It is recommended to use Splitfunctor::Preprocessor_t while using custom splitfunctors as they may need the data to be in a different format. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para>Preprocessor</para></simplesect>
+simple usage for classification (regression is not yet supported): look at <ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member">RandomForest::learn()</ref> as well as RandomForestOptions() for additional options.</para><para><programlisting><codeline><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">vigra;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">rf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>xxx<sp/>feature_t;<sp/>\\<sp/>replace<sp/>xxx<sp/>with<sp/>whichever<sp/>type</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>yyy<sp/>label_t;<sp/><sp/><sp/>\\<sp/>likewise<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allocate<sp/>the<sp/>training<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArrayView" kindref="compound" tooltip="Base class for, and view to, vigra::MultiArray.">MultiArrayView&lt;2, feature_t&gt;</ref><sp/>f<sp/>=<sp/>get_training_features();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArrayView" kindref="compound" tooltip="Base class for, and view to, vigra::MultiArray.">MultiArrayView&lt;2, label_t&gt;</ref><sp/><sp/><sp/>l<sp/>=<sp/>get_training_labels();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1RandomForest" kindref="compound">RandomForest&lt;&gt;</ref><sp/>rf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>construct<sp/>visitor<sp/>to<sp/>calculate<sp/>out-of-bag<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">visitors::OOB_Error<sp/>oob_v;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>training</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">rf.<ref refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" kindref="member" tooltip="learn on data with custom config and random number generator">learn</ref>(f,<sp/>l,<sp/><ref refid="group__MachineLearning_1gafee5cad59894c439573770103eacfbc4" kindref="member">visitors::create_visitor</ref>(oob_v));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;the<sp/>out-of-bag<sp/>error<sp/>is:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>oob_v.oob_breiman<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>get<sp/>features<sp/>for<sp/>new<sp/>data<sp/>to<sp/>be<sp/>used<sp/>for<sp/>prediction</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArrayView" kindref="compound" tooltip="Base class for, and view to, vigra::MultiArray.">MultiArrayView&lt;2, feature_t&gt;</ref><sp/>pf<sp/>=<sp/>get_features();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>allocate<sp/>space<sp/>for<sp/>the<sp/>response<sp/>(pf.shape(0)<sp/>is<sp/>the<sp/>number<sp/>of<sp/>samples)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArrayView" kindref="compound" tooltip="Base class for, and view to, vigra::MultiArray.">MultiArrayView&lt;2, label_t&gt;</ref><sp/>prediction(pf.shape(0),<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView&lt;2, double&gt;</ref><sp/>prob(pf.shape(0),<sp/>rf.class_count());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>perform<sp/>prediction<sp/>on<sp/>new<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">rf.predict_labels(pf,<sp/>prediction);</highlight></codeline>
+<codeline><highlight class="normal">rf.predict_probabilities(pf,<sp/>prob);</highlight></codeline>
+</programlisting></para><para>Additional information such as Variable Importance measures are accessed via Visitors defined in <ref refid="namespacevigra_1_1rf_1_1visitors" kindref="compound">rf::visitors</ref>. Have a look at <ref refid="namespacevigra_1_1rf_1_1split" kindref="compound">rf::split</ref> for other splitting methods. </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="2095">
+        <label>MultiArray&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="2096" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2091">
+        <label>OnlineLearnVisitor</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1OnlineLearnVisitor"/>
+        <childnode refid="2092" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2090">
+        <label>RandomForest&lt; LabelType, PreprocessorTag &gt;</label>
+        <link refid="classvigra_1_1RandomForest"/>
+        <childnode refid="2091" relation="usage">
+          <edgelabel>online_visitor_</edgelabel>
+        </childnode>
+        <childnode refid="2093" relation="usage">
+          <edgelabel>trees_</edgelabel>
+        </childnode>
+        <childnode refid="2095" relation="usage">
+          <edgelabel>garbage_prediction_</edgelabel>
+        </childnode>
+        <childnode refid="2098" relation="usage">
+          <edgelabel>options_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2093">
+        <label>ArrayVector&lt; DecisionTree_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2094" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2096">
+        <label>MultiArrayView&lt; N, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="2097" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2092">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+      <node id="2098">
+        <label>RandomForestOptions</label>
+        <link refid="classvigra_1_1RandomForestOptions"/>
+      </node>
+      <node id="2097">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+      <node id="2094">
+        <label>ArrayVectorView&lt; DecisionTree_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" line="144" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest.hxx" bodystart="143" bodyend="641"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1RandomForest_1aa923211d8be473d9ea70329ed9e2e72d" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>class_count</name></member>
+      <member refid="classvigra_1_1RandomForest_1acd888c75c503a4f3d2ede13bf1d714c2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>column_count</name></member>
+      <member refid="classvigra_1_1RandomForest_1a2e33bf0ae7827ff5aba120620efdd87d" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>DecisionTree_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1a2f3b687d51dec8160bce5768643d70ae" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>Default_Split_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1ad05ece18e611d1a3f46d4dd55d320263" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>Default_Stop_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1a772cb2b1710b18b8af31ca9a3d1b6c54" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>Default_Visitor_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1a8be3a3faa1f6c460f44a5a39439e2534" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>ext_param</name></member>
+      <member refid="classvigra_1_1RandomForest_1af5c4a6588020b72ddd338e85586b20d6" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1RandomForest_1a9bd0ac979ee86f839b3c4574e6f95f58" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>feature_count</name></member>
+      <member refid="classvigra_1_1RandomForest_1aa36a498af8431ce34e5664189b22114c" prot="protected" virt="non-virtual"><scope>vigra::RandomForest</scope><name>garbage_prediction_</name></member>
+      <member refid="classvigra_1_1RandomForest_1adfdab4ac881f02883519851a13b0fa49" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>LabelT</name></member>
+      <member refid="group__MachineLearning_1ga11157c680b4f47c5592d6695b5fbac05" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>learn</name></member>
+      <member refid="group__MachineLearning_1ga05c80b7f7ca5fa44ed88fc627f465f5c" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>learn</name></member>
+      <member refid="group__MachineLearning_1gaea1c7a3bf92fb7685a8add6194a835fe" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>learn</name></member>
+      <member refid="group__MachineLearning_1ga8119c7a745c08e7f855090749755377d" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>learn</name></member>
+      <member refid="group__MachineLearning_1gae480948c60eee838463b03a4593ee507" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>learn</name></member>
+      <member refid="classvigra_1_1RandomForest_1a8fe00d44428391710828f555c4e0d18b" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>online_visitor_</name></member>
+      <member refid="group__MachineLearning_1ga77d1223c066081fc17ca28a9c9623875" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>onlineLearn</name></member>
+      <member refid="classvigra_1_1RandomForest_1aff8530ce3e597a0b1fba4c8d3c561c66" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>onlineLearn</name></member>
+      <member refid="classvigra_1_1RandomForest_1a8eae2156ea49cc300405359243b44e23" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>options</name></member>
+      <member refid="classvigra_1_1RandomForest_1a8d4e72143cdf28be6488bb7843d0d024" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>options_</name></member>
+      <member refid="classvigra_1_1RandomForest_1ad2abe01d59ed1f4a52f9192a4bba76b2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>Options_t</name></member>
+      <member refid="group__MachineLearning_1gaf79cd1eb1287d9d26dd90be5cb971645" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictLabel</name></member>
+      <member refid="group__MachineLearning_1ga2ebe9f99d22454bdec33f1a330494241" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictLabel</name></member>
+      <member refid="group__MachineLearning_1ga75ac70b9d658f75208f5ffb5a15adbe2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictLabel</name></member>
+      <member refid="group__MachineLearning_1gaa2a5fc3a96d247c319c27c5bde7fab4e" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictLabels</name></member>
+      <member refid="group__MachineLearning_1ga20542164f24478948190079e3ba311b2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictLabels</name></member>
+      <member refid="group__MachineLearning_1ga30e310de1642021af2e24d56be57a37d" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictProbabilities</name></member>
+      <member refid="group__MachineLearning_1ga1e4d4fa6fafeba4bc5c23726096fe0d6" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictProbabilities</name></member>
+      <member refid="group__MachineLearning_1gaf3fb598fb45d272f6f6745321cbc8b81" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictProbabilities</name></member>
+      <member refid="group__MachineLearning_1ga58eff83a90ab5b8ee0d887d6e52ce796" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictProbabilities</name></member>
+      <member refid="group__MachineLearning_1ga1d2fe9c3d73b17a8a3c6eefe2d704ed2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>predictRaw</name></member>
+      <member refid="classvigra_1_1RandomForest_1a88e561dd1c88ec59716c18b4da7bd8b1" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>ProblemSpec_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1a333e71f47b2197ab6b6db18d50e7fc3a" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>RandomForest</name></member>
+      <member refid="classvigra_1_1RandomForest_1a04b9a3f032fdb72129dc22bc1781860b" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>RandomForest</name></member>
+      <member refid="group__MachineLearning_1gae1ccc1e1d0b2d4aaec94005e775b4db2" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>reLearnTree</name></member>
+      <member refid="classvigra_1_1RandomForest_1ad140c08779ec8eaaedb3ea8352fa5343" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>reLearnTree</name></member>
+      <member refid="classvigra_1_1RandomForest_1ad20897c5c8bd47f5d4005989bead0e55" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>reset</name></member>
+      <member refid="classvigra_1_1RandomForest_1a278cd4498ffaa9e513b5c4248fff68be" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>set_ext_param</name></member>
+      <member refid="classvigra_1_1RandomForest_1acf93289f0400da36167d02532ee786f4" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>set_options</name></member>
+      <member refid="classvigra_1_1RandomForest_1ae4e6c2145a29a421feaa6a8c6220840e" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>StackEntry_t</name></member>
+      <member refid="classvigra_1_1RandomForest_1a2782c3291acfa66c8f306288fc8e7196" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>tree</name></member>
+      <member refid="classvigra_1_1RandomForest_1aad23f94673a4f0a72328a1a4c16adfee" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>tree</name></member>
+      <member refid="classvigra_1_1RandomForest_1a230d05321ffe94cb138c13bd4ed71e76" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>tree_count</name></member>
+      <member refid="classvigra_1_1RandomForest_1a60cca7371fc1b7a78d33a005c09b6850" prot="public" virt="non-virtual"><scope>vigra::RandomForest</scope><name>trees_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

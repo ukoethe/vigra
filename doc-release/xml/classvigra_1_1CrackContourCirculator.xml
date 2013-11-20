@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1CrackContourCirculator" kind="class" prot="public">
+    <compoundname>vigra::CrackContourCirculator</compoundname>
+    <includes refid="contourcirculator_8hxx" local="no">vigra/contourcirculator.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class IMAGEITERATOR</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1ac04ba34d447f4dbbf67b826cb28c8e71" prot="private" static="no">
+        <type>IMAGEITERATOR::value_type</type>
+        <definition>typedef IMAGEITERATOR::value_type label_type</definition>
+        <argsstring></argsstring>
+        <name>label_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="97" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1ad1d50643049d22bdd65fee9c8f565520" prot="private" static="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">NeighborhoodCirculator</ref>&lt; IMAGEITERATOR, <ref refid="group__PixelNeighborhood_1ga04897760f5b7969c9811a3c258f5981d" kindref="member">EightNeighborCode</ref> &gt;</type>
+        <definition>typedef NeighborhoodCirculator&lt;IMAGEITERATOR, EightNeighborCode&gt; NEIGHBORHOODCIRCULATOR</definition>
+        <argsstring></argsstring>
+        <name>NEIGHBORHOODCIRCULATOR</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="96" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1ab7147e823d6aa823ee8a9073d83111a1" prot="public" static="no">
+        <type>forward_circulator_tag</type>
+        <definition>typedef forward_circulator_tag iterator_category</definition>
+        <argsstring></argsstring>
+        <name>iterator_category</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator tag </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="125" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1a436cb2a4b4f7eda3aee35d7980b4a7b8" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const *</type>
+        <definition>typedef Point2D const* pointer</definition>
+        <argsstring></argsstring>
+        <name>pointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s pointer type (return type of <computeroutput>operator-&gt;</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="121" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1a62e439172ddb9c8aa6f79cddddd8a2a2" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref> const &amp;</type>
+        <definition>typedef Point2D const&amp; reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s reference type (return type of <computeroutput>*circ</computeroutput>) </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="117" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1CrackContourCirculator_1af30d8d4b40b5a3f1c53e6caa7c68c86a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>typedef Point2D value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the circulator&apos;s value type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="113" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1CrackContourCirculator_1a932ce6f59573a9e7c514ee4d9b28140d" prot="protected" static="no" mutable="no">
+        <type>label_type</type>
+        <definition>label_type label_</definition>
+        <argsstring></argsstring>
+        <name>label_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="101" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1CrackContourCirculator_1ae79b13f6f4b24a27d4c03e7c74db166e" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">NEIGHBORHOODCIRCULATOR</ref></type>
+        <definition>NEIGHBORHOODCIRCULATOR neighborCirc_</definition>
+        <argsstring></argsstring>
+        <name>neighborCirc_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="100" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1CrackContourCirculator_1a8fc23a5347cdd07038b84ac962212e01" prot="protected" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1Point2D" kindref="compound">Point2D</ref></type>
+        <definition>Point2D pos_</definition>
+        <argsstring></argsstring>
+        <name>pos_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="102" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1af06b269e03d038beb22c553b3e3f4d50" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CrackContourCirculator</definition>
+        <argsstring>(NEIGHBORHOODCIRCULATOR const &amp;circ)</argsstring>
+        <name>CrackContourCirculator</name>
+        <param>
+          <type><ref refid="classvigra_1_1NeighborhoodCirculator" kindref="compound">NEIGHBORHOODCIRCULATOR</ref> const &amp;</type>
+          <declname>circ</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="108" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="104" bodyend="108"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1addb61256e5789aee83b6f6872c95bbff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CrackContourCirculator</definition>
+        <argsstring>(IMAGEITERATOR const &amp;in_the_region, vigra::FourNeighborCode::Direction dir=vigra::FourNeighborCode::West)</argsstring>
+        <name>CrackContourCirculator</name>
+        <param>
+          <type>IMAGEITERATOR const &amp;</type>
+          <declname>in_the_region</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aa" kindref="member">vigra::FourNeighborCode::Direction</ref></type>
+          <declname>dir</declname>
+          <defval><ref refid="classvigra_1_1FourNeighborhood_1_1NeighborCode_1a224b9163917ac32fc95a60d8c1eec3aaaedd15c5b13ad5525c46d5c9650ddde5f" kindref="member">vigra::FourNeighborCode::West</ref></defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialize the circulator for a given region.</para><para>The image iterator <computeroutput>in_the_region</computeroutput> must refer to a boundary pixel of the region to be analysed. The direction code <computeroutput>dir</computeroutput> must point to a pixel outside the region (the default assumes that the pixel left of the given region pixel belongs to the background). The first corner of the crack contour is the corner to the right of this direction (i.e. the north west corner of the region pixel, if the direction was West). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="143" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="138" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1af22cbd406bdf6b6c7968b523259505a5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1Diff2D" kindref="compound">Diff2D</ref> const &amp;</type>
+        <definition>Diff2D const&amp; diff</definition>
+        <argsstring>() const </argsstring>
+        <name>diff</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the offset from the current corner of the contour to the next one. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="231" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1af008f1158ddbe1a89d9a3938558140ae" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator!=</definition>
+        <argsstring>(CrackContourCirculator const &amp;o) const </argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="classvigra_1_1CrackContourCirculator" kindref="compound">CrackContourCirculator</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>inequality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="200" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="199" bodyend="202"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CrackContourCirculator_1a62e439172ddb9c8aa6f79cddddd8a2a2" kindref="member">reference</ref></type>
+        <definition>reference operator*</definition>
+        <argsstring>() const </argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to <ref refid="classvigra_1_1CrackContourCirculator_1a211c0f9f0877a780fa75f7c37efba2d6" kindref="member">pos()</ref> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="212" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1a3b09c178a08f37b986f6963042e0c031" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CrackContourCirculator" kindref="compound">CrackContourCirculator</ref> &amp;</type>
+        <definition>CrackContourCirculator&amp; operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the next crack corner of the contour (pre-increment). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="150" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="149" bodyend="179"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1ae0f2d47c75b61e0132c4753d37115ef6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CrackContourCirculator" kindref="compound">CrackContourCirculator</ref></type>
+        <definition>CrackContourCirculator operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Move to the next crack corner of the contour (post-increment). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="184" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="183" bodyend="188"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CrackContourCirculator_1a436cb2a4b4f7eda3aee35d7980b4a7b8" kindref="member">pointer</ref></type>
+        <definition>pointer operator-&gt;</definition>
+        <argsstring>() const </argsstring>
+        <name>operator-&gt;</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access member of the current coordinate. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="217" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1a3f4bdae6539088d8eb447618994e8210" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool operator==</definition>
+        <argsstring>(CrackContourCirculator const &amp;o) const </argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="classvigra_1_1CrackContourCirculator" kindref="compound">CrackContourCirculator</ref> const &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>equality </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="193" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="192" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1a7cc23c4b7111e06e0acd534cb22641a1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>IMAGEITERATOR</type>
+        <definition>IMAGEITERATOR outerPixel</definition>
+        <argsstring>() const </argsstring>
+        <name>outerPixel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Access pixel to the right of the crack edge (outside of the region bounded by the crack contour we walk on). Note that after operator++, the iterator can still point to the same pixel (looking from another direction now). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="225" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1CrackContourCirculator_1a211c0f9f0877a780fa75f7c37efba2d6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1CrackContourCirculator_1a62e439172ddb9c8aa6f79cddddd8a2a2" kindref="member">reference</ref></type>
+        <definition>reference pos</definition>
+        <argsstring>() const </argsstring>
+        <name>pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the coordinate of the current corner (relative to the first corner). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="208" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="207" bodyend="208"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Circulator that walks around a given region. </para>    </briefdescription>
+    <detaileddescription>
+<para>The circulator follows the <emphasis>crack contour</emphasis> of a given region. Here, a region is an 8-connected component of pixels with the same value, such as the regions in a label image. The crack contour is located between the inside and outside pixels, that is &quot;on the crack&quot; between the region and the background. Thus, the circulator moves from pixel corner to pixel corner. By definition, the first corner (where the circulator was initialized) gets the coordinate (0,0), and calls to <computeroutput>*circulator</computeroutput> return the distance of the current corner to the initial one.</para><para>The circulator can be used to calculate the area of a region (in pixels):</para><para><programlisting><codeline><highlight class="comment">//<sp/>start<sp/>with<sp/>a<sp/>pixel<sp/>within<sp/>the<sp/>region,<sp/>whose<sp/>left<sp/>neighbor<sp/>is<sp/>outside</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>(see<sp/>CrackContourCirculator<sp/>constructor)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">ImageIterator<sp/>region_anchor<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>area<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>area<sp/>from<sp/>following<sp/>the<sp/>crack<sp/>contour<sp/>of<sp/>the<sp/>region</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">CrackContourCirculator&lt;ImageIterator&gt;<sp/>crack(region_anchor);</highlight></codeline>
+<codeline><highlight class="normal">CrackContourCirculator&lt;ImageIterator&gt;<sp/>crackend(crack);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">do</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>area<sp/>+=<sp/>crack.diff().x<sp/>*<sp/>crack.pos().y<sp/>-</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>crack.diff().y<sp/>*<sp/>crack.pos().x;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(++crack<sp/>!=<sp/>crackend);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">area<sp/>/=<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Area<sp/>of<sp/>region<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>*region_anchor<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>area<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="contourcirculator_8hxx_source" kindref="compound">vigra/contourcirculator.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="381">
+        <label>Point2D</label>
+        <link refid="classvigra_1_1Point2D"/>
+        <childnode refid="382" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="383">
+        <label>NeighborhoodCirculator&lt; IMAGEITERATOR, EightNeighborCode &gt;</label>
+        <link refid="classvigra_1_1NeighborhoodCirculator"/>
+      </node>
+      <node id="380">
+        <label>CrackContourCirculator&lt; IMAGEITERATOR &gt;</label>
+        <link refid="classvigra_1_1CrackContourCirculator"/>
+        <childnode refid="381" relation="usage">
+          <edgelabel>pos_</edgelabel>
+        </childnode>
+        <childnode refid="383" relation="usage">
+          <edgelabel>neighborCirc_</edgelabel>
+        </childnode>
+      </node>
+      <node id="382">
+        <label>Diff2D</label>
+        <link refid="classvigra_1_1Diff2D"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" line="94" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/contourcirculator.hxx" bodystart="93" bodyend="233"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1CrackContourCirculator_1af06b269e03d038beb22c553b3e3f4d50" prot="protected" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>CrackContourCirculator</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1addb61256e5789aee83b6f6872c95bbff" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>CrackContourCirculator</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1af22cbd406bdf6b6c7968b523259505a5" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>diff</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1ab7147e823d6aa823ee8a9073d83111a1" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>iterator_category</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a932ce6f59573a9e7c514ee4d9b28140d" prot="protected" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>label_</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1ac04ba34d447f4dbbf67b826cb28c8e71" prot="private" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>label_type</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1ae79b13f6f4b24a27d4c03e7c74db166e" prot="protected" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>neighborCirc_</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1ad1d50643049d22bdd65fee9c8f565520" prot="private" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>NEIGHBORHOODCIRCULATOR</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1af008f1158ddbe1a89d9a3938558140ae" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator!=</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1aa149c2249879e7727f33688b76bf2c99" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator*</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a3b09c178a08f37b986f6963042e0c031" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1ae0f2d47c75b61e0132c4753d37115ef6" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a33ce448509e9cc0d73861e4c1919c7a7" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator-&gt;</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a3f4bdae6539088d8eb447618994e8210" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>operator==</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a7cc23c4b7111e06e0acd534cb22641a1" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>outerPixel</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a436cb2a4b4f7eda3aee35d7980b4a7b8" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>pointer</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a211c0f9f0877a780fa75f7c37efba2d6" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>pos</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a8fc23a5347cdd07038b84ac962212e01" prot="protected" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>pos_</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1a62e439172ddb9c8aa6f79cddddd8a2a2" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>reference</name></member>
+      <member refid="classvigra_1_1CrackContourCirculator_1af30d8d4b40b5a3f1c53e6caa7c68c86a" prot="public" virt="non-virtual"><scope>vigra::CrackContourCirculator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

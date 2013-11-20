@@ -1,0 +1,1102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__VigraHDF5Impex" kind="group">
+    <compoundname>VigraHDF5Impex</compoundname>
+    <title>Import/Export of Images and Arrays in HDF5 Format</title>
+    <innerclass refid="classvigra_1_1HDF5File" prot="public">vigra::HDF5File</innerclass>
+    <innerclass refid="classvigra_1_1HDF5Handle" prot="public">vigra::HDF5Handle</innerclass>
+    <innerclass refid="classvigra_1_1HDF5ImportInfo" prot="public">vigra::HDF5ImportInfo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga1c19d28750f865507c1d1022877aa432" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class Tag</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createDataset</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, T, Tag &gt; &amp;array, const hid_t datatype, const int numBandsOfType, HDF5Handle &amp;file_handle, HDF5Handle &amp;dataset_handle)</argsstring>
+        <name>createDataset</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, T, Tag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>const hid_t</type>
+          <declname>datatype</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>numBandsOfType</declname>
+        </param>
+        <param>
+          <type>HDF5Handle &amp;</type>
+          <declname>file_handle</declname>
+        </param>
+        <param>
+          <type>HDF5Handle &amp;</type>
+          <declname>dataset_handle</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2457" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2456" bodyend="2517"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga6f655f3f96bd3b39929a8e2b8576f051" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>hid_t</type>
+        <definition>hid_t vigra::createFile</definition>
+        <argsstring>(std::string filePath, bool append_=true)</argsstring>
+        <name>createFile</name>
+        <param>
+          <type>std::string</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>append_</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2433" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2432" bodyend="2453"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga5b3862c00b00f5d91ddcf95b9cea120c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>hid_t</type>
+        <definition>hid_t vigra::createGroup</definition>
+        <argsstring>(hid_t parent, std::string group_name)</argsstring>
+        <name>createGroup</name>
+        <param>
+          <type>hid_t</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>group_name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2383" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2382" bodyend="2410"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga335f041b3383b8a165d28665237c0d4e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::deleteDataset</definition>
+        <argsstring>(hid_t parent, std::string dataset_name)</argsstring>
+        <name>deleteDataset</name>
+        <param>
+          <type>hid_t</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>dataset_name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2413" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2412" bodyend="2430"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gaefe84be380b2ef1990638ed3e631efde" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>H5O_type_t</type>
+        <definition>H5O_type_t vigra::HDF5_get_type</definition>
+        <argsstring>(hid_t, const char *)</argsstring>
+        <name>HDF5_get_type</name>
+        <param>
+          <type>hid_t</type>
+        </param>
+        <param>
+          <type>const char *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="460"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gaec603d538d638f67952b341badf0a1a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vigra::HDF5_ls_insert</definition>
+        <argsstring>(void *, const std::string &amp;)</argsstring>
+        <name>HDF5_ls_insert</name>
+        <param>
+          <type>void *</type>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="455"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga47259c557a4ccbae687b0718e47f2e2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>herr_t</type>
+        <definition>herr_t vigra::HDF5_ls_inserter_callback</definition>
+        <argsstring>(hid_t, const char *, const H5L_info_t *, void *)</argsstring>
+        <name>HDF5_ls_inserter_callback</name>
+        <param>
+          <type>hid_t</type>
+        </param>
+        <param>
+          <type>const char *</type>
+        </param>
+        <param>
+          <type>const H5L_info_t *</type>
+        </param>
+        <param>
+          <type>void *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="461"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga76920eca3ce88f294b0e7ad9940d52f7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>hid_t</type>
+        <definition>hid_t vigra::openGroup</definition>
+        <argsstring>(hid_t parent, std::string group_name)</argsstring>
+        <name>openGroup</name>
+        <param>
+          <type>hid_t</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>group_name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2360" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2359" bodyend="2380"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga8ccb383ad5d24064f31fab265bc07439" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(...)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Read the data specified by the given <ref refid="classvigra_1_1HDF5ImportInfo" kindref="compound">vigra::HDF5ImportInfo</ref> object and write the into the given &apos;array&apos;. </para>        </briefdescription>
+        <detaileddescription>
+<para>The array must have the correct number of dimensions and shape for the dataset represented by &apos;info&apos;. When the element type of &apos;array&apos; differs from the stored element type, HDF5 will convert the type on the fly (except when the HDF5 version is 1.6 or below, in which case an error will result). Multi-channel element types (i.e. <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue</ref>, <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref>, and <ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref>) are recognized and handled correctly.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">eTag&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraHDF5Impex_1ga8ccb383ad5d24064f31fab265bc07439" kindref="member" tooltip="Read the data specified by the given vigra::HDF5ImportInfo object and write the into the given &amp;#39;array...">readHDF5</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>HDF5ImportInfo<sp/>&amp;info,<sp/>MultiArrayView&lt;N,<sp/>T,<sp/>StrideTag&gt;<sp/>array);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">HDF5ImportInfo<sp/>info(filename,<sp/>dataset_name);</highlight></codeline>
+<codeline><highlight class="normal">vigra_precondition(info.numDimensions()<sp/>==<sp/>3,<sp/></highlight><highlight class="stringliteral">&quot;Dataset<sp/>must<sp/>be<sp/>3-dimensional.&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">MultiArrayShape&lt;3&gt;::type<sp/>shape(info.shape().begin());</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>int&gt;<sp/>array(shape);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__VigraHDF5Impex_1ga8ccb383ad5d24064f31fab265bc07439" kindref="member" tooltip="Read the data specified by the given vigra::HDF5ImportInfo object and write the into the given &amp;#39;array...">readHDF5</ref>(info,<sp/>array);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2259"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga8a5f73f2a221517775000573dde5b38d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, T, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, T, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2264" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2263" bodyend="2266"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga8ef80218443dbe07375e0c3fea4d9f3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2271" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2270" bodyend="2273"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gab8bcf2fecf1c88d2e6a8c72854adc32d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, RGBValue&lt; T &gt;, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, RGBValue&lt; T &gt;, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2278" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2277" bodyend="2280"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga2b25c5faa8eef072995a61efc4a2ab15" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, UnstridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2285" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2284" bodyend="2287"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga40e10a50456b5a1130e786b6ca900f4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, T, UnstridedArrayTag &gt; array, const hid_t datatype, const int numBandsOfType)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, T, UnstridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>const hid_t</type>
+          <declname>datatype</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>numBandsOfType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2292" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2291" bodyend="2309"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga184748ec7d6fa15a94e1296b66218bb1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, T, StridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, T, StridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2314" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2313" bodyend="2316"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga93773c66a8b4116f9c2c1e28c718d5fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, StridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, StridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2320" bodyend="2323"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga564169d0167dd12997d9fd8f8ecc1582" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, RGBValue&lt; T &gt;, StridedArrayTag &gt; array)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, RGBValue&lt; T &gt;, StridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2328" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2327" bodyend="2330"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga3ea86b9f4fd223093b530a370208f7c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::readHDF5</definition>
+        <argsstring>(const HDF5ImportInfo &amp;info, MultiArrayView&lt; N, T, StridedArrayTag &gt; array, const hid_t datatype, const int numBandsOfType)</argsstring>
+        <name>readHDF5</name>
+        <param>
+          <type>const HDF5ImportInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, T, StridedArrayTag &gt;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>const hid_t</type>
+          <declname>datatype</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>numBandsOfType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2335" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2334" bodyend="2357"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga2e66ccacdf2a0be58e9ff2565fcc77df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(...)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Store array data in an HDF5 file. </para>        </briefdescription>
+        <detaileddescription>
+<para>The number of dimensions, shape and element type of the stored dataset is automatically determined from the properties of the given <emphasis>array</emphasis>. Strided arrays are stored in an unstrided way, i.e. in contiguous scan-order. Multi-channel element types (i.e. <ref refid="classvigra_1_1RGBValue" kindref="compound">vigra::RGBValue</ref>, <ref refid="classvigra_1_1TinyVector" kindref="compound">vigra::TinyVector</ref> and <ref refid="classvigra_1_1FFTWComplex" kindref="compound">vigra::FFTWComplex</ref>) are recognized and handled correctly (in particular, the will form the innermost dimension of the stored dataset). <emphasis>pathInFile</emphasis> may contain &apos;/&apos;-separated group names, but must end with the name of the dataset to be created.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>T,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Str</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">eTag&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__VigraHDF5Impex_1ga2e66ccacdf2a0be58e9ff2565fcc77df" kindref="member" tooltip="Store array data in an HDF5 file.">writeHDF5</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>filePath,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>pathInFile,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>MultiArrayView&lt;N,<sp/>T,<sp/>StrideTag&gt;</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><sp/>&amp;<sp/>array);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra</para><para><programlisting><codeline><highlight class="normal">MultiArrayShape&lt;3&gt;::type<sp/>shape(100,<sp/>200,<sp/>20);</highlight></codeline>
+<codeline><highlight class="normal">MultiArray&lt;3,<sp/>int&gt;<sp/>array(shape);</highlight></codeline>
+<codeline><highlight class="normal">...<sp/></highlight><highlight class="comment">//<sp/>fill<sp/>array<sp/>with<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__VigraHDF5Impex_1ga2e66ccacdf2a0be58e9ff2565fcc77df" kindref="member" tooltip="Store array data in an HDF5 file.">writeHDF5</ref>(</highlight><highlight class="stringliteral">&quot;mydata.h5&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;/group1/my_dataset&quot;</highlight><highlight class="normal">,<sp/>array);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2595"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga39f783e7fc0b01fe9dcbe742b9fee7c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2600" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2599" bodyend="2602"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gace68449edd4a320c0b0e19505266c33c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, UnstridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, UnstridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2607" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2606" bodyend="2609"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga74019991eb19a5469eab8f3ace5b0076" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, RGBValue&lt; T &gt;, UnstridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, RGBValue&lt; T &gt;, UnstridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2614" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2613" bodyend="2616"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga9231f22f07c0e8e888cda5056ae00450" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, UnstridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, UnstridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2621" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2620" bodyend="2623"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga5146bfcd414d21499c4a32e48817fd19" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &amp;array, const hid_t datatype, const int numBandsOfType)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>const hid_t</type>
+          <declname>datatype</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>numBandsOfType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2628" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2627" bodyend="2637"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga05752882a245848255708c8d1da94ea8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, T, StridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, T, StridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2643" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2642" bodyend="2645"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga99bffb0f2fdbec22bdc2ef45f27612f6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>SIZE</declname>
+            <defname>SIZE</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, StridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, TinyVector&lt; T, SIZE &gt;, StridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2650" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2649" bodyend="2652"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga85db1db57ac1168274d718618e6c0b81" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, RGBValue&lt; T &gt;, StridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, RGBValue&lt; T &gt;, StridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2657" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2656" bodyend="2659"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gabeaa947b689812dcecbedbbc5791e132" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, StridedArrayTag &gt; &amp;array)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, FFTWComplex&lt; T &gt;, StridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2664" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2663" bodyend="2666"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gabc5a489435583aa22106249b07c05fc1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>unsigned int</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5</definition>
+        <argsstring>(const char *filePath, const char *pathInFile, const MultiArrayView&lt; N, T, StridedArrayTag &gt; &amp;array, const hid_t datatype, const int numBandsOfType)</argsstring>
+        <name>writeHDF5</name>
+        <param>
+          <type>const char *</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>const MultiArrayView&lt; N, T, StridedArrayTag &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <param>
+          <type>const hid_t</type>
+          <declname>datatype</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>numBandsOfType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2671" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2670" bodyend="2692"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga30942a3a78f5d0f0df6f5d39dafc0410" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>size_t</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5Attr</definition>
+        <argsstring>(hid_t loc, const char *name, MultiArrayView&lt; N, T, C &gt; const &amp;array)</argsstring>
+        <name>writeHDF5Attr</name>
+        <param>
+          <type>hid_t</type>
+          <declname>loc</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, T, C &gt; const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write a numeric <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> as an attribute with name <emphasis>name</emphasis> of the dataset specified by the handle <emphasis>loc</emphasis>.</para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2725" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2722" bodyend="2749"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1ga2302ebaf5025389b1e65925f2730fe01" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>size_t</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5Attr</definition>
+        <argsstring>(hid_t loc, const char *name, MultiArrayView&lt; N, std::string, C &gt; const &amp;array)</argsstring>
+        <name>writeHDF5Attr</name>
+        <param>
+          <type>hid_t</type>
+          <declname>loc</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>MultiArrayView&lt; N, std::string, C &gt; const &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write a string <ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref> as an attribute with name <emphasis>name</emphasis> of the dataset specified by the handle <emphasis>loc</emphasis>.</para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2761" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2758" bodyend="2795"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gaa76a3015531eb06d7d5b223f0dd71d84" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5Attr</definition>
+        <argsstring>(hid_t loc, const char *name, ArrayVectorView&lt; T &gt; &amp;array)</argsstring>
+        <name>writeHDF5Attr</name>
+        <param>
+          <type>hid_t</type>
+          <declname>loc</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>ArrayVectorView&lt; T &gt; &amp;</type>
+          <declname>array</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write a numeric <ref refid="classvigra_1_1ArrayVectorView" kindref="compound">ArrayVectorView</ref> as an attribute with name <emphasis>name</emphasis> of the dataset specified by the handle <emphasis>loc</emphasis>.</para><para><bold>#include</bold> &lt;<ref refid="hdf5impex_8hxx_source" kindref="compound">vigra/hdf5impex.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2807" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2804" bodyend="2811"/>
+      </memberdef>
+      <memberdef kind="function" id="group__VigraHDF5Impex_1gac870449b451834c012ca7ffe4d282680" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Arr</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::writeHDF5Attr</definition>
+        <argsstring>(std::string filePath, std::string pathInFile, Arr &amp;ar)</argsstring>
+        <name>writeHDF5Attr</name>
+        <param>
+          <type>std::string</type>
+          <declname>filePath</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>pathInFile</declname>
+        </param>
+        <param>
+          <type>Arr &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>write an Attribute given a file and a path in the file. the path in the file should have the format [attribute] or /[subgroups/]dataset.attribute or /[subgroups/]group.attribute. The attribute is written to the root group, a dataset or a subgroup respectively </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" line="2824" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/hdf5impex.hxx" bodystart="2821" bodyend="2870"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Supports arrays with arbitrary element types and arbitrary many dimensions. See the <ulink url="http://www.hdfgroup.org/HDF5/">HDF5 Website</ulink> for more information on the HDF5 file format. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1StopIfMargin" kind="class" prot="public">
+    <compoundname>vigra::StopIfMargin</compoundname>
+    <basecompoundref refid="classvigra_1_1StopBase" prot="public" virt="non-virtual">StopBase</basecompoundref>
+    <includes refid="rf__earlystopping_8hxx" local="no">vigra/random_forest/rf_earlystopping.hxx</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1StopIfMargin_1a5e3f0ee315605b7f2d0d4c7443c4189d" prot="public" static="no">
+        <type><ref refid="classvigra_1_1StopBase" kindref="compound">StopBase</ref></type>
+        <definition>typedef StopBase SB</definition>
+        <argsstring></argsstring>
+        <name>SB</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="224" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1StopIfMargin_1addb47ba6edeaaee2e4ea46b4b611ad9c" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1ArrayVector" kindref="compound">ArrayVector</ref>&lt; double &gt;</type>
+        <definition>ArrayVector&lt;double&gt; depths</definition>
+        <argsstring></argsstring>
+        <name>depths</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="225" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="225" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1StopIfMargin_1aaf1206caa3c1dea8fe5f5db2afb4fd5c" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double proportion_</definition>
+        <argsstring></argsstring>
+        <name>proportion_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1StopIfMargin_1a13fb8a50620c32ee7d0b68127ed604f9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class WeightIter</type>
+          </param>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>class C</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool after_prediction</definition>
+        <argsstring>(WeightIter, int k, MultiArrayView&lt; 2, T, C &gt; prob, double)</argsstring>
+        <name>after_prediction</name>
+        <param>
+          <type>WeightIter</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>k</declname>
+        </param>
+        <param>
+          <type><ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; 2, T, C &gt;</type>
+          <declname>prob</declname>
+        </param>
+        <param>
+          <type>double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="236" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1StopIfMargin_1ae1d70e236c233fd100f1d97c638dd0b7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>StopIfMargin</definition>
+        <argsstring>(double proportion)</argsstring>
+        <name>StopIfMargin</name>
+        <param>
+          <type>double</type>
+          <declname>proportion</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>proportion</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>specify proportion to be used. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="233" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="230" bodyend="233"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Stop predicting if the margin prob(leading class) - prob(second class) exceeds a proportion case unweighted voting: stop if margin exceeds proportion * SB::tree_count_ case weighted voting: stop if margin exceeds proportion * msample_ * SB::tree_count_ ; (maximal number of votes possible in both cases) </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2448">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+      </node>
+      <node id="2447">
+        <label>StopIfMargin</label>
+        <link refid="classvigra_1_1StopIfMargin"/>
+        <childnode refid="2448" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2455">
+        <label>ArrayVectorView&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2450">
+        <label>StopBase</label>
+        <link refid="classvigra_1_1StopBase"/>
+        <childnode refid="2451" relation="usage">
+          <edgelabel>ext_param_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2451">
+        <label>ProblemSpec&lt; LabelType &gt;</label>
+        <link refid="classvigra_1_1ProblemSpec"/>
+        <childnode refid="2452" relation="usage">
+          <edgelabel>class_weights_</edgelabel>
+        </childnode>
+        <childnode refid="2454" relation="usage">
+          <edgelabel>classes</edgelabel>
+        </childnode>
+      </node>
+      <node id="2452">
+        <label>ArrayVector&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2453" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2453">
+        <label>ArrayVectorView&lt; double &gt;</label>
+        <link refid="classvigra_1_1ArrayVectorView"/>
+      </node>
+      <node id="2454">
+        <label>ArrayVector&lt; Label_t &gt;</label>
+        <link refid="classvigra_1_1ArrayVector"/>
+        <childnode refid="2455" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2449">
+        <label>StopIfMargin</label>
+        <link refid="classvigra_1_1StopIfMargin"/>
+        <childnode refid="2450" relation="public-inheritance">
+        </childnode>
+        <childnode refid="2452" relation="usage">
+          <edgelabel>depths</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" line="221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_earlystopping.hxx" bodystart="220" bodyend="267"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1StopIfMargin_1a13fb8a50620c32ee7d0b68127ed604f9" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>after_prediction</name></member>
+      <member refid="classvigra_1_1StopIfMargin_1addb47ba6edeaaee2e4ea46b4b611ad9c" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>depths</name></member>
+      <member refid="classvigra_1_1StopBase_1a99db359c49053ebe05644db4810bba24" prot="protected" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>ext_param_</name></member>
+      <member refid="classvigra_1_1StopBase_1acf3de57c3731277817b02853efb8d48a" prot="protected" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>is_weighted_</name></member>
+      <member refid="classvigra_1_1StopIfMargin_1aaf1206caa3c1dea8fe5f5db2afb4fd5c" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>proportion_</name></member>
+      <member refid="classvigra_1_1StopIfMargin_1a5e3f0ee315605b7f2d0d4c7443c4189d" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>SB</name></member>
+      <member refid="classvigra_1_1StopBase_1a289ea1591011505e9e891401cde546fd" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>set_external_parameters</name></member>
+      <member refid="classvigra_1_1StopIfMargin_1ae1d70e236c233fd100f1d97c638dd0b7" prot="public" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>StopIfMargin</name></member>
+      <member refid="classvigra_1_1StopBase_1ac648afda832826f3e0fa454bba5c263e" prot="protected" virt="non-virtual"><scope>vigra::StopIfMargin</scope><name>tree_count_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

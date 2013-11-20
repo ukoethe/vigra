@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="group__GaborFilter" kind="group">
+    <compoundname>GaborFilter</compoundname>
+    <title>Gabor Filter</title>
+    <innerclass refid="classvigra_1_1GaborFilterFamily" prot="public">vigra::GaborFilterFamily</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::angularGaborSigma</definition>
+        <argsstring>(int directionCount, double centerFrequency)</argsstring>
+        <name>angularGaborSigma</name>
+        <param>
+          <type>int</type>
+          <declname>directionCount</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerFrequency</declname>
+        </param>
+        <briefdescription>
+<para>Calculate sensible angular sigma for given parameters. </para>        </briefdescription>
+        <detaileddescription>
+<para>&quot;Sensible&quot; means: If you use a range of gabor filters for feature detection, you are interested in minimal redundancy. This is hard to define but one possible try is to arrange the filters in frequency space, so that the half-peak-magnitude ellipses touch each other.</para><para>To do so, you must know the number of directions (first parameter for the angular sigma function) and the center frequency of the filter you want to calculate the sigmas for.</para><para>The exact formulas are: <programlisting><codeline><highlight class="normal">sigma_radial=<sp/>1/<ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">sqrt</ref>(ln(4))<sp/>*<sp/>centerFrequency/3</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="normal">sigma_angular=<sp/>1/<ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">sqrt</ref>(ln(4))<sp/>*<sp/><ref refid="group__LinearAlgebraFunctions_1gaff59c596812d1553c8e681e708b9a14f" kindref="member">tan</ref>(pi/(directions*2))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__FixedPointOperations_1ga22d75753836176f3d172f58be11ecc4c" kindref="member" tooltip="square root.">sqrt</ref>(8/9)<sp/>*<sp/>centerFrequency</highlight></codeline>
+</programlisting></para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" kindref="member" tooltip="Calculate sensible angular sigma for given parameters.">angularGaborSigma</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>directionCount,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerFrequency)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="256" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="255" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GaborFilter_1ga01f6460f7a897e70c5e1470e5d48e3c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>...</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createGaborFilter</definition>
+        <argsstring>(...)</argsstring>
+        <name>createGaborFilter</name>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Create a gabor filter in frequency space. </para>        </briefdescription>
+        <detaileddescription>
+<para>The orientation is given in radians, the other parameters are the center frequency (for example 0.375 or smaller) and the two angular and radial sigmas of the gabor filter. (See <ref refid="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" kindref="member">angularGaborSigma()</ref> for an explanation of possible values.)</para><para>The energy of the filter is explicitly normalized to 1.0.</para><para><bold> Declarations:</bold></para><para>pass arguments explicitly: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GaborFilter_1ga01f6460f7a897e70c5e1470e5d48e3c4" kindref="member" tooltip="Create a gabor filter in frequency space.">createGaborFilter</ref>(DestImageIterator<sp/>destUpperLeft,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator<sp/>destLowerRight,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestAccessor<sp/>da,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>orientation,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerFrequency,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angularSigma,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>radialSigma)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>use argument objects in conjunction with <ref refid="ArgumentObjectFactories" kindref="compound">Argument Object Factories</ref> : <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestImageIterator,<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>DestAccessor&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__GaborFilter_1ga01f6460f7a897e70c5e1470e5d48e3c4" kindref="member" tooltip="Create a gabor filter in frequency space.">createGaborFilter</ref>(triple&lt;DestImageIterator,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestImageIterator,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>DestAccessor&gt;<sp/>dest,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>orientation,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerFrequency,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>angularSigma,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>radialSigma)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para><bold> Usage:</bold></para><para><bold>#include</bold> &lt;<ref refid="gaborfilter_8hxx_source" kindref="compound">vigra/gaborfilter.hxx</ref>&gt;<linebreak/>
+</para><para>Namespace: vigra</para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::FImage</ref><sp/>gabor(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__GaborFilter_1ga01f6460f7a897e70c5e1470e5d48e3c4" kindref="member" tooltip="Create a gabor filter in frequency space.">vigra::createGaborFilter</ref>(destImageRange(gabor),<sp/>orient,<sp/>freq,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" kindref="member" tooltip="Calculate sensible angular sigma for given parameters.">angularGaborSigma</ref>(directionCount,<sp/>freq)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group__GaborFilter_1ga13740f6096df3f546d5eeb6ebfbd3d8b" kindref="member" tooltip="Calculate sensible radial sigma for given parameters.">radialGaborSigma</ref>(freq));</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="114"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GaborFilter_1gadd6329c93ea60bae406488ec2dfaa1ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createGaborFilter</definition>
+        <argsstring>(DestImageIterator destUpperLeft, DestImageIterator destLowerRight, DestAccessor da, double orientation, double centerFrequency, double angularSigma, double radialSigma)</argsstring>
+        <name>createGaborFilter</name>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destUpperLeft</declname>
+        </param>
+        <param>
+          <type>DestImageIterator</type>
+          <declname>destLowerRight</declname>
+        </param>
+        <param>
+          <type>DestAccessor</type>
+          <declname>da</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>orientation</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerFrequency</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angularSigma</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radialSigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="121" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="117" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GaborFilter_1ga94b364f60ed9c052401bad54fca9c569" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class DestImageIterator</type>
+          </param>
+          <param>
+            <type>class DestAccessor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void vigra::createGaborFilter</definition>
+        <argsstring>(triple&lt; DestImageIterator, DestImageIterator, DestAccessor &gt; dest, double orientation, double centerFrequency, double angularSigma, double radialSigma)</argsstring>
+        <name>createGaborFilter</name>
+        <param>
+          <type>triple&lt; DestImageIterator, DestImageIterator, DestAccessor &gt;</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>orientation</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>centerFrequency</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>angularSigma</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>radialSigma</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="186" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="182" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="group__GaborFilter_1ga13740f6096df3f546d5eeb6ebfbd3d8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double vigra::radialGaborSigma</definition>
+        <argsstring>(double centerFrequency)</argsstring>
+        <name>radialGaborSigma</name>
+        <param>
+          <type>double</type>
+          <declname>centerFrequency</declname>
+        </param>
+        <briefdescription>
+<para>Calculate sensible radial sigma for given parameters. </para>        </briefdescription>
+        <detaileddescription>
+<para>For a brief introduction what is meant with &quot;sensible&quot; sigmas, see <ref refid="group__GaborFilter_1ga13db00f23091ea0efcb948c9727cc419" kindref="member">angularGaborSigma()</ref>.</para><para><bold> Declaration:</bold></para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vigra<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group__GaborFilter_1ga13740f6096df3f546d5eeb6ebfbd3d8b" kindref="member" tooltip="Calculate sensible radial sigma for given parameters.">radialGaborSigma</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>centerFrequency)</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" line="213" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/gaborfilter.hxx" bodystart="212" bodyend="216"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Functions to create or apply gabor filter (latter based on FFTW). </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

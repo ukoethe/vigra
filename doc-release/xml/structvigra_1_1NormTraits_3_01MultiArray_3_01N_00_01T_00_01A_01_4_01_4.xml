@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">vigra::NormTraits&lt; MultiArrayView&lt; N, T, UnstridedArrayTag &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>unsigned int</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>class A</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a2b3f6a4c018588e070676738dc540e5e" prot="public" static="no">
+        <type>NormTraits&lt; <ref refid="classvigra_1_1MultiArrayView" kindref="compound">MultiArrayView</ref>&lt; N, T, <ref refid="structvigra_1_1UnstridedArrayTag" kindref="compound">UnstridedArrayTag</ref> &gt; &gt;</type>
+        <definition>typedef NormTraits&lt;MultiArrayView&lt;N, T, UnstridedArrayTag&gt; &gt; BaseType</definition>
+        <argsstring></argsstring>
+        <name>BaseType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="724" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="724" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1ace8fc2dc3b3eea8b1a370233f548095c" prot="public" static="no">
+        <type>BaseType::NormType</type>
+        <definition>typedef BaseType::NormType NormType</definition>
+        <argsstring></argsstring>
+        <name>NormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="727" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="727" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a5b05058c5a4a4de31068b031f7be7f1b" prot="public" static="no">
+        <type>BaseType::SquaredNormType</type>
+        <definition>typedef BaseType::SquaredNormType SquaredNormType</definition>
+        <argsstring></argsstring>
+        <name>SquaredNormType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="726" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="726" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a9094530ea2962865cbb24c7ce921dbe0" prot="public" static="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; N, T, A &gt;</type>
+        <definition>typedef MultiArray&lt;N, T, A&gt; Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="725" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="725" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" line="723" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/multi_array.hxx" bodystart="721" bodyend="728"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a2b3f6a4c018588e070676738dc540e5e" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>BaseType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1ace8fc2dc3b3eea8b1a370233f548095c" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>NormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a5b05058c5a4a4de31068b031f7be7f1b" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>SquaredNormType</name></member>
+      <member refid="structvigra_1_1NormTraits_3_01MultiArray_3_01N_00_01T_00_01A_01_4_01_4_1a9094530ea2962865cbb24c7ce921dbe0" prot="public" virt="non-virtual"><scope>vigra::NormTraits&lt; MultiArray&lt; N, T, A &gt; &gt;</scope><name>Type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

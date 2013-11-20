@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1VectorElementAccessor" kind="class" prot="public">
+    <compoundname>vigra::VectorElementAccessor</compoundname>
+    <includes refid="accessor_8hxx" local="no">vigra/accessor.hxx</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ACCESSOR</declname>
+        <defname>ACCESSOR</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classvigra_1_1VectorElementAccessor_1a89781c3de507fc3c341fd575ef833808" prot="public" static="no">
+        <type>ACCESSOR::component_type</type>
+        <definition>typedef ACCESSOR::component_type value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>the value_type </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="545" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="545" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classvigra_1_1VectorElementAccessor_1ac470ad663edfe9255860ef98df206fc2" prot="private" static="no" mutable="no">
+        <type>ACCESSOR</type>
+        <definition>ACCESSOR a_</definition>
+        <argsstring></argsstring>
+        <name>a_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="541" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="541" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1VectorElementAccessor_1aaaf1ac02dfa554a3cdffc647d512a77b" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int index_</definition>
+        <argsstring></argsstring>
+        <name>index_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="540" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="540" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1a194770c0c0f7a5305b6940cceb975296" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1VectorElementAccessor_1a89781c3de507fc3c341fd575ef833808" kindref="member">value_type</ref> const &amp;</type>
+        <definition>value_type const&amp; operator()</definition>
+        <argsstring>(ITERATOR const &amp;i) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the current data item </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="558" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="557" bodyend="558"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1ac558e4f20934ee77fcfd57004ad34dae" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classvigra_1_1VectorElementAccessor_1a89781c3de507fc3c341fd575ef833808" kindref="member">value_type</ref> const &amp;</type>
+        <definition>value_type const&amp; operator()</definition>
+        <argsstring>(ITERATOR const &amp;i, DIFFERENCE const &amp;diff) const </argsstring>
+        <name>operator()</name>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>read the data item at an offset (can be 1D or 2D or higher order difference). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="564" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="563" bodyend="566"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1a7cb2c9deaa4edb5bf641f1a190c76685" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i) const </argsstring>
+        <name>set</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write the current data item. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>value_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="574" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="573" bodyend="576"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1a548cdb2243d69b4cce0fa66084d0bee9" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class V</type>
+          </param>
+          <param>
+            <type>class ITERATOR</type>
+          </param>
+          <param>
+            <type>class DIFFERENCE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void set</definition>
+        <argsstring>(V const &amp;value, ITERATOR const &amp;i, DIFFERENCE const &amp;diff) const </argsstring>
+        <name>set</name>
+        <param>
+          <type>V const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>DIFFERENCE const &amp;</type>
+          <declname>diff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Write the data item at an offset (can be 1D or 2D or higher order difference).. The type <computeroutput>V</computeroutput> of the passed in <computeroutput>value</computeroutput> is automatically converted to <computeroutput>value_type</computeroutput>. In case of a conversion floating point -&gt; integral this includes rounding and clipping. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="585" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="584" bodyend="587"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1a5f6dddb34141ffe1bb4373bbc12f2412" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void setIndex</definition>
+        <argsstring>(int i)</argsstring>
+        <name>setIndex</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Reset the index to the given number. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="592" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="591" bodyend="594"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1VectorElementAccessor_1a229ff667b5c76c67960cba6f32bd4f8d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>VectorElementAccessor</definition>
+        <argsstring>(int index, ACCESSOR a=ACCESSOR())</argsstring>
+        <name>VectorElementAccessor</name>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <param>
+          <type>ACCESSOR</type>
+          <declname>a</declname>
+          <defval>ACCESSOR()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>determine the component to be accessed </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="552" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="549" bodyend="552"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Accessor for one component of a vector. </para>    </briefdescription>
+    <detaileddescription>
+<para>This works like <ref refid="classvigra_1_1VectorComponentAccessor" kindref="compound">VectorComponentAccessor</ref>, only the template parameters differ: Here, we need a vector accessor type , whereas <ref refid="classvigra_1_1VectorComponentAccessor" kindref="compound">VectorComponentAccessor</ref> requires a vector type.</para><para><bold>Usage:</bold></para><para><programlisting><codeline><highlight class="normal"><ref refid="classvigra_1_1BasicImage" kindref="compound" tooltip="Fundamental class template for images.">vigra::BRGBImage</ref><sp/>image(w,h);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>init<sp/>red<sp/>channel<sp/>with<sp/>255</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="group__InitAlgo_1gaf6b3011611521bbc1c3e4dc619d1481e" kindref="member" tooltip="Write a value to every pixel in an image or rectangular ROI.">initImage</ref>(destImageRange(image,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>VectorElementAccessor&lt;vigra::BRGBImage::Accessor&gt;(0)),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>255);</highlight></codeline>
+</programlisting></para><para><bold>#include</bold> &lt;<ref refid="accessor_8hxx_source" kindref="compound">vigra/accessor.hxx</ref>&gt;<linebreak/>
+ Namespace: vigra </para>    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="539" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="538" bodyend="595"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1VectorElementAccessor_1ac470ad663edfe9255860ef98df206fc2" prot="private" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>a_</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1aaaf1ac02dfa554a3cdffc647d512a77b" prot="private" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>index_</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a194770c0c0f7a5305b6940cceb975296" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1ac558e4f20934ee77fcfd57004ad34dae" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>operator()</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a7cb2c9deaa4edb5bf641f1a190c76685" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a548cdb2243d69b4cce0fa66084d0bee9" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>set</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a5f6dddb34141ffe1bb4373bbc12f2412" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>setIndex</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a89781c3de507fc3c341fd575ef833808" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>value_type</name></member>
+      <member refid="classvigra_1_1VectorElementAccessor_1a229ff667b5c76c67960cba6f32bd4f8d" prot="public" virt="non-virtual"><scope>vigra::VectorElementAccessor</scope><name>VectorElementAccessor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

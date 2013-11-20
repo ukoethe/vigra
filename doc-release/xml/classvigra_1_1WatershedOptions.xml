@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1WatershedOptions" kind="class" prot="public">
+    <compoundname>vigra::WatershedOptions</compoundname>
+    <includes refid="watersheds_8hxx" local="no">vigra/watersheds.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1aa6231a5027112a1cf56c610e6d7d91c5" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double bias</definition>
+        <argsstring></argsstring>
+        <name>bias</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="706" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="706" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1aa74ea537a5dab5595c0a8875e05cb8e8" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int biased_label</definition>
+        <argsstring></argsstring>
+        <name>biased_label</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="708" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="708" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1ad6bbe90622253dd9365dcb429d972be9" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int bucket_count</definition>
+        <argsstring></argsstring>
+        <name>bucket_count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="708" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="708" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1ad283d211d570d78dfbe6a98936af012b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double max_cost</definition>
+        <argsstring></argsstring>
+        <name>max_cost</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="706" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="706" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1a252f3ad2e8cd3bff1c747bc639971838" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref></type>
+        <definition>SeedOptions seed_options</definition>
+        <argsstring></argsstring>
+        <name>seed_options</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="709" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="709" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1WatershedOptions_1abeb6bd60cda8796ebda99aaeaa76791c" prot="public" static="no" mutable="no">
+        <type><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref></type>
+        <definition>SRGType terminate</definition>
+        <argsstring></argsstring>
+        <name>terminate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="707" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="707" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1ac9fe756b8b6c338008262062b81c6374" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; biasLabel</definition>
+        <argsstring>(unsigned int label, double factor)</argsstring>
+        <name>biasLabel</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>label</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>factor</declname>
+        </param>
+        <briefdescription>
+<para>Bias the cost of the specified region by the given factor. </para>        </briefdescription>
+        <detaileddescription>
+<para>In certain applications, one region (typically the background) should be preferred in region growing. This is most easily achieved by adjusting the assignment cost for that region as <computeroutput>factor*cost</computeroutput>, with a factor slightly below 1.</para><para>Default: don&apos;t bias any region. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="816" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="815" bodyend="820"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1a6c5afa9207f4fcc825e650d67cd1ada4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; completeGrow</definition>
+        <argsstring>()</argsstring>
+        <name>completeGrow</name>
+        <briefdescription>
+<para>Perform complete grow. </para>        </briefdescription>
+        <detaileddescription>
+<para>That is, all pixels are assigned to regions, without explicit contours in between.</para><para>Default: true </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="734" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="733" bodyend="737"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1afcb00686e630b67b8f2ae769dc978261" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; keepContours</definition>
+        <argsstring>()</argsstring>
+        <name>keepContours</name>
+        <briefdescription>
+<para>Keep one-pixel wide contour between regions. </para>        </briefdescription>
+        <detaileddescription>
+<para>Note that this option is unsupported by the turbo algorithm.</para><para>Default: false </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="746" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="745" bodyend="749"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1a15555597c38612854638c1fc2482a027" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; seedOptions</definition>
+        <argsstring>(SeedOptions const &amp;s)</argsstring>
+        <name>seedOptions</name>
+        <param>
+          <type><ref refid="classvigra_1_1SeedOptions" kindref="compound">SeedOptions</ref> const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Specify seed options. </para>        </briefdescription>
+        <detaileddescription>
+<para>In this case, <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref> assumes that the destination image does not yet contain seeds. It will therefore call <ref refid="group__SeededRegionGrowing_1ga3fdf604e9584a7bdd39e4ee6bd620cbc" kindref="member">generateWatershedSeeds()</ref> and pass on the seed options.</para><para>Default: don&apos;t compute seeds (i.e. assume that destination image already contains seeds). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="801" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="800" bodyend="804"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1afc3826d26d06ab1d557e549aff83f41e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; srgType</definition>
+        <argsstring>(SRGType type)</argsstring>
+        <name>srgType</name>
+        <param>
+          <type><ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Set <ref refid="group__SeededRegionGrowing_1ga01b5439c31bc7008fe4b8b280dd12bf2" kindref="member">SRGType</ref> explicitly. </para>        </briefdescription>
+        <detaileddescription>
+<para>Default: CompleteGrow </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="756" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="755" bodyend="759"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1a628860a202d1874eb78e0b8faf97d838" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; stopAtThreshold</definition>
+        <argsstring>(double threshold)</argsstring>
+        <name>stopAtThreshold</name>
+        <param>
+          <type>double</type>
+          <declname>threshold</declname>
+        </param>
+        <briefdescription>
+<para>Stop region growing when the boundaryness exceeds the threshold. </para>        </briefdescription>
+        <detaileddescription>
+<para>This option may be combined with <ref refid="classvigra_1_1WatershedOptions_1a6c5afa9207f4fcc825e650d67cd1ada4" kindref="member">completeGrow()</ref> and <ref refid="classvigra_1_1WatershedOptions_1afcb00686e630b67b8f2ae769dc978261" kindref="member">keepContours()</ref>.</para><para>Default: no early stopping </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="768" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="767" bodyend="772"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1a3da83c2223ac73463602302f49bc5d5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classvigra_1_1WatershedOptions" kindref="compound">WatershedOptions</ref> &amp;</type>
+        <definition>WatershedOptions&amp; turboAlgorithm</definition>
+        <argsstring>(unsigned int bucket_count=256)</argsstring>
+        <name>turboAlgorithm</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>bucket_count</declname>
+          <defval>256</defval>
+        </param>
+        <briefdescription>
+<para>Use a simpler, but faster region growing algorithm. </para>        </briefdescription>
+        <detaileddescription>
+<para>The algorithm internally uses a <ref refid="classvigra_1_1BucketQueue" kindref="compound">BucketQueue</ref> to determine the processing order of the pixels. This is only useful, when the input boundary indicator image contains integers in the range <computeroutput>[0, ..., bucket_count-1]</computeroutput>. Since these boundary indicators are typically represented as UInt8 images, the default <computeroutput>bucket_count</computeroutput> is 256.</para><para>Default: don&apos;t use the turbo algorithm </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="786" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="785" bodyend="789"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1WatershedOptions_1ab24da95531f2e025e299ebee757b67c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>WatershedOptions</definition>
+        <argsstring>()</argsstring>
+        <name>WatershedOptions</name>
+        <briefdescription>
+<para>Create options object with default settings. </para>        </briefdescription>
+        <detaileddescription>
+<para>Defaults are: perform complete grow (all pixels are assigned to regions), use standard algorithm, assume that the destination image already contains region seeds. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="724" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="717" bodyend="724"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Options object for <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref>. </para>    </briefdescription>
+    <detaileddescription>
+<para><bold> Usage:</bold></para><para>see <ref refid="group__SeededRegionGrowing_1gadc7ca5f4008adfaeeb33875bd378bc9d" kindref="member">watershedsRegionGrowing()</ref> for detailed examples. </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="2765">
+        <label>SeedOptions</label>
+        <link refid="classvigra_1_1SeedOptions"/>
+      </node>
+      <node id="2764">
+        <label>WatershedOptions</label>
+        <link refid="classvigra_1_1WatershedOptions"/>
+        <childnode refid="2765" relation="usage">
+          <edgelabel>seed_options</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" line="704" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/watersheds.hxx" bodystart="703" bodyend="821"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1WatershedOptions_1aa6231a5027112a1cf56c610e6d7d91c5" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>bias</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1aa74ea537a5dab5595c0a8875e05cb8e8" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>biased_label</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1ac9fe756b8b6c338008262062b81c6374" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>biasLabel</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1ad6bbe90622253dd9365dcb429d972be9" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>bucket_count</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1a6c5afa9207f4fcc825e650d67cd1ada4" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>completeGrow</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1afcb00686e630b67b8f2ae769dc978261" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>keepContours</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1ad283d211d570d78dfbe6a98936af012b" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>max_cost</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1a252f3ad2e8cd3bff1c747bc639971838" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>seed_options</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1a15555597c38612854638c1fc2482a027" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>seedOptions</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1afc3826d26d06ab1d557e549aff83f41e" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>srgType</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1a628860a202d1874eb78e0b8faf97d838" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>stopAtThreshold</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1abeb6bd60cda8796ebda99aaeaa76791c" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>terminate</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1a3da83c2223ac73463602302f49bc5d5d" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>turboAlgorithm</name></member>
+      <member refid="classvigra_1_1WatershedOptions_1ab24da95531f2e025e299ebee757b67c1" prot="public" virt="non-virtual"><scope>vigra::WatershedOptions</scope><name>WatershedOptions</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

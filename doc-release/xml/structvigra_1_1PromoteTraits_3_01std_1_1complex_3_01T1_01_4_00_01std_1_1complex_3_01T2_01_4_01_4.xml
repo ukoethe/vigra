@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::PromoteTraits&lt; std::complex&lt; T1 &gt;, std::complex&lt; T2 &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T1</type>
+      </param>
+      <param>
+        <type>class T2</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1adaa52ec38408204cbb2d3eb1fe537b87" prot="public" static="no">
+        <type>std::complex&lt; typename PromoteTraits&lt; T1, T2 &gt;::Promote &gt;</type>
+        <definition>typedef std::complex&lt;typename PromoteTraits&lt;T1, T2&gt;::Promote&gt; Promote</definition>
+        <argsstring></argsstring>
+        <name>Promote</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1236" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1236" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1aa0fe37a586af5787f7d3cb534964fcfa" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Promote</type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(std::complex&lt; T1 &gt; const &amp;v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type>std::complex&lt; T1 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1237" bodyend="1237"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1acdd4b83e9bd9d97710fc46384822f901" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Promote</type>
+        <definition>static Promote toPromote</definition>
+        <argsstring>(std::complex&lt; T2 &gt; const &amp;v)</argsstring>
+        <name>toPromote</name>
+        <param>
+          <type>std::complex&lt; T2 &gt; const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1238" bodyend="1238"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" line="1235" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/numerictraits.hxx" bodystart="1234" bodyend="1239"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1adaa52ec38408204cbb2d3eb1fe537b87" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; std::complex&lt; T1 &gt;, std::complex&lt; T2 &gt; &gt;</scope><name>Promote</name></member>
+      <member refid="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1aa0fe37a586af5787f7d3cb534964fcfa" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; std::complex&lt; T1 &gt;, std::complex&lt; T2 &gt; &gt;</scope><name>toPromote</name></member>
+      <member refid="structvigra_1_1PromoteTraits_3_01std_1_1complex_3_01T1_01_4_00_01std_1_1complex_3_01T2_01_4_01_4_1acdd4b83e9bd9d97710fc46384822f901" prot="public" virt="non-virtual"><scope>vigra::PromoteTraits&lt; std::complex&lt; T1 &gt;, std::complex&lt; T2 &gt; &gt;</scope><name>toPromote</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="namespacevigra_1_1rf" kind="namespace">
+    <compoundname>vigra::rf</compoundname>
+    <innernamespace refid="namespacevigra_1_1rf_1_1algorithms">vigra::rf::algorithms</innernamespace>
+    <innernamespace refid="namespacevigra_1_1rf_1_1split">vigra::rf::split</innernamespace>
+    <innernamespace refid="namespacevigra_1_1rf_1_1visitors">vigra::rf::visitors</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_algorithm.hxx" line="45"/>
+  </compounddef>
+</doxygen>

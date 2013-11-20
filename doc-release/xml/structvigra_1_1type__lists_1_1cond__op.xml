@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1type__lists_1_1cond__op" kind="struct" prot="public">
+    <compoundname>vigra::type_lists::cond_op</compoundname>
+    <derivedcompoundref refid="structvigra_1_1type__lists_1_1cond__chooser_1_1exec__op" prot="public" virt="non-virtual">cond_chooser::exec_op&lt; ZL, TEST &gt;</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>ZL</declname>
+        <defname>ZL</defname>
+      </param>
+      <param>
+        <type>template&lt; class &gt; class</type>
+        <declname>TEST</declname>
+        <defname>TEST</defname>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>RRL</declname>
+        <defname>RRL</defname>
+        <defval>nil</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1aea6399760718f72699a975c4f6f245d3" prot="public" static="no">
+        <type>IfBool&lt; recurse_deep, typename deep_type::iter_leftover_type, rest_type &gt;::type</type>
+        <definition>typedef IfBool&lt;recurse_deep, typename deep_type::iter_leftover_type, rest_type &gt;::type deep_leftover_type</definition>
+        <argsstring></argsstring>
+        <name>deep_leftover_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1301" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1301" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1abf8731895904f76edc1b1dc4a8c0a87f" prot="public" static="no">
+        <type>cond_op&lt; rest_type, TEST, next_rr_list &gt;</type>
+        <definition>typedef cond_op&lt;rest_type, TEST, next_rr_list&gt; deep_type</definition>
+        <argsstring></argsstring>
+        <name>deep_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1295" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1295" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1a04e1cf6d2edd8fdb7cf099d6f5d4f8e7" prot="public" static="no">
+        <type>ZL::first</type>
+        <definition>typedef ZL::first first_type</definition>
+        <argsstring></argsstring>
+        <name>first_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1288" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1288" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1ac6222d355faa01ab219c1173beb62e2d" prot="public" static="no">
+        <type>IfBool&lt; iterate, typename iter_type::iter_leftover_type, deep_leftover_type &gt;::type</type>
+        <definition>typedef IfBool&lt;iterate, typename iter_type::iter_leftover_type, deep_leftover_type &gt;::type iter_leftover_type</definition>
+        <argsstring></argsstring>
+        <name>iter_leftover_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1316" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1316" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1adbd16d5ecf149afcfef14b9580ea80cd" prot="public" static="no">
+        <type>cond_op_inner&lt; deep_leftover_type, TEST, RRL &gt;</type>
+        <definition>typedef cond_op_inner&lt;deep_leftover_type, TEST, RRL&gt; iter_type</definition>
+        <argsstring></argsstring>
+        <name>iter_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1307" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1307" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1a3e6d35200c7b6fcdf7d5d240966c3942" prot="public" static="no">
+        <type>cons&lt; first_type, RRL &gt;</type>
+        <definition>typedef cons&lt;first_type, RRL&gt; next_rr_list</definition>
+        <argsstring></argsstring>
+        <name>next_rr_list</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1290" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1290" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1type__lists_1_1cond__op_1abcf01776e7edc860b933b2b3650a68bf" prot="public" static="no">
+        <type>ZL::rest</type>
+        <definition>typedef ZL::rest rest_type</definition>
+        <argsstring></argsstring>
+        <name>rest_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1289" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1289" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1cond__op_1ac6d26ec86505ca90567323acb7443194" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool iterate</definition>
+        <argsstring></argsstring>
+        <name>iterate</name>
+        <initializer> first_depends_on_all_of&lt;RRL, deep_leftover_type&gt;::value</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1304" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1304" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvigra_1_1type__lists_1_1cond__op_1ac3cee2d7a30a1c0fcfbc4f55a5ff889a" prot="public" static="yes" mutable="no">
+        <type>const bool</type>
+        <definition>const bool recurse_deep</definition>
+        <argsstring></argsstring>
+        <name>recurse_deep</name>
+        <initializer> first_depends_on&lt;first_type, rest_type&gt;::value</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1293" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1293" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__op_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void call</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;z)</argsstring>
+        <name>call</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1331" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1330" bodyend="1341"/>
+      </memberdef>
+      <memberdef kind="function" id="structvigra_1_1type__lists_1_1cond__op_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class TUPLE</type>
+          </param>
+          <param>
+            <type>class B</type>
+          </param>
+          <param>
+            <type>class TBASE</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>static void exec</definition>
+        <argsstring>(TUPLE &amp;tuple, B &amp;binder, const TBASE &amp;z)</argsstring>
+        <name>exec</name>
+        <param>
+          <type>TUPLE &amp;</type>
+          <declname>tuple</declname>
+        </param>
+        <param>
+          <type>B &amp;</type>
+          <declname>binder</declname>
+        </param>
+        <param>
+          <type>const TBASE &amp;</type>
+          <declname>z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1321" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1320" bodyend="1328"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" line="1287" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/type_lists.hxx" bodystart="1286" bodyend="1342"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a799f0537667e1983db9fe1d9d5d9239c" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>call</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1aea6399760718f72699a975c4f6f245d3" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>deep_leftover_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1abf8731895904f76edc1b1dc4a8c0a87f" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>deep_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a76ff1ebb74e1c2df44e0778b7dc26366" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>exec</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a04e1cf6d2edd8fdb7cf099d6f5d4f8e7" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>first_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac6222d355faa01ab219c1173beb62e2d" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>iter_leftover_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1adbd16d5ecf149afcfef14b9580ea80cd" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>iter_type</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac6d26ec86505ca90567323acb7443194" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>iterate</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1a3e6d35200c7b6fcdf7d5d240966c3942" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>next_rr_list</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1ac3cee2d7a30a1c0fcfbc4f55a5ff889a" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>recurse_deep</name></member>
+      <member refid="structvigra_1_1type__lists_1_1cond__op_1abcf01776e7edc860b933b2b3650a68bf" prot="public" virt="non-virtual"><scope>vigra::type_lists::cond_op</scope><name>rest_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

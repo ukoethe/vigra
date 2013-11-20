@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="structvigra_1_1AccessorTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4" kind="struct" prot="public">
+    <compoundname>vigra::AccessorTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>SIZE</declname>
+        <defname>SIZE</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structvigra_1_1AccessorTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1ab02025271d284e41d3c082d1b58e9984" prot="public" static="no">
+        <type><ref refid="classvigra_1_1VectorAccessor" kindref="compound">VectorAccessor</ref>&lt; <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt; &gt;</type>
+        <definition>typedef VectorAccessor&lt;TinyVector&lt;T, SIZE&gt; &gt; default_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="953" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="953" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structvigra_1_1AccessorTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1ac1d6dff813d3b629331c75d2038be39a" prot="public" static="no">
+        <type><ref refid="classvigra_1_1VectorAccessor" kindref="compound">VectorAccessor</ref>&lt; <ref refid="classvigra_1_1TinyVector" kindref="compound">TinyVector</ref>&lt; T, SIZE &gt; &gt;</type>
+        <definition>typedef VectorAccessor&lt;TinyVector&lt;T, SIZE&gt; &gt; default_const_accessor</definition>
+        <argsstring></argsstring>
+        <name>default_const_accessor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="954" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="954" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" line="952" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/accessor.hxx" bodystart="951" bodyend="955"/>
+    <listofallmembers>
+      <member refid="structvigra_1_1AccessorTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1ab02025271d284e41d3c082d1b58e9984" prot="public" virt="non-virtual"><scope>vigra::AccessorTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>default_accessor</name></member>
+      <member refid="structvigra_1_1AccessorTraits_3_01TinyVector_3_01T_00_01SIZE_01_4_01_4_1ac1d6dff813d3b629331c75d2038be39a" prot="public" virt="non-virtual"><scope>vigra::AccessorTraits&lt; TinyVector&lt; T, SIZE &gt; &gt;</scope><name>default_const_accessor</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

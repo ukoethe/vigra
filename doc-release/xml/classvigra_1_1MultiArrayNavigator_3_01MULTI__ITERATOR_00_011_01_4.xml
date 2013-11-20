@@ -1,0 +1,328 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4" kind="class" prot="public">
+    <compoundname>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class MULTI_ITERATOR</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a4790f45dcc812c1b00184a2edccdddf5" prot="public" static="no">
+        <name>@32</name>
+        <enumvalue id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a4790f45dcc812c1b00184a2edccdddf5a831fc3a2f78e54e3c4ce5251aa1fc268" prot="public">
+          <name>level</name>
+          <initializer> 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="171" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="171" bodyend="171"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a09f1f6628bbbe1dfcbca739442d71612" prot="public" static="no">
+        <type>MULTI_ITERATOR::iterator</type>
+        <definition>typedef MULTI_ITERATOR::iterator iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="173" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a8cf2fde4af64d75c2f4211df5200f408" prot="public" static="no">
+        <type>MULTI_ITERATOR::multi_difference_type</type>
+        <definition>typedef MULTI_ITERATOR::multi_difference_type shape_type</definition>
+        <argsstring></argsstring>
+        <name>shape_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="172" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1aefec8d85deab119991a6c72d25a1b41c" prot="protected" static="no" mutable="no">
+        <type>MULTI_ITERATOR</type>
+        <definition>MULTI_ITERATOR i_</definition>
+        <argsstring></argsstring>
+        <name>i_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="239" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="239" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ab6c6ebf70938b10c5e782a4f7675831b" prot="protected" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int inner_dimension_</definition>
+        <argsstring></argsstring>
+        <name>inner_dimension_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a7cca9b24603ca9fa38c40d88c1d4b26f" prot="protected" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int inner_shape_</definition>
+        <argsstring></argsstring>
+        <name>inner_shape_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="238" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a28257fd028664f32809f7f0efc871690" prot="protected" static="no" mutable="no">
+        <type>shape_type</type>
+        <definition>shape_type point_</definition>
+        <argsstring></argsstring>
+        <name>point_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a6a1dd86e01c3963fb884d80cf98aa033" prot="protected" static="no" mutable="no">
+        <type>shape_type</type>
+        <definition>shape_type start_</definition>
+        <argsstring></argsstring>
+        <name>start_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a8457c4760a5853767cb7e899074303e7" prot="protected" static="no" mutable="no">
+        <type>shape_type</type>
+        <definition>shape_type stop_</definition>
+        <argsstring></argsstring>
+        <name>stop_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="237" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="237" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a11cbf4ba82ee565cb9eef28b972bf145" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool atEnd</definition>
+        <argsstring>() const </argsstring>
+        <name>atEnd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="221" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="220" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2fcbf5359798ec294d009f286fd802e6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator begin</definition>
+        <argsstring>() const </argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="206" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="205" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ac0742d15ef3d775dfe617aab68aaadaa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>iterator</type>
+        <definition>iterator end</definition>
+        <argsstring>() const </argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="210" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a97c5fb844c38a720482022f117f2c614" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool hasMore</definition>
+        <argsstring>() const </argsstring>
+        <name>hasMore</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="216" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="215" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ae4f9241a12e799cf6b45f59eafd95a96" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiArrayNavigator</definition>
+        <argsstring>(MULTI_ITERATOR const &amp;i, shape_type const &amp;shape, unsigned int inner_dimension)</argsstring>
+        <name>MultiArrayNavigator</name>
+        <param>
+          <type>MULTI_ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>shape</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>inner_dimension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="180" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="175" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a36cd73dee0462fe6b75ca5f7ec7b6cf5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>MultiArrayNavigator</definition>
+        <argsstring>(MULTI_ITERATOR const &amp;i, shape_type const &amp;start, shape_type const &amp;stop, unsigned int inner_dimension)</argsstring>
+        <name>MultiArrayNavigator</name>
+        <param>
+          <type>MULTI_ITERATOR const &amp;</type>
+          <declname>i</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>shape_type const &amp;</type>
+          <declname>stop</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>inner_dimension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="190" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="184" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a00f008b80917746917b874d00abd02a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="195" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="194" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2aefc5a84a51687145f8514f4029c26c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void operator++</definition>
+        <argsstring>(int)</argsstring>
+        <name>operator++</name>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="201" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="200" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2e8b0d47512942e056926df1c2903c6e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>shape_type const &amp;</type>
+        <definition>shape_type const&amp; point</definition>
+        <argsstring>() const </argsstring>
+        <name>point</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="226" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="225" bodyend="228"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="232" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="231" bodyend="235"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" line="169" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/navigator.hxx" bodystart="168" bodyend="240"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a11cbf4ba82ee565cb9eef28b972bf145" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>atEnd</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2fcbf5359798ec294d009f286fd802e6" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>begin</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ac0742d15ef3d775dfe617aab68aaadaa" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>end</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a97c5fb844c38a720482022f117f2c614" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>hasMore</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1aefec8d85deab119991a6c72d25a1b41c" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>i_</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ab6c6ebf70938b10c5e782a4f7675831b" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>inner_dimension_</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a7cca9b24603ca9fa38c40d88c1d4b26f" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>inner_shape_</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a09f1f6628bbbe1dfcbca739442d71612" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>iterator</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a4790f45dcc812c1b00184a2edccdddf5a831fc3a2f78e54e3c4ce5251aa1fc268" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>level</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ae4f9241a12e799cf6b45f59eafd95a96" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>MultiArrayNavigator</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a36cd73dee0462fe6b75ca5f7ec7b6cf5" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>MultiArrayNavigator</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a00f008b80917746917b874d00abd02a9" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2aefc5a84a51687145f8514f4029c26c" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>operator++</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a2e8b0d47512942e056926df1c2903c6e" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>point</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a28257fd028664f32809f7f0efc871690" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>point_</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1ad20897c5c8bd47f5d4005989bead0e55" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>reset</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a8cf2fde4af64d75c2f4211df5200f408" prot="public" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>shape_type</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a6a1dd86e01c3963fb884d80cf98aa033" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>start_</name></member>
+      <member refid="classvigra_1_1MultiArrayNavigator_3_01MULTI__ITERATOR_00_011_01_4_1a8457c4760a5853767cb7e899074303e7" prot="protected" virt="non-virtual"><scope>vigra::MultiArrayNavigator&lt; MULTI_ITERATOR, 1 &gt;</scope><name>stop_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

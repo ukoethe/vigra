@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="Examples" kind="page">
+    <compoundname>Examples</compoundname>
+    <title>Examples</title>
+    <detaileddescription>
+<para>Demonstration programs for VIGRA&apos;s usage.</para><para>Click on the hyperlinks to view the commented source code for the demos. Most examples can be applied to both gray-scale and RGB images. See <ulink url="Installation.html">Installation</ulink> for instructions on how these programs can be compiled. For convenience, the directory contains the test images <ulink url="lenna_gray.gif">lenna_gray.gif</ulink> and <ulink url="lenna_color.gif">lenna_color.gif</ulink>.</para><para><itemizedlist>
+<listitem>
+<para>Convert an image file into another file type: <ulink url="convert.cxx-example.html">convert.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>convert infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Read an image file and write out a subimage: <ulink url="subimage.cxx-example.html">subimage.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>subimage infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Invert an image file (create a negative) using the function <ref refid="group__TransformAlgo_1gababa545b60bb7db13076648f83c6b314" kindref="member">transformImage()</ref>: <ulink url="invert.cxx-example.html">invert.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>invert infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Invert an image file (create a negative) by coding the loop explicitly: <ulink url="invert__explicitly.cxx-example.html">invert_explicitly.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>invert_explicitly infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Resize an image using <ref refid="group__GeometricTransformations_1ga7c1095b357ec19b9edefa849a0a4d178" kindref="member">resizeImageSplineInterpolation()</ref>: <ulink url="resize.cxx-example.html">resize.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>resize infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Smooth an image using <ref refid="group__RecursiveConvolution" kindref="compound">Recursive convolution functions</ref> functions: <ulink url="smooth.cxx-example.html">smooth.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>smooth infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Find the gray value profile along the image diagonal by means of a <ref refid="classvigra_1_1LineIterator" kindref="compound">vigra::LineIterator</ref> : <ulink url="profile.cxx-example.html">profile.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>profile infile</computeroutput>, generates <computeroutput>profile.gif</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Create series of slices through different color spaces.: <ulink url="palette.cxx-example.html">palette.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>palette lab</computeroutput>, generates <computeroutput>lab_*.gif</computeroutput> (44 images)</para><para></para></listitem>
+<listitem>
+<para>Reduce image size by mean of a Gaussian pyramid: <ulink url="pyramid.cxx-example.html">pyramid.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>pyramid infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Find edges by means of a <ref refid="group__EdgeDetection_1ga82468161d9b270516e72ab0bc76f63b7" kindref="member">differenceOfExponentialEdgeImage()</ref>: <ulink url="edge.cxx-example.html">edge.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>edge infile outfile</computeroutput> </para></listitem>
+<listitem>
+<para>Segment image by means of the watershed algorithm, using <ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref>: <ulink url="watershed.cxx-example.html">watershed.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>watershed infile outfile</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Generate a Voronoi diagram, using <ref refid="group__DistanceTransform_1gad481d272471bfa808196959dffca524b" kindref="member">distanceTransform()</ref> and <ref refid="group__SeededRegionGrowing_1ga7b54436edf7b15b9628d17a22917b4b1" kindref="member">seededRegionGrowing()</ref>: <ulink url="voronoi.cxx-example.html">voronoi.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>voronoi</computeroutput>, generates: <computeroutput>distances.gif</computeroutput> (Euclidean distance transform) and <computeroutput>voronoi.gif</computeroutput> (Voronoi diagram)</para><para></para></listitem>
+<listitem>
+<para>Measure boundary and corner strengths with the <ref refid="group__TensorImaging_1gab4ee0f19130a109119cc9cbc594ed1b7" kindref="member">boundaryTensor()</ref>: <ulink url="boundarytensor.cxx-example.html">boundarytensor.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>boundarytensor infile</computeroutput>, creates <computeroutput>boundarystrength.tif</computeroutput> and <computeroutput>cornerstrength.tif</computeroutput></para><para></para></listitem>
+<listitem>
+<para>Total Variation (TV) Regularization <ulink url="total__variation.cxx-example.html">total_variation.cxx</ulink> <linebreak/>
+ Usage: <computeroutput>total_variation parameterfile</computeroutput> (cf. example parameter files *.par for standard TV regularization, anisotropic and second order TV)</para><para></para></listitem>
+</itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

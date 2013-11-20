@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1matlab_1_1ConstCellArray" kind="class" prot="public">
+    <compoundname>vigra::matlab::ConstCellArray</compoundname>
+    <derivedcompoundref refid="classvigra_1_1matlab_1_1CellArray" prot="public" virt="non-virtual">CellArray</derivedcompoundref>
+    <innerclass refid="structvigra_1_1matlab_1_1ConstCellArray_1_1Proxy" prot="public">vigra::matlab::ConstCellArray::Proxy</innerclass>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1ConstCellArray_1aab46c0ccbda0a0af4a809657c91e422e" prot="protected" static="no" mutable="no">
+        <type>mxArray *</type>
+        <definition>mxArray* matPointer_</definition>
+        <argsstring></argsstring>
+        <name>matPointer_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="177" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classvigra_1_1matlab_1_1ConstCellArray_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="178" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1ConstCellArray_1aed2a0594910d40d2104fd95f904f61e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>ConstCellArray</definition>
+        <argsstring>(const mxArray *matPointer=0)</argsstring>
+        <name>ConstCellArray</name>
+        <param>
+          <type>const mxArray *</type>
+          <declname>matPointer</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="201" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="198" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1ConstCellArray_1adc616e0f7862852eeafe26c5ef237314" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool isValid</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>isValid</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="223" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="222" bodyend="225"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1ConstCellArray_1a24dcc8470c80c9a23140ed345511088e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>Proxy</type>
+        <definition>Proxy operator[]</definition>
+        <argsstring>(int i) const </argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>int</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="211" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="210" bodyend="215"/>
+      </memberdef>
+      <memberdef kind="function" id="classvigra_1_1matlab_1_1ConstCellArray_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="218" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="217" bodyend="220"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" line="175" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/matlab.hxx" bodystart="174" bodyend="227"/>
+    <listofallmembers>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1aed2a0594910d40d2104fd95f904f61e7" prot="public" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>ConstCellArray</name></member>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1adc616e0f7862852eeafe26c5ef237314" prot="public" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>isValid</name></member>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1aab46c0ccbda0a0af4a809657c91e422e" prot="protected" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>matPointer_</name></member>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1a24dcc8470c80c9a23140ed345511088e" prot="public" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>operator[]</name></member>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1ab8e4e3e2a7bf18888b71bdf9dda0770b" prot="public" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>size</name></member>
+      <member refid="classvigra_1_1matlab_1_1ConstCellArray_1a6947fa5d6ba628dd62d59ffbad8b8d80" prot="protected" virt="non-virtual"><scope>vigra::matlab::ConstCellArray</scope><name>size_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

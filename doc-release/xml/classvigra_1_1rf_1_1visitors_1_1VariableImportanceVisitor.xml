@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.1.2">
+  <compounddef id="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor" kind="class" prot="public">
+    <compoundname>vigra::rf::visitors::VariableImportanceVisitor</compoundname>
+    <basecompoundref refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase" prot="public" virt="non-virtual">VisitorBase</basecompoundref>
+    <includes refid="rf__visitors_8hxx" local="no">vigra/random_forest/rf_visitors.hxx</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="group__MachineLearning_1gafbcb3ac4169d783043b3f1b6f9e0665c" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool in_place_</definition>
+        <argsstring></argsstring>
+        <name>in_place_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1250" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gaa7c72f076b7eacaeda9a6b5f522c7a63" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int repetition_count_</definition>
+        <argsstring></argsstring>
+        <name>repetition_count_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1249" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__MachineLearning_1gac4b8c6cd30f9b3de278e373528e092aa" prot="public" static="no" mutable="no">
+        <type><ref refid="classvigra_1_1MultiArray" kindref="compound">MultiArray</ref>&lt; 2, double &gt;</type>
+        <definition>MultiArray&lt;2, double&gt; variable_importance_</definition>
+        <argsstring></argsstring>
+        <name>variable_importance_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This Array has the same entries as the R - random forest variable importance. Matrix is featureCount by (classCount +2) variable_importance_(ii,jj) is the variable importance measure of the ii-th variable according to: jj = 0 - (classCount-1) classwise permutation importance jj = rowCount(variable_importance_) -2 permutation importance jj = rowCount(variable_importance_) -1 gini decrease importance.</para><para>permutation importance: The difference between the fraction of OOB samples classified correctly before and after permuting (randomizing) the ii-th column is calculated. The ii-th column is permuted rep_cnt times.</para><para>class wise permutation importance: same as permutation importance. We only look at those OOB samples whose response corresponds to class jj.</para><para>gini decrease importance: row ii corresponds to the sum of all gini decreases induced by variable ii in each node of the random forest. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1248" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1248" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="group__MachineLearning_1gae14ce8384c149dfccb48079c51464207" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+          <param>
+            <type>class SM</type>
+          </param>
+          <param>
+            <type>class ST</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void after_tree_ip_impl</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr, SM &amp;sm, ST &amp;st, int index)</argsstring>
+        <name>after_tree_ip_impl</name>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <param>
+          <type>SM &amp;</type>
+          <declname>sm</declname>
+        </param>
+        <param>
+          <type>ST &amp;</type>
+          <declname>st</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>compute permutation based var imp. (Only an Array of size oob_sample_count x 1 is created.<itemizedlist>
+<listitem><para>apposed to oob_sample_count x feature_count in the other method.</para></listitem></itemizedlist>
+</para><para><simplesect kind="see"><para>FieldProxy </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1312" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1311" bodyend="1425"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga6d8acee39d76fbdb44ece3977a336c35" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>VariableImportanceVisitor</definition>
+        <argsstring>(int rep_cnt=10)</argsstring>
+        <name>VariableImportanceVisitor</name>
+        <param>
+          <type>int</type>
+          <declname>rep_cnt</declname>
+          <defval>10</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rep_cnt</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>(defautl: 10) how often should the permutation take place. Set to 1 to make calculation faster (but possibly more instable) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1270" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1267" bodyend="1270"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Tree</type>
+          </param>
+          <param>
+            <type>class Split</type>
+          </param>
+          <param>
+            <type>class Region</type>
+          </param>
+          <param>
+            <type>class Feature_t</type>
+          </param>
+          <param>
+            <type>class Label_t</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_after_split</definition>
+        <argsstring>(Tree &amp;tree, Split &amp;split, Region &amp;parent, Region &amp;leftChild, Region &amp;rightChild, Feature_t &amp;features, Label_t &amp;labels)</argsstring>
+        <name>visit_after_split</name>
+        <reimplements refid="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77">visit_after_split</reimplements>
+        <param>
+          <type>Tree &amp;</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>Split &amp;</type>
+          <declname>split</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>leftChild</declname>
+        </param>
+        <param>
+          <type>Region &amp;</type>
+          <declname>rightChild</declname>
+        </param>
+        <param>
+          <type>Feature_t &amp;</type>
+          <declname>features</declname>
+        </param>
+        <param>
+          <type>Label_t &amp;</type>
+          <declname>labels</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculates impurity decrease based variable importance after every split. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1283" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1276" bodyend="1302"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+          <param>
+            <type>class SM</type>
+          </param>
+          <param>
+            <type>class ST</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_after_tree</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr, SM &amp;sm, ST &amp;st, int index)</argsstring>
+        <name>visit_after_tree</name>
+        <reimplements refid="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76">visit_after_tree</reimplements>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <param>
+          <type>SM &amp;</type>
+          <declname>sm</declname>
+        </param>
+        <param>
+          <type>ST &amp;</type>
+          <declname>st</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>calculate permutation based impurity after every tree has been learned default behaviour is that this happens out of place. If you have very big data sets and want to avoid copying of data set the in_place_ flag to true. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1434" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1433" bodyend="1436"/>
+      </memberdef>
+      <memberdef kind="function" id="group__MachineLearning_1ga8680ab265a8c9c57f39c75bd51a186e7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class RF</type>
+          </param>
+          <param>
+            <type>class PR</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void visit_at_end</definition>
+        <argsstring>(RF &amp;rf, PR &amp;pr)</argsstring>
+        <name>visit_at_end</name>
+        <param>
+          <type>RF &amp;</type>
+          <declname>rf</declname>
+        </param>
+        <param>
+          <type>PR &amp;</type>
+          <declname>pr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Normalise variable importance after the number of trees is known. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1442" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1441" bodyend="1444"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>calculate variable importance while learning. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="2701">
+        <label>VariableImportanceVisitor</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor"/>
+        <childnode refid="2702" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2702">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2705">
+        <label>MultiArray&lt; 2, double &gt;</label>
+        <link refid="classvigra_1_1MultiArray"/>
+        <childnode refid="2706" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2706">
+        <label>MultiArrayView&lt; N, double &gt;</label>
+        <link refid="classvigra_1_1MultiArrayView"/>
+        <childnode refid="2707" relation="usage">
+          <edgelabel>m_stride</edgelabel>
+          <edgelabel>m_shape</edgelabel>
+        </childnode>
+      </node>
+      <node id="2703">
+        <label>VariableImportanceVisitor</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VariableImportanceVisitor"/>
+        <childnode refid="2704" relation="public-inheritance">
+        </childnode>
+        <childnode refid="2705" relation="usage">
+          <edgelabel>variable_importance_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2704">
+        <label>VisitorBase</label>
+        <link refid="classvigra_1_1rf_1_1visitors_1_1VisitorBase"/>
+      </node>
+      <node id="2707">
+        <label>MultiArrayShape&lt; actual_dimension &gt;</label>
+        <link refid="classvigra_1_1MultiArrayShape"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" line="1220" bodyfile="C:/Users/ukoethe/Arbeit/vigra-git/vigra/include/vigra/random_forest/rf_visitors.hxx" bodystart="1219" bodyend="1445"/>
+    <listofallmembers>
+      <member refid="group__MachineLearning_1ga8011fcbeb5efeda20bd2dbffbbb70165" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>activate</name></member>
+      <member refid="group__MachineLearning_1ga121aee969503dcc0f2d4ff4879d9c4d9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>active_</name></member>
+      <member refid="group__MachineLearning_1gae14ce8384c149dfccb48079c51464207" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>after_tree_ip_impl</name></member>
+      <member refid="group__MachineLearning_1ga8308b4bb6079733f4b77ced9d46da7a9" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>deactivate</name></member>
+      <member refid="group__MachineLearning_1gaff96f61c8d66b4def05fcb5ab514d688" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>has_value</name></member>
+      <member refid="group__MachineLearning_1gafbcb3ac4169d783043b3f1b6f9e0665c" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>in_place_</name></member>
+      <member refid="group__MachineLearning_1gadc5260e7eba946182b172d0385d19c7e" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>is_active</name></member>
+      <member refid="group__MachineLearning_1gaa7c72f076b7eacaeda9a6b5f522c7a63" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>repetition_count_</name></member>
+      <member refid="group__MachineLearning_1gad23fdebbe022fdb6fee05ddede523bdc" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>return_val</name></member>
+      <member refid="group__MachineLearning_1gac4b8c6cd30f9b3de278e373528e092aa" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>variable_importance_</name></member>
+      <member refid="group__MachineLearning_1ga6d8acee39d76fbdb44ece3977a336c35" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>VariableImportanceVisitor</name></member>
+      <member refid="group__MachineLearning_1ga32301fb47981050340e6a927d78a2a77" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_after_split</name></member>
+      <member refid="group__MachineLearning_1ga7118d9515b477dfdb5e9899e118a5d76" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_after_tree</name></member>
+      <member refid="group__MachineLearning_1ga0bb047133b5a592d0ade412044bd1495" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_at_beginning</name></member>
+      <member refid="group__MachineLearning_1ga8680ab265a8c9c57f39c75bd51a186e7" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_at_end</name></member>
+      <member refid="group__MachineLearning_1gab8c2515ae9343881cc5999fc61821fdc" prot="public" virt="non-virtual" ambiguityscope="vigra::rf::visitors::VisitorBase::"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_at_end</name></member>
+      <member refid="group__MachineLearning_1ga29d5e6cebbbae7f0a170f82ed7a98fc3" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_external_node</name></member>
+      <member refid="group__MachineLearning_1ga0be1525336a154f011efa8f86e56db7c" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>visit_internal_node</name></member>
+      <member refid="group__MachineLearning_1ga94a7dec8e9fdb7896ac8012817e60cc7" prot="public" virt="non-virtual"><scope>vigra::rf::visitors::VariableImportanceVisitor</scope><name>VisitorBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
