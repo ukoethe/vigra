@@ -51,7 +51,11 @@ MACRO(VIGRA_FIND_PACKAGE package)
                 ELSE()
                     SET(BOOST_INCLUDEDIR ${path}/include) # standard include path
                 ENDIF()
-                SET(BOOST_LIBRARYDIR ${path}/lib)
+                IF(EXISTS "${path}/stage/lib")
+                    SET(BOOST_LIBRARYDIR ${path}/stage/lib) # boost's default library path
+                ELSE()
+                    SET(BOOST_LIBRARYDIR ${path}/lib) # standard library path
+                ENDIF()
             ELSE()
                 SET(CMAKE_INCLUDE_PATH ${path}/include)
                 SET(CMAKE_LIBRARY_PATH ${path}/lib)
