@@ -23,7 +23,7 @@
     <li> \ref MultiArrayArithmeticTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>mathematical operations on MultiArrays</em>
         <ul style="list-style-image:url(documents/bullet.gif)">
-        <li> \ref MultiMathModule "Array Experessions"
+        <li> \ref MultiMathModule "Array Expressions"
         <li> \ref LinearAlgebraModule "Linear Algebra"
         <li> \ref MultiPointoperators "STL-style transformation algorithms"
         <li> \ref FeatureAccumulators
