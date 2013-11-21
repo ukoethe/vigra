@@ -2787,6 +2787,8 @@ getAccumulator(A & a, MultiArrayIndex label)
     return acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a, label);
 }
 
+using vigra::get;
+
     // get the result of the accumulator specified by TAG
 /** Get the result of the accumulator 'TAG' in the accumulator chain 'a'.\n
 Example of use:

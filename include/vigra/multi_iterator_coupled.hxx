@@ -423,18 +423,24 @@ template <unsigned TARGET_INDEX, class Handle, bool isValid, unsigned int INDEX=
 struct CoupledHandleCastImpl
 {
     typedef typename CoupledHandleCastImpl<TARGET_INDEX, typename Handle::base_type, isValid>::type type;
+    typedef typename type::reference reference;
+    typedef typename type::const_reference const_reference;
 };
 
 template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX>
 struct CoupledHandleCastImpl<TARGET_INDEX, Handle, false, INDEX>
 {
     typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> type;
+    typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> reference;
+    typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> const_reference;
 };
 
 template <unsigned TARGET_INDEX, class Handle>
 struct CoupledHandleCastImpl<TARGET_INDEX, Handle, true, TARGET_INDEX>
 {
     typedef Handle type;
+    typedef typename type::reference reference;
+    typedef typename type::const_reference const_reference;
 };
 
 } // namespace detail
@@ -445,36 +451,40 @@ struct CoupledHandleCast
 {};
 
 template <unsigned int TARGET_INDEX, class Handle>
+inline
 typename CoupledHandleCast<TARGET_INDEX, Handle>::type &
 cast(Handle & handle)
 {
     return handle;
-};
+}
 
 template <unsigned int TARGET_INDEX, class Handle>
+inline
 typename CoupledHandleCast<TARGET_INDEX, Handle>::type const &
 cast(Handle const & handle)
 {
     return handle;
-};
+}
 
   /** Returns reference to the element in the band of the handle with index TARGET_INDEX.
    */
 template <unsigned int TARGET_INDEX, class Handle>
-typename CoupledHandleCast<TARGET_INDEX, Handle>::type::reference
+inline
+typename CoupledHandleCast<TARGET_INDEX, Handle>::reference
 get(Handle & handle)
 {
     return *cast<TARGET_INDEX>(handle);
-};
+}
 
   /** Returns a constant reference to the element in the band of the handle with index TARGET_INDEX.
    */
 template <unsigned int TARGET_INDEX, class Handle>
-typename CoupledHandleCast<TARGET_INDEX, Handle>::type::const_reference
+inline
+typename CoupledHandleCast<TARGET_INDEX, Handle>::const_reference
 get(Handle const & handle)
 {
     return *cast<TARGET_INDEX>(handle);
-};
+}
 
 /********************************************************/
 /*                                                      */
@@ -934,14 +944,14 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     }
 
     template<unsigned int TARGET_INDEX> 
-    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::reference
     get() 
     {
         return vigra::get<TARGET_INDEX>(handles_);
     }
 
     template<unsigned int TARGET_INDEX> 
-    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::const_reference
     get() const
     {
         return vigra::get<TARGET_INDEX>(handles_);
