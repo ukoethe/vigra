@@ -271,7 +271,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
-                        
+                        /*
                         SrcShape s(x,y,z), sn = s + *nc;
                         
                         if (sn[0]<0 || sn[0]>=w || sn[1]<0 || sn[1]>=h || sn[2]<0 || sn[2]>=d)
@@ -280,7 +280,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                                                                                                                               atBorder << std::endl;
                         
                         }
-                        
+                        */
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
@@ -617,14 +617,6 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
                     int j=0;
                     while(nc.direction() != Neighborhood3D::Error)
                     {
-                        SrcShape s(x,y,z), sn = s + *nc;
-                        
-                        if (sn[0]<0 || sn[0]>=w || sn[1]<0 || sn[1]>=h || sn[2]<0 || sn[2]>=d)
-                        {  
-                          std::cerr << "coordinate error at " << s << ", offset " << *nc << ", index " << (nc).direction() << " at border " <<
-                                                                                                                              atBorder << std::endl;
-                        
-                        }
                         //   colors equal???
                         if(equal(sa(xs), sa(xs, *nc)))
                         {
