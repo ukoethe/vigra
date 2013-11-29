@@ -16,19 +16,22 @@ integralImage(MultiArrayView<2, T1, S1> const & image,
               MultiArrayView<2, T2, S2> intimage,
               FUNCTOR const & functor)
 {
-    int width = image.shape()[1];
-    int height = image.shape()[0];
+    int width = image.shape(0);
+    int height = image.shape(1);
     
-    T2 s = 0;
-    for (int i=0; i<width; ++i){
-        s += functor(image(0, i));
-        intimage(0, i)=s;
+    T2 s = T2();
+    for (int x=0; x<width; ++x)
+    {
+        s += functor(image(x, 0));
+        intimage(x, 0) = s;
     }
-    for (int i=1; i<height; ++i){
-        s=0;
-        for (int j=0; j<width; ++j){
-            s += functor(image(i, j));
-            intimage(i, j) = s+intimage(i-1, j);
+    for (int y=1; y<height; ++y)
+    {
+        s = T2();
+        for (int x=0; x<width; ++x)
+        {
+            s += functor(image(x, y));
+            intimage(x, y) = s + intimage(x, y-1);
         }
     }
 }
