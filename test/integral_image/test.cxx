@@ -152,6 +152,15 @@ struct IntegralImageTest
         result = 0;
         integralVolume2(img3, result);        
         shouldEqualSequence(result.begin(), result.end(), reference_data_squared);
+        
+        channel_result = 0;
+        integralVolume2(ChannelView3(channel_img3), ChannelView3(channel_result));
+        
+        for(int c=0; c<channel_result.shape(2); ++c)
+        {
+            shouldEqualSequence(channel_result.bindOuter(c).begin(), channel_result.bindOuter(c).end(), 
+                                reference_data_squared);
+        }
     }
 };
 

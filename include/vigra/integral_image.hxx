@@ -82,51 +82,59 @@ integralImage2(MultiArrayView<3, Multiband<T1>, S1> const & image,
         integralImage2(image.bindOuter(c), intimage.bindOuter(c));
 }
 
-template <class T1, class S1, class T2, class S2>
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
 void 
 integralVolume(MultiArrayView<3, T1, S1> const & volume, 
-               MultiArrayView<3, T2, S2> intvolume)
+               MultiArrayView<3, T2, S2> intvolume,
+               FUNCTOR const & functor)
 {
-    //compute the integral volume of the the given volume
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
     int nx = volume.shape()[0];
     int ny = volume.shape()[1];
     int nz = volume.shape()[2];
 
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T2> s2_temp(ny, 0);
+    //this vector will store s2(x, y-1) for all values of x
+    MultiArray<1, T2> s2_temp(nx);
     
-    
-    T2 s1 = 0;
-    T2 s2 = 0;
-    for (int iy=0; iy<ny; ++iy){
-        s2_temp[iy] = 0;
-    }
-    for (int ix=0; ix<nx; ++ix){
-        s1 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s1 += volume(ix, iy, 0);
-            s2 = s2_temp[iy] + s1;
-            s2_temp[iy] = s2;
+    T2 s1 = T2();
+    T2 s2 = T2();
+
+    for (int iy=0; iy<ny; ++iy)
+    {
+        s1 = T2();
+        for (int ix=0; ix<nx; ++ix)
+        {
+            s1 += functor(volume(ix, iy, 0));
+            s2 = s2_temp(ix) + s1;
+            s2_temp(ix) = s2;
             intvolume(ix, iy, 0) = s2;
         }
     }
     
-    for (int iz=1; iz<nz; ++iz){
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, iz);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
+    for (int iz=1; iz<nz; ++iz)
+    {    
+        s2_temp = T2();
+        
+        for (int iy=0; iy<ny; ++iy)
+        {
+            s1 = T2();
+            for (int ix=0; ix<nx; ++ix)
+            {
+                s1 += functor(volume(ix, iy, iz));
+                s2 = s2_temp(ix) + s1;
+                s2_temp(ix) = s2;
                 intvolume(ix, iy, iz) = s2 + intvolume(ix, iy, iz-1);
             }
         }
     }
+}
+
+template <class T1, class S1, class T2, class S2>
+inline void 
+integralVolume(MultiArrayView<3, T1, S1> const & volume, 
+               MultiArrayView<3, T2, S2> intvolume)
+{
+    using vigra::functor::Identity;
+    integralVolume(volume, intvolume, Identity());
 }
 
 template <class T1, class S1, class T2, class S2>
@@ -139,98 +147,21 @@ integralVolume(MultiArrayView<4, Multiband<T1>, S1> const & volume,
 }
 
 template <class T1, class S1, class T2, class S2>
-void 
+inline void 
 integralVolume2(MultiArrayView<3, T1, S1> const & volume, 
                 MultiArrayView<3, T2, S2> intvolume)
 {
-    //compute the integral volume of the given volume squared (needed for variance calculation)
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
-
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T2> s2_temp(ny, 0);
-    
-    
-    T2 s1 = 0;
-    T2 s2 = 0;
-    for (int iy=0; iy<ny; ++iy){
-        s2_temp[iy] = 0;
-    }
-    for (int ix=0; ix<nx; ++ix){
-        s1 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s1 += volume(ix, iy, 0)*volume(ix, iy, 0);
-            s2 = s2_temp[iy] + s1;
-            s2_temp[iy] = s2;
-            intvolume(ix, iy, 0) = s2;
-        }
-    }
-    
-    for (int iz=1; iz<nz; ++iz){
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, iz)*volume(ix, iy, iz);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
-                intvolume(ix, iy, iz) = s2 + intvolume(ix, iy, iz-1);
-            }
-        }
-    }
+    using namespace vigra::functor;
+    integralVolume(volume, intvolume, sq(Arg1()));
 }
 
-template <class T, class S1, class S2>
-void integralVolume2(MultiArrayView<4, T, S1>& volume, MultiArrayView<4, T, S2>& intvolume)
+template <class T1, class S1, class T2, class S2>
+inline void 
+integralVolume2(MultiArrayView<4, Multiband<T1>, S1> const & volume,
+                MultiArrayView<4, Multiband<T2>, S2> intvolume)
 {
-    //compute the integral volume of the given volume squared (needed for variance calculation)
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
-    int nc = volume.shape()[3];
-
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T> s2_temp(ny, 0);
-    
-    
-    for (int ic=0; ic<nc; ++ic) {
-        T s1 = 0;
-        T s2 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, 0, ic)*volume(ix, iy, 0, ic);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
-                intvolume(ix, iy, 0, ic) = s2;
-            }
-        }
-        
-        for (int iz=1; iz<nz; ++iz){
-            for (int iy=0; iy<ny; ++iy){
-                s2_temp[iy] = 0;
-            }
-            for (int ix=0; ix<nx; ++ix){
-                s1 = 0;
-                for (int iy=0; iy<ny; ++iy){
-                    s1 += volume(ix, iy, iz, ic)*volume(ix, iy, iz, ic);
-                    s2 = s2_temp[iy] + s1;
-                    s2_temp[iy] = s2;
-                    intvolume(ix, iy, iz, ic) = s2 + intvolume(ix, iy, iz-1, ic);
-                }
-            }
-        }
-    }
+    for(int c=0; c<volume.shape(3); ++c)
+        integralVolume2(volume.bindOuter(c), intvolume.bindOuter(c));
 }
 
 } // namespace vigra
