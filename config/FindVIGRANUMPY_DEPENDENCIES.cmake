@@ -2,12 +2,12 @@
 #
 MESSAGE(STATUS "Checking VIGRANUMPY_DEPENDENCIES")
 
-FIND_PACKAGE(PythonInterp)
+FIND_PACKAGE(PythonInterp 2)
 
 IF(PYTHONINTERP_FOUND)
     # check that Python version 2.x is used
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print sys.version[0]"
+                         "import sys; print(sys.version[0])"
                           OUTPUT_VARIABLE PYTHON_MAJOR_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     IF(${PYTHON_MAJOR_VERSION} EQUAL 2)
         SET(PYTHONINTERP_V2_FOUND 1)
