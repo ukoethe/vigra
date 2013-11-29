@@ -48,16 +48,23 @@ using namespace vigra;
 struct IntegralImageTest
 {
     typedef MultiArray<2, int>                  Image2;
-    typedef MultiArrayView<2, int >             View2;
     typedef MultiArray<3, int>                  Image3;
-    typedef MultiArrayView<3, int >             View3;
+    typedef MultiArray<4, int>                  Image4;
+    typedef MultiArrayView<2, int>              View2;
+    typedef MultiArrayView<3, int>              View3;
+    typedef MultiArrayView<3, Multiband<int> >  ChannelView2;
+    typedef MultiArrayView<4, Multiband<int> >  ChannelView3;
 
-    Image2 img2;
-    Image3 img3;
+    Image2  img2;
+    Image3  channel_img2;
+    Image3  img3;
+    Image4  channel_img3;
     
     IntegralImageTest()
     :   img2(Shape2(3), 2),
-        img3(Shape3(3), 2)
+        channel_img2(Shape3(3), 2),
+        img3(Shape3(3), 2),
+        channel_img3(Shape4(3), 2)
     {
     }
 
@@ -74,6 +81,15 @@ struct IntegralImageTest
         integralImage(img2, result);        
         shouldEqualSequence(result.begin(), result.end(), reference_data);
         
+        Image3 channel_result(channel_img2.shape());        
+        integralImage(ChannelView2(channel_img2), ChannelView2(channel_result));
+        
+        for(int c=0; c<channel_result.shape(2); ++c)
+        {
+            shouldEqualSequence(channel_result.bindOuter(c).begin(), channel_result.bindOuter(c).end(), 
+                                reference_data);
+        }
+        
         int reference_data_squared[] = { 
              4,  8, 12,
              8, 16, 24,
@@ -83,6 +99,7 @@ struct IntegralImageTest
         result = 0;
         integralImage2(img2, result);        
         shouldEqualSequence(result.begin(), result.end(), reference_data_squared);
+        
     }
 
     void test_3d()
@@ -105,6 +122,15 @@ struct IntegralImageTest
         
         integralVolume(img3, result);        
         shouldEqualSequence(result.begin(), result.end(), reference_data);
+        
+        Image4 channel_result(channel_img3.shape());        
+        integralVolume(ChannelView3(channel_img3), ChannelView3(channel_result));
+        
+        for(int c=0; c<channel_result.shape(2); ++c)
+        {
+            shouldEqualSequence(channel_result.bindOuter(c).begin(), channel_result.bindOuter(c).end(), 
+                                reference_data);
+        }
         
         int reference_data_squared[] = { 
              4,  8, 12,
