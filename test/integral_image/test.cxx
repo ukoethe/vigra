@@ -81,6 +81,10 @@ struct IntegralImageTest
         integralImage(img2, result);        
         shouldEqualSequence(result.begin(), result.end(), reference_data);
         
+        result = 0;
+        integralImageNew(img2, result);        
+        shouldEqualSequence(result.begin(), result.end(), reference_data);
+        
         Image3 channel_result(channel_img2.shape());        
         integralImage(ChannelView2(channel_img2), ChannelView2(channel_result));
         

@@ -10,6 +10,62 @@
 
 namespace vigra {
 
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+cumulativeSum(MultiArrayView<N, T1, S1> const & array, 
+              MultiArrayView<N, T2, S2> intarray,
+              int axis,
+              FUNCTOR const & functor)
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+    
+    MultiCoordinateIterator<N> i(array.shape()),
+                               end(i.getEndIterator());
+    for(; i != end; ++i)
+    {
+        if((*i)[axis] == 0)
+        {
+            intarray[*i] = functor(array[*i]);
+        }
+        else
+        {
+            intarray[*i] = functor(array[*i]) + intarray[*i - Shape::unitVector(axis)];
+        }
+    }
+}
+
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+integralMultiArray(MultiArrayView<N, T1, S1> const & array, 
+                   MultiArrayView<N, T2, S2> intarray,
+                   FUNCTOR const & functor)
+{
+    cumulativeSum(array, intarray, 0, functor);
+    
+    using vigra::functor::Identity;
+    for(int axis=1; axis<N; ++axis)
+        cumulativeSum(intarray, intarray, axis, Identity());
+}
+
+
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+integralImageNew(MultiArrayView<2, T1, S1> const & image, 
+                 MultiArrayView<2, T2, S2> intimage,
+                 FUNCTOR const & functor)
+{
+    integralMultiArray(image, intimage, functor);
+}
+
+template <class T1, class S1, class T2, class S2>
+void 
+integralImageNew(MultiArrayView<2, T1, S1> const & image, 
+                 MultiArrayView<2, T2, S2> intimage)
+{
+    using vigra::functor::Identity;
+    integralImageNew(image, intimage, Identity());
+}
+
 template <class T1, class S1, class T2, class S2, class FUNCTOR>
 void 
 integralImage(MultiArrayView<2, T1, S1> const & image, 
