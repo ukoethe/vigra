@@ -111,7 +111,9 @@ struct SlicTest
 
         int seedDistance = 8;
         // compute seeds automatically
-        slicSuperpixels(lennaImage, labels, 20.0, seedDistance, SlicOptions().minSize(0).iterations(40));
+        int maxlabel = slicSuperpixels(lennaImage, labels, 20.0, seedDistance, SlicOptions().minSize(0).iterations(40));
+
+        shouldEqual(maxlabel, 245);
 
         // exportImage(srcImageRange(labels), ImageExportInfo("slic.xv"));
         importImage(ImageImportInfo("slic.xv"), destImage(labels_ref));
