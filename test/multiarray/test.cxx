@@ -64,6 +64,7 @@ public:
     typedef typename vigra::detail::ResolveMultiband<T>::type   scalar_type;
     typedef MultiArray <2, scalar_type> array2_type;
     typedef MultiArray <3, T> array3_type;
+    typedef MultiArrayView<3, Multiband<scalar_type> >  MultibandView3;
     typedef typename array3_type::view_type       array3_view_type;
     typedef typename array3_type::actual_stride   array3_stride;
     typedef typename array2_type::difference_type difference2_type;
@@ -103,6 +104,10 @@ public:
         for(unsigned int k=0; k<10; ++k)
             array3(k,0,0) += 10;
         should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) == array3.subarray(Shape(0,1,0), Shape(10,2,1)));
+
+        MultibandView3 channel_view(a.multiband());
+        shouldEqual(a.shape(), channel_view.shape());
+        shouldEqual(a.data(), channel_view.data());
     }
     
     // bindInner tests
