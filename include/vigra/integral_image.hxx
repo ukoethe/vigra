@@ -1,297 +1,219 @@
-#ifndef INTEGRALIMAGE_HXX
-#define INTEGRALIMAGE_HXX
+/************************************************************************/
+/*                                                                      */
+/*    Copyright 2012-2013 by Ullrich Koethe and Anna Kreshuk            */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
+#ifndef VIGRA_INTEGRALIMAGE_HXX
+#define VIGRA_INTEGRALIMAGE_HXX
 
 #include <vigra/multi_array.hxx>
-// #include <vigra/numpy_array.hxx>
-// #include <vigra/numpy_array_converters.hxx>
 #include <vigra/multi_pointoperators.hxx>
 #include <vigra/utilities.hxx>
+#include <vigra/functorexpression.hxx>
 
-using namespace vigra;
+namespace vigra {
 
-template <class T, class S1, class S2>
-void integralImage(MultiArrayView<2, T, S1>& image, MultiArrayView<2, T, S2>& intimage)
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+cumulativeSum(MultiArrayView<N, T1, S1> const & image, 
+              MultiArrayView<N, T2, S2> out,
+              int axis,
+              FUNCTOR const & functor)
 {
-    //compute the integral image of a given image
-    //for multichannel images, compute channelwise
+    typedef typename MultiArrayShape<N>::type ShapeN;
+    ShapeN offset = ShapeN::unitVector(axis);
     
-    int width = image.shape()[1];
-    int height = image.shape()[0];
-    
-    T s = 0;
-    for (int i=0; i<width; ++i){
-        s += image(0, i);
-        intimage(0, i)=s;
-    }
-    for (int i=1; i<height; ++i){
-        s=0;
-        for (int j=0; j<width; ++j){
-            s+=image(i, j);
-            intimage(i, j) = s+intimage(i-1, j);
+    MultiCoordinateIterator<N> i(image.shape()),
+                               end(i.getEndIterator());
+    for(; i != end; ++i)
+    {
+        if((*i)[axis] == 0)
+        {
+            out[*i] = functor(image[*i]);
+        }
+        else
+        {
+            out[*i] = functor(image[*i]) + out[*i - offset];
         }
     }
 }
 
-template <class T, class S1, class S2>
-void integralImage(MultiArrayView<3, T, S1>& image, MultiArrayView<3, T, S2>& intimage)
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+integralMultiArrayImpl(MultiArrayView<N, T1, S1> const & array, 
+                       MultiArrayView<N, T2, S2> intarray,
+                       FUNCTOR const & f)
 {
-    //compute the integral image of a given image
-    //for multichannel images, compute channelwise
+    vigra_precondition(array.shape() == intarray.shape(),
+        "integralMultiArray(): shape mismatch between input and output.");
+        
+    cumulativeSum(array, intarray, 0, f);
     
-    int width = image.shape()[1];
-    int height = image.shape()[0];
-    int nc = image.shape()[2];
-    
-    for (int c=0; c<nc; ++c){
-        T s = 0;
-        for (int i=0; i<width; ++i){
-            s += image(0, i, c);
-            intimage(0, i, c)=s;
-        }
-        for (int i=1; i<height; ++i){
-            s=0;
-            for (int j=0; j<width; ++j){
-                s+=image(i, j, c);
-                intimage(i, j, c) = s+intimage(i-1, j, c);
-            }
-        }
-    }
-    return;
+    for(int axis=1; axis < N; ++axis)
+        cumulativeSum(intarray, intarray, axis, functor::Identity());
 }
 
-template <class T, class S1, class S2>
-void integralImage2(MultiArrayView<2, T, S1>& image, MultiArrayView<2, T, S2>& intimage)
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+integralMultiArrayImpl(MultiArrayView<2, T1, S1> const & image, 
+                       MultiArrayView<2, T2, S2> intimage,
+                       FUNCTOR const & functor)
 {
-    //compute the integral image of a given image squared
-    //for multichannel images, compute channelwise
-    
-    int width = image.shape()[1];
-    int height = image.shape()[0];
+    vigra_precondition(image.shape() == intimage.shape(),
+        "integralMultiArray(): shape mismatch between input and output.");
+        
+    int width = image.shape(0);
+    int height = image.shape(1);
 
-    T s = 0;
-    for (int i=0; i<width; ++i){
-        s += image(0, i)*image(0, i);
-        intimage(0, i)=s;
+    T2 s = T2();
+    for (int x=0; x<width; ++x)
+    {
+        s += functor(image(x, 0));
+        intimage(x, 0) = s;
     }
-    for (int i=1; i<height; ++i){
-        s=0;
-        for (int j=0; j<width; ++j){
-            s+=image(i, j)*image(i, j);
-            intimage(i, j) = s+intimage(i-1, j);
+    for (int y=1; y<height; ++y)
+    {
+        s = T2();
+        for (int x=0; x<width; ++x)
+        {
+            s += functor(image(x, y));
+            intimage(x, y) = s + intimage(x, y-1);
         }
     }
 }
 
-template <class T, class S1, class S2>
-void integralImage2(MultiArrayView<3, T, S1>& image, MultiArrayView<3, T, S2>& intimage)
+template <class T1, class S1, class T2, class S2, class FUNCTOR>
+void 
+integralMultiArrayImpl(MultiArrayView<3, T1, S1> const & volume, 
+                       MultiArrayView<3, T2, S2> intvolume,
+                       FUNCTOR const & functor)
 {
-    //compute the integral image of a given image squared
-    //for multichannel images, compute channelwise
-    
-    int width = image.shape()[1];
-    int height = image.shape()[0];
-    int nc = image.shape()[2];
-    for (int c=0; c<nc; ++c){
-        T s = 0;
-        for (int i=0; i<width; ++i){
-            s += image(0, i, c)*image(0, i, c);
-            intimage(0, i, c)=s;
-        }
-        for (int i=1; i<height; ++i){
-            s=0;
-            for (int j=0; j<width; ++j){
-                s+=image(i, j, c)*image(i, j, c);
-                intimage(i, j, c) = s+intimage(i-1, j, c);
-            }
-        }
-    }
-    return;
-}
+    vigra_precondition(volume.shape() == intvolume.shape(),
+        "integralMultiArray(): shape mismatch between input and output.");
+        
+    int nx = volume.shape(0);
+    int ny = volume.shape(1);
+    int nz = volume.shape(2);
 
-template <class T, class S1, class S2>
-void integralVolume(MultiArrayView<3, T, S1>& volume, MultiArrayView<3, T, S2>& intvolume)
-{
-    //compute the integral volume of the the given volume
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
+    //this vector will store s2(x, y-1) for all values of x
+    MultiArray<1, T2> s2_temp(nx);
+    
+    T2 s1 = T2();
+    T2 s2 = T2();
 
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T> s2_temp(ny, 0);
-    
-    
-    T s1 = 0;
-    T s2 = 0;
-    for (int iy=0; iy<ny; ++iy){
-        s2_temp[iy] = 0;
-    }
-    for (int ix=0; ix<nx; ++ix){
-        s1 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s1 += volume(ix, iy, 0);
-            s2 = s2_temp[iy] + s1;
-            s2_temp[iy] = s2;
+    for (int iy=0; iy<ny; ++iy)
+    {
+        s1 = T2();
+        for (int ix=0; ix<nx; ++ix)
+        {
+            s1 += functor(volume(ix, iy, 0));
+            s2 = s2_temp(ix) + s1;
+            s2_temp(ix) = s2;
             intvolume(ix, iy, 0) = s2;
         }
     }
     
-    for (int iz=1; iz<nz; ++iz){
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, iz);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
+    for (int iz=1; iz<nz; ++iz)
+    {    
+        s2_temp = T2();
+        
+        for (int iy=0; iy<ny; ++iy)
+        {
+            s1 = T2();
+            for (int ix=0; ix<nx; ++ix)
+            {
+                s1 += functor(volume(ix, iy, iz));
+                s2 = s2_temp(ix) + s1;
+                s2_temp(ix) = s2;
                 intvolume(ix, iy, iz) = s2 + intvolume(ix, iy, iz-1);
             }
         }
     }
 }
 
-template <class T, class S1, class S2>
-void integralVolume(MultiArrayView<4, T, S1>& volume, MultiArrayView<4, T, S2>& intvolume)
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+inline void 
+integralMultiArray(MultiArrayView<N, T1, S1> const & array, 
+                   MultiArrayView<N, T2, S2> intarray,
+                   FUNCTOR const & f)
 {
-    //compute the integral volume of the the given volume
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
-    int nc = volume.shape()[3];
-
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T> s2_temp(ny, 0);
-    
-    
-    for (int ic=0; ic<nc; ++ic) {
-        T s1 = 0;
-        T s2 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, 0, ic);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
-                intvolume(ix, iy, 0, ic) = s2;
-            }
-        }
-        
-        for (int iz=1; iz<nz; ++iz){
-            for (int iy=0; iy<ny; ++iy){
-                s2_temp[iy] = 0;
-            }
-            for (int ix=0; ix<nx; ++ix){
-                s1 = 0;
-                for (int iy=0; iy<ny; ++iy){
-                    s1 += volume(ix, iy, iz, ic);
-                    s2 = s2_temp[iy] + s1;
-                    s2_temp[iy] = s2;
-                    intvolume(ix, iy, iz, ic) = s2 + intvolume(ix, iy, iz-1, ic);
-                }
-            }
-        }
-    }
+    integralMultiArrayImpl(array, intarray, f);
 }
 
-template <class T, class S1, class S2>
-void integralVolume2(MultiArrayView<3, T, S1>& volume, MultiArrayView<3, T, S2>& intvolume)
+template <unsigned int N, class T1, class S1, class T2, class S2, class FUNCTOR>
+inline void 
+integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+                   MultiArrayView<N, Multiband<T2>, S2> intarray,
+                   FUNCTOR const & f)
 {
-    //compute the integral volume of the given volume squared (needed for variance calculation)
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
-
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T> s2_temp(ny, 0);
-    
-    
-    T s1 = 0;
-    T s2 = 0;
-    for (int iy=0; iy<ny; ++iy){
-        s2_temp[iy] = 0;
-    }
-    for (int ix=0; ix<nx; ++ix){
-        s1 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s1 += volume(ix, iy, 0)*volume(ix, iy, 0);
-            s2 = s2_temp[iy] + s1;
-            s2_temp[iy] = s2;
-            intvolume(ix, iy, 0) = s2;
-        }
-    }
-    
-    for (int iz=1; iz<nz; ++iz){
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, iz)*volume(ix, iy, iz);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
-                intvolume(ix, iy, iz) = s2 + intvolume(ix, iy, iz-1);
-            }
-        }
-    }
+    for(int channel=0; channel < array.shape(N-1); ++channel)
+        integralMultiArrayImpl(array.bindOuter(channel), intarray.bindOuter(channel), f);
 }
 
-template <class T, class S1, class S2>
-void integralVolume2(MultiArrayView<4, T, S1>& volume, MultiArrayView<4, T, S2>& intvolume)
+template <unsigned int N, class T1, class S1, class T2, class S2>
+inline void 
+integralMultiArray(MultiArrayView<N, T1, S1> const & array, 
+                   MultiArrayView<N, T2, S2> intarray)
 {
-    //compute the integral volume of the given volume squared (needed for variance calculation)
-    //for multichannel volumes, compute channelwise
-    //For more info, see [Ke, Suktankar, Hebert, "Efficient Visual Event Detection using Volumetric Features"]
-    int nx = volume.shape()[0];
-    int ny = volume.shape()[1];
-    int nz = volume.shape()[2];
-    int nc = volume.shape()[3];
-
-    //this vector will store s2(x-1, y) for all values of y
-    std::vector<T> s2_temp(ny, 0);
-    
-    
-    for (int ic=0; ic<nc; ++ic) {
-        T s1 = 0;
-        T s2 = 0;
-        for (int iy=0; iy<ny; ++iy){
-            s2_temp[iy] = 0;
-        }
-        for (int ix=0; ix<nx; ++ix){
-            s1 = 0;
-            for (int iy=0; iy<ny; ++iy){
-                s1 += volume(ix, iy, 0, ic)*volume(ix, iy, 0, ic);
-                s2 = s2_temp[iy] + s1;
-                s2_temp[iy] = s2;
-                intvolume(ix, iy, 0, ic) = s2;
-            }
-        }
-        
-        for (int iz=1; iz<nz; ++iz){
-            for (int iy=0; iy<ny; ++iy){
-                s2_temp[iy] = 0;
-            }
-            for (int ix=0; ix<nx; ++ix){
-                s1 = 0;
-                for (int iy=0; iy<ny; ++iy){
-                    s1 += volume(ix, iy, iz, ic)*volume(ix, iy, iz, ic);
-                    s2 = s2_temp[iy] + s1;
-                    s2_temp[iy] = s2;
-                    intvolume(ix, iy, iz, ic) = s2 + intvolume(ix, iy, iz-1, ic);
-                }
-            }
-        }
-    }
+    integralMultiArray(array, intarray, functor::Identity());
 }
+
+template <unsigned int N, class T1, class S1, class T2, class S2>
+inline void 
+integralMultiArray(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+                   MultiArrayView<N, Multiband<T2>, S2> intarray)
+{
+    integralMultiArray(array, intarray, functor::Identity());
+}
+
+template <unsigned int N, class T1, class S1, class T2, class S2>
+inline void 
+integralMultiArraySquared(MultiArrayView<N, T1, S1> const & array, 
+                          MultiArrayView<N, T2, S2> intarray)
+{
+    using namespace functor;
+    integralMultiArray(array, intarray, sq(Arg1()));
+}
+
+template <unsigned int N, class T1, class S1, class T2, class S2>
+inline void 
+integralMultiArraySquared(MultiArrayView<N, Multiband<T1>, S1> const & array, 
+                          MultiArrayView<N, Multiband<T2>, S2> intarray)
+{
+    using namespace functor;
+    integralMultiArray(array, intarray, sq(Arg1()));
+}
+
+} // namespace vigra
     
-#endif
+#endif // VIGRA_INTEGRALIMAGE_HXX
