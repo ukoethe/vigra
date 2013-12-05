@@ -570,9 +570,11 @@ class CoupledDimensionProxy
     typedef typename Iterator::reference           reference;
     typedef typename Iterator::const_reference     const_reference;
     typedef typename Iterator::pointer             pointer;
-    typedef typename CoupledDimensionProxy         iterator;
+    typedef CoupledDimensionProxy                  iterator;
     typedef std::random_access_iterator_tag        iterator_category;
     
+    static const int dimension = Iterator::dimension;
+ 
     CoupledDimensionProxy & operator++()
     {
         this->incDim(dimension);
