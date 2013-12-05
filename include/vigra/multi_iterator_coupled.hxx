@@ -104,6 +104,12 @@ public:
         pointer_ += d*strides_[dim];
         base_type::addDim(dim, d);
     }
+
+    inline void add(shape_type const & d) 
+    {
+        pointer_ += dot(d, strides_);
+        base_type::addDim(d);
+    }
     
     template<int DIMENSION>
     inline void increment() 
@@ -227,6 +233,11 @@ public:
     inline void addDim(int dim, MultiArrayIndex d) 
     {
         point_[dim] += d;
+    }
+
+    inline void add(shape_type const & d) 
+    {
+        point_ += d;
     }
     
     template<int DIMENSION>
@@ -389,6 +400,12 @@ public:
         view_.unsafePtr() += d*strides_[dim];
         base_type::addDim(dim, d);
     }
+
+    inline void add(shape_type const & d) 
+    {
+        view_.unsafePtr() += dot(d, strides_);
+        base_type::addDim(d);
+    }
     
     template<int DIMENSION>
     inline void increment() 
@@ -543,6 +560,104 @@ get(Handle const & handle)
 /*                                                      */
 /********************************************************/
 
+template <class Iterator>
+class CoupledDimensionProxy
+: public Iterator
+{
+  public:
+    typedef typename Iterator::value_type          value_type;
+    typedef typename Iterator::difference_type     difference_type;
+    typedef typename Iterator::reference           reference;
+    typedef typename Iterator::const_reference     const_reference;
+    typedef typename Iterator::pointer             pointer;
+    typedef typename CoupledDimensionProxy         iterator;
+    typedef std::random_access_iterator_tag        iterator_category;
+    
+    CoupledDimensionProxy & operator++()
+    {
+        this->incDim(dimension);
+        return *this;
+    }
+    
+    CoupledDimensionProxy operator++(int)
+    {
+        CoupledDimensionProxy ret(*this);
+        this->incDim(dimension);
+        return ret;
+    }
+    
+    CoupledDimensionProxy & operator--()
+    {
+        this->decDim(dimension);
+        return *this;
+    }
+    
+    CoupledDimensionProxy operator--(int)
+    {
+        CoupledDimensionProxy ret(*this);
+        this->decDim(dimension);
+        return ret;
+    }
+    
+    CoupledDimensionProxy & operator+=(MultiArrayIndex d)
+    {
+        this->addDim(dimension, d);
+        return *this;
+    }
+    
+    CoupledDimensionProxy & operator-=(MultiArrayIndex d)
+    {
+        this->addDim(dimension, -d);
+        return *this;
+    }
+    
+    reference operator[](MultiArrayIndex d)
+    {
+        *(CoupledDimensionProxy(*this) += d);
+    }
+    
+    const_reference operator[](MultiArrayIndex d) const
+    {
+        *(CoupledDimensionProxy(*this) += d);
+    }
+    
+    CoupledDimensionProxy & operator=(MultiArrayIndex d)
+    {
+        this->setDim(dimension, d);
+        return *this;
+    }
+    
+    bool operator==(MultiArrayIndex d) const
+    {
+        return this->point(dimension) == d;
+    }
+    
+    bool operator!=(MultiArrayIndex d) const
+    {
+        return this->point(dimension) != d;
+    }
+    
+    bool operator<(MultiArrayIndex d) const
+    {
+        return this->point(dimension) < d;
+    }
+    
+    bool operator<=(MultiArrayIndex d) const
+    {
+        return this->point(dimension) <= d;
+    }
+    
+    bool operator>(MultiArrayIndex d) const
+    {
+        return this->point(dimension) > d;
+    }
+    
+    bool operator>=(MultiArrayIndex d) const
+    {
+        return this->point(dimension) >= d;
+    }
+};
+
 /** \brief Iterate over multiple images simultaneously in scan order. 
 
     The value type of this iterator is an instance of the handle class CoupledHandle. This allows to iterate over multiple arrays simultaneously. The coordinates can be accessed as a special band (index 0) in the handle. The scan-order is defined such that dimensions are iterated from front to back (first to last).
@@ -590,69 +705,10 @@ class CoupledScanOrderIterator
 #endif
 {
     typedef CoupledScanOrderIterator<N, HANDLES, DIMENSION-1> base_type;
-    static const int dimension = DIMENSION;
 
   public:
-  
-    struct DimensionProxy
-    : public CoupledScanOrderIterator
-    {
-        void operator++()
-        {
-            this->handles_.template increment<dimension>();
-        }
-        
-        void operator--()
-        {
-            this->handles_.template decrement<dimension>();
-        }
-        
-        void operator+=(MultiArrayIndex d)
-        {
-            this->handles_.template increment<dimension>(d);
-        }
-        
-        void operator-=(MultiArrayIndex d)
-        {
-            this->handles_.template decrement<dimension>(d);
-        }
-        
-        void operator=(MultiArrayIndex d)
-        {
-            this->handles_.template increment<dimension>(d - this->point(dimension));
-        }
-        
-        bool operator==(MultiArrayIndex d) const
-        {
-            return this->point(dimension) == d;
-        }
-        
-        bool operator!=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) != d;
-        }
-        
-        bool operator<(MultiArrayIndex d) const
-        {
-            return this->point(dimension) < d;
-        }
-        
-        bool operator<=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) <= d;
-        }
-        
-        bool operator>(MultiArrayIndex d) const
-        {
-            return this->point(dimension) > d;
-        }
-        
-        bool operator>=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) >= d;
-        }
-    };
-
+     static const int dimension = DIMENSION;
+ 
     typedef typename MultiArrayShape<dimension+1>::type        shape_type;
     typedef MultiArrayIndex                   difference_type;
     typedef CoupledScanOrderIterator          iterator;
@@ -669,6 +725,7 @@ class CoupledScanOrderIterator
     typedef typename base_type::reference       reference;
     typedef typename base_type::const_reference const_reference; // FIXME: do we need both?
     typedef typename base_type::pointer         pointer;
+    typedef CoupledDimensionProxy<iterator>     dimension_proxy;
 
     explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : base_type(handles)
@@ -813,6 +870,7 @@ class CoupledScanOrderIterator
     }
 
     using base_type::operator*;
+    using base_type::coord;
     using base_type::point;
     using base_type::shape;
     using base_type::scanOrderIndex;
@@ -827,6 +885,7 @@ class CoupledScanOrderIterator
     using base_type::setDim;
     using base_type::resetDim;
     using base_type::dim;
+    using base_type::handles;
 
 #ifdef DOXYGEN
   
@@ -862,14 +921,12 @@ class CoupledScanOrderIterator
     }
 };
 
-
-
 template <unsigned int N, class HANDLES>
 class CoupledScanOrderIterator<N, HANDLES, 0>
 {
-    static const int dimension = 0;
-
   public:
+
+    static const int dimension = 0;
 
     typedef CoupledScanOrderIterator<N, HANDLES, 0>  self_type;
     typedef HANDLES                                  value_type;
@@ -880,102 +937,61 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typedef typename MultiArrayShape<1>::type        shape_type;
     typedef CoupledScanOrderIterator                 iterator;
     typedef std::random_access_iterator_tag          iterator_category;
+    typedef CoupledDimensionProxy<iterator>          dimension_proxy;
 
-    struct DimensionProxy
-    : public CoupledScanOrderIterator
-    {
-        void operator++()
-        {
-            this->handles_.template increment<dimension>();
-        }
-        
-        void operator--()
-        {
-            this->handles_.template decrement<dimension>();
-        }
-        
-        void operator+=(MultiArrayIndex d)
-        {
-            this->handles_.template increment<dimension>(d);
-        }
-        
-        void operator-=(MultiArrayIndex d)
-        {
-            this->handles_.template decrement<dimension>(d);
-        }
-        
-        void operator=(MultiArrayIndex d)
-        {
-            this->handles_.template increment<dimension>(d - this->point(dimension));
-        }
-        
-        bool operator==(MultiArrayIndex d) const
-        {
-            return this->point(dimension) == d;
-        }
-        
-        bool operator!=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) != d;
-        }
-        
-        bool operator<(MultiArrayIndex d) const
-        {
-            return this->point(dimension) < d;
-        }
-        
-        bool operator<=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) <= d;
-        }
-        
-        bool operator>(MultiArrayIndex d) const
-        {
-            return this->point(dimension) > d;
-        }
-        
-        bool operator>=(MultiArrayIndex d) const
-        {
-            return this->point(dimension) >= d;
-        }
-    };
-    
     explicit CoupledScanOrderIterator(value_type const & handles = value_type())
-    : handles_(handles)
+    : handles_(handles),
+      strides_(detail::defaultStride(handles_.shape()))
     {}
     
     template <unsigned int DIM>
-    typename CoupledScanOrderIterator<N, HANDLES, DIM>::DimensionProxy &
+    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy & 
     dim()
     {
         typedef CoupledScanOrderIterator<N, HANDLES, DIM> Iter;
-        typedef typename Iter::DimensionProxy Proxy;
+        typedef typename Iter::dimension_proxy Proxy;
         return static_cast<Proxy &>(static_cast<Iter &>(*this));
+    }
+    
+    template <unsigned int DIM>
+    typename CoupledScanOrderIterator<N, HANDLES, DIM>::dimension_proxy const & 
+    dim() const
+    {
+        typedef CoupledScanOrderIterator<N, HANDLES, DIM> Iter;
+        typedef typename Iter::dimension_proxy Proxy;
+        return static_cast<Proxy const &>(static_cast<Iter const &>(*this));
     }
 
     void incDim(int dim)
     {
         handles_.incDim(dim);
+        handles_.incrementIndex(strides_[dim]);
     }
 
     void decDim(int dim)
     {
         handles_.decDim(dim);
+        handles_.decrementIndex(strides_[dim]);
     }
 
     void addDim(int dim, MultiArrayIndex d)
     {
         handles_.addDim(dim, d);
+        handles_.incrementIndex(d*strides_[dim]);
     }
 
     void setDim(int dim, MultiArrayIndex d)
     {
-        handles_.addDim(dim, d - point(dim));
+        d -= point(dim);
+        handles_.addDim(dim, d);
+        handles_.incrementIndex(d*strides_[dim]);
     }
 
     void resetDim(int dim)
     {
-        handles_.addDim(dim, -point(dim));
+        MultiArrayIndex d = -point(dim);
+        handles_.addDim(dim, d);
+        handles_.incrementIndex(d*strides_[dim]);
     }
 
     CoupledScanOrderIterator & operator++()
@@ -1110,12 +1126,22 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return handles_.scanOrderIndex();
     }
 
+    typename value_type::shape_type const & coord() const
+    {
+        return handles_.point();
+    }
+
+    MultiArrayIndex coord(unsigned int dim) const
+    {
+        return coord()[dim];
+    }
+
     typename value_type::shape_type const & point() const
     {
         return handles_.point();
     }
 
-    MultiArrayIndex const & point(unsigned int dim) const
+    MultiArrayIndex point(unsigned int dim) const
     {
         return point()[dim];
     }
@@ -1123,6 +1149,11 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typename value_type::shape_type const & shape() const
     {
         return handles_.shape();
+    }
+
+    MultiArrayIndex shape(unsigned int dim) const
+    {
+        return handles_.shape()[dim];
     }
 
     reference operator*()
@@ -1139,6 +1170,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         operator+=(-point());
         handles_.restrictToSubarray(start, end);
+        strides_ = detail::defaultStride(shape());
         return *this;
     }
 
@@ -1170,6 +1202,12 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     {
         return vigra::get<TARGET_INDEX>(handles_);
     }
+    
+    typename value_type const &
+    handles() const
+    {
+        return handles_;
+    }
 
   protected:
     void reset()
@@ -1188,6 +1226,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     }   
     
     value_type handles_;
+    typename value_type::shape_type strides_;
 };
 
 

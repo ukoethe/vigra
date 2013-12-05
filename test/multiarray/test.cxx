@@ -709,9 +709,9 @@ public:
         unsigned int count = 0;
         shape3_t p;
         i3 = av.begin();
-        iterator3_t i4 = av.begin(); 
-        iterator3_t i5 = av.begin(); 
-        iterator3_t i6 = av.begin(); 
+        iterator3_t i4(av.begin()); 
+        iterator3_t i5(av.begin()); 
+        iterator3_t i6(av.begin()); 
 
         // iterate over the third dimension
         for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.dim<2>() = 0, i6.resetDim(2); 
@@ -735,14 +735,20 @@ public:
                     shouldEqual(i1.operator->(), &a3[p]);
                     shouldEqual(i2.operator->(), &a3[p]);
                     shouldEqual(*c, p);
+
                     shouldEqual(i1.point(), p);
                     shouldEqual(i2.point(), p);
                     shouldEqual(i3.point(), p);
                     shouldEqual(i4.point(), p);
                     shouldEqual(i5.point(), p);
                     shouldEqual(i6.point(), p);
+
                     shouldEqual(i1.index(), count);
                     shouldEqual(i2.index(), count);
+                    shouldEqual(i3.index(), count);
+                    shouldEqual(i4.index(), count);
+                    shouldEqual(i5.index(), count);
+                    shouldEqual(i6.index(), count);
 
                     should(i1 != iend);
                     should(!(i1 == iend));
@@ -2430,9 +2436,9 @@ public:
         std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
         i = createCoupledIterator(w, u, v);
         TIC;
-        for(i.resetDim(2); i.point(2) < size; i.incDim(2))
-            for(i.resetDim(1); i.point(1) < size; i.incDim(1))
-                for(i.resetDim(0); i.point(0) < size; i.incDim(0))
+        for(i.resetDim(2); i.coord(2) < size; i.incDim(2))
+            for(i.resetDim(1); i.coord(1) < size; i.incDim(1))
+                for(i.resetDim(0); i.coord(0) < size; i.incDim(0))
                     i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
         std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
