@@ -708,21 +708,39 @@ public:
 
         unsigned int count = 0;
         shape3_t p;
+        i3 = av.begin();
+        iterator3_t i4 = av.begin(); 
+        iterator3_t i5 = av.begin(); 
+        iterator3_t i6 = av.begin(); 
 
         // iterate over the third dimension
-        for (p[2]=0; p[2] != s[2]; ++p[2]) 
+        for (p[2]=0, i3.resetDim(2), i4.setDim(2, 0), i5.dim<2>() = 0, i6.resetDim(2); 
+                i3.point(2) != s[2]; 
+                i3.incDim(2), i4.addDim(2, 1), ++i5.dim<2>(), i6.dim<2>() += 1, ++p[2]) 
         {
-            for (p[1]=0; p[1] != s[1]; ++p[1]) 
+            for (p[1]=0, i3.resetDim(1), i4.setDim(1, 0), i5.dim<1>() = 0, i6.resetDim(1); 
+                    i3.point(1) != s[1]; 
+                    i3.incDim(1), i4.addDim(1, 1), ++i5.dim<1>(), i6.dim<1>() += 1, ++p[1]) 
             {
-                for (p[0]=0; p[0] != s[0]; ++p[0], ++i1, ++c, i2 += 1, ++count)
+                for (p[0]=0, i3.resetDim(0), i4.setDim(0, 0), i5.dim<0>() = 0, i6.resetDim(0); 
+                        i3.point(0) != s[0]; 
+                        i3.incDim(0), i4.addDim(0, 1), ++i5.dim<0>(), i6.dim<0>() += 1, ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &a3[p]);
                     shouldEqual(&*i2, &a3[p]);
+                    shouldEqual(&*i3, &a3[p]);
+                    shouldEqual(&*i4, &a3[p]);
+                    shouldEqual(&*i5, &a3[p]);
+                    shouldEqual(&*i6, &a3[p]);
                     shouldEqual(i1.operator->(), &a3[p]);
                     shouldEqual(i2.operator->(), &a3[p]);
                     shouldEqual(*c, p);
                     shouldEqual(i1.point(), p);
                     shouldEqual(i2.point(), p);
+                    shouldEqual(i3.point(), p);
+                    shouldEqual(i4.point(), p);
+                    shouldEqual(i5.point(), p);
+                    shouldEqual(i6.point(), p);
                     shouldEqual(i1.index(), count);
                     shouldEqual(i2.index(), count);
 
@@ -732,6 +750,25 @@ public:
                     should(i1 <= iend);
                     should(!(i1 > iend));
                     should(!(i1 >= iend));
+
+                    should(i5.dim<2>() == p[2]);
+                    should(i5.dim<1>() == p[1]);
+                    should(i5.dim<0>() == p[0]);
+                    should(i5.dim<2>() != s[2]);
+                    should(i5.dim<1>() != s[1]);
+                    should(i5.dim<0>() != s[0]);
+                    should(i5.dim<2>() <= p[2]);
+                    should(i5.dim<1>() <= p[1]);
+                    should(i5.dim<0>() <= p[0]);
+                    should(i5.dim<2>() < s[2]);
+                    should(i5.dim<1>() < s[1]);
+                    should(i5.dim<0>() < s[0]);
+                    should(i5.dim<2>() >= 0);
+                    should(i5.dim<1>() >= 0);
+                    should(i5.dim<0>() >= 0);
+                    shouldNot(i5.dim<2>() > s[2]);
+                    shouldNot(i5.dim<1>() > s[1]);
+                    shouldNot(i5.dim<0>() > s[0]);
 
                     shouldEqual(iend - i1, av.size() - count);
 
@@ -2343,14 +2380,14 @@ public:
         t = TOCS;
         std::cerr << "    marray expression: " << t << "\n";
 #endif
-        TIC;
-        typedef array3_type::view_type View;
-        View::iterator wi = ((View &)w).begin(), wend = wi.getEndIterator(),
-                       ui = ((View &)u).begin(), vi = ((View &)v).begin();
-        for(; wi != wend; ++wi, ++ui, ++vi)
-                    *wi = *ui * *vi;
-        t = TOCS;
-        std::cerr << "    StridedScanOrderIterator: " << t << "\n";
+        //TIC;
+        //typedef array3_type::view_type View;
+        //View::iterator wi = ((View &)w).begin(), wend = wi.getEndIterator(),
+        //               ui = ((View &)u).begin(), vi = ((View &)v).begin();
+        //for(; wi != wend; ++wi, ++ui, ++vi)
+        //            *wi = *ui * *vi;
+        //t = TOCS;
+        //std::cerr << "    StridedScanOrderIterator: " << t << "\n";
         TIC;
         typedef CoupledIteratorType<3, scalar_type, scalar_type, scalar_type>::type CI;
         CI i = createCoupledIterator(w, u, v), end = i.getEndIterator();
@@ -2358,31 +2395,47 @@ public:
                     i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
         std::cerr << "    CoupledScanOrderIterator: " << t << "\n";
+        //TIC;
+        //w = u*v;
+        //t = TOCS;
+        //std::cerr << "    multi_math expression: " << t << "\n";
+        //TIC;
+        //w.transpose() = u.transpose()*v.transpose();
+        //t = TOCS;
+        //std::cerr << "    transposed multi_math expression: " << t << "\n";
+        //TIC;
+        //combineTwoMultiArrays(srcMultiArrayRange(u), srcMultiArray(v), destMultiArray(w),
+        //                      Arg1()*Arg2());
+        //t = TOCS;
+        //std::cerr << "    lambda expression: " << t << "\n";
+        //TIC;
+        //combineTwoMultiArrays(srcMultiArrayRange(u.transpose()), srcMultiArray(v.transpose()), destMultiArray(w),
+        //                      Arg1()*Arg2());
+        //t = TOCS;
+        //std::cerr << "    transposed lambda expression: " << t << "\n";
+        //TIC;
+        //for(int z=0; z<size; ++z)
+        //    for(int y=0; y<size; ++y)
+        //        for(int x=0; x<size; ++x)
+        //            w(x,y,z) = u(x,y,z) * v(x,y,z);
+        //t = TOCS;
+        //std::cerr << "    explicit loops: " << t << "\n";
+        i = createCoupledIterator(w, u, v);
         TIC;
-        w = u*v;
+        for(i.dim<2>() = 0; i.dim<2>() <size; ++i.dim<2>())
+            for(i.dim<1>() = 0; i.dim<1>()<size; ++i.dim<1>())
+                for(i.dim<0>() = 0; i.dim<0>()<size; ++i.dim<0>())
+                    i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
-        std::cerr << "    multi_math expression: " << t << "\n";
+        std::cerr << "    coupled iterator explicit template loops: " << t << "\n";
+        i = createCoupledIterator(w, u, v);
         TIC;
-        w.transpose() = u.transpose()*v.transpose();
+        for(i.resetDim(2); i.point(2) < size; i.incDim(2))
+            for(i.resetDim(1); i.point(1) < size; i.incDim(1))
+                for(i.resetDim(0); i.point(0) < size; i.incDim(0))
+                    i.get<1>() = i.get<2>() * i.get<3>();
         t = TOCS;
-        std::cerr << "    transposed multi_math expression: " << t << "\n";
-        TIC;
-        combineTwoMultiArrays(srcMultiArrayRange(u), srcMultiArray(v), destMultiArray(w),
-                              Arg1()*Arg2());
-        t = TOCS;
-        std::cerr << "    lambda expression: " << t << "\n";
-        TIC;
-        combineTwoMultiArrays(srcMultiArrayRange(u.transpose()), srcMultiArray(v.transpose()), destMultiArray(w),
-                              Arg1()*Arg2());
-        t = TOCS;
-        std::cerr << "    transposed lambda expression: " << t << "\n";
-        TIC;
-        for(int z=0; z<size; ++z)
-            for(int y=0; y<size; ++y)
-                for(int x=0; x<size; ++x)
-                    w(x,y,z) = u(x,y,z) * v(x,y,z);
-        t = TOCS;
-        std::cerr << "    explicit loops: " << t << "\n";
+        std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
     }
 
     void testBasicArithmetic()
