@@ -613,12 +613,7 @@ class CoupledDimensionProxy
         return *this;
     }
     
-    reference operator[](MultiArrayIndex d)
-    {
-        *(CoupledDimensionProxy(*this) += d);
-    }
-    
-    const_reference operator[](MultiArrayIndex d) const
+    value_type operator[](MultiArrayIndex d) const
     {
         *(CoupledDimensionProxy(*this) += d);
     }
