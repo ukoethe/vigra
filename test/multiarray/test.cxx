@@ -33,6 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <stdio.h>
+
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_array_blocked.hxx"
@@ -2444,7 +2446,14 @@ public:
         //t = TOCS;
         //std::cerr << "    coupled iterator explicit runtime loops: " << t << "\n";
 
-        BlockedArray<3, scalar_type> barray(s);
+        //TIC;
+        //FILE * f = fopen("testdata.dat", "rb");
+        //fread(w.data(), sizeof(scalar_type), w.size(), f);
+        //t = TOCS;
+        //std::cerr << "   plain fread: " << t << "\n";
+        //fclose(f);
+
+        BlockedArray<3, scalar_type> barray(s, "testdata.dat");
 
         typedef CoupledHandleType<3, BlockedMemory<scalar_type> >::type  P1;
         typedef P1::base_type                                            P0;
@@ -2453,7 +2462,7 @@ public:
         IteratorType bi(P1(barray, 
                            P0(barray.shape())));
         int count = 1;
-        int start = 63, stop = 65;
+        int start = 0, stop = size;
         //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
         //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
         //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
@@ -2493,43 +2502,53 @@ public:
                     bi.get<1>() = count;
                 }
         t = TOCS;
+        std::cerr << "    blocked iterator create file: " << t << "\n";
+        ////std::cerr << " global count: " << vigra::globalCount << "\n";
+        count = 1;
+        TIC;
+        for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
+            for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
+                for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
+                {
+                    if(bi.get<1>() != count)
+                        std::cerr << bi.coord() << " not equal\n";
+                }
+        t = TOCS;
         std::cerr << "    blocked iterator explicit runtime loops: " << t << "\n";
-        //std::cerr << " global count: " << vigra::globalCount << "\n";
         //count = 1;
+        //TIC;
         //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
         //    for(bi.setDim(1,start); bi.coord(1) < stop; bi.incDim(1))
         //        for(bi.setDim(0,start); bi.coord(0) < stop; bi.incDim(0), ++count)
         //        {
-        //            //shouldEqual(&bi.get<1>(), &barray[bi.coord()]);
-        //            //shouldEqual(bi.get<1>(), count);
         //            if(bi.get<1>() != count)
         //                std::cerr << bi.coord() << " not equal\n";
-        //            //bool res = bi.get<1>() == count;
-        //            //should(res);
         //        }
+        //t = TOCS;
+        //std::cerr << "    blocked iterator explicit runtime loops: " << t << "\n";
         //std::cerr << &barray[Shape3(0,0,0)] << "  address\n";
         //std::cerr << &barray[Shape3(64,0,0)] << "  address\n";
         //std::cerr << &barray[Shape3(0,128,0)] << "  address\n";
         //std::cerr << &barray[Shape3(64,64,0)] << "  address\n";
-        count = 0;
-        i = createCoupledIterator(w, u, v);
-        for(; i != end; ++i)
-                    i.get<1>() = ++count;
-        
-        typedef CoupledHandleType<3, BlockedMemory<scalar_type>, scalar_type >::type  Q2;
-        typedef Q2::base_type                                            Q1;
-        typedef Q1::base_type                                            Q0;
-        typedef CoupledScanOrderIterator<3, Q2>                      Q;
+        //count = 0;
+        //i = createCoupledIterator(w, u, v);
+        //for(; i != end; ++i)
+        //            i.get<1>() = ++count;
+        //
+        //typedef CoupledHandleType<3, BlockedMemory<scalar_type>, scalar_type >::type  Q2;
+        //typedef Q2::base_type                                            Q1;
+        //typedef Q1::base_type                                            Q0;
+        //typedef CoupledScanOrderIterator<3, Q2>                      Q;
 
-        Q qi(Q2(w, Q1(barray, 
-                           Q0(barray.shape()))));
-        for(qi.setDim(2,0); qi.coord(2) < size; qi.incDim(2))
-            for(qi.setDim(1,0); qi.coord(1) < size; qi.incDim(1))
-                for(qi.setDim(0,0); qi.coord(0) < size; qi.incDim(0))
-                {
-                    if(qi.get<1>() != qi.get<2>())
-                        std::cerr << qi.coord() << " not equal\n";
-                }
+        //Q qi(Q2(w, Q1(barray, 
+        //                   Q0(barray.shape()))));
+        //for(qi.setDim(2,0); qi.coord(2) < size; qi.incDim(2))
+        //    for(qi.setDim(1,0); qi.coord(1) < size; qi.incDim(1))
+        //        for(qi.setDim(0,0); qi.coord(0) < size; qi.incDim(0))
+        //        {
+        //            if(qi.get<1>() != qi.get<2>())
+        //                std::cerr << qi.coord() << " not equal\n";
+        //        }
     }
 
     void testBasicArithmetic()

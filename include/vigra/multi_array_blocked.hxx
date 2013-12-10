@@ -39,7 +39,49 @@
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 
+#ifdef _WIN32
+# include "windows.h"
+#else
+# include <fcntl.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/stat.h>
+# include <sys/mman.h>
+#endif
+
 namespace vigra {
+
+#ifdef _WIN32
+
+void winErrorToException(std::string message = "") 
+{ 
+    LPVOID lpMsgBuf;
+    DWORD dw = GetLastError(); 
+
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0, NULL );
+
+    message += (char*)lpMsgBuf;
+    LocalFree(lpMsgBuf);
+    
+    throw std::runtime_error(message);
+}
+
+size_t winClusterSize()
+{
+    SYSTEM_INFO info;
+    ::GetSystemInfo(&info); 
+    return info.dwAllocationGranularity;
+}
+
+#endif
 
 template <class T>
 struct BlockedMemory;
@@ -80,7 +122,30 @@ struct BlockShape<3>
         b[2] = (UI)s[2] >> bits;
         o += ((UI)s[2] & mask) << (2*bits);
         return o;
-        
+    }
+    
+    static void blockIndex(Shape3 const & p, Shape3 & b)
+    {
+        typedef std::size_t UI;
+        b[0] = (UI)p[0] >> bits;
+        b[1] = (UI)p[1] >> bits;
+        b[2] = (UI)p[2] >> bits;
+    }
+    
+    static std::size_t blockOffset(Shape3 const & p, Shape3 const & s)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] >> bits) * s[0] +
+               ((UI)p[1] >> bits) * s[1] +
+               ((UI)p[2] >> bits) * s[2];
+    }
+    
+    static std::size_t offset(Shape3 const & p, Shape3 const & s)
+    {
+        typedef std::size_t UI;
+        return ((UI)p[0] & mask) * s[0] +
+               ((UI)p[1] & mask) * s[1] +
+               ((UI)p[2] & mask) * s[2];
     }
 };
 
@@ -96,41 +161,286 @@ Shape outerShape(Shape shape)
 }
 
 template <unsigned int N, class T>
+class BlockedArrayChunk
+{
+  public:
+    typedef typename MultiArrayShape<N>::type  shape_type;
+    typedef T value_type;
+    typedef value_type * pointer;
+    typedef value_type & reference;
+    
+#ifndef _WIN32
+    typedef int HANDLE;
+#endif    
+    
+    BlockedArrayChunk()
+    : pointer_()
+    {}
+    
+    ~BlockedArrayChunk()
+    {
+        unmap();
+    }
+    
+    void reshape(shape_type const & shape)
+    {
+        file_ = 0;
+        offset_ = 0;
+        size_t size = prod(shape)*sizeof(T);
+        alloc_size_ = (size + alloc_mask_) & ~alloc_mask_;
+        shape_ = shape;
+        strides_ = detail::defaultStride(shape_);
+    }
+    
+    void setFile(HANDLE file, size_t offset)
+    {
+        file_ = file;
+        offset_ = offset;
+    }
+    
+    size_t size() const
+    {
+        return prod(shape_);
+    }
+    
+    size_t alloc_size() const
+    {
+        return alloc_size_;
+    }
+    
+    void map()
+    {
+        if(!pointer_)
+        {
+#ifdef _WIN32
+            static const size_t bits = sizeof(DWORD)*8,
+                                mask = (size_t(1) << bits) - 1;
+            pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                                              offset_ >> bits, offset_ & mask, alloc_size_);
+            if(!pointer_)
+                winErrorToException("BlockedArrayChunk::map(): ");
+#else
+            pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                     file_, offset_);
+            if(!pointer_)
+                throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+#endif
+       }
+    }
+    
+    void unmap()
+    {
+#ifdef _WIN32
+        if(pointer_)
+            ::UnmapViewOfFile((void*)pointer_);
+#else
+        if(pointer_)
+            munmap((void*)pointer_, alloc_size_);
+#endif
+        pointer_ = 0;
+    }
+    
+    pointer pointer_;
+    size_t offset_, alloc_size_;
+    shape_type shape_, strides_;
+    HANDLE file_;
+    
+    static size_t alloc_mask_;
+};
+
+#ifdef _WIN32
+    template <unsigned int N, class T>
+    size_t BlockedArrayChunk<N, T>::alloc_mask_ = winClusterSize() - 1;
+#else
+    template <unsigned int N, class T>
+    size_t BlockedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
+#endif
+
+// template <unsigned int N, class T>
+// class BlockedArray
+// {
+  // public:
+    // typedef MultiArray<N, MultiArray<N, T> > BlockStorage;
+    // typedef typename BlockStorage::difference_type  shape_type;
+    // typedef T value_type;
+    // typedef value_type * pointer;
+    // typedef value_type & reference;
+    
+    // BlockedArray(shape_type const & shape)
+    // : shape_(shape),
+      // default_block_shape_(BlockShape<N>::value),
+      // outer_array_(outerShape(shape))
+    // {
+        // auto i = outer_array_.begin(), 
+             // end = outer_array_.end();
+        // for(; i != end; ++i)
+            // i->reshape(min(default_block_shape_, shape - i.point()));
+    // }
+    
+    // reference operator[](shape_type const & p)
+    // {
+        // return *ptr(p);
+    // }
+    
+    // pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
+    // {
+        // // if(!isInside(p))
+            // // return 0;
+        
+        // shape_type blockIndex(SkipInitialization);
+        // BlockShape<N>::blockIndex(p, blockIndex);
+        // MultiArray<N, T> & block = outer_array_[blockIndex];
+        // strides = block.stride();
+        // border = (blockIndex + shape_type(1)) * default_block_shape_;
+        // std::size_t offset = BlockShape<N>::offset(p, strides);
+        // return block.data() + offset;
+    // }
+    
+    // shape_type const & shape() const
+    // {
+        // return shape_;
+    // }
+    
+    // bool isInside (shape_type const & p) const
+    // {
+        // for(int d=0; d<N; ++d)
+            // if(p[d] < 0 || p[d] >= shape_[d])
+                // return false;
+        // return true;
+    // }
+    
+    // shape_type shape_, default_block_shape_;
+    // BlockStorage outer_array_;
+// };
+
+template <unsigned int N, class T>
 class BlockedArray
 {
   public:
-    typedef MultiArray<N, MultiArray<N, T> > BlockStorage;
+    typedef MultiArray<N, BlockedArrayChunk<N, T> > BlockStorage;
     typedef typename BlockStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    BlockedArray(shape_type const & shape)
+#ifndef _WIN32
+    typedef int HANDLE;
+#endif    
+    
+    BlockedArray(shape_type const & shape, char const * name)
     : shape_(shape),
-      inner_shape_(BlockShape<N>::value),
+      default_block_shape_(BlockShape<N>::value),
       outer_array_(outerShape(shape))
     {
-        auto i = outer_array_.begin(), 
+        // set shape of the blocks
+        typename BlockStorage::iterator i = outer_array_.begin(), 
+             end = outer_array_.end();
+        size_t size = 0;
+        for(; i != end; ++i)
+        {
+            i->reshape(min(default_block_shape_, shape - i.point()*default_block_shape_));
+            size += i->alloc_size();
+        }
+        
+        std::cerr << "file size: " << size << "\n";
+
+#ifdef _WIN32
+        // create file or open it when it already exists
+        file_ = ::CreateFile(name, GENERIC_READ | GENERIC_WRITE,
+                             0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (file_ == INVALID_HANDLE_VALUE) 
+            winErrorToException("BlockedArray(): ");
+        
+        bool isNewFile = ::GetLastError() != ERROR_ALREADY_EXISTS;
+        if(isNewFile)
+        {
+            std::cerr << "creating new file\n";
+            
+            // make it a sparse file
+            DWORD dwTemp;
+            if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
+                winErrorToException("BlockedArray(): ");
+
+            // set the file size
+            static const size_t bits = sizeof(LONG)*8,
+                                mask = (size_t(1) << bits) - 1;
+            LONG fileSizeHigh = size >> bits;
+            if(::SetFilePointer(file_, size & mask, &fileSizeHigh, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+                winErrorToException("BlockedArray(): ");
+            if(!::SetEndOfFile(file_)) 
+                winErrorToException("BlockedArray(): ");
+        }
+        
+        // memory-map the file
+        mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 0, 0, NULL);
+        if(!mappedFile_)
+            winErrorToException("BlockedArray(): ");
+#else
+        mappedFile_ = file_ = open(name, O_RDWR | O_CREAT | O_TRUNC, 0666);
+        lseek(file_, size-1, SEEK_SET);
+        if(write(file_, "0", 1) == -1)
+            throw std::runtime_error("BlockedArray(): unable to resize file.");
+#endif
+        
+        // tell the blocks about the memory mapping
+        i = outer_array_.begin();
+        int offset = 0;
+        for(; i != end; ++i)
+        {
+            i->setFile(mappedFile_, offset);
+            offset += i->alloc_size();
+        }
+    }
+    
+    ~BlockedArray()
+    {
+        unmap();
+#ifdef _WIN32
+        ::CloseHandle(mappedFile_);
+        ::CloseHandle(file_);
+#else
+        close(file_);
+#endif
+    }
+    
+    void map()
+    {
+        typename BlockStorage::iterator  i = outer_array_.begin(), 
              end = outer_array_.end();
         for(; i != end; ++i)
-            i->reshape(inner_shape_);
+        {
+            i->map();
+        }
     }
     
-    reference operator[](shape_type const & p)
+    void unmap()
     {
-        return *ptr(p);
+        typename BlockStorage::iterator  i = outer_array_.begin(), 
+             end = outer_array_.end();
+        for(; i != end; ++i)
+        {
+            i->unmap();
+        }
     }
+
+    // reference operator[](shape_type const & p)
+    // {
+        // return *ptr(p);
+    // }
     
-    pointer ptr(shape_type const & p)
+    pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
     {
-        // if(!isInside(p))
-            // return 0;
+        if(!isInside(p))
+            return 0;
         
-        shape_type block(SkipInitialization);
-        std::size_t offset = BlockShape<N>::unmangle(p, block);
-        // std::cerr << "      " << outer_array_[block].data() << " " << offset 
-        // << " " << (outer_array_[block].data() + offset) << "\n";
-        return outer_array_[block].data() + offset;
+        shape_type blockIndex(SkipInitialization);
+        BlockShape<N>::blockIndex(p, blockIndex);
+        BlockedArrayChunk<N, T> & block = outer_array_[blockIndex];
+        block.map();
+        strides = block.strides_;
+        border = (blockIndex + shape_type(1)) * default_block_shape_;
+        std::size_t offset = BlockShape<N>::offset(p, strides);
+        return block.pointer_ + offset;
     }
     
     shape_type const & shape() const
@@ -146,7 +456,8 @@ class BlockedArray
         return true;
     }
     
-    shape_type shape_, inner_shape_;
+    HANDLE file_, mappedFile_;
+    shape_type shape_, default_block_shape_;
     BlockStorage outer_array_;
 };
 
@@ -170,13 +481,13 @@ public:
     typedef value_type const &                    const_reference;
     typedef typename base_type::shape_type        shape_type;
     
-    typedef T* (*SetPointerFct)(shape_type const & p, array_type * array);
+    typedef T* (*SetPointerFct)(shape_type const & p, array_type * array, shape_type & strides, shape_type & border);
     
     static SetPointerFct setPointer;
     
-    static T* setPointerFct(shape_type const & p, array_type * array)
+    static T* setPointerFct(shape_type const & p, array_type * array, shape_type & strides, shape_type & border)
     {
-        return array->ptr(p);
+        return array->ptr(p, strides, border);
     }
 
     CoupledHandle()
@@ -187,22 +498,30 @@ public:
 
     CoupledHandle(array_type & array, NEXT const & next)
     : base_type(next),
-      pointer_((*setPointer)(shape_type(), &array)), 
-      strides_(detail::defaultStride(shape_type(block_shape::value))),
+      pointer_((*setPointer)(shape_type(), &array, strides_, border_)), 
       array_(&array)
     {}
+    
+    using base_type::point;
+    using base_type::shape;
 
     inline void incDim(int dim) 
     {
         base_type::incDim(dim);
-        if((point()[dim] & block_shape::mask) == 0)
+        // if((point()[dim] & block_shape::mask) == 0)
+        // {
+            // if(point()[dim] < shape()[dim])
+                // pointer_ = (*setPointer)(point(), array_, strides_, border_);
+        // }
+        // else
+        // {
+            // pointer_ += strides_[dim];
+        // }
+        pointer_ += strides_[dim];
+        if(point()[dim] == border_[dim])
         {
             if(point()[dim] < shape()[dim])
-                pointer_ = (*setPointer)(point(), array_);
-        }
-        else
-        {
-            pointer_ += strides_[dim];
+                pointer_ = (*setPointer)(point(), array_, strides_, border_);
         }
     }
 
@@ -215,9 +534,10 @@ public:
     inline void addDim(int dim, MultiArrayIndex d) 
     {
         base_type::addDim(dim, d);
-        pointer_ = (*setPointer)(point(), array_);
+        if(point()[dim] < shape()[dim])
+            pointer_ = (*setPointer)(point(), array_, strides_, border_);
         // if(dim == 0)
-            // std::cerr << point() << " " << pointer_ << " " << d << "\n";
+            // std::cerr << point() << " " << pointer_ << " " << strides_ << " " << border_ << "\n";
     }
 
     // inline void add(shape_type const & d) 
@@ -293,7 +613,7 @@ public:
     }
 
     pointer pointer_;
-    shape_type strides_;
+    shape_type strides_, border_;
     array_type * array_;
 };
 
