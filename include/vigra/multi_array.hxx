@@ -2948,9 +2948,9 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
         return;
     }
     ptr = m_alloc.allocate ((typename A::size_type)s);
-    difference_type_1 i;
+    difference_type_1 i = 0;
     try {
-        for (i = 0; i < s; ++i)
+        for (; i < s; ++i)
             m_alloc.construct (ptr + i, init);
     }
     catch (...) {
@@ -2972,9 +2972,9 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
         return;
     }
     ptr = m_alloc.allocate ((typename A::size_type)s);
-    difference_type_1 i;
+    difference_type_1 i = 0;
     try {
-        for (i = 0; i < s; ++i, ++init)
+        for (; i < s; ++i, ++init)
             m_alloc.construct (ptr + i, *init);
     }
     catch (...) {
