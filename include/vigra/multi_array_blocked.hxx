@@ -51,8 +51,13 @@
 
 namespace vigra {
 
+#ifdef __APPLE__
+    #define VIGRA_NO_SPARSE_FILE
+#endif
+
 #ifdef _WIN32
 
+inline 
 void winErrorToException(std::string message = "") 
 { 
     LPVOID lpMsgBuf;
@@ -74,6 +79,25 @@ void winErrorToException(std::string message = "")
     throw std::runtime_error(message);
 }
 
+inline 
+std::string winTempFileName(std::string path = "") 
+{ 
+    if(path == "")
+    {
+        TCHAR default_path[MAX_PATH];
+        if(!GetTempPath(MAX_PATH, default_path))
+            winErrorToException("winTempFileName(): ");
+        path = default_path;
+    }
+    
+    TCHAR name[MAX_PATH];  
+    if(!GetTempFileName(path.c_str(), TEXT("vigra"), 0, name))
+        winErrorToException("winTempFileName(): ");
+
+    return std::string(name);
+}
+
+inline 
 size_t winClusterSize()
 {
     SYSTEM_INFO info;
@@ -82,6 +106,16 @@ size_t winClusterSize()
 }
 
 #endif
+
+namespace {
+
+#ifdef _WIN32
+size_t mmap_alignment = winClusterSize();
+#else
+size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
+#endif
+
+} // anonymous namespace
 
 template <class T>
 struct BlockedMemory;
@@ -160,6 +194,7 @@ Shape outerShape(Shape shape)
     return shape;
 }
 
+#if 0
 template <unsigned int N, class T>
 class BlockedArrayChunk
 {
@@ -256,6 +291,8 @@ class BlockedArrayChunk
     size_t BlockedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
 #endif
 
+#endif
+
 // template <unsigned int N, class T>
 // class BlockedArray
 // {
@@ -313,23 +350,168 @@ class BlockedArrayChunk
     // BlockStorage outer_array_;
 // };
 
+
+/*
+The present implementation uses a memory-mapped sparse file to store the blocks.
+A sparse file is created on Linux using the O_TRUNC flag (possibly, it is even 
+the default file behavior on Linux => check), and on Windows by
+calling DeviceIoControl(file_handle, FSCTL_SET_SPARSE,...) after file creation.
+
+We can automatically delete the file upon closing. On Windows, this happens
+if the file was opened with FILE_FLAG_DELETE_ON_CLOSE (it may be useful to
+combine this with the flag FILE_ATTRIBUTE_TEMPORARY, which tells the OS to
+avoid writing the file to disk if possible). On Linux, you can call
+fileno(tmpfile()) for the same purpose.
+
+Alternatives are:
+* Keep the array in memory, but compress unused blocks.
+* Don't create a file explicitly, but use the swap file instead. This is 
+  achieved on Linux by mmap(..., MAP_PRIVATE | MAP_ANONYMOUS, -1, ...), 
+  on Windows by calling CreateFileMapping(INVALID_HANDLE_VALUE, ...).
+* Back blocks by HDF5 chunks, possibly using on-the-fly compression. This
+  is in particular useful for existing HDF5 files.
+* Back blocks by HDF5 datasets. This can be combined with compression 
+  (both explicit and on-the-fly).
+*/
 template <unsigned int N, class T>
 class BlockedArray
 {
   public:
-    typedef MultiArray<N, BlockedArrayChunk<N, T> > BlockStorage;
+    typedef typename MultiArrayShape<N>::type  shape_type;
+    typedef T value_type;
+    typedef value_type * pointer;
+    typedef value_type & reference;
+        
+    BlockedArray(shape_type const & shape)
+    : shape_(shape),
+      default_block_shape_(BlockShape<N>::value)
+    {}
+    
+    virtual ~BlockedArray()
+    {}
+    
+    // reference operator[](shape_type const & p)
+    // {
+        // return *ptr(p);
+    // }
+    
+    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border) = 0;
+    
+    shape_type const & shape() const
+    {
+        return shape_;
+    }
+    
+    bool isInside (shape_type const & p) const
+    {
+        for(int d=0; d<N; ++d)
+            if(p[d] < 0 || p[d] >= shape_[d])
+                return false;
+        return true;
+    }
+    
+    shape_type shape_, default_block_shape_;
+};
+
+template <unsigned int N, class T>
+class BlockedArrayFile
+: public BlockedArray<N, T>
+{
+  public:
+#ifndef _WIN32
+    typedef int HANDLE;
+#endif    
+    
+    class Block
+    {
+      public:
+        typedef typename MultiArrayShape<N>::type  shape_type;
+        typedef T value_type;
+        typedef value_type * pointer;
+        typedef value_type & reference;
+        
+        Block()
+        : pointer_()
+        {}
+        
+        ~Block()
+        {
+            unmap();
+        }
+        
+        void reshape(shape_type const & shape, size_t alignment)
+        {
+            file_ = 0;
+            offset_ = 0;
+            size_t size = prod(shape)*sizeof(T);
+            size_t mask = alignment - 1;
+            alloc_size_ = (size + mask) & ~mask;
+            shape_ = shape;
+            strides_ = detail::defaultStride(shape_);
+        }
+        
+        void setFile(HANDLE file, size_t offset)
+        {
+            file_ = file;
+            offset_ = offset;
+        }
+        
+        size_t size() const
+        {
+            return prod(shape_);
+        }
+        
+        size_t alloc_size() const
+        {
+            return alloc_size_;
+        }
+        
+        void map()
+        {
+            if(!pointer_)
+            {
+    #ifdef _WIN32
+                static const size_t bits = sizeof(DWORD)*8,
+                                    mask = (size_t(1) << bits) - 1;
+                pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                                                  offset_ >> bits, offset_ & mask, alloc_size_);
+                if(!pointer_)
+                    winErrorToException("BlockedArrayChunk::map(): ");
+    #else
+                pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                         file_, offset_);
+                if(!pointer_)
+                    throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+    #endif
+           }
+        }
+        
+        void unmap()
+        {
+    #ifdef _WIN32
+            if(pointer_)
+                ::UnmapViewOfFile((void*)pointer_);
+    #else
+            if(pointer_)
+                munmap((void*)pointer_, alloc_size_);
+    #endif
+            pointer_ = 0;
+        }
+        
+        pointer pointer_;
+        size_t offset_, alloc_size_;
+        shape_type shape_, strides_;
+        HANDLE file_;
+    };
+
+    typedef MultiArray<N, Block> BlockStorage;
     typedef typename BlockStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
     
-#ifndef _WIN32
-    typedef int HANDLE;
-#endif    
-    
-    BlockedArray(shape_type const & shape, char const * name)
-    : shape_(shape),
-      default_block_shape_(BlockShape<N>::value),
+    BlockedArrayFile(shape_type const & shape, char const * name)
+    : BlockedArray<N, T>(shape),
       outer_array_(outerShape(shape))
     {
         // set shape of the blocks
@@ -338,7 +520,8 @@ class BlockedArray
         size_t size = 0;
         for(; i != end; ++i)
         {
-            i->reshape(min(default_block_shape_, shape - i.point()*default_block_shape_));
+            i->reshape(min(this->default_block_shape_, shape - i.point()*this->default_block_shape_),
+                       mmap_alignment);
             size += i->alloc_size();
         }
         
@@ -349,7 +532,7 @@ class BlockedArray
         file_ = ::CreateFile(name, GENERIC_READ | GENERIC_WRITE,
                              0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (file_ == INVALID_HANDLE_VALUE) 
-            winErrorToException("BlockedArray(): ");
+            winErrorToException("BlockedArrayFile(): ");
         
         bool isNewFile = ::GetLastError() != ERROR_ALREADY_EXISTS;
         if(isNewFile)
@@ -359,27 +542,30 @@ class BlockedArray
             // make it a sparse file
             DWORD dwTemp;
             if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
-                winErrorToException("BlockedArray(): ");
+                winErrorToException("BlockedArrayFile(): ");
 
             // set the file size
             static const size_t bits = sizeof(LONG)*8,
                                 mask = (size_t(1) << bits) - 1;
             LONG fileSizeHigh = size >> bits;
             if(::SetFilePointer(file_, size & mask, &fileSizeHigh, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-                winErrorToException("BlockedArray(): ");
+                winErrorToException("BlockedArrayFile(): ");
             if(!::SetEndOfFile(file_)) 
-                winErrorToException("BlockedArray(): ");
+                winErrorToException("BlockedArrayFile(): ");
         }
         
         // memory-map the file
         mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 0, 0, NULL);
         if(!mappedFile_)
-            winErrorToException("BlockedArray(): ");
+            winErrorToException("BlockedArrayFile(): ");
 #else
-        mappedFile_ = file_ = open(name, O_RDWR | O_CREAT | O_TRUNC, 0666);
+        mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+        mappedFile_ = file_ = open(name, O_RDWR | O_CREAT | O_TRUNC, mode);
+        if(file_ == -1)
+            throw std::runtime_error("BlockedArrayFile(): unable to open file.");
         lseek(file_, size-1, SEEK_SET);
         if(write(file_, "0", 1) == -1)
-            throw std::runtime_error("BlockedArray(): unable to resize file.");
+            throw std::runtime_error("BlockedArrayFile(): unable to resize file.");
 #endif
         
         // tell the blocks about the memory mapping
@@ -392,7 +578,7 @@ class BlockedArray
         }
     }
     
-    ~BlockedArray()
+    ~BlockedArrayFile()
     {
         unmap();
 #ifdef _WIN32
@@ -428,38 +614,260 @@ class BlockedArray
         // return *ptr(p);
     // }
     
-    pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
+    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
     {
-        if(!isInside(p))
+        if(!this->isInside(p))
             return 0;
         
         shape_type blockIndex(SkipInitialization);
         BlockShape<N>::blockIndex(p, blockIndex);
-        BlockedArrayChunk<N, T> & block = outer_array_[blockIndex];
+        Block & block = outer_array_[blockIndex];
         block.map();
         strides = block.strides_;
-        border = (blockIndex + shape_type(1)) * default_block_shape_;
+        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
         std::size_t offset = BlockShape<N>::offset(p, strides);
         return block.pointer_ + offset;
     }
     
-    shape_type const & shape() const
+    HANDLE file_, mappedFile_;
+    BlockStorage outer_array_;
+};
+
+
+template <unsigned int N, class T>
+class BlockedArrayTmpFile
+: public BlockedArray<N, T>
+{
+  public:
+#ifndef _WIN32
+    typedef int HANDLE;
+#endif    
+    
+    class Block
     {
-        return shape_;
+      public:
+        typedef typename MultiArrayShape<N>::type  shape_type;
+        typedef T value_type;
+        typedef value_type * pointer;
+        typedef value_type & reference;
+        
+        Block()
+        : pointer_()
+        {}
+        
+        ~Block()
+        {
+            unmap();
+        }
+        
+        void reshape(shape_type const & shape, size_t alignment)
+        {
+            file_ = 0;
+            offset_ = 0;
+            size_t size = prod(shape)*sizeof(T);
+            size_t mask = alignment - 1;
+            alloc_size_ = (size + mask) & ~mask;
+            shape_ = shape;
+            strides_ = detail::defaultStride(shape_);
+        }
+        
+        void setFile(HANDLE file, size_t offset)
+        {
+            file_ = file;
+            offset_ = offset;
+        }
+        
+        size_t size() const
+        {
+            return prod(shape_);
+        }
+        
+        size_t alloc_size() const
+        {
+            return alloc_size_;
+        }
+        
+        void map(size_t offset)
+        {
+            if(!pointer_)
+            {
+            #ifdef VIGRA_NO_SPARSE_FILE
+                offset_ = offset;
+            #endif
+            #ifdef _WIN32
+                static const size_t bits = sizeof(DWORD)*8,
+                                    mask = (size_t(1) << bits) - 1;
+                pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                                                  offset_ >> bits, offset_ & mask, alloc_size_);
+                if(!pointer_)
+                    winErrorToException("BlockedArrayChunk::map(): ");
+            #else
+                pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                         file_, offset_);
+                if(!pointer_)
+                    throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+            #endif
+           }
+        }
+        
+        void unmap()
+        {
+    #ifdef _WIN32
+            if(pointer_)
+                ::UnmapViewOfFile((void*)pointer_);
+    #else
+            if(pointer_)
+                munmap((void*)pointer_, alloc_size_);
+    #endif
+            pointer_ = 0;
+        }
+        
+        pointer pointer_;
+        size_t offset_, alloc_size_;
+        shape_type shape_, strides_;
+        HANDLE file_;
+    };
+
+    typedef MultiArray<N, Block> BlockStorage;
+    typedef typename BlockStorage::difference_type  shape_type;
+    typedef T value_type;
+    typedef value_type * pointer;
+    typedef value_type & reference;
+    
+    BlockedArrayTmpFile(shape_type const & shape, std::string const & path = "")
+    : BlockedArray<N, T>(shape),
+      outer_array_(outerShape(shape)),
+      file_size_(),
+      file_capacity_()
+    {
+        // set shape of the blocks
+        typename BlockStorage::iterator i = outer_array_.begin(), 
+             end = outer_array_.end();
+        size_t size = 0;
+        for(; i != end; ++i)
+        {
+            i->reshape(min(this->default_block_shape_, shape - i.point()*this->default_block_shape_),
+                       mmap_alignment);
+            size += i->alloc_size();
+        }
+        
+        std::cerr << "file size: " << size << "\n";
+
+#ifdef _WIN32
+        file_capacity_ = size;
+        
+        // create a temp file
+        file_ = ::CreateFile(winTempFileName(path).c_str(), GENERIC_READ | GENERIC_WRITE,
+                             0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
+        if (file_ == INVALID_HANDLE_VALUE) 
+            winErrorToException("BlockedArrayTmpFile(): ");
+            
+        // make it a sparse file
+        DWORD dwTemp;
+        if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
+            winErrorToException("BlockedArrayTmpFile(): ");
+
+        // resize and memory-map the file
+        static const size_t bits = sizeof(LONG)*8, mask = (size_t(1) << bits) - 1;
+        mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 
+                                        file_capacity_ >> bits, file_capacity_ & mask, NULL);
+        if(!mappedFile_)
+            winErrorToException("BlockedArrayTmpFile(): ");
+#else
+        mappedFile_ = file_ = fileno(tmpfile());
+        if(file_ == -1)
+            throw std::runtime_error("BlockedArrayTmpFile(): unable to open file.");
+    #ifdef VIGRA_NO_SPARSE_FILE
+        file_capacity_ = 4*prod(this->default_block_shape_)*sizeof(T);
+    #else
+        file_capacity_ = size;
+    #endif
+        lseek(file_, file_capacity_-1, SEEK_SET);
+        if(write(file_, "0", 1) == -1)
+            throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+#endif
+        
+        // tell the blocks about the memory mapping
+        i = outer_array_.begin();
+        int offset = 0;
+        for(; i != end; ++i)
+        {
+            i->setFile(mappedFile_, offset);
+            offset += i->alloc_size();
+        }
     }
     
-    bool isInside (shape_type const & p) const
+    ~BlockedArrayTmpFile()
     {
-        for(int d=0; d<N; ++d)
-            if(p[d] < 0 || p[d] >= shape_[d])
-                return false;
-        return true;
+        unmap();
+#ifdef _WIN32
+        ::CloseHandle(mappedFile_);
+        ::CloseHandle(file_);
+#else
+        close(file_);
+#endif
+    }
+    
+    void map()
+    {
+        typename BlockStorage::iterator  i = outer_array_.begin(), 
+             end = outer_array_.end();
+        for(; i != end; ++i)
+        {
+            i->map();
+        }
+    }
+    
+    void unmap()
+    {
+        typename BlockStorage::iterator  i = outer_array_.begin(), 
+             end = outer_array_.end();
+        for(; i != end; ++i)
+        {
+            i->unmap();
+        }
+    }
+
+    // reference operator[](shape_type const & p)
+    // {
+        // return *ptr(p);
+    // }
+    
+    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
+    {
+        if(!this->isInside(p))
+            return 0;
+        
+        shape_type blockIndex(SkipInitialization);
+        BlockShape<N>::blockIndex(p, blockIndex);
+        Block & block = outer_array_[blockIndex];
+        if(block.pointer_ == 0)
+        {
+            size_t block_size = block.alloc_size();
+        #ifdef VIGRA_NO_SPARSE_FILE
+            if(file_size_ + block_size > file_capacity_)
+            {
+                file_capacity_ *= 2;
+                lseek(file_, file_capacity_-1, SEEK_SET);
+                if(write(file_, "0", 1) == -1)
+                    throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+            }
+        #endif
+            block.map(file_size_);
+            file_size_ += block_size;
+        }
+        strides = block.strides_;
+        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
+        std::size_t offset = BlockShape<N>::offset(p, strides);
+        return block.pointer_ + offset;
     }
     
     HANDLE file_, mappedFile_;
-    shape_type shape_, default_block_shape_;
     BlockStorage outer_array_;
+    size_t file_size_, file_capacity_;
 };
+
+
 
 template <class T, class NEXT>
 class CoupledHandle<BlockedMemory<T>, NEXT>
@@ -521,7 +929,8 @@ public:
         if(point()[dim] == border_[dim])
         {
             if(point()[dim] < shape()[dim])
-                pointer_ = (*setPointer)(point(), array_, strides_, border_);
+                // pointer_ = (*setPointer)(point(), array_, strides_, border_);
+                pointer_ = array_->ptr(point(), strides_, border_);
         }
     }
 

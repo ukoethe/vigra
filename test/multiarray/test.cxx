@@ -2453,7 +2453,7 @@ public:
         //std::cerr << "   plain fread: " << t << "\n";
         //fclose(f);
 
-        BlockedArray<3, scalar_type> barray(s, "testdata.dat");
+        BlockedArrayTmpFile<3, scalar_type> barray(s, ".\\");
 
         typedef CoupledHandleType<3, BlockedMemory<scalar_type> >::type  P1;
         typedef P1::base_type                                            P0;
