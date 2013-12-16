@@ -39,6 +39,10 @@
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 
+// #include <boost/thread/mutex.hpp>
+// #include <boost/thread/locks.hpp>
+#include <mutex>
+
 #ifdef _WIN32
 # include "windows.h"
 #else
@@ -350,6 +354,26 @@ class BlockedArrayChunk
     // BlockStorage outer_array_;
 // };
 
+template <unsigned int N, class T>
+class BlockBase
+{
+  public:
+    typedef typename MultiArrayShape<N>::type  shape_type;
+    typedef T value_type;
+    typedef value_type * pointer;
+    
+    BlockBase()
+    : pointer_(),
+      shape_(),
+      strides_(),
+      refcount_()
+    {}
+    
+    pointer pointer_;
+    shape_type shape_, strides_;
+    LONG refcount_;
+};
+
 
 /*
 The present implementation uses a memory-mapped sparse file to store the blocks.
@@ -396,6 +420,7 @@ class BlockedArray
     // }
     
     virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border) = 0;
+    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border, BlockBase<N, T> ** block) = 0;
     
     shape_type const & shape() const
     {
@@ -633,7 +658,6 @@ class BlockedArrayFile
     BlockStorage outer_array_;
 };
 
-
 template <unsigned int N, class T>
 class BlockedArrayTmpFile
 : public BlockedArray<N, T>
@@ -644,6 +668,7 @@ class BlockedArrayTmpFile
 #endif    
     
     class Block
+    : public BlockBase<N, T>
     {
       public:
         typedef typename MultiArrayShape<N>::type  shape_type;
@@ -652,7 +677,8 @@ class BlockedArrayTmpFile
         typedef value_type & reference;
         
         Block()
-        : pointer_()
+        : BlockBase<N, T>(),
+         next_(0)
         {}
         
         ~Block()
@@ -667,8 +693,8 @@ class BlockedArrayTmpFile
             size_t size = prod(shape)*sizeof(T);
             size_t mask = alignment - 1;
             alloc_size_ = (size + mask) & ~mask;
-            shape_ = shape;
-            strides_ = detail::defaultStride(shape_);
+            this->shape_ = shape;
+            this->strides_ = detail::defaultStride(shape_);
         }
         
         void setFile(HANDLE file, size_t offset)
@@ -679,7 +705,7 @@ class BlockedArrayTmpFile
         
         size_t size() const
         {
-            return prod(shape_);
+            return prod(this->shape_);
         }
         
         size_t alloc_size() const
@@ -689,7 +715,7 @@ class BlockedArrayTmpFile
         
         void map(size_t offset)
         {
-            if(!pointer_)
+            if(!this->pointer_)
             {
             #ifdef VIGRA_NO_SPARSE_FILE
                 offset_ = offset;
@@ -697,9 +723,9 @@ class BlockedArrayTmpFile
             #ifdef _WIN32
                 static const size_t bits = sizeof(DWORD)*8,
                                     mask = (size_t(1) << bits) - 1;
-                pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                this->pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                                   offset_ >> bits, offset_ & mask, alloc_size_);
-                if(!pointer_)
+                if(!this->pointer_)
                     winErrorToException("BlockedArrayChunk::map(): ");
             #else
                 pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
@@ -710,22 +736,90 @@ class BlockedArrayTmpFile
            }
         }
         
+            // thread-safe version
+        void map(size_t offset, BlockedArrayTmpFile * array)
+        {
+        #ifdef _WIN32
+            static const size_t bits = sizeof(DWORD)*8,
+                                mask = (size_t(1) << bits) - 1;
+            void * p = MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                                     offset_ >> bits, offset_ & mask, alloc_size_);
+            if(!p)
+                winErrorToException("BlockedArrayChunk::map(): ");
+            if(InterlockedCompareExchangePointer((void * volatile *)&(this->pointer_), p, 0) != 0)
+            {
+                // another thread was faster
+                ::UnmapViewOfFile(p);
+            }
+            else
+            {
+                // insert in queue of mapped blocks
+                Block * b = (Block *)InterlockedExchangePointer((void * volatile *)&(array->last_), this);
+                if(b)
+                    b->next_ = this;
+                if(InterlockedIncrement64(&(array->cache_size_)) == 1)
+                {
+                    // this was the first entry => init array->first_
+                    InterlockedCompareExchangePointer((void * volatile *)&(array->first_), this, 0);
+                }
+            }
+            
+            // do cache management if cache is full
+            if(array->cache_size_ > array->cache_max_size_)
+            {
+                // remove first element from queue
+                Block * b = (Block *)InterlockedExchangePointer((void * volatile *)&(array->first_), 
+                                                                array->first_->next_);
+                void * p = b->pointer_,
+                     * p_marked = (void *)((size_t)p | size_t(1));
+                if(b->refcount_ == 0)
+                    // mark pointer as "about to be released"
+                    InterlockedExchangePointer((void * volatile *)&(b->pointer_), p_marked);
+                if(b->refcount_ == 0)
+                {
+                    // unmap block
+                    p = InterlockedCompareExchangePointer((void * volatile *)&(b->pointer_), 0, p_marked);
+                    if(p == p_marked)
+                    {
+                        // pointer reset successful => free memory
+                        ::UnmapViewOfFile(p);
+                        InterlockedDecrement64(&(array->cache_size_));
+                        b->next_ = 0;
+                    }
+                }
+                if(p == b->pointer_)
+                {
+                    // pointer reset unsuccessful => reinsert block into queue
+                    Block * blast = (Block *)InterlockedExchangePointer((void * volatile *)&(array->last_), b);
+                    blast->next_ = b;
+                }
+            }
+        #else
+            #ifdef VIGRA_NO_SPARSE_FILE
+            offset_ = offset;
+            #endif
+            pointer p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                     file_, offset_);
+            if(!p)
+                throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+        #endif
+        }
+        
         void unmap()
         {
     #ifdef _WIN32
             if(pointer_)
-                ::UnmapViewOfFile((void*)pointer_);
+                ::UnmapViewOfFile((void*)this->pointer_);
     #else
             if(pointer_)
-                munmap((void*)pointer_, alloc_size_);
+                munmap((void*)this->pointer_, alloc_size_);
     #endif
             pointer_ = 0;
         }
         
-        pointer pointer_;
         size_t offset_, alloc_size_;
-        shape_type shape_, strides_;
         HANDLE file_;
+        Block * next_;
     };
 
     typedef MultiArray<N, Block> BlockStorage;
@@ -738,7 +832,11 @@ class BlockedArrayTmpFile
     : BlockedArray<N, T>(shape),
       outer_array_(outerShape(shape)),
       file_size_(),
-      file_capacity_()
+      file_capacity_(),
+      first_(0), last_(0),
+      cache_size_(0),
+      // cache_max_size_(max(outer_array_.shape())*2)
+      cache_max_size_(100)
     {
         // set shape of the blocks
         typename BlockStorage::iterator i = outer_array_.begin(), 
@@ -799,6 +897,7 @@ class BlockedArrayTmpFile
     
     ~BlockedArrayTmpFile()
     {
+        std::cerr << "final cache size: " << cache_size_ << "\n";
         unmap();
 #ifdef _WIN32
         ::CloseHandle(mappedFile_);
@@ -862,13 +961,65 @@ class BlockedArrayTmpFile
         return block.pointer_ + offset;
     }
     
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, BlockBase<N, T> ** block_ptr)
+    {
+        if(!this->isInside(point))
+            return 0;
+        
+        if(*block_ptr)
+            InterlockedDecrement(&(*block_ptr)->refcount_);
+
+        // std::lock_guard<std::mutex> guard(mtx_);
+        
+        shape_type blockIndex(SkipInitialization);
+        BlockShape<N>::blockIndex(point, blockIndex);
+        Block & block = outer_array_[blockIndex];
+        InterlockedIncrement(&(block.refcount_));
+        
+        static const size_t mask = size_t(1) ^ ~size_t(0);
+        void * p = (void *)((size_t)block.pointer_ & mask);
+        p = InterlockedExchangePointer((void * volatile *)&(block.pointer_), p);
+        if(p == 0)
+        {
+            // std::lock_guard<std::mutex> guard(mtx_);
+        
+            size_t block_size = block.alloc_size();
+        #ifdef VIGRA_NO_SPARSE_FILE
+            if(file_size_ + block_size > file_capacity_)
+            {
+                file_capacity_ *= 2;
+                lseek(file_, file_capacity_-1, SEEK_SET);
+                if(write(file_, "0", 1) == -1)
+                    throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+            }
+        #endif
+            block.map(file_size_, this);
+            file_size_ += block_size;
+        }
+        strides = block.strides_;
+        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
+        std::size_t offset = BlockShape<N>::offset(point, strides);
+        *block_ptr = &block;
+        return block.pointer_ + offset;
+    }
+    
     HANDLE file_, mappedFile_;
     BlockStorage outer_array_;
     size_t file_size_, file_capacity_;
+    Block * first_, * last_;
+    LONGLONG cache_size_, cache_max_size_;
 };
 
 
 
+    /*
+        The handle must store a pointer to a block because the block knows 
+        about memory menagement, and to an array view because it knows about
+        subarrays and slices.
+        
+        Perhaps we can reduce this to a single pointer or otherwise reduce 
+        the handle memory to make it faster?
+    */
 template <class T, class NEXT>
 class CoupledHandle<BlockedMemory<T>, NEXT>
 : public NEXT
@@ -881,6 +1032,7 @@ public:
     static const unsigned int dimensions =        NEXT::dimensions;
 
     typedef BlockedArray<dimensions, T>           array_type;
+    typedef BlockBase<dimensions, T>              block_type;
     typedef BlockShape<dimensions>                block_shape;
     typedef T                                     value_type;
     typedef value_type *                          pointer;
@@ -906,9 +1058,12 @@ public:
 
     CoupledHandle(array_type & array, NEXT const & next)
     : base_type(next),
-      pointer_((*setPointer)(shape_type(), &array, strides_, border_)), 
-      array_(&array)
-    {}
+      pointer_(), 
+      array_(&array),
+      block_()
+    {
+        pointer_ = array_->ptr(point(), strides_, border_, &block_);
+    }
     
     using base_type::point;
     using base_type::shape;
@@ -930,7 +1085,7 @@ public:
         {
             if(point()[dim] < shape()[dim])
                 // pointer_ = (*setPointer)(point(), array_, strides_, border_);
-                pointer_ = array_->ptr(point(), strides_, border_);
+                pointer_ = array_->ptr(point(), strides_, border_, &block_);
         }
     }
 
@@ -944,7 +1099,7 @@ public:
     {
         base_type::addDim(dim, d);
         if(point()[dim] < shape()[dim])
-            pointer_ = (*setPointer)(point(), array_, strides_, border_);
+            pointer_ = array_->ptr(point(), strides_, border_, &block_);
         // if(dim == 0)
             // std::cerr << point() << " " << pointer_ << " " << strides_ << " " << border_ << "\n";
     }
@@ -1024,11 +1179,175 @@ public:
     pointer pointer_;
     shape_type strides_, border_;
     array_type * array_;
+    block_type * block_;
 };
 
 template <class T, class NEXT>
 typename CoupledHandle<BlockedMemory<T>, NEXT>::SetPointerFct 
 CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory<T>, NEXT>::setPointerFct;
+
+
+
+// template <class T, class NEXT>
+// class CoupledHandle<BlockedMemory<T>, NEXT>
+// : public NEXT
+// {
+// public:
+    // typedef NEXT                                  base_type;
+    // typedef CoupledHandle<BlockedMemory<T>, NEXT> self_type;
+    
+    // static const int index =                      NEXT::index + 1;    // index of this member of the chain
+    // static const unsigned int dimensions =        NEXT::dimensions;
+
+    // typedef BlockedArray<dimensions, T>           array_type;
+    // typedef BlockShape<dimensions>                block_shape;
+    // typedef T                                     value_type;
+    // typedef value_type *                          pointer;
+    // typedef value_type const *                    const_pointer;
+    // typedef value_type &                          reference;
+    // typedef value_type const &                    const_reference;
+    // typedef typename base_type::shape_type        shape_type;
+    
+    // typedef T* (*SetPointerFct)(shape_type const & p, array_type * array, shape_type & strides, shape_type & border);
+    
+    // static SetPointerFct setPointer;
+    
+    // static T* setPointerFct(shape_type const & p, array_type * array, shape_type & strides, shape_type & border)
+    // {
+        // return array->ptr(p, strides, border);
+    // }
+
+    // CoupledHandle()
+    // : base_type(),
+      // pointer_(), 
+      // array_()
+    // {}
+
+    // CoupledHandle(array_type & array, NEXT const & next)
+    // : base_type(next),
+      // pointer_((*setPointer)(shape_type(), &array, strides_, border_)), 
+      // array_(&array)
+    // {}
+    
+    // using base_type::point;
+    // using base_type::shape;
+
+    // inline void incDim(int dim) 
+    // {
+        // base_type::incDim(dim);
+        // // if((point()[dim] & block_shape::mask) == 0)
+        // // {
+            // // if(point()[dim] < shape()[dim])
+                // // pointer_ = (*setPointer)(point(), array_, strides_, border_);
+        // // }
+        // // else
+        // // {
+            // // pointer_ += strides_[dim];
+        // // }
+        // pointer_ += strides_[dim];
+        // if(point()[dim] == border_[dim])
+        // {
+            // if(point()[dim] < shape()[dim])
+                // // pointer_ = (*setPointer)(point(), array_, strides_, border_);
+                // pointer_ = array_->ptr(point(), strides_, border_);
+        // }
+    // }
+
+    // // inline void decDim(int dim) 
+    // // {
+        // // view_.unsafePtr() -= strides_[dim];
+        // // base_type::decDim(dim);
+    // // }
+
+    // inline void addDim(int dim, MultiArrayIndex d) 
+    // {
+        // base_type::addDim(dim, d);
+        // if(point()[dim] < shape()[dim])
+            // pointer_ = (*setPointer)(point(), array_, strides_, border_);
+        // // if(dim == 0)
+            // // std::cerr << point() << " " << pointer_ << " " << strides_ << " " << border_ << "\n";
+    // }
+
+    // // inline void add(shape_type const & d) 
+    // // {
+        // // view_.unsafePtr() += dot(d, strides_);
+        // // base_type::add(d);
+    // // }
+    
+    // // template<int DIMENSION>
+    // // inline void increment() 
+    // // {
+        // // view_.unsafePtr() += strides_[DIMENSION];
+        // // base_type::template increment<DIMENSION>();
+    // // }
+    
+    // // template<int DIMENSION>
+    // // inline void decrement() 
+    // // {
+        // // view_.unsafePtr() -= strides_[DIMENSION];
+        // // base_type::template decrement<DIMENSION>();
+    // // }
+    
+    // // // TODO: test if making the above a default case of the this hurts performance
+    // // template<int DIMENSION>
+    // // inline void increment(MultiArrayIndex offset) 
+    // // {
+        // // view_.unsafePtr() += offset*strides_[DIMENSION];
+        // // base_type::template increment<DIMENSION>(offset);
+    // // }
+    
+    // // template<int DIMENSION>
+    // // inline void decrement(MultiArrayIndex offset) 
+    // // {
+        // // view_.unsafePtr() -= offset*strides_[DIMENSION];
+        // // base_type::template decrement<DIMENSION>(offset);
+    // // }
+    
+    // // void restrictToSubarray(shape_type const & start, shape_type const & end)
+    // // {
+        // // view_.unsafePtr() += dot(start, strides_);
+        // // base_type::restrictToSubarray(start, end);
+    // // }
+
+    // // ptr access
+    // reference operator*()
+    // {
+        // return *pointer_;
+    // }
+
+    // const_reference operator*() const
+    // {
+        // return *pointer_;
+    // }
+
+    // pointer operator->()
+    // {
+        // return pointer_;
+    // }
+
+    // const_pointer operator->() const
+    // {
+        // return pointer_;
+    // }
+
+    // pointer ptr()
+    // {
+        // return pointer_;
+    // }
+
+    // const_pointer ptr() const
+    // {
+        // return pointer_;
+    // }
+
+    // pointer pointer_;
+    // shape_type strides_, border_;
+    // array_type * array_;
+// };
+
+// template <class T, class NEXT>
+// typename CoupledHandle<BlockedMemory<T>, NEXT>::SetPointerFct 
+// CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory<T>, NEXT>::setPointerFct;
 
 
 #if 0
