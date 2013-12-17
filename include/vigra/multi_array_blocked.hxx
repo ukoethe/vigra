@@ -38,6 +38,7 @@
 
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
+#include "threading.hxx"
 
 // #include <boost/thread/mutex.hpp>
 // #include <boost/thread/locks.hpp>
@@ -363,15 +364,22 @@ class BlockBase
     typedef value_type * pointer;
     
     BlockBase()
-    : pointer_(),
+    : pointer_(0),
       shape_(),
       strides_(),
-      refcount_()
+      refcount_(0)
     {}
     
-    pointer pointer_;
+    BlockBase(BlockBase const & rhs)
+    : pointer_(0),
+      shape_(rhs.shape_),
+      strides_(rhs.strides_),
+      refcount_(0)
+    {}
+    
+    threading::atomic<pointer> pointer_;
     shape_type shape_, strides_;
-    LONG refcount_;
+    mutable threading::atomic<int> refcount_;
 };
 
 
@@ -419,7 +427,6 @@ class BlockedArray
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border) = 0;
     virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border, BlockBase<N, T> ** block) = 0;
     
     shape_type const & shape() const
@@ -678,7 +685,7 @@ class BlockedArrayTmpFile
         
         Block()
         : BlockBase<N, T>(),
-         next_(0)
+          cache_next_(0)
         {}
         
         ~Block()
@@ -697,7 +704,7 @@ class BlockedArrayTmpFile
             this->strides_ = detail::defaultStride(shape_);
         }
         
-        void setFile(HANDLE file, size_t offset)
+        void setFile(HANDLE file, ptrdiff_t offset)
         {
             file_ = file;
             offset_ = offset;
@@ -713,113 +720,48 @@ class BlockedArrayTmpFile
             return alloc_size_;
         }
         
-        void map(size_t offset)
+        pointer map(ptrdiff_t offset)
         {
-            if(!this->pointer_)
+            pointer p = this->pointer_.load();
+            if(!p)
             {
-            #ifdef VIGRA_NO_SPARSE_FILE
-                offset_ = offset;
-            #endif
+                if(offset_ < 0) 
+                    offset_ = offset;
             #ifdef _WIN32
                 static const size_t bits = sizeof(DWORD)*8,
                                     mask = (size_t(1) << bits) - 1;
-                this->pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
-                                                  offset_ >> bits, offset_ & mask, alloc_size_);
-                if(!this->pointer_)
+                p = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
+                                           size_t(offset_) >> bits, size_t(offset_) & mask, alloc_size_);
+                if(!p)
                     winErrorToException("BlockedArrayChunk::map(): ");
             #else
-                pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
-                                         file_, offset_);
-                if(!pointer_)
+                p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                  file_, size_t(offset_));
+                if(!p)
                     throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
             #endif
-           }
+                this->pointer_.store(p);
+            }
+            return p;
         }
-        
-            // thread-safe version
-        void map(size_t offset, BlockedArrayTmpFile * array)
-        {
-        #ifdef _WIN32
-            static const size_t bits = sizeof(DWORD)*8,
-                                mask = (size_t(1) << bits) - 1;
-            void * p = MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
-                                     offset_ >> bits, offset_ & mask, alloc_size_);
-            if(!p)
-                winErrorToException("BlockedArrayChunk::map(): ");
-            if(InterlockedCompareExchangePointer((void * volatile *)&(this->pointer_), p, 0) != 0)
-            {
-                // another thread was faster
-                ::UnmapViewOfFile(p);
-            }
-            else
-            {
-                // insert in queue of mapped blocks
-                Block * b = (Block *)InterlockedExchangePointer((void * volatile *)&(array->last_), this);
-                if(b)
-                    b->next_ = this;
-                if(InterlockedIncrement64(&(array->cache_size_)) == 1)
-                {
-                    // this was the first entry => init array->first_
-                    InterlockedCompareExchangePointer((void * volatile *)&(array->first_), this, 0);
-                }
-            }
-            
-            // do cache management if cache is full
-            if(array->cache_size_ > array->cache_max_size_)
-            {
-                // remove first element from queue
-                Block * b = (Block *)InterlockedExchangePointer((void * volatile *)&(array->first_), 
-                                                                array->first_->next_);
-                void * p = b->pointer_,
-                     * p_marked = (void *)((size_t)p | size_t(1));
-                if(b->refcount_ == 0)
-                    // mark pointer as "about to be released"
-                    InterlockedExchangePointer((void * volatile *)&(b->pointer_), p_marked);
-                if(b->refcount_ == 0)
-                {
-                    // unmap block
-                    p = InterlockedCompareExchangePointer((void * volatile *)&(b->pointer_), 0, p_marked);
-                    if(p == p_marked)
-                    {
-                        // pointer reset successful => free memory
-                        ::UnmapViewOfFile(p);
-                        InterlockedDecrement64(&(array->cache_size_));
-                        b->next_ = 0;
-                    }
-                }
-                if(p == b->pointer_)
-                {
-                    // pointer reset unsuccessful => reinsert block into queue
-                    Block * blast = (Block *)InterlockedExchangePointer((void * volatile *)&(array->last_), b);
-                    blast->next_ = b;
-                }
-            }
-        #else
-            #ifdef VIGRA_NO_SPARSE_FILE
-            offset_ = offset;
-            #endif
-            pointer p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
-                                     file_, offset_);
-            if(!p)
-                throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
-        #endif
-        }
-        
+                
         void unmap()
         {
-    #ifdef _WIN32
-            if(pointer_)
-                ::UnmapViewOfFile((void*)this->pointer_);
-    #else
-            if(pointer_)
-                munmap((void*)this->pointer_, alloc_size_);
-    #endif
-            pointer_ = 0;
+            void * p = this->pointer_.exchange(0, threading::memory_order_release);
+            if(p)
+            {
+        #ifdef _WIN32
+                ::UnmapViewOfFile(p);
+        #else
+                munmap(p, alloc_size_);
+        #endif
+            }
         }
         
-        size_t offset_, alloc_size_;
+        ptrdiff_t offset_;
+        size_t alloc_size_;
         HANDLE file_;
-        Block * next_;
+        Block * cache_next_;
     };
 
     typedef MultiArray<N, Block> BlockStorage;
@@ -833,10 +775,10 @@ class BlockedArrayTmpFile
       outer_array_(outerShape(shape)),
       file_size_(),
       file_capacity_(),
-      first_(0), last_(0),
+      cache_first_(0), cache_last_(0),
       cache_size_(0),
       // cache_max_size_(max(outer_array_.shape())*2)
-      cache_max_size_(100)
+      cache_max_size_(8)
     {
         // set shape of the blocks
         typename BlockStorage::iterator i = outer_array_.begin(), 
@@ -851,9 +793,13 @@ class BlockedArrayTmpFile
         
         std::cerr << "file size: " << size << "\n";
 
-#ifdef _WIN32
+    #ifdef VIGRA_NO_SPARSE_FILE
+        file_capacity_ = 4*prod(this->default_block_shape_)*sizeof(T);
+    #else
         file_capacity_ = size;
-        
+    #endif
+    
+    #ifdef _WIN32
         // create a temp file
         file_ = ::CreateFile(winTempFileName(path).c_str(), GENERIC_READ | GENERIC_WRITE,
                              0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
@@ -871,27 +817,26 @@ class BlockedArrayTmpFile
                                         file_capacity_ >> bits, file_capacity_ & mask, NULL);
         if(!mappedFile_)
             winErrorToException("BlockedArrayTmpFile(): ");
-#else
+    #else
         mappedFile_ = file_ = fileno(tmpfile());
         if(file_ == -1)
             throw std::runtime_error("BlockedArrayTmpFile(): unable to open file.");
-    #ifdef VIGRA_NO_SPARSE_FILE
-        file_capacity_ = 4*prod(this->default_block_shape_)*sizeof(T);
-    #else
-        file_capacity_ = size;
-    #endif
         lseek(file_, file_capacity_-1, SEEK_SET);
         if(write(file_, "0", 1) == -1)
             throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
-#endif
+    #endif
         
         // tell the blocks about the memory mapping
         i = outer_array_.begin();
         int offset = 0;
         for(; i != end; ++i)
         {
+    #ifdef VIGRA_NO_SPARSE_FILE
+            i->setFile(mappedFile_, -1);
+    #else
             i->setFile(mappedFile_, offset);
             offset += i->alloc_size();
+    #endif
         }
     }
     
@@ -899,12 +844,12 @@ class BlockedArrayTmpFile
     {
         std::cerr << "final cache size: " << cache_size_ << "\n";
         unmap();
-#ifdef _WIN32
+    #ifdef _WIN32
         ::CloseHandle(mappedFile_);
         ::CloseHandle(file_);
-#else
+    #else
         close(file_);
-#endif
+    #endif
     }
     
     void map()
@@ -932,82 +877,113 @@ class BlockedArrayTmpFile
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border)
-    {
-        if(!this->isInside(p))
-            return 0;
-        
-        shape_type blockIndex(SkipInitialization);
-        BlockShape<N>::blockIndex(p, blockIndex);
-        Block & block = outer_array_[blockIndex];
-        if(block.pointer_ == 0)
-        {
-            size_t block_size = block.alloc_size();
-        #ifdef VIGRA_NO_SPARSE_FILE
-            if(file_size_ + block_size > file_capacity_)
-            {
-                file_capacity_ *= 2;
-                lseek(file_, file_capacity_-1, SEEK_SET);
-                if(write(file_, "0", 1) == -1)
-                    throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
-            }
-        #endif
-            block.map(file_size_);
-            file_size_ += block_size;
-        }
-        strides = block.strides_;
-        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
-        std::size_t offset = BlockShape<N>::offset(p, strides);
-        return block.pointer_ + offset;
-    }
-    
     virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, BlockBase<N, T> ** block_ptr)
     {
+        if(*block_ptr)
+        {
+            (*block_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            *block_ptr = 0;
+        }
+        
         if(!this->isInside(point))
             return 0;
-        
-        if(*block_ptr)
-            InterlockedDecrement(&(*block_ptr)->refcount_);
 
-        // std::lock_guard<std::mutex> guard(mtx_);
-        
         shape_type blockIndex(SkipInitialization);
         BlockShape<N>::blockIndex(point, blockIndex);
         Block & block = outer_array_[blockIndex];
-        InterlockedIncrement(&(block.refcount_));
         
-        static const size_t mask = size_t(1) ^ ~size_t(0);
-        void * p = (void *)((size_t)block.pointer_ & mask);
-        p = InterlockedExchangePointer((void * volatile *)&(block.pointer_), p);
-        if(p == 0)
+        T * p = 0;
+        while(true)
         {
-            // std::lock_guard<std::mutex> guard(mtx_);
-        
-            size_t block_size = block.alloc_size();
-        #ifdef VIGRA_NO_SPARSE_FILE
-            if(file_size_ + block_size > file_capacity_)
+            int rc = block.refcount_.load(threading::memory_order_seq_cst);
+            if(rc < 0)
             {
-                file_capacity_ *= 2;
-                lseek(file_, file_capacity_-1, SEEK_SET);
-                if(write(file_, "0", 1) == -1)
-                    throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+                // cache management in progress => try again later
+                // (we can effort this simplistic collision handling 
+                //  method because collisions will occur very rarely)
+                threading::this_thread::yield();
             }
-        #endif
-            block.map(file_size_, this);
-            file_size_ += block_size;
+            else if(block.refcount_.compare_exchange_strong(rc, rc+1, threading::memory_order_seq_cst))
+            {
+                // we successfully obtained a reference
+                p = block.pointer_.load(threading::memory_order_seq_cst);
+                if(p == 0)
+                {
+                    // apply the double-checked locking pattern
+                    threading::lock_guard<threading::mutex> guard(cache_lock_);
+                    p = block.pointer_.load(threading::memory_order_seq_cst);
+                    if(p == 0)
+                    {
+                        ptrdiff_t offset = file_size_;
+                    #ifdef VIGRA_NO_SPARSE_FILE
+                        size_t block_size = block.alloc_size();
+                        if(block.offset_ < 0 && offset + block_size > file_capacity_)
+                        {
+                            file_capacity_ *= 2;
+                            lseek(file_, file_capacity_-1, SEEK_SET);
+                            if(write(file_, "0", 1) == -1)
+                                throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+                        }
+                        file_size_ += block_size;
+                    #endif
+                        p = block.map(offset);
+                        
+                        // insert in queue of mapped chunks
+                        if(!cache_first_)
+                            cache_first_ = &block;
+                        if(cache_last_)
+                            cache_last_->cache_next_ = &block;
+                        cache_last_ = &block;
+                        ++cache_size_;
+                        
+                        // do cache management if cache is full
+                        // (note that we still hold the cache_lock_)
+                        if(cache_size_ > cache_max_size_)
+                        {
+                            // remove first element from queue
+                            Block * b = cache_first_;
+                            cache_first_ = b->cache_next_;
+                            
+                            // check if the refcount is zero and temporarily set it 
+                            // to -1 in order to lock the chunk while cache management 
+                            // is done
+                            rc = 0;
+                            if(b->refcount_.compare_exchange_strong(rc, -1, std::memory_order_seq_cst))
+                            {
+                                // refcount was zero => can unmap
+                                b->unmap();
+                                b->cache_next_ = 0;
+                                --cache_size_;
+                                b->refcount_.store(0, std::memory_order_seq_cst);
+                            }
+                            else
+                            {
+                                // refcount was non-zero => reinsert chunk into queue
+                                cache_last_->cache_next_ = b;
+                                cache_last_ = b;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
         }
+        
         strides = block.strides_;
         border = (blockIndex + shape_type(1)) * this->default_block_shape_;
         std::size_t offset = BlockShape<N>::offset(point, strides);
         *block_ptr = &block;
-        return block.pointer_ + offset;
+        return p + offset;
     }
     
-    HANDLE file_, mappedFile_;
-    BlockStorage outer_array_;
+    BlockStorage outer_array_;  // the array of chunks
+
+    HANDLE file_, mappedFile_;  // the file back-end
     size_t file_size_, file_capacity_;
-    Block * first_, * last_;
-    LONGLONG cache_size_, cache_max_size_;
+    
+    Block * cache_first_, * cache_last_;  // cache of loaded chunks
+    std::size_t cache_max_size_, cache_size_;
+    threading::mutex cache_lock_;
 };
 
 
