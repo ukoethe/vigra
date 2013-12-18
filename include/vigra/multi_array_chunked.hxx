@@ -99,7 +99,7 @@ std::string winTempFileName(std::string path = "")
 }
 
 inline 
-size_t winClusterSize()
+std::size_t winClusterSize()
 {
     SYSTEM_INFO info;
     ::GetSystemInfo(&info); 
@@ -111,9 +111,9 @@ size_t winClusterSize()
 namespace {
 
 #ifdef _WIN32
-size_t mmap_alignment = winClusterSize();
+std::size_t mmap_alignment = winClusterSize();
 #else
-size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
+std::size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
 #endif
 
 } // anonymous namespace
@@ -222,24 +222,24 @@ class ChunkedArrayChunk
     {
         file_ = 0;
         offset_ = 0;
-        size_t size = prod(shape)*sizeof(T);
+        std::size_t size = prod(shape)*sizeof(T);
         alloc_size_ = (size + alloc_mask_) & ~alloc_mask_;
         shape_ = shape;
         strides_ = detail::defaultStride(shape_);
     }
     
-    void setFile(HANDLE file, size_t offset)
+    void setFile(HANDLE file, std::size_t offset)
     {
         file_ = file;
         offset_ = offset;
     }
     
-    size_t size() const
+    std::size_t size() const
     {
         return prod(shape_);
     }
     
-    size_t alloc_size() const
+    std::size_t alloc_size() const
     {
         return alloc_size_;
     }
@@ -249,8 +249,8 @@ class ChunkedArrayChunk
         if(!pointer_)
         {
 #ifdef _WIN32
-            static const size_t bits = sizeof(DWORD)*8,
-                                mask = (size_t(1) << bits) - 1;
+            static const std::size_t bits = sizeof(DWORD)*8,
+                                     mask = (std::size_t(1) << bits) - 1;
             pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                               offset_ >> bits, offset_ & mask, alloc_size_);
             if(!pointer_)
@@ -277,19 +277,19 @@ class ChunkedArrayChunk
     }
     
     pointer pointer_;
-    size_t offset_, alloc_size_;
+    std::size_t offset_, alloc_size_;
     shape_type shape_, strides_;
     HANDLE file_;
     
-    static size_t alloc_mask_;
+    static std::size_t alloc_mask_;
 };
 
 #ifdef _WIN32
     template <unsigned int N, class T>
-    size_t ChunkedArrayChunk<N, T>::alloc_mask_ = winClusterSize() - 1;
+    std::size_t ChunkedArrayChunk<N, T>::alloc_mask_ = winClusterSize() - 1;
 #else
     template <unsigned int N, class T>
-    size_t ChunkedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
+    std::size_t ChunkedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
 #endif
 
 #endif
@@ -467,29 +467,29 @@ class ChunkedArrayFile
             unmap();
         }
         
-        void reshape(shape_type const & shape, size_t alignment)
+        void reshape(shape_type const & shape, std::size_t alignment)
         {
             file_ = 0;
             offset_ = 0;
-            size_t size = prod(shape)*sizeof(T);
-            size_t mask = alignment - 1;
+            std::size_t size = prod(shape)*sizeof(T);
+            std::size_t mask = alignment - 1;
             alloc_size_ = (size + mask) & ~mask;
             shape_ = shape;
             strides_ = detail::defaultStride(shape_);
         }
         
-        void setFile(HANDLE file, size_t offset)
+        void setFile(HANDLE file, std::size_t offset)
         {
             file_ = file;
             offset_ = offset;
         }
         
-        size_t size() const
+        std::size_t size() const
         {
             return prod(shape_);
         }
         
-        size_t alloc_size() const
+        std::size_t alloc_size() const
         {
             return alloc_size_;
         }
@@ -499,8 +499,8 @@ class ChunkedArrayFile
             if(!pointer_)
             {
     #ifdef _WIN32
-                static const size_t bits = sizeof(DWORD)*8,
-                                    mask = (size_t(1) << bits) - 1;
+                static const std::size_t bits = sizeof(DWORD)*8,
+                                         mask = (std::size_t(1) << bits) - 1;
                 pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                                   offset_ >> bits, offset_ & mask, alloc_size_);
                 if(!pointer_)
@@ -527,7 +527,7 @@ class ChunkedArrayFile
         }
         
         pointer pointer_;
-        size_t offset_, alloc_size_;
+        std::size_t offset_, alloc_size_;
         shape_type shape_, strides_;
         HANDLE file_;
     };
@@ -545,7 +545,7 @@ class ChunkedArrayFile
         // set shape of the chunks
         typename ChunkStorage::iterator i = outer_array_.begin(), 
              end = outer_array_.end();
-        size_t size = 0;
+        std::size_t size = 0;
         for(; i != end; ++i)
         {
             i->reshape(min(this->default_chunk_shape_, shape - i.point()*this->default_chunk_shape_),
@@ -573,8 +573,8 @@ class ChunkedArrayFile
                 winErrorToException("ChunkedArrayFile(): ");
 
             // set the file size
-            static const size_t bits = sizeof(LONG)*8,
-                                mask = (size_t(1) << bits) - 1;
+            static const std::size_t bits = sizeof(LONG)*8,
+                                     mask = (std::size_t(1) << bits) - 1;
             LONG fileSizeHigh = size >> bits;
             if(::SetFilePointer(file_, size & mask, &fileSizeHigh, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
                 winErrorToException("ChunkedArrayFile(): ");
@@ -689,34 +689,34 @@ class ChunkedArrayTmpFile
             unmap();
         }
         
-        void reshape(shape_type const & shape, size_t alignment)
+        void reshape(shape_type const & shape, std::size_t alignment)
         {
             file_ = 0;
             offset_ = 0;
-            size_t size = prod(shape)*sizeof(T);
-            size_t mask = alignment - 1;
+            std::size_t size = prod(shape)*sizeof(T);
+            std::size_t mask = alignment - 1;
             alloc_size_ = (size + mask) & ~mask;
             this->shape_ = shape;
-            this->strides_ = detail::defaultStride(shape_);
+            this->strides_ = detail::defaultStride(this->shape_);
         }
         
-        void setFile(HANDLE file, ptrdiff_t offset)
+        void setFile(HANDLE file, std::ptrdiff_t offset)
         {
             file_ = file;
             offset_ = offset;
         }
         
-        size_t size() const
+        std::size_t size() const
         {
             return prod(this->shape_);
         }
         
-        size_t alloc_size() const
+        std::size_t alloc_size() const
         {
             return alloc_size_;
         }
         
-        pointer map(ptrdiff_t offset)
+        pointer map(std::ptrdiff_t offset)
         {
             pointer p = this->pointer_.load();
             if(!p)
@@ -724,15 +724,15 @@ class ChunkedArrayTmpFile
                 if(offset_ < 0) 
                     offset_ = offset;
             #ifdef _WIN32
-                static const size_t bits = sizeof(DWORD)*8,
-                                    mask = (size_t(1) << bits) - 1;
+                static const std::size_t bits = sizeof(DWORD)*8,
+                                         mask = (std::size_t(1) << bits) - 1;
                 p = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
-                                           size_t(offset_) >> bits, size_t(offset_) & mask, alloc_size_);
+                                           std::size_t(offset_) >> bits, std::size_t(offset_) & mask, alloc_size_);
                 if(!p)
                     winErrorToException("ChunkedArrayChunk::map(): ");
             #else
                 p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
-                                  file_, size_t(offset_));
+                                  file_, std::size_t(offset_));
                 if(!p)
                     throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
             #endif
@@ -754,8 +754,8 @@ class ChunkedArrayTmpFile
             }
         }
         
-        ptrdiff_t offset_;
-        size_t alloc_size_;
+        std::ptrdiff_t offset_;
+        std::size_t alloc_size_;
         HANDLE file_;
         Chunk * cache_next_;
     };
@@ -779,7 +779,7 @@ class ChunkedArrayTmpFile
         // set shape of the chunks
         typename ChunkStorage::iterator i = outer_array_.begin(), 
              end = outer_array_.end();
-        size_t size = 0;
+        std::size_t size = 0;
         for(; i != end; ++i)
         {
             i->reshape(min(this->default_chunk_shape_, shape - i.point()*this->default_chunk_shape_),
@@ -808,7 +808,7 @@ class ChunkedArrayTmpFile
             winErrorToException("ChunkedArrayTmpFile(): ");
 
         // resize and memory-map the file
-        static const size_t bits = sizeof(LONG)*8, mask = (size_t(1) << bits) - 1;
+        static const std::size_t bits = sizeof(LONG)*8, mask = (std::size_t(1) << bits) - 1;
         mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 
                                         file_capacity_ >> bits, file_capacity_ & mask, NULL);
         if(!mappedFile_)
@@ -910,9 +910,9 @@ class ChunkedArrayTmpFile
                     p = chunk.pointer_.load(threading::memory_order_seq_cst);
                     if(p == 0)
                     {
-                        ptrdiff_t offset = file_size_;
+                        std::ptrdiff_t offset = file_size_;
                     #ifdef VIGRA_NO_SPARSE_FILE
-                        size_t chunk_size = chunk.alloc_size();
+                        std::size_t chunk_size = chunk.alloc_size();
                         if(chunk.offset_ < 0 && offset + chunk_size > file_capacity_)
                         {
                             file_capacity_ *= 2;
@@ -980,10 +980,10 @@ class ChunkedArrayTmpFile
     ChunkStorage outer_array_;  // the array of chunks
 
     HANDLE file_, mappedFile_;  // the file back-end
-    size_t file_size_, file_capacity_;
+    std::size_t file_size_, file_capacity_;
     
     Chunk * cache_first_, * cache_last_;  // cache of loaded chunks
-    std::size_t cache_max_size_, cache_size_;
+    std::size_t cache_size_, cache_max_size_;
     threading::mutex cache_lock_;
 };
 
