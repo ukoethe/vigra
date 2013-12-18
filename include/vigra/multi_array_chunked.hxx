@@ -33,16 +33,12 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_MULTI_ARRAY_BLOCKED_HXX
-#define VIGRA_MULTI_ARRAY_BLOCKED_HXX
+#ifndef VIGRA_MULTI_ARRAY_CHUNKED_HXX
+#define VIGRA_MULTI_ARRAY_CHUNKED_HXX
 
 #include "metaprogramming.hxx"
 #include "multi_array.hxx"
 #include "threading.hxx"
-
-// #include <boost/thread/mutex.hpp>
-// #include <boost/thread/locks.hpp>
-#include <mutex>
 
 #ifdef _WIN32
 # include "windows.h"
@@ -123,13 +119,13 @@ size_t mmap_alignment = sysconf(_SC_PAGE_SIZE);
 } // anonymous namespace
 
 template <class T>
-struct BlockedMemory;
+struct ChunkedMemory;
 
 template <unsigned int N>
-struct BlockShape;
+struct ChunkShape;
 
 template <>
-struct BlockShape<1>
+struct ChunkShape<1>
 {
     static const unsigned int bits = 18;
     static const unsigned int value = 1 << bits;
@@ -137,7 +133,7 @@ struct BlockShape<1>
 };
 
 template <>
-struct BlockShape<2>
+struct ChunkShape<2>
 {
     static const unsigned int bits = 9;
     static const unsigned int value = 1 << bits;
@@ -145,7 +141,7 @@ struct BlockShape<2>
 };
 
 template <>
-struct BlockShape<3>
+struct ChunkShape<3>
 {
     static const unsigned int bits = 6;
     static const unsigned int value = 1 << bits;
@@ -163,7 +159,7 @@ struct BlockShape<3>
         return o;
     }
     
-    static void blockIndex(Shape3 const & p, Shape3 & b)
+    static void chunkIndex(Shape3 const & p, Shape3 & b)
     {
         typedef std::size_t UI;
         b[0] = (UI)p[0] >> bits;
@@ -171,7 +167,7 @@ struct BlockShape<3>
         b[2] = (UI)p[2] >> bits;
     }
     
-    static std::size_t blockOffset(Shape3 const & p, Shape3 const & s)
+    static std::size_t chunkOffset(Shape3 const & p, Shape3 const & s)
     {
         typedef std::size_t UI;
         return ((UI)p[0] >> bits) * s[0] +
@@ -195,13 +191,13 @@ Shape outerShape(Shape shape)
 {
     static const int N = Shape::static_size;
     for(int k=0; k<N; ++k)
-        shape[k] = (shape[k] + BlockShape<N>::mask) >> BlockShape<N>::bits;
+        shape[k] = (shape[k] + ChunkShape<N>::mask) >> ChunkShape<N>::bits;
     return shape;
 }
 
 #if 0
 template <unsigned int N, class T>
-class BlockedArrayChunk
+class ChunkedArrayChunk
 {
   public:
     typedef typename MultiArrayShape<N>::type  shape_type;
@@ -213,11 +209,11 @@ class BlockedArrayChunk
     typedef int HANDLE;
 #endif    
     
-    BlockedArrayChunk()
+    ChunkedArrayChunk()
     : pointer_()
     {}
     
-    ~BlockedArrayChunk()
+    ~ChunkedArrayChunk()
     {
         unmap();
     }
@@ -258,12 +254,12 @@ class BlockedArrayChunk
             pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                               offset_ >> bits, offset_ & mask, alloc_size_);
             if(!pointer_)
-                winErrorToException("BlockedArrayChunk::map(): ");
+                winErrorToException("ChunkedArrayChunk::map(): ");
 #else
             pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
                                      file_, offset_);
             if(!pointer_)
-                throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+                throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
 #endif
        }
     }
@@ -290,33 +286,33 @@ class BlockedArrayChunk
 
 #ifdef _WIN32
     template <unsigned int N, class T>
-    size_t BlockedArrayChunk<N, T>::alloc_mask_ = winClusterSize() - 1;
+    size_t ChunkedArrayChunk<N, T>::alloc_mask_ = winClusterSize() - 1;
 #else
     template <unsigned int N, class T>
-    size_t BlockedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
+    size_t ChunkedArrayChunk<N, T>::alloc_mask_ = sysconf(_SC_PAGE_SIZE) - 1;
 #endif
 
 #endif
 
 // template <unsigned int N, class T>
-// class BlockedArray
+// class ChunkedArray
 // {
   // public:
-    // typedef MultiArray<N, MultiArray<N, T> > BlockStorage;
-    // typedef typename BlockStorage::difference_type  shape_type;
+    // typedef MultiArray<N, MultiArray<N, T> > ChunkStorage;
+    // typedef typename ChunkStorage::difference_type  shape_type;
     // typedef T value_type;
     // typedef value_type * pointer;
     // typedef value_type & reference;
     
-    // BlockedArray(shape_type const & shape)
+    // ChunkedArray(shape_type const & shape)
     // : shape_(shape),
-      // default_block_shape_(BlockShape<N>::value),
+      // default_chunk_shape_(ChunkShape<N>::value),
       // outer_array_(outerShape(shape))
     // {
         // auto i = outer_array_.begin(), 
              // end = outer_array_.end();
         // for(; i != end; ++i)
-            // i->reshape(min(default_block_shape_, shape - i.point()));
+            // i->reshape(min(default_chunk_shape_, shape - i.point()));
     // }
     
     // reference operator[](shape_type const & p)
@@ -329,13 +325,13 @@ class BlockedArrayChunk
         // // if(!isInside(p))
             // // return 0;
         
-        // shape_type blockIndex(SkipInitialization);
-        // BlockShape<N>::blockIndex(p, blockIndex);
-        // MultiArray<N, T> & block = outer_array_[blockIndex];
-        // strides = block.stride();
-        // border = (blockIndex + shape_type(1)) * default_block_shape_;
-        // std::size_t offset = BlockShape<N>::offset(p, strides);
-        // return block.data() + offset;
+        // shape_type chunkIndex(SkipInitialization);
+        // ChunkShape<N>::chunkIndex(p, chunkIndex);
+        // MultiArray<N, T> & chunk = outer_array_[chunkIndex];
+        // strides = chunk.stride();
+        // border = (chunkIndex + shape_type(1)) * default_chunk_shape_;
+        // std::size_t offset = ChunkShape<N>::offset(p, strides);
+        // return chunk.data() + offset;
     // }
     
     // shape_type const & shape() const
@@ -351,26 +347,26 @@ class BlockedArrayChunk
         // return true;
     // }
     
-    // shape_type shape_, default_block_shape_;
-    // BlockStorage outer_array_;
+    // shape_type shape_, default_chunk_shape_;
+    // ChunkStorage outer_array_;
 // };
 
 template <unsigned int N, class T>
-class BlockBase
+class ChunkBase
 {
   public:
     typedef typename MultiArrayShape<N>::type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     
-    BlockBase()
+    ChunkBase()
     : pointer_(0),
       shape_(),
       strides_(),
       refcount_(0)
     {}
     
-    BlockBase(BlockBase const & rhs)
+    ChunkBase(ChunkBase const & rhs)
     : pointer_(0),
       shape_(rhs.shape_),
       strides_(rhs.strides_),
@@ -384,7 +380,7 @@ class BlockBase
 
 
 /*
-The present implementation uses a memory-mapped sparse file to store the blocks.
+The present implementation uses a memory-mapped sparse file to store the chunks.
 A sparse file is created on Linux using the O_TRUNC flag (possibly, it is even 
 the default file behavior on Linux => check), and on Windows by
 calling DeviceIoControl(file_handle, FSCTL_SET_SPARSE,...) after file creation.
@@ -396,17 +392,17 @@ avoid writing the file to disk if possible). On Linux, you can call
 fileno(tmpfile()) for the same purpose.
 
 Alternatives are:
-* Keep the array in memory, but compress unused blocks.
+* Keep the array in memory, but compress unused chunks.
 * Don't create a file explicitly, but use the swap file instead. This is 
   achieved on Linux by mmap(..., MAP_PRIVATE | MAP_ANONYMOUS, -1, ...), 
   on Windows by calling CreateFileMapping(INVALID_HANDLE_VALUE, ...).
-* Back blocks by HDF5 chunks, possibly using on-the-fly compression. This
+* Back chunks by HDF5 chunks, possibly using on-the-fly compression. This
   is in particular useful for existing HDF5 files.
-* Back blocks by HDF5 datasets. This can be combined with compression 
+* Back chunks by HDF5 datasets. This can be combined with compression 
   (both explicit and on-the-fly).
 */
 template <unsigned int N, class T>
-class BlockedArray
+class ChunkedArray
 {
   public:
     typedef typename MultiArrayShape<N>::type  shape_type;
@@ -414,12 +410,12 @@ class BlockedArray
     typedef value_type * pointer;
     typedef value_type & reference;
         
-    BlockedArray(shape_type const & shape)
+    ChunkedArray(shape_type const & shape)
     : shape_(shape),
-      default_block_shape_(BlockShape<N>::value)
+      default_chunk_shape_(ChunkShape<N>::value)
     {}
     
-    virtual ~BlockedArray()
+    virtual ~ChunkedArray()
     {}
     
     // reference operator[](shape_type const & p)
@@ -427,7 +423,7 @@ class BlockedArray
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border, BlockBase<N, T> ** block) = 0;
+    virtual pointer ptr(shape_type const & p, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk) = 0;
     
     shape_type const & shape() const
     {
@@ -442,19 +438,19 @@ class BlockedArray
         return true;
     }
     
-    shape_type shape_, default_block_shape_;
+    shape_type shape_, default_chunk_shape_;
 };
 
 template <unsigned int N, class T>
-class BlockedArrayFile
-: public BlockedArray<N, T>
+class ChunkedArrayFile
+: public ChunkedArray<N, T>
 {
   public:
 #ifndef _WIN32
     typedef int HANDLE;
 #endif    
     
-    class Block
+    class Chunk
     {
       public:
         typedef typename MultiArrayShape<N>::type  shape_type;
@@ -462,11 +458,11 @@ class BlockedArrayFile
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Block()
+        Chunk()
         : pointer_()
         {}
         
-        ~Block()
+        ~Chunk()
         {
             unmap();
         }
@@ -508,12 +504,12 @@ class BlockedArrayFile
                 pointer_ = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                                   offset_ >> bits, offset_ & mask, alloc_size_);
                 if(!pointer_)
-                    winErrorToException("BlockedArrayChunk::map(): ");
+                    winErrorToException("ChunkedArrayChunk::map(): ");
     #else
                 pointer_ = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
                                          file_, offset_);
                 if(!pointer_)
-                    throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+                    throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
     #endif
            }
         }
@@ -536,23 +532,23 @@ class BlockedArrayFile
         HANDLE file_;
     };
 
-    typedef MultiArray<N, Block> BlockStorage;
-    typedef typename BlockStorage::difference_type  shape_type;
+    typedef MultiArray<N, Chunk> ChunkStorage;
+    typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    BlockedArrayFile(shape_type const & shape, char const * name)
-    : BlockedArray<N, T>(shape),
+    ChunkedArrayFile(shape_type const & shape, char const * name)
+    : ChunkedArray<N, T>(shape),
       outer_array_(outerShape(shape))
     {
-        // set shape of the blocks
-        typename BlockStorage::iterator i = outer_array_.begin(), 
+        // set shape of the chunks
+        typename ChunkStorage::iterator i = outer_array_.begin(), 
              end = outer_array_.end();
         size_t size = 0;
         for(; i != end; ++i)
         {
-            i->reshape(min(this->default_block_shape_, shape - i.point()*this->default_block_shape_),
+            i->reshape(min(this->default_chunk_shape_, shape - i.point()*this->default_chunk_shape_),
                        mmap_alignment);
             size += i->alloc_size();
         }
@@ -564,7 +560,7 @@ class BlockedArrayFile
         file_ = ::CreateFile(name, GENERIC_READ | GENERIC_WRITE,
                              0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (file_ == INVALID_HANDLE_VALUE) 
-            winErrorToException("BlockedArrayFile(): ");
+            winErrorToException("ChunkedArrayFile(): ");
         
         bool isNewFile = ::GetLastError() != ERROR_ALREADY_EXISTS;
         if(isNewFile)
@@ -574,33 +570,33 @@ class BlockedArrayFile
             // make it a sparse file
             DWORD dwTemp;
             if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
-                winErrorToException("BlockedArrayFile(): ");
+                winErrorToException("ChunkedArrayFile(): ");
 
             // set the file size
             static const size_t bits = sizeof(LONG)*8,
                                 mask = (size_t(1) << bits) - 1;
             LONG fileSizeHigh = size >> bits;
             if(::SetFilePointer(file_, size & mask, &fileSizeHigh, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-                winErrorToException("BlockedArrayFile(): ");
+                winErrorToException("ChunkedArrayFile(): ");
             if(!::SetEndOfFile(file_)) 
-                winErrorToException("BlockedArrayFile(): ");
+                winErrorToException("ChunkedArrayFile(): ");
         }
         
         // memory-map the file
         mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 0, 0, NULL);
         if(!mappedFile_)
-            winErrorToException("BlockedArrayFile(): ");
+            winErrorToException("ChunkedArrayFile(): ");
 #else
         mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
         mappedFile_ = file_ = open(name, O_RDWR | O_CREAT | O_TRUNC, mode);
         if(file_ == -1)
-            throw std::runtime_error("BlockedArrayFile(): unable to open file.");
+            throw std::runtime_error("ChunkedArrayFile(): unable to open file.");
         lseek(file_, size-1, SEEK_SET);
         if(write(file_, "0", 1) == -1)
-            throw std::runtime_error("BlockedArrayFile(): unable to resize file.");
+            throw std::runtime_error("ChunkedArrayFile(): unable to resize file.");
 #endif
         
-        // tell the blocks about the memory mapping
+        // tell the chunks about the memory mapping
         i = outer_array_.begin();
         int offset = 0;
         for(; i != end; ++i)
@@ -610,7 +606,7 @@ class BlockedArrayFile
         }
     }
     
-    ~BlockedArrayFile()
+    ~ChunkedArrayFile()
     {
         unmap();
 #ifdef _WIN32
@@ -623,7 +619,7 @@ class BlockedArrayFile
     
     void map()
     {
-        typename BlockStorage::iterator  i = outer_array_.begin(), 
+        typename ChunkStorage::iterator  i = outer_array_.begin(), 
              end = outer_array_.end();
         for(; i != end; ++i)
         {
@@ -633,7 +629,7 @@ class BlockedArrayFile
     
     void unmap()
     {
-        typename BlockStorage::iterator  i = outer_array_.begin(), 
+        typename ChunkStorage::iterator  i = outer_array_.begin(), 
              end = outer_array_.end();
         for(; i != end; ++i)
         {
@@ -651,31 +647,31 @@ class BlockedArrayFile
         if(!this->isInside(p))
             return 0;
         
-        shape_type blockIndex(SkipInitialization);
-        BlockShape<N>::blockIndex(p, blockIndex);
-        Block & block = outer_array_[blockIndex];
-        block.map();
-        strides = block.strides_;
-        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
-        std::size_t offset = BlockShape<N>::offset(p, strides);
-        return block.pointer_ + offset;
+        shape_type chunkIndex(SkipInitialization);
+        ChunkShape<N>::chunkIndex(p, chunkIndex);
+        Chunk & chunk = outer_array_[chunkIndex];
+        chunk.map();
+        strides = chunk.strides_;
+        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        std::size_t offset = ChunkShape<N>::offset(p, strides);
+        return chunk.pointer_ + offset;
     }
     
     HANDLE file_, mappedFile_;
-    BlockStorage outer_array_;
+    ChunkStorage outer_array_;
 };
 
 template <unsigned int N, class T>
-class BlockedArrayTmpFile
-: public BlockedArray<N, T>
+class ChunkedArrayTmpFile
+: public ChunkedArray<N, T>
 {
   public:
 #ifndef _WIN32
     typedef int HANDLE;
 #endif    
     
-    class Block
-    : public BlockBase<N, T>
+    class Chunk
+    : public ChunkBase<N, T>
     {
       public:
         typedef typename MultiArrayShape<N>::type  shape_type;
@@ -683,12 +679,12 @@ class BlockedArrayTmpFile
         typedef value_type * pointer;
         typedef value_type & reference;
         
-        Block()
-        : BlockBase<N, T>(),
+        Chunk()
+        : ChunkBase<N, T>(),
           cache_next_(0)
         {}
         
-        ~Block()
+        ~Chunk()
         {
             unmap();
         }
@@ -733,12 +729,12 @@ class BlockedArrayTmpFile
                 p = (pointer)MapViewOfFile(file_, FILE_MAP_ALL_ACCESS,
                                            size_t(offset_) >> bits, size_t(offset_) & mask, alloc_size_);
                 if(!p)
-                    winErrorToException("BlockedArrayChunk::map(): ");
+                    winErrorToException("ChunkedArrayChunk::map(): ");
             #else
                 p = (pointer)mmap(0, alloc_size_, PROT_READ | PROT_WRITE, MAP_SHARED,
                                   file_, size_t(offset_));
                 if(!p)
-                    throw std::runtime_error("BlockedArrayChunk::map(): mmap() failed.");
+                    throw std::runtime_error("ChunkedArrayChunk::map(): mmap() failed.");
             #endif
                 this->pointer_.store(p);
             }
@@ -761,17 +757,17 @@ class BlockedArrayTmpFile
         ptrdiff_t offset_;
         size_t alloc_size_;
         HANDLE file_;
-        Block * cache_next_;
+        Chunk * cache_next_;
     };
 
-    typedef MultiArray<N, Block> BlockStorage;
-    typedef typename BlockStorage::difference_type  shape_type;
+    typedef MultiArray<N, Chunk> ChunkStorage;
+    typedef typename ChunkStorage::difference_type  shape_type;
     typedef T value_type;
     typedef value_type * pointer;
     typedef value_type & reference;
     
-    BlockedArrayTmpFile(shape_type const & shape, std::string const & path = "")
-    : BlockedArray<N, T>(shape),
+    ChunkedArrayTmpFile(shape_type const & shape, std::string const & path = "")
+    : ChunkedArray<N, T>(shape),
       outer_array_(outerShape(shape)),
       file_size_(),
       file_capacity_(),
@@ -780,13 +776,13 @@ class BlockedArrayTmpFile
       // cache_max_size_(max(outer_array_.shape())*2)
       cache_max_size_(8)
     {
-        // set shape of the blocks
-        typename BlockStorage::iterator i = outer_array_.begin(), 
+        // set shape of the chunks
+        typename ChunkStorage::iterator i = outer_array_.begin(), 
              end = outer_array_.end();
         size_t size = 0;
         for(; i != end; ++i)
         {
-            i->reshape(min(this->default_block_shape_, shape - i.point()*this->default_block_shape_),
+            i->reshape(min(this->default_chunk_shape_, shape - i.point()*this->default_chunk_shape_),
                        mmap_alignment);
             size += i->alloc_size();
         }
@@ -794,7 +790,7 @@ class BlockedArrayTmpFile
         std::cerr << "file size: " << size << "\n";
 
     #ifdef VIGRA_NO_SPARSE_FILE
-        file_capacity_ = 4*prod(this->default_block_shape_)*sizeof(T);
+        file_capacity_ = 4*prod(this->default_chunk_shape_)*sizeof(T);
     #else
         file_capacity_ = size;
     #endif
@@ -804,29 +800,29 @@ class BlockedArrayTmpFile
         file_ = ::CreateFile(winTempFileName(path).c_str(), GENERIC_READ | GENERIC_WRITE,
                              0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
         if (file_ == INVALID_HANDLE_VALUE) 
-            winErrorToException("BlockedArrayTmpFile(): ");
+            winErrorToException("ChunkedArrayTmpFile(): ");
             
         // make it a sparse file
         DWORD dwTemp;
         if(!::DeviceIoControl(file_, FSCTL_SET_SPARSE, NULL, 0, NULL, 0, &dwTemp, NULL))
-            winErrorToException("BlockedArrayTmpFile(): ");
+            winErrorToException("ChunkedArrayTmpFile(): ");
 
         // resize and memory-map the file
         static const size_t bits = sizeof(LONG)*8, mask = (size_t(1) << bits) - 1;
         mappedFile_ = CreateFileMapping(file_, NULL, PAGE_READWRITE, 
                                         file_capacity_ >> bits, file_capacity_ & mask, NULL);
         if(!mappedFile_)
-            winErrorToException("BlockedArrayTmpFile(): ");
+            winErrorToException("ChunkedArrayTmpFile(): ");
     #else
         mappedFile_ = file_ = fileno(tmpfile());
         if(file_ == -1)
-            throw std::runtime_error("BlockedArrayTmpFile(): unable to open file.");
+            throw std::runtime_error("ChunkedArrayTmpFile(): unable to open file.");
         lseek(file_, file_capacity_-1, SEEK_SET);
         if(write(file_, "0", 1) == -1)
-            throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+            throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
     #endif
         
-        // tell the blocks about the memory mapping
+        // tell the chunks about the memory mapping
         i = outer_array_.begin();
         int offset = 0;
         for(; i != end; ++i)
@@ -840,7 +836,7 @@ class BlockedArrayTmpFile
         }
     }
     
-    ~BlockedArrayTmpFile()
+    ~ChunkedArrayTmpFile()
     {
         std::cerr << "final cache size: " << cache_size_ << "\n";
         unmap();
@@ -854,7 +850,7 @@ class BlockedArrayTmpFile
     
     void map()
     {
-        typename BlockStorage::iterator  i = outer_array_.begin(), 
+        typename ChunkStorage::iterator  i = outer_array_.begin(), 
              end = outer_array_.end();
         for(; i != end; ++i)
         {
@@ -864,7 +860,7 @@ class BlockedArrayTmpFile
     
     void unmap()
     {
-        typename BlockStorage::iterator  i = outer_array_.begin(), 
+        typename ChunkStorage::iterator  i = outer_array_.begin(), 
              end = outer_array_.end();
         for(; i != end; ++i)
         {
@@ -877,25 +873,25 @@ class BlockedArrayTmpFile
         // return *ptr(p);
     // }
     
-    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, BlockBase<N, T> ** block_ptr)
+    virtual pointer ptr(shape_type const & point, shape_type & strides, shape_type & border, ChunkBase<N, T> ** chunk_ptr)
     {
-        if(*block_ptr)
+        if(*chunk_ptr)
         {
-            (*block_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
-            *block_ptr = 0;
+            (*chunk_ptr)->refcount_.fetch_sub(1, threading::memory_order_seq_cst);
+            *chunk_ptr = 0;
         }
         
         if(!this->isInside(point))
             return 0;
 
-        shape_type blockIndex(SkipInitialization);
-        BlockShape<N>::blockIndex(point, blockIndex);
-        Block & block = outer_array_[blockIndex];
+        shape_type chunkIndex(SkipInitialization);
+        ChunkShape<N>::chunkIndex(point, chunkIndex);
+        Chunk & chunk = outer_array_[chunkIndex];
         
         T * p = 0;
         while(true)
         {
-            int rc = block.refcount_.load(threading::memory_order_seq_cst);
+            int rc = chunk.refcount_.load(threading::memory_order_seq_cst);
             if(rc < 0)
             {
                 // cache management in progress => try again later
@@ -903,37 +899,37 @@ class BlockedArrayTmpFile
                 //  method because collisions will occur very rarely)
                 threading::this_thread::yield();
             }
-            else if(block.refcount_.compare_exchange_strong(rc, rc+1, threading::memory_order_seq_cst))
+            else if(chunk.refcount_.compare_exchange_strong(rc, rc+1, threading::memory_order_seq_cst))
             {
                 // we successfully obtained a reference
-                p = block.pointer_.load(threading::memory_order_seq_cst);
+                p = chunk.pointer_.load(threading::memory_order_seq_cst);
                 if(p == 0)
                 {
                     // apply the double-checked locking pattern
                     threading::lock_guard<threading::mutex> guard(cache_lock_);
-                    p = block.pointer_.load(threading::memory_order_seq_cst);
+                    p = chunk.pointer_.load(threading::memory_order_seq_cst);
                     if(p == 0)
                     {
                         ptrdiff_t offset = file_size_;
                     #ifdef VIGRA_NO_SPARSE_FILE
-                        size_t block_size = block.alloc_size();
-                        if(block.offset_ < 0 && offset + block_size > file_capacity_)
+                        size_t chunk_size = chunk.alloc_size();
+                        if(chunk.offset_ < 0 && offset + chunk_size > file_capacity_)
                         {
                             file_capacity_ *= 2;
                             lseek(file_, file_capacity_-1, SEEK_SET);
                             if(write(file_, "0", 1) == -1)
-                                throw std::runtime_error("BlockedArrayTmpFile(): unable to resize file.");
+                                throw std::runtime_error("ChunkedArrayTmpFile(): unable to resize file.");
                         }
-                        file_size_ += block_size;
+                        file_size_ += chunk_size;
                     #endif
-                        p = block.map(offset);
+                        p = chunk.map(offset);
                         
                         // insert in queue of mapped chunks
                         if(!cache_first_)
-                            cache_first_ = &block;
+                            cache_first_ = &chunk;
                         if(cache_last_)
-                            cache_last_->cache_next_ = &block;
-                        cache_last_ = &block;
+                            cache_last_->cache_next_ = &chunk;
+                        cache_last_ = &chunk;
                         ++cache_size_;
                         
                         // do cache management if cache is full
@@ -941,26 +937,31 @@ class BlockedArrayTmpFile
                         if(cache_size_ > cache_max_size_)
                         {
                             // remove first element from queue
-                            Block * b = cache_first_;
-                            cache_first_ = b->cache_next_;
+                            Chunk * c = cache_first_;
+                            cache_first_ = c->cache_next_;
+                            if(cache_first_ == 0)
+                                cache_last_ = 0;
                             
                             // check if the refcount is zero and temporarily set it 
                             // to -1 in order to lock the chunk while cache management 
                             // is done
                             rc = 0;
-                            if(b->refcount_.compare_exchange_strong(rc, -1, std::memory_order_seq_cst))
+                            if(c->refcount_.compare_exchange_strong(rc, -1, std::memory_order_seq_cst))
                             {
                                 // refcount was zero => can unmap
-                                b->unmap();
-                                b->cache_next_ = 0;
+                                c->unmap();
+                                c->cache_next_ = 0;
                                 --cache_size_;
-                                b->refcount_.store(0, std::memory_order_seq_cst);
+                                c->refcount_.store(0, std::memory_order_seq_cst);
                             }
                             else
                             {
                                 // refcount was non-zero => reinsert chunk into queue
-                                cache_last_->cache_next_ = b;
-                                cache_last_ = b;
+                                if(!cache_first_)
+                                    cache_first_ = c;
+                                if(cache_last_)
+                                    cache_last_->cache_next_ = c;
+                                cache_last_ = c;
                             }
                         }
                     }
@@ -969,19 +970,19 @@ class BlockedArrayTmpFile
             }
         }
         
-        strides = block.strides_;
-        border = (blockIndex + shape_type(1)) * this->default_block_shape_;
-        std::size_t offset = BlockShape<N>::offset(point, strides);
-        *block_ptr = &block;
+        strides = chunk.strides_;
+        border = (chunkIndex + shape_type(1)) * this->default_chunk_shape_;
+        std::size_t offset = ChunkShape<N>::offset(point, strides);
+        *chunk_ptr = &chunk;
         return p + offset;
     }
     
-    BlockStorage outer_array_;  // the array of chunks
+    ChunkStorage outer_array_;  // the array of chunks
 
     HANDLE file_, mappedFile_;  // the file back-end
     size_t file_size_, file_capacity_;
     
-    Block * cache_first_, * cache_last_;  // cache of loaded chunks
+    Chunk * cache_first_, * cache_last_;  // cache of loaded chunks
     std::size_t cache_max_size_, cache_size_;
     threading::mutex cache_lock_;
 };
@@ -989,7 +990,7 @@ class BlockedArrayTmpFile
 
 
     /*
-        The handle must store a pointer to a block because the block knows 
+        The handle must store a pointer to a chunk because the chunk knows 
         about memory menagement, and to an array view because it knows about
         subarrays and slices.
         
@@ -997,19 +998,19 @@ class BlockedArrayTmpFile
         the handle memory to make it faster?
     */
 template <class T, class NEXT>
-class CoupledHandle<BlockedMemory<T>, NEXT>
+class CoupledHandle<ChunkedMemory<T>, NEXT>
 : public NEXT
 {
 public:
     typedef NEXT                                  base_type;
-    typedef CoupledHandle<BlockedMemory<T>, NEXT> self_type;
+    typedef CoupledHandle<ChunkedMemory<T>, NEXT> self_type;
     
     static const int index =                      NEXT::index + 1;    // index of this member of the chain
     static const unsigned int dimensions =        NEXT::dimensions;
 
-    typedef BlockedArray<dimensions, T>           array_type;
-    typedef BlockBase<dimensions, T>              block_type;
-    typedef BlockShape<dimensions>                block_shape;
+    typedef ChunkedArray<dimensions, T>           array_type;
+    typedef ChunkBase<dimensions, T>              chunk_type;
+    typedef ChunkShape<dimensions>                chunk_shape;
     typedef T                                     value_type;
     typedef value_type *                          pointer;
     typedef value_type const *                    const_pointer;
@@ -1036,9 +1037,9 @@ public:
     : base_type(next),
       pointer_(), 
       array_(&array),
-      block_()
+      chunk_()
     {
-        pointer_ = array_->ptr(point(), strides_, border_, &block_);
+        pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
     }
     
     using base_type::point;
@@ -1047,7 +1048,7 @@ public:
     inline void incDim(int dim) 
     {
         base_type::incDim(dim);
-        // if((point()[dim] & block_shape::mask) == 0)
+        // if((point()[dim] & chunk_shape::mask) == 0)
         // {
             // if(point()[dim] < shape()[dim])
                 // pointer_ = (*setPointer)(point(), array_, strides_, border_);
@@ -1061,7 +1062,7 @@ public:
         {
             if(point()[dim] < shape()[dim])
                 // pointer_ = (*setPointer)(point(), array_, strides_, border_);
-                pointer_ = array_->ptr(point(), strides_, border_, &block_);
+                pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
         }
     }
 
@@ -1075,7 +1076,7 @@ public:
     {
         base_type::addDim(dim, d);
         if(point()[dim] < shape()[dim])
-            pointer_ = array_->ptr(point(), strides_, border_, &block_);
+            pointer_ = array_->ptr(point(), strides_, border_, &chunk_);
         // if(dim == 0)
             // std::cerr << point() << " " << pointer_ << " " << strides_ << " " << border_ << "\n";
     }
@@ -1155,28 +1156,28 @@ public:
     pointer pointer_;
     shape_type strides_, border_;
     array_type * array_;
-    block_type * block_;
+    chunk_type * chunk_;
 };
 
 template <class T, class NEXT>
-typename CoupledHandle<BlockedMemory<T>, NEXT>::SetPointerFct 
-CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory<T>, NEXT>::setPointerFct;
+typename CoupledHandle<ChunkedMemory<T>, NEXT>::SetPointerFct 
+CoupledHandle<ChunkedMemory<T>, NEXT>::setPointer = &CoupledHandle<ChunkedMemory<T>, NEXT>::setPointerFct;
 
 
 
 // template <class T, class NEXT>
-// class CoupledHandle<BlockedMemory<T>, NEXT>
+// class CoupledHandle<ChunkedMemory<T>, NEXT>
 // : public NEXT
 // {
 // public:
     // typedef NEXT                                  base_type;
-    // typedef CoupledHandle<BlockedMemory<T>, NEXT> self_type;
+    // typedef CoupledHandle<ChunkedMemory<T>, NEXT> self_type;
     
     // static const int index =                      NEXT::index + 1;    // index of this member of the chain
     // static const unsigned int dimensions =        NEXT::dimensions;
 
-    // typedef BlockedArray<dimensions, T>           array_type;
-    // typedef BlockShape<dimensions>                block_shape;
+    // typedef ChunkedArray<dimensions, T>           array_type;
+    // typedef ChunkShape<dimensions>                chunk_shape;
     // typedef T                                     value_type;
     // typedef value_type *                          pointer;
     // typedef value_type const *                    const_pointer;
@@ -1211,7 +1212,7 @@ CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory
     // inline void incDim(int dim) 
     // {
         // base_type::incDim(dim);
-        // // if((point()[dim] & block_shape::mask) == 0)
+        // // if((point()[dim] & chunk_shape::mask) == 0)
         // // {
             // // if(point()[dim] < shape()[dim])
                 // // pointer_ = (*setPointer)(point(), array_, strides_, border_);
@@ -1322,8 +1323,8 @@ CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory
 // };
 
 // template <class T, class NEXT>
-// typename CoupledHandle<BlockedMemory<T>, NEXT>::SetPointerFct 
-// CoupledHandle<BlockedMemory<T>, NEXT>::setPointer = &CoupledHandle<BlockedMemory<T>, NEXT>::setPointerFct;
+// typename CoupledHandle<ChunkedMemory<T>, NEXT>::SetPointerFct 
+// CoupledHandle<ChunkedMemory<T>, NEXT>::setPointer = &CoupledHandle<ChunkedMemory<T>, NEXT>::setPointerFct;
 
 
 #if 0
@@ -1524,4 +1525,4 @@ struct CoupledHandleType<N, Multiband<T1>, T2, T3, T4, T5>
 
 } // namespace vigra
 
-#endif /* VIGRA_MULTI_ARRAY_BLOCKED_HXX */
+#endif /* VIGRA_MULTI_ARRAY_CHUNKED_HXX */

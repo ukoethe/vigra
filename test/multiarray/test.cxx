@@ -37,7 +37,7 @@
 
 #include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
-#include "vigra/multi_array_blocked.hxx"
+#include "vigra/multi_array_chunked.hxx"
 #include "vigra/multi_iterator_coupled.hxx"
 #include "vigra/multi_impex.hxx"
 #include "vigra/basicimageview.hxx"
@@ -2453,9 +2453,9 @@ public:
         //std::cerr << "   plain fread: " << t << "\n";
         //fclose(f);
 
-        BlockedArrayTmpFile<3, scalar_type> barray(s, ".\\");
+        ChunkedArrayTmpFile<3, scalar_type> barray(s, ".\\");
 
-        typedef CoupledHandleType<3, BlockedMemory<scalar_type> >::type  P1;
+        typedef CoupledHandleType<3, ChunkedMemory<scalar_type> >::type  P1;
         typedef P1::base_type                                            P0;
         typedef CoupledScanOrderIterator<3, P1>                          IteratorType;
 
@@ -2502,7 +2502,7 @@ public:
                     bi.get<1>() = count;
                 }
         t = TOCS;
-        std::cerr << "    blocked iterator create file: " << t << "\n";
+        std::cerr << "    chunked iterator create file: " << t << "\n";
         ////std::cerr << " global count: " << vigra::globalCount << "\n";
         count = 1;
         TIC;
@@ -2514,7 +2514,7 @@ public:
                         std::cerr << bi.coord() << " not equal\n";
                 }
         t = TOCS;
-        std::cerr << "    blocked iterator explicit runtime loops: " << t << "\n";
+        std::cerr << "    chunked iterator explicit runtime loops: " << t << "\n";
         //count = 1;
         //TIC;
         //for(bi.setDim(2,start); bi.coord(2) < stop; bi.incDim(2))
@@ -2535,7 +2535,7 @@ public:
         //for(; i != end; ++i)
         //            i.get<1>() = ++count;
         //
-        //typedef CoupledHandleType<3, BlockedMemory<scalar_type>, scalar_type >::type  Q2;
+        //typedef CoupledHandleType<3, ChunkedMemory<scalar_type>, scalar_type >::type  Q2;
         //typedef Q2::base_type                                            Q1;
         //typedef Q1::base_type                                            Q0;
         //typedef CoupledScanOrderIterator<3, Q2>                      Q;
