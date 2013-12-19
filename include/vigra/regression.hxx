@@ -124,8 +124,6 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
              MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> const &weights,
              MultiArrayView<2, T, C4> &x, std::string method = "QR")
 {
-    typedef T Real;
-
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
@@ -183,8 +181,6 @@ bool
 ridgeRegression(MultiArrayView<2, T, C1> const & A,
                 MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x, double lambda)
 {
-    typedef T Real;
-
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
@@ -257,8 +253,6 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
              MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> const &weights,
              MultiArrayView<2, T, C4> &x, double lambda)
 {
-    typedef T Real;
-
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int rhsCount = columnCount(b);
@@ -310,8 +304,6 @@ bool
 ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
           MultiArrayView<2, T, C2> const &b, MultiArrayView<2, T, C3> &x, Array const & lambda)
 {
-    typedef T Real;
-
     const unsigned int rows = rowCount(A);
     const unsigned int cols = columnCount(A);
     const unsigned int lambdaCount = lambda.size();

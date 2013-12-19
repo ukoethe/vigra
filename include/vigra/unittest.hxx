@@ -110,7 +110,12 @@
 #define VIGRA_ASSERT(predicate) \
     vigra::detail::should_impl((predicate), #predicate, __FILE__, __LINE__)
 
+#define VIGRA_ASSERT_NOT(predicate) \
+    vigra::detail::should_impl(!(predicate), "!(" #predicate ")", __FILE__, __LINE__)
+
 #define should VIGRA_ASSERT
+
+#define shouldNot VIGRA_ASSERT_NOT
 
 #define VIGRA_ASSERT_MESSAGE(predicate, message) \
     vigra::detail::should_impl((predicate), message, __FILE__, __LINE__)

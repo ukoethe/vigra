@@ -1382,7 +1382,7 @@ public:
     typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;    
     
         /** \brief Type of node and edge IDs.
-.        */
+        */
     typedef MultiArrayIndex                         index_type;
     
         /** \brief Type to specify number of vertices (API: boost::graph,
@@ -2436,14 +2436,14 @@ public:
         return res;
     }
 
-        /** \brief Get a descriptor for the edge connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
+        /** \brief Get a descriptor for the edge connecting vertices \a u and \a v,<br/>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
         */
     Edge findEdge(Node const & u, Node const & v, Edge const & = lemon::INVALID) const 
     {
         return this->edge(u, v).first;
     }
     
-        /** \brief Get a descriptor for the arc connecting vertices \a u and \a v,</br>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
+        /** \brief Get a descriptor for the arc connecting vertices \a u and \a v,<br/>or <tt>lemon::INVALID</tt> if no such edge exists (API: LEMON).
         */
     Arc findArc(Node const & u, Node const & v, Arc const & = lemon::INVALID) const 
     {

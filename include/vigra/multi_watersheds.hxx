@@ -89,10 +89,8 @@ unionFindWatersheds(Graph const & g,
                     T2Map const & lowestNeighborIndex,
                     T3Map & labels)
 {
-    typedef typename Graph::Node          Node;
     typedef typename Graph::NodeIt        graph_scanner;
     typedef typename Graph::OutBackArcIt  neighbor_iterator;
-    typedef typename T1Map::value_type    DataType;
     typedef typename T3Map::value_type    LabelType;
 
     vigra::detail::UnionFindArray<LabelType>  regions;
@@ -288,8 +286,6 @@ watershedsGraph(Graph const & g,
                 T2Map & labels,
                 WatershedOptions const & options)
 {
-    typedef typename T2Map::value_type LabelType;
-    
     if(options.method == WatershedOptions::UnionFind)
     {
         vigra_precondition(g.maxDegree() <= NumericTraits<unsigned short>::max(),

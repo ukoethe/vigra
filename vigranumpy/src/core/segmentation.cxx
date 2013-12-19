@@ -956,7 +956,6 @@ pythonSlic(NumpyArray<N, PixelType > array,
 {
     typedef typename detail::ResolveMultiband<PixelType>::type ValueType;
     typedef typename NormTraits<ValueType>::NormType TmpType;
-    typedef typename NumpyArray<N, ValueType >::view_type View;
     
     std::string description("Slic superpixels");
     

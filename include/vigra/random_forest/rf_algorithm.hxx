@@ -734,7 +734,6 @@ public:
     {
         MultiArray<2, T> dist(distance); 
         std::vector<std::pair<int, int> > addr; 
-        typedef std::pair<int, int>  Entry;
         int index = 0;
         for(int ii = 0; ii < distance.shape(0); ++ii)
         {

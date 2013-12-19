@@ -1198,7 +1198,6 @@ destImageRange(NumpyArray<3, Multiband<PixelType>, Stride> & img)
 {
     StridedImageIterator<PixelType>
         ul(img.data(), 1, img.stride(0), img.stride(1));
-    typedef typename AccessorTraits<PixelType>::default_accessor Accessor;
     return triple<StridedImageIterator<PixelType>,
                   StridedImageIterator<PixelType>,
                   MultibandVectorAccessor<PixelType> >
@@ -1224,7 +1223,6 @@ maskImage(NumpyArray<3, Multiband<PixelType>, Stride> const & img)
 {
     ConstStridedImageIterator<PixelType>
         ul(img.data(), 1, img.stride(0), img.stride(1));
-    typedef typename AccessorTraits<PixelType>::default_accessor Accessor;
     return pair<ConstStridedImageIterator<PixelType>, MultibandVectorAccessor<PixelType> >
         (ul, MultibandVectorAccessor<PixelType>(img.shape(2), img.stride(2)));
 }

@@ -89,10 +89,6 @@ void internalNonlinearDiffusionAOSStep(
 {
     // use traits to determine SumType as to prevent possible overflow
     typedef typename
-        NumericTraits<typename DestAccessor::value_type>::RealPromote
-        DestType;
-    
-    typedef typename
         NumericTraits<typename WeightAccessor::value_type>::RealPromote
         WeightType;
         

@@ -39,6 +39,7 @@
 
 #include "tinyvector.hxx"
 #include "mathutil.hxx"
+#include <cmath>
 
 namespace vigra {
 
@@ -313,6 +314,14 @@ inline DualVector<T, N> abs(DualVector<T, N> const & v)
     return v.v < T(0.0) ? -v : v;
 }
 
+using std::fabs;
+// abs(x + h) => x + h or -(x + h)
+template <typename T, int N>
+inline DualVector<T, N> fabs(DualVector<T, N> const & v)
+{
+    return v.v < T(0.0) ? -v : v;
+}
+
 using std::log;
 // log(a + h) => log(a) + h / a
 template <typename T, int N>
@@ -570,6 +579,35 @@ operator!=(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
     return v1.v != v2.v || v1.d != v2.d;
 }
 
+#define VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(op) \
+template <class T, int N> \
+inline bool  \
+operator op(DualVector<T, N> const & v1, DualVector<T, N> const & v2) \
+{ \
+    return v1.v op v2.v; \
+} \
+ \
+template <class T, int N> \
+inline bool  \
+operator op(T v1, DualVector<T, N> const & v2) \
+{ \
+    return v1 op v2.v; \
+} \
+ \
+template <class T, int N> \
+inline bool  \
+operator op(DualVector<T, N> const & v1, T v2) \
+{ \
+    return v1.v op v2; \
+}
+
+VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(<)
+VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(<=)
+VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(>)
+VIGRA_DUALVECTOR_RELATIONAL_OPERATORS(>=)
+
+#undef VIGRA_DUALVECTOR_RELATIONAL_OPERATORS
+
 template <class T, int N>
 inline bool 
 closeAtTolerance(DualVector<T, N> const & v1, DualVector<T, N> const & v2, 
@@ -578,17 +616,21 @@ closeAtTolerance(DualVector<T, N> const & v1, DualVector<T, N> const & v2,
     return vigra::closeAtTolerance(v1.v, v2.v, epsilon) && vigra::closeAtTolerance(v1.d, v2.d, epsilon);
 }
 
+} // namespace autodiff
+
+} // namespace vigra
+
+namespace std {
+
    /// stream output
 template <class T, int N>
-std::ostream &
-operator<<(std::ostream & out, DualVector<T, N> const & l)
+ostream &
+operator<<(ostream & out, vigra::autodiff::DualVector<T, N> const & l)
 {
     out << l.v << " " << l.d;
     return out;
 }
 
-} // namespace autodiff
-
-} // namespace vigra
+} // namespace std
 
 #endif // VIGRA_AUTODIFF_HXX

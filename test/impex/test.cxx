@@ -254,6 +254,17 @@ public:
         TIFFClose(tiff);
 
         shouldEqualSequence(res2.begin(), res2.end(), img.data());
+        
+        // test bilevel
+        MultiArray<2, unsigned char> bilevel;
+        importImage("bilevel.tiff", bilevel);
+        shouldEqual(bilevel.shape(), Shape2(1577, 1083));
+        UInt8 m, M;
+        bilevel.minmax(&m, &M);
+        shouldEqual(m, 0);
+        shouldEqual(M, 1);
+        shouldEqual(bilevel.sum<int>(), 1653050); // 96% white pixels
+        
 #endif
     }
 

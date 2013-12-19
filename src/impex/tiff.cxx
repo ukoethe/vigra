@@ -592,7 +592,7 @@ namespace vigra {
         } else {
             stripbuffer = new tdata_t[1];
             stripbuffer[0] = 0;
-            stripbuffer[0] = _TIFFmalloc(stripsize);
+            stripbuffer[0] = _TIFFmalloc(stripsize < width ? width : stripsize);
             if(stripbuffer[0] == 0)
                 throw std::bad_alloc();
         }
@@ -605,10 +605,29 @@ namespace vigra {
     TIFFDecoderImpl::currentScanlineOfBand( unsigned int band ) const
     {
         if ( bits_per_sample == 1 ) {
-            UInt8 * const buf
+            const unsigned int n = TIFFScanlineSize(tiff);
+            UInt8 * const startpointer
                 = static_cast< UInt8 * >(stripbuffer[0]);
-            // XXX probably wrong
-            return buf + ( stripindex * width ) / 8;
+            UInt8 * bytepointer = startpointer;
+
+            bytepointer += n-1;
+            for (int byte = n-1 ; byte >= 0; --byte)
+            {
+                UInt8 currentByte = *bytepointer;
+                --bytepointer;
+
+                UInt8 * bitpointer = startpointer;
+                bitpointer += byte * 8;
+
+                for (unsigned char bit = 7; bit < 8; --bit)
+                {
+                    *bitpointer = ((currentByte & (1 << bit)) ? photometric : 1 - photometric);
+                    ++bitpointer;
+                    if (byte * 8 + 7 - bit == width - 1) break;
+                }
+            }
+            // XXX probably right
+            return startpointer + ( stripindex * width ) / 8;
         } else {
             if ( planarconfig == PLANARCONFIG_SEPARATE ) {
                 UInt8 * const buf

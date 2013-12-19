@@ -52,7 +52,7 @@ repository is at https://github.com/ukoethe/vigra
 What is VIGRA
 -------------
 
-VIGRA is a computer vision library that puts its main emphasis on flexible algorithms, because algorithms represent the principle know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
+VIGRA is a computer vision library that puts its main emphasis on flexible algorithms, because algorithms represent the principal know-how of this field. The library was consequently built using generic programming as introduced by Stepanov and Musser and exemplified in the C++ Standard Template Library. By writing a few adapters (image iterators and accessors) you can use VIGRA's algorithms on top of your data structures, within your environment. Alternatively, you can also use the data structures provided within VIGRA, which can be easily adapted to a wide range of applications. VIGRA's flexibility comes almost for free: Since the design uses compile-time polymorphism (templates), performance of the compiled program approaches that of a traditional, hand tuned, inflexible, solution.
 
 
 

@@ -235,7 +235,6 @@ resizeMultiArraySplineInterpolation(
 {
     enum { N = 1 + SrcIterator::level };
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
-    typedef MultiArray<N, TmpType> TmpArray;
     typedef typename AccessorTraits<TmpType>::default_accessor TmpAccessor;
         
     if(N==1)

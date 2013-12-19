@@ -1530,8 +1530,6 @@ extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da, 
             typename DestAccessor::value_type marker)
 {
-    typedef typename SrcAccessor::value_type SrcType;
-
     extendedLocalMinima(sul, slr, sa, dul, da,
                         marker, EightNeighborCode());
 }
@@ -1880,8 +1878,6 @@ extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da, 
             typename DestAccessor::value_type marker)
 {
-    typedef typename SrcAccessor::value_type SrcType;
-
     extendedLocalMaxima(sul, slr, sa, dul, da,
                         marker, EightNeighborCode());
 }

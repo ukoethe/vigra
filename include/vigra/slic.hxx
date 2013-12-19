@@ -362,12 +362,12 @@ Slic<N, T, Label>::postProcessing()
     }
     
     // make labels contiguous after possible merging
-    maxLabel = 0; 
+    unsigned int newMaxLabel = 0; 
     for(unsigned int i=1; i<=maxLabel; ++i)
     {
         if(regions[i] == i)
         {
-                regions[i] = (Label)++maxLabel;
+                regions[i] = (Label)++newMaxLabel;
         }
         else
         {
@@ -381,7 +381,7 @@ Slic<N, T, Label>::postProcessing()
         labelImage_[*node] = regions[labelImage_[*node]];
     }
     
-    return maxLabel;
+    return newMaxLabel;
 }
 
 } // namespace detail

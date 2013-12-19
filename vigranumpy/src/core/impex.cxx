@@ -207,8 +207,6 @@ template <class T>
 NumpyAnyArray 
 readVolumeImpl(VolumeImportInfo const & info, std::string order = "")
 {
-    typedef UnstridedArrayTag Stride;
-    
     if(order == "")
         order = detail::defaultOrder();
 

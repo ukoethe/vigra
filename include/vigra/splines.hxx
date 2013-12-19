@@ -45,6 +45,13 @@
 
 namespace vigra {
 
+namespace autodiff {
+
+template <class T, int N>
+class DualVector;
+
+} // namespace autodiff
+
 /** \addtogroup MathFunctions Mathematical Functions
 */
 //@{
@@ -305,6 +312,14 @@ class BSplineBase<0, T>
                    : Value(0, FPNoShift);
     }
 
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> const & x) const
+    {
+        return x < 0.5 && -0.5 <= x 
+                   ? autodiff::DualVector<U, N>(1.0)
+                   : autodiff::DualVector<U, N>(0.0);
+    }
+
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
          return exec(x, derivativeOrder_ + derivative_order);
@@ -388,6 +403,15 @@ class BSpline<1, T>
         return v < Value::ONE ?
                 Value(Value::ONE - v, FPNoShift)
                 : Value(0, FPNoShift);
+    }
+
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
+    {
+        x = abs(x);
+        return x < 1.0 
+                    ? 1.0 - x
+                    : autodiff::DualVector<U, N>(0.0);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -502,6 +526,17 @@ class BSpline<2, T>
                        : v < THREE_HALVES
                             ? Value((int)(sq((unsigned)(THREE_HALVES-v) >> PREMULTIPLY_SHIFT1) >> (POSTMULTIPLY_SHIFT1 + 1)), FPNoShift)
                             : Value(0, FPNoShift);
+    }
+
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
+    {
+        x = abs(x);
+        return x < 0.5 
+                   ? 0.75 - x*x
+                   : x < 1.5 
+                        ? 0.5 * sq(1.5 - x)
+                        : autodiff::DualVector<U, N>(0.0);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -639,6 +674,23 @@ class BSpline<3, T>
                             ? Value((int)((sq((unsigned)(TWO-v) >> PREMULTIPLY_SHIFT) >> (POSTMULTIPLY_SHIFT + PREMULTIPLY_SHIFT))
                                       * ((unsigned)(TWO-v) >> PREMULTIPLY_SHIFT) / 6) >> POSTMULTIPLY_SHIFT, FPNoShift)
                             : Value(0, FPNoShift);
+    }
+
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
+    {
+        x = abs(x);
+        if(x < 1.0)
+        {
+            return 2.0/3.0 + x*x*(-1.0 + 0.5*x);
+        }
+        else if(x < 2.0)
+        {
+            x = 2.0 - x;
+            return x*x*x/6.0;
+        }
+        else
+            return autodiff::DualVector<U, N>(0.0);
     }
 
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
@@ -784,6 +836,27 @@ class BSpline<4, T>
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
          return exec(x, derivativeOrder_ + derivative_order);
+    }
+
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
+    {
+        x = abs(x);
+        if(x <= 0.5)
+        {
+            return 115.0/192.0 + x*x*(-0.625 + x*x*0.25);
+        }
+        else if(x < 1.5)
+        {
+            return (55.0/16.0 + x*(1.25 + x*(-7.5 + x*(5.0 - x)))) / 6.0;
+        }
+        else if(x < 2.5)
+        {
+            x = 2.5 - x;
+            return sq(x*x) / 24.0;
+        }
+        else
+            return autodiff::DualVector<U, N>(0.0);
     }
 
     result_type dx(argument_type x) const
@@ -987,6 +1060,27 @@ class BSpline<5, T>
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
          return exec(x, derivativeOrder_ + derivative_order);
+    }
+
+    template <class U, int N>
+    autodiff::DualVector<U, N> operator()(autodiff::DualVector<U, N> x) const
+    {
+        x = abs(x);
+        if(x <= 1.0)
+        {
+            return 0.55 + x*x*(-0.5 + x*x*(0.25 - x/12.0));
+        }
+        else if(x < 2.0)
+        {
+            return 17.0/40.0 + x*(0.625 + x*(-1.75 + x*(1.25 + x*(-0.375 + x/24.0))));
+        }
+        else if(x < 3.0)
+        {
+            x = 3.0 - x;
+            return x*sq(x*x) / 120.0;
+        }
+        else
+            return autodiff::DualVector<U, N>(0.0);
     }
 
     result_type dx(argument_type x) const

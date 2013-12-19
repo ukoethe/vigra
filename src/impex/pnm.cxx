@@ -742,10 +742,7 @@ namespace vigra {
     void PnmEncoderImpl::write_bilevel_raw()
     {
         // cast the bands to the correct type
-        typedef void_vector< UInt8 > vector_type;
-        //vector_type & cbands = static_cast< vector_type & >(bands);
-
-        // XXX
+        vigra_fail("PNM write bilevel raw is not implemented, sorry.");
     }
 
     void PnmEncoderImpl::write_raw()

@@ -534,6 +534,8 @@ struct AccumulatorTest
             typedef AccumulatorChain<V::view_type, Select<Covariance, Mean, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
+            
+            should((IsSameType<W, MultiArray<1, double> >::value));
 
             A a;
 
@@ -564,7 +566,7 @@ struct AccumulatorTest
             shouldEqual(get<Variance>(a), variance);
 
             W stddev = sqrt(variance);
-            shouldEqualTolerance(stddev, get<StdDev>(a), W(1e-15));
+            shouldEqualTolerance(stddev, get<StdDev>(a), W(s, 1e-15));
 
             a.reset(1);
 
@@ -1260,7 +1262,6 @@ struct AccumulatorTest
 
         {
             typedef CoupledIteratorType<2, double, int>::type Iterator;
-            typedef Iterator::value_type Handle;
 
             typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>, 
                                                 Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,

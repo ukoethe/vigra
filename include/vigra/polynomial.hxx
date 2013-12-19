@@ -938,7 +938,6 @@ struct PolynomialRootCompare
 template <class POLYNOMIAL, class VECTOR>
 bool polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots, bool polishRoots)
 {
-    typedef typename POLYNOMIAL::value_type T;
     typedef typename POLYNOMIAL::Real    Real;
     typedef typename POLYNOMIAL::Complex Complex;
     typedef typename POLYNOMIAL::ComplexPolynomial WorkPolynomial;

@@ -62,7 +62,11 @@ namespace vigra
         inline static pixel_t
         pixel_t_of_string(const std::string& pixel_type)
         {
-            if (pixel_type == "UINT8")
+            if (pixel_type == "BILEVEL")
+            {
+                return UNSIGNED_INT_8;
+            }
+            else if (pixel_type == "UINT8")
             {
                 return UNSIGNED_INT_8;
             }

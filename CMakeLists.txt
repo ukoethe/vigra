@@ -39,6 +39,18 @@ IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
+IF (CMAKE_COMPILER_IS_GNUCXX AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    EXEC_PROGRAM(
+        ${CMAKE_CXX_COMPILER}
+        ARGS                    --version
+        OUTPUT_VARIABLE _compiler_output)
+    STRING(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  gcc_compiler_version ${_compiler_output})
+    IF (gcc_compiler_version VERSION_LESS "4.4.0")
+        MESSAGE(WARNING "GNU c++ < 4.4 cannot build VIGRANumPy; disabling (found GCC ${gcc_compiler_version})")
+        SET(WITH_VIGRANUMPY 0)
+    ENDIF ()
+ENDIF ()
+
 # if(CMAKE_COMPILER_IS_GNUCXX)
   # exec_program(
       # ${CMAKE_CXX_COMPILER}
@@ -87,7 +99,7 @@ ENDIF()
 
 SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
-FIND_PACKAGE(PythonInterp)
+FIND_PACKAGE(PythonInterp 2)
 
 IF(WITH_VIGRANUMPY)
     FIND_PACKAGE( VIGRANUMPY_DEPENDENCIES )

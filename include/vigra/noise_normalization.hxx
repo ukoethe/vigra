@@ -548,9 +548,6 @@ findHomogeneousRegionsFoerstner(
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
-    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
-    typedef BasicImage<TmpType> TmpImage;
-
     BImage btmp(w, h);
     transformImage(srcIterRange(sul, slr, src), destImage(btmp),
                     ifThenElse(Arg1() <= Param(homogeneityThreshold), Param(1), Param(0)));
@@ -1067,7 +1064,6 @@ void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                            BackInsertable & result,
                            NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
-    typedef typename BackInsertable::value_type ResultType;
     typedef typename SrcAccessor::value_type SrcType;
     typedef typename NumericTraits<SrcType>::isScalar isScalar;
 

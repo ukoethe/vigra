@@ -597,7 +597,6 @@ internalSeparableConvolveSubarray(
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<TmpIterator, N> TNavigator;
-    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
     
     TmpAcessor acc;
 
@@ -1253,8 +1252,6 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
                    const ConvolutionOptions<SrcShape::static_size> & opt,
                    const char *const function_name = "gaussianSmoothMultiArray" )
 {
-    typedef typename DestAccessor::value_type DestType;
-
     static const int N = SrcShape::static_size;
 
     typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
@@ -2142,7 +2139,6 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
                              MultiArrayView<N, T, S> divergence,
                              ConvolutionOptions<N> opt)
 {
-    typedef typename MultiArrayShape<N>::type                    Shape;
     typedef typename std::iterator_traits<Iterator>::value_type  ArrayType;
     typedef typename ArrayType::value_type                       SrcType;
     typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
