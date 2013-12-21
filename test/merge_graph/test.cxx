@@ -193,6 +193,38 @@ struct MergeGraphTest
 
         should(graph.reprEdge(0)!=graph.reprEdge(2));
     }
+    void chainTest()
+    {
+
+        const size_t nChainNodes  = 10;
+        const size_t nChainEdges  = nChainNodes-1;
+        // 0 - 1 - 2 - .. nChainNodes-1
+        MergeGraphType graph(nChainNodes,nChainEdges);
+        // triangle graph
+
+        // set inital edges (without any double edge)
+        for(size_t e=0;e<nChainNodes-1;++e){
+            graph.setInitalEdge(e,e,e+1);
+        }
+        should(graph.numberOfNodes() == nChainNodes);
+        should(graph.numberOfEdges() == nChainEdges);
+
+        // remove edges from 0 to nChainNodes -1
+        for(size_t e=0;e<nChainNodes-1;++e){
+            should(graph.numberOfEdges()==nChainEdges-e);
+            // check that edge is there 
+            should(graph.hasEdge(e));
+            // fist node is rep of e, second node still untouched e+1
+            should(graph.getEdge(e)[0]==graph.reprNode(e));
+            should(graph.getEdge(e)[1]==e+1);
+
+            // remove the edge
+            graph.mergeRegions(e);
+
+            should(!graph.hasEdge(e));
+            
+        }
+    }
 };
 
         
@@ -203,14 +235,9 @@ struct MergeGraphTestSuite
     : vigra::test_suite("MergeGraphTestSuite")
     {   
         add( testCase( &MergeGraphTest<vigra::UInt32>::constructorTest));
-        add( testCase( &MergeGraphTest<vigra::UInt64>::constructorTest));
-        add( testCase( &MergeGraphTest<vigra::Int32>::constructorTest));
-        add( testCase( &MergeGraphTest<vigra::Int64>::constructorTest));
-
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
-        add( testCase( &MergeGraphTest<vigra::UInt64>::mergeTest));
-        add( testCase( &MergeGraphTest<vigra::Int32>::mergeTest));
-        add( testCase( &MergeGraphTest<vigra::Int64>::mergeTest));
+        add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
+
     }
 };
 
