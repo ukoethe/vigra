@@ -171,22 +171,14 @@ struct MergeGraphTest
         should(graph.reprEdge(1)==1);
         should(graph.reprEdge(2)==2);
 
-        for(size_t e=0;e<3;++e){
-            std::cout<<"be="<<e<<" ar="<<graph.reprEdge(e)<<"\n";
-        }
+
 
         // merge edge 0 
         graph.mergeRegions(0);
         should(graph.numberOfNodes() == 2);
         should(graph.numberOfEdges() == 1);
 
-        for(size_t e=0;e<3;++e){
-            std::cout<<"e="<<e<<" br="<<graph.reprEdge(e)<<"\n";
-        }
 
-        for(size_t e=0;e<3;++e){
-            std::cout<<"n="<<e<<" br="<<graph.reprNode(e)<<"\n";
-        }
 
         should(graph.reprNode(0)==graph.reprNode(1));
         should(graph.reprNode(0)!=graph.reprNode(2));
@@ -194,11 +186,6 @@ struct MergeGraphTest
 
         should(graph.reprEdge(1)==graph.reprEdge(2));
         should(!graph.reprEdge(0)==graph.reprEdge(1));
-
-
-        for(size_t e=0;e<3;++e){
-            std::cout<<"e="<<e<<" cr="<<graph.reprEdge(e)<<"\n";
-        }
 
         should(graph.reprEdge(0)==0);
         should(graph.reprEdge(1)!=0);

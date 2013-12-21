@@ -110,8 +110,8 @@ public:
     // setup
     
 private:
-    MergeGraph();
-    MergeGraph( const MergeGraph& other ); // non construction-copyable
+    MergeGraph();                               // non empty-construction
+    MergeGraph( const MergeGraph& other );      // non construction-copyable
     MergeGraph& operator=( const MergeGraph& ); // non copyable
 public:
     MergeGraph(const size_t nNodes,const size_t nEdges);
@@ -137,7 +137,9 @@ public:
         EdgeType edge = initEdges_[index];
         edge[0]=reprNode(edge[0]);
         edge[1]=reprNode(edge[1]);
+        return edge;
     }
+
 
 
 
@@ -146,14 +148,24 @@ public:
         return dynamicNodes_[index];
     }
 
-    bool hasEdge(const LabelType edgeIndex)const{
+    bool hasEdge_OLD(const LabelType edgeIndex)const{
         const bool hasEdge  = dynamicEdges_.find(edgeIndex)!=dynamicEdges_.end();
         return hasEdge;
     }
 
-    bool hasEdge_NEW(const LabelType edgeIndex)const{
-        const EdgeType edge=getEdge_NEW(edgeIndex);
-        return edge[0]!=edge[1];
+    bool hasEdge(const LabelType edgeIndex)const{
+        bool ret;
+        const LabelType rep = reprEdge(edgeIndex);
+        if(rep!=edgeIndex){
+            ret = false;
+            CGP_ASSERT_OP(ret,==,this->hasEdge_OLD(edgeIndex));
+        }
+        else{
+            const EdgeType edge=getEdge_NEW(rep);
+            ret =( edge[0]!=edge[1] );
+            CGP_ASSERT_OP(ret,==,this->hasEdge_OLD(edgeIndex));
+        }
+        return ret;
     }
 
     bool hasNode(const LabelType nodeIndex)const{
@@ -503,6 +515,7 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
     // assertions that edge is active and
     // its own repr.
     CGP_ASSERT_OP(reprEdge(toDeleteEdgeIndex),==,toDeleteEdgeIndex);
+    CGP_ASSERT_OP(hasEdge_OLD(toDeleteEdgeIndex),==,true);
     CGP_ASSERT_OP(hasEdge(toDeleteEdgeIndex),==,true);
 
 
@@ -582,8 +595,9 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
         if(edgeVec.size()>=2){
 
             // merge all these edges in the ufd and get the new representative
+            //CGP_ASSERT_OP(hasEdge(toMergeEdgeIndex),==,true);
             const LabelType newEdgeRep = edgeUfd_.multiMerge(edgeVec.front(),edgeVec.begin()+1,edgeVec.end());
-
+            //CGP_ASSERT_OP(hasEdge(toMergeEdgeIndex),==,false);
             // delte all edges which are not needed any more
             //  - edgeVec.size() -1 edges will be deleted 
             //  - (all edges except the new representative "newEdgeRep")
@@ -598,24 +612,26 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
 
                     // delete the edge from the new formed region
                     newFormedNode.edges_.erase(toMergeEdgeIndex);
-                    CGP_ASSERT_OP(hasEdge(toMergeEdgeIndex),==,true);
+                    CGP_ASSERT_OP(hasEdge_OLD(toMergeEdgeIndex),==,true);
+                    
 
                     // at least one of the nodes of the edge "toMergeEdgeIndex" must be the "newFormedNode"
                     //  - we want to get the nodes adjacent to the "newFormedNode"
-                    CGP_ASSERT_OP(dynamicEdges_[toMergeEdgeIndex].hasNode(newNodeRep),==,true);
+                    //CGP_ASSERT_OP(dynamicEdges_[toMergeEdgeIndex].hasNode(newNodeRep),==,true);
                     const size_t adjacentNodeIndex = dynamicEdges_[toMergeEdgeIndex].otherNode(newNodeRep);
 
                     dynamicNodes_[adjacentNodeIndex].eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                     
                     // finaly delete the unneeded edge
                     dynamicEdges_.erase(toMergeEdgeIndex);
-
+                    //CGP_ASSERT_OP(hasEdge_OLD(toMergeEdgeIndex),==,false);
                 }
             }
             CGP_ASSERT_OP(edgeVec.size(),==,2)
             CGP_ASSERT_OP(edgeVec[0],!=,toDeleteEdgeIndex);
             CGP_ASSERT_OP(edgeVec[1],!=,toDeleteEdgeIndex);
             CGP_ASSERT_OP(edgeVec[0],!=,edgeVec[1]);
+            CGP_ASSERT_OP(hasEdge_OLD(newEdgeRep),==,true);
             CGP_ASSERT_OP(hasEdge(newEdgeRep),==,true);
             // CALL CALLBACKS TO MERGE EDGES
             for(size_t cb=0;cb<mergeEdgeCallBacks_.size();++cb){
