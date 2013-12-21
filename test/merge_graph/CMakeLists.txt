@@ -1,0 +1,1 @@
+VIGRA_ADD_TEST(test_merge_graph test.cxx)
