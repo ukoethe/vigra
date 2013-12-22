@@ -246,6 +246,126 @@ struct MergeGraphTest
     }
 };
 
+
+template<class LABEL_TYPE>
+struct PartitonTest
+{
+    typedef LABEL_TYPE LabelType;
+    typedef vigra::detail_merge_graph::Partition<LabelType> PartitionType;
+    typedef std::set<LabelType> SetType;
+    typedef std::vector<LabelType> VecType;
+    PartitonTest()
+    {
+
+    }
+
+    void trueReps(const PartitionType ufd,SetType &set){
+        set.clear();
+        for(LabelType i=0;i<ufd.numberOfElements();++i){
+            if(ufd.find(i)==i){
+                set.insert(i);
+            }
+        }
+    }
+
+    void trueReps(const PartitionType ufd,SetType &set,SetType & c){
+        set.clear();
+        for(LabelType i=0;i<ufd.numberOfElements();++i){
+            if(ufd.find(i)==i){
+                set.insert(i);
+            }
+        }
+        for(typename  SetType::const_iterator iter=c.begin();iter!=c.end();++iter){
+            const LabelType toRemove=*iter;
+            should(set.find(toRemove)!=set.end());
+            set.erase(toRemove);
+        }
+
+    }
+
+
+    void testReps(const PartitionType ufd,VecType & vec){
+        vec.clear();
+        vec.assign(ufd.begin(),ufd.end());
+    }
+
+
+
+
+    void iteratorTest1(){
+        PartitionType ufd(6);
+        SetType trueRep;
+        VecType testRep;
+
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+            
+
+        ufd.merge(0,1);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+        
+        ufd.merge(0,2);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+        
+        ufd.merge(0,3);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        ufd.merge(3,3);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        ufd.merge(4,5);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        ufd.merge(3,5);
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+    }
+
+    void iteratorTest2(){
+        PartitionType ufd(6);
+        SetType trueRep;
+        VecType testRep;
+
+        trueReps(ufd,trueRep);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        SetType erased;
+        erased.insert(0);
+        ufd.eraseElement(0);
+
+        trueReps(ufd,trueRep,erased);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        ufd.merge(1,2);
+        trueReps(ufd,trueRep,erased);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+
+        LabelType rep12 = ufd.find(1);
+        erased.insert(rep12);
+        ufd.eraseElement(rep12);
+        trueReps(ufd,trueRep,erased);
+        testReps(ufd,testRep);
+        shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
+    }
+    
+};
+
         
 struct MergeGraphTestSuite
 : public vigra::test_suite
@@ -253,9 +373,15 @@ struct MergeGraphTestSuite
     MergeGraphTestSuite()
     : vigra::test_suite("MergeGraphTestSuite")
     {   
+
+        add( testCase( &PartitonTest<vigra::UInt32>::iteratorTest1));
+        add( testCase( &PartitonTest<vigra::UInt32>::iteratorTest2));
+
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeSimpleDoubleEdgeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
+
+
 
     }
 };

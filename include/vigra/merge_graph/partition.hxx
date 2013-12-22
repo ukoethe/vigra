@@ -8,7 +8,10 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 
-namespace partition {
+namespace vigra {
+
+namespace detail_merge_graph {
+
 
 template<class T>
 class Partition;
@@ -117,37 +120,40 @@ public:
       return ConstRepIter<T>(*this,lastRep_+1);
    }
 
-   void eraseElement(const value_type & value){
-      const size_t notRep=value;
-      const size_t jumpMinus = jumpVec_[notRep].first;
-      const size_t jumpPlus  = jumpVec_[notRep].second;
+   void eraseElement(const value_type & value,const bool reduceSize=true){
+      const T notRep=value;
+      const T jumpMinus = jumpVec_[notRep].first;
+      const T jumpPlus  = jumpVec_[notRep].second;
       VIGRA_ASSERT_OP(jumpMinus+jumpPlus,>=,0);
 
       if(jumpMinus==0){
          VIGRA_ASSERT_OP(firstRep_,==,notRep);
-         const size_t nextRep = notRep+jumpPlus;
+         const T nextRep = notRep+jumpPlus;
          firstRep_=nextRep;
          jumpVec_[nextRep].first=0;
       }
       else if(jumpPlus==0){
          VIGRA_ASSERT_OP(lastRep_,==,notRep);
-         const size_t prevRep = notRep-jumpMinus;
+         const T prevRep = notRep-jumpMinus;
          lastRep_=prevRep;
          jumpVec_[prevRep].second=0;
 
       }
       else{
-         const size_t nextRep = notRep+jumpPlus;
-         const size_t prevRep = notRep-jumpMinus;
+         const T nextRep = notRep+jumpPlus;
+         const T prevRep = notRep-jumpMinus;
          jumpVec_[nextRep].first+=jumpVec_[notRep].first;
          jumpVec_[prevRep].second+=jumpVec_[notRep].second;
       }   
+      if(reduceSize){
+         --numberOfSets_;
+      }
    }
 
 private:
    std::vector<value_type> parents_;
    std::vector<value_type> ranks_;
-   std::vector< std::pair< size_t, size_t> > jumpVec_;
+   std::vector< std::pair< T, T> > jumpVec_;
    value_type firstRep_;
    value_type lastRep_;
    value_type numberOfElements_;
@@ -295,28 +301,29 @@ Partition<T>::merge
    // merge by rank
    element1 = find(element1);
    element2 = find(element2);
-   T rep,notRep;
-   if(ranks_[static_cast<SizeTType>(element1)] < ranks_[static_cast<SizeTType>(element2)]) {
-      parents_[static_cast<SizeTType>(element1)] = element2;
-      --numberOfSets_;
-      //rep=element2;
-      notRep=element1;
+   if(element1!=element2){
+      T notRep;
+      if(ranks_[static_cast<SizeTType>(element1)] < ranks_[static_cast<SizeTType>(element2)]) {
+         parents_[static_cast<SizeTType>(element1)] = element2;
+         --numberOfSets_;
+         //rep=element2;
+         notRep=element1;
+      }
+      else if(ranks_[static_cast<SizeTType>(element1)] > ranks_[static_cast<SizeTType>(element2)]) {
+         parents_[static_cast<SizeTType>(element2)] = element1;
+         --numberOfSets_;
+         //rep=element1;
+         notRep=element2;
+      }
+      else if(element1 != element2) {
+         parents_[static_cast<SizeTType>(element2)] = element1;
+         ++ranks_[static_cast<SizeTType>(element1)];
+         --numberOfSets_;
+         //rep=element1;
+         notRep=element2;
+      }
+      this->eraseElement(notRep,false);
    }
-   else if(ranks_[static_cast<SizeTType>(element1)] > ranks_[static_cast<SizeTType>(element2)]) {
-      parents_[static_cast<SizeTType>(element2)] = element1;
-      --numberOfSets_;
-      //rep=element1;
-      notRep=element2;
-   }
-   else if(element1 != element2) {
-      parents_[static_cast<SizeTType>(element2)] = element1;
-      ++ranks_[static_cast<SizeTType>(element1)];
-      --numberOfSets_;
-      //rep=element1;
-      notRep=element2;
-   }
-
-   this->eraseElement(notRep);
 }  
 
 /// Insert new sets.
@@ -412,6 +419,7 @@ Partition<T>::numberOfSets() const
    return numberOfSets_;
 }
 
-} // namespace partition
+} // namespace de
+} // namespace vigra
 
 #endif // #ifndef PARTITON_PARTITION_HXX

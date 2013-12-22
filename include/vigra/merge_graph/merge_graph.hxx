@@ -117,7 +117,7 @@ public:
 
 
     
-    typedef partition::Partition<LabelType> UfdType;
+    typedef detail_merge_graph::Partition<LabelType> UfdType;
     typedef typename UfdType::const_iterator ConstUdfIter;
 
     typedef ConstUdfIter EdgeIterator;
@@ -152,12 +152,12 @@ public:
         return initEdges_[index];
     }
 
-    const EdgeType & getEdge(const LabelType index){
-        return dynamicEdges_[index];
-    }
+    //const EdgeType & getEdge_OLD(const LabelType index){
+    //    return dynamicEdges_[index];
+    //}
 
     // _NEW means better implementation
-    EdgeType getEdge_NEW(const LabelType index)const{
+    EdgeType getEdge(const LabelType index)const{
         EdgeType edge = initEdges_[index];
         edge[0]=reprNode(edge[0]);
         edge[1]=reprNode(edge[1]);
@@ -172,24 +172,20 @@ public:
         return dynamicNodes_[index];
     }
 
-    bool hasEdge_OLD(const LabelType edgeIndex)const{
-        const bool hasEdge  = dynamicEdges_.find(edgeIndex)!=dynamicEdges_.end();
-        return hasEdge;
-    }
+    //bool hasEdge_OLD(const LabelType edgeIndex)const{
+    //    const bool hasEdge  = dynamicEdges_.find(edgeIndex)!=dynamicEdges_.end();
+    //    return hasEdge;
+    //}
 
     bool hasEdge(const LabelType edgeIndex)const{
-        bool ret;
         const LabelType rep = reprEdge(edgeIndex);
         if(rep!=edgeIndex){
-            ret = false;
-            CGP_ASSERT_OP(ret,==,this->hasEdge_OLD(edgeIndex));
+            return false;
         }
         else{
-            const EdgeType edge=getEdge_NEW(rep);
-            ret =( edge[0]!=edge[1] );
-            CGP_ASSERT_OP(ret,==,this->hasEdge_OLD(edgeIndex));
+            const EdgeType edge=getEdge(rep);
+            return( edge[0]!=edge[1] );
         }
-        return ret;
     }
 
     bool hasNode(const LabelType nodeIndex)const{
@@ -205,22 +201,14 @@ public:
     }
 
 
-    LabelType getAndEdge()const{
-        return dynamicEdges_.begin()->first;
-    }
-
-    template<class OUT_ITER>
-    void activeNodeLabels(OUT_ITER begin,OUT_ITER end)const;
-    template<class OUT_ITER>
-    void activeEdgeLabels(OUT_ITER begin,OUT_ITER end)const;
 
 
     template<class OUT_ITER>
     void stateOfInitalEdges(OUT_ITER begin,OUT_ITER end)const{
         const size_t d = std::distance(begin,end);
         for(size_t ie=0;ie<initNumberOfEdges();++ie){
-            const size_t rep=edgeUfd_.find(ie);
-            if(dynamicEdges_.find(rep)!=dynamicEdges_.end()){
+            const EdgeType edge=getEdge(ie);
+            if(edge[0]!=edge[1]){
                 begin[ie]=1;
             }
             else{
@@ -319,13 +307,13 @@ private:
     size_t nInitNodes_;
     size_t nInitEdges_;
 
-    partition::Partition<LabelType> nodeUfd_;
-    partition::Partition<LabelType> edgeUfd_;
+    UfdType nodeUfd_;
+    UfdType edgeUfd_;
 
     std::vector< EdgeType >     initEdges_;
     
 
-    EdgeMap dynamicEdges_;
+    //EdgeMap dynamicEdges_;
     NodeMap dynamicNodes_;
 
 
@@ -356,7 +344,7 @@ void MergeGraph<LABEL_TYPE>::setInitalEdge(const size_t initEdge,const size_t in
     // set up inital and dynamic edges
     initEdges_[initEdge].first =initNode0;
     initEdges_[initEdge].second=initNode1;
-    dynamicEdges_[initEdge] = initEdges_[initEdge];
+    //dynamicEdges_[initEdge] = initEdges_[initEdge];
 
     // set up the edges of a given region mapping
     dynamicNodes_[initNode0].edges_.insert(initEdge);
@@ -370,7 +358,8 @@ inline size_t MergeGraph<LABEL_TYPE>::numberOfNodes()const{
 
 template<class LABEL_TYPE>
 inline size_t MergeGraph<LABEL_TYPE>::numberOfEdges()const{
-    return dynamicEdges_.size();
+    //return dynamicEdges_.size();
+    return edgeUfd_.numberOfSets();
 }
 
 template<class LABEL_TYPE>
@@ -383,22 +372,6 @@ inline size_t MergeGraph<LABEL_TYPE>::initNumberOfEdges()const{
     return nInitEdges_;
 }
 
-template<class LABEL_TYPE>
-template<class OUT_ITER>
-void MergeGraph<LABEL_TYPE>::activeNodeLabels(OUT_ITER begin,OUT_ITER end)const{
-    CGP_ASSERT_OP(std::distance(begin,end),==,this->numberOfNodes());
-}
-
-template<class LABEL_TYPE>
-template<class OUT_ITER>
-void MergeGraph<LABEL_TYPE>::activeEdgeLabels(OUT_ITER begin,OUT_ITER end)const{
-    CGP_ASSERT_OP(std::distance(begin,end),==,this->numberOfEdges());
-
-    for(ConstEdgeMapIterator iter=dynamicEdges_.begin();iter!=dynamicEdges_.end();++iter){
-        *begin=iter->first;
-        ++begin;
-    }
-}
 
 template<class LABEL_TYPE>
 void MergeGraph<LABEL_TYPE>::mergeParallelEdges(){
@@ -435,7 +408,7 @@ void MergeGraph<LABEL_TYPE>::combineDoubleEdges(const std::vector<LABEL_TYPE> & 
 
 
 
-    CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
+    //CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
     // merge in ufd
     const LabelType firstElement=toCombine.front();
     for(size_t i=1;i<toCombine.size();++i){
@@ -443,16 +416,17 @@ void MergeGraph<LABEL_TYPE>::combineDoubleEdges(const std::vector<LABEL_TYPE> & 
     }
     // new representative index
     const LabelType newIndex=edgeUfd_.find(firstElement);
-
+    CGP_ASSERT_OP(hasEdge(newIndex),==,true);
     // delete |toCombine|-1 edges in dynamic map
+    /*
     for(size_t i=0;i<toCombine.size();++i){
         if(toCombine[i]!=newIndex){
-            const bool found = static_cast<bool>(dynamicEdges_.find(toCombine[i])!=dynamicEdges_.end());
-            CGP_ASSERT_OP(found,==,true);
-            dynamicEdges_.erase(toCombine[i]);
+            //const bool found = static_cast<bool>(dynamicEdges_.find(toCombine[i])!=dynamicEdges_.end());
+            //CGP_ASSERT_OP(hasEdge(toCombine[i]),==,true)
+            //dynamicEdges_.erase(toCombine[i]);
         }
     }
-
+    */
     /*
     // call registerMaped edge maps merge
     for(size_t m=0; 
@@ -485,7 +459,7 @@ void MergeGraph<LABEL_TYPE>::combineDoubleEdges(const std::vector<LABEL_TYPE> & 
         }
     }
 
-    CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
+    //CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
 }
 
 template<class LABEL_TYPE>
@@ -504,11 +478,12 @@ void MergeGraph<LABEL_TYPE>::fillDoubleMapAndRelabelNodes(
         const LabelType outEdgeIndex = *edgeIter;
         //CGP_ASSERT_OP(outEdgeIndex,!=,edgeIndex);
 
-        const LabelType oldNodes[2]= {dynamicEdges_[outEdgeIndex].first,dynamicEdges_[outEdgeIndex].second };
+        const EdgeType  oldEdge    = this->getEdge(outEdgeIndex);
+        //const LabelType oldNodes[2]= {dynamicEdges_[outEdgeIndex].first,dynamicEdges_[outEdgeIndex].second };
         // do the relabling 
         LabelType newNodes[2]={
-            oldNodes[0]==relabelFrom ? relabelTo : oldNodes[0] , 
-            oldNodes[1]==relabelFrom ? relabelTo : oldNodes[1]
+            oldEdge[0]==relabelFrom ? relabelTo : oldEdge[0] , 
+            oldEdge[1]==relabelFrom ? relabelTo : oldEdge[1]
         };
         if(newNodes[1]<newNodes[0]){
             std::swap(newNodes[1],newNodes[0]);
@@ -517,7 +492,7 @@ void MergeGraph<LABEL_TYPE>::fillDoubleMapAndRelabelNodes(
         doubleMap[key].push_back(outEdgeIndex);
 
         // make regions of the edges tidy (even if they might me merged later)
-
+        /*
         if(oldNodes[0]==relabelFrom ){
             dynamicEdges_[outEdgeIndex].first = relabelTo;
         }
@@ -527,6 +502,7 @@ void MergeGraph<LABEL_TYPE>::fillDoubleMapAndRelabelNodes(
         if(oldNodes[0]==relabelFrom && oldNodes[1]==relabelFrom){
             CGP_ASSERT_OP(true,==,false);
         }
+        */
 
     }
 }
@@ -539,14 +515,13 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
     // assertions that edge is active and
     // its own repr.
     CGP_ASSERT_OP(reprEdge(toDeleteEdgeIndex),==,toDeleteEdgeIndex);
-    CGP_ASSERT_OP(hasEdge_OLD(toDeleteEdgeIndex),==,true);
     CGP_ASSERT_OP(hasEdge(toDeleteEdgeIndex),==,true);
 
-
+    const EdgeType toDeleteEdge = getEdge(toDeleteEdgeIndex);
     //const size_t nodes[2]= {dynamicEdges_[toDeleteEdgeIndex].first,dynamicEdges_[toDeleteEdgeIndex].second };
     std::vector<size_t> nodes(2);
-    nodes[0]=dynamicEdges_[toDeleteEdgeIndex].first;
-    nodes[1]=dynamicEdges_[toDeleteEdgeIndex].second;
+    nodes[0]=toDeleteEdge[0];
+    nodes[1]=toDeleteEdge[1];
     CGP_ASSERT_OP(nodes[0],!=,nodes[1]);
 
     for(size_t n=0;n<2;++n){
@@ -580,7 +555,7 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
     // delete the edge which has been between those two regions
     // which we merge (since this edge is the one getting deleted)
     newFormedNode.eraseEdge(toDeleteEdgeIndex);
-    dynamicEdges_.erase(toDeleteEdgeIndex);
+    //dynamicEdges_.erase(toDeleteEdgeIndex);
     CGP_ASSERT_OP(newFormedNode.numberOfEdges(),==,edgeSizeRep+edgeSizeNotRep-2);
 
 
@@ -636,18 +611,20 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
 
                     // delete the edge from the new formed region
                     newFormedNode.edges_.erase(toMergeEdgeIndex);
-                    CGP_ASSERT_OP(hasEdge_OLD(toMergeEdgeIndex),==,true);
+
+                    //  not true any more
+                    //CGP_ASSERT_OP(hasEdge(toMergeEdgeIndex),==,true);
                     
 
                     // at least one of the nodes of the edge "toMergeEdgeIndex" must be the "newFormedNode"
                     //  - we want to get the nodes adjacent to the "newFormedNode"
                     //CGP_ASSERT_OP(dynamicEdges_[toMergeEdgeIndex].hasNode(newNodeRep),==,true);
-                    const size_t adjacentNodeIndex = dynamicEdges_[toMergeEdgeIndex].otherNode(newNodeRep);
+                    const size_t adjacentNodeIndex = getEdge(toMergeEdgeIndex).otherNode(newNodeRep);
 
                     dynamicNodes_[adjacentNodeIndex].eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                     
                     // finaly delete the unneeded edge
-                    dynamicEdges_.erase(toMergeEdgeIndex);
+                    //dynamicEdges_.erase(toMergeEdgeIndex);
                     //CGP_ASSERT_OP(hasEdge_OLD(toMergeEdgeIndex),==,false);
                 }
             }
@@ -655,7 +632,6 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
             CGP_ASSERT_OP(edgeVec[0],!=,toDeleteEdgeIndex);
             CGP_ASSERT_OP(edgeVec[1],!=,toDeleteEdgeIndex);
             CGP_ASSERT_OP(edgeVec[0],!=,edgeVec[1]);
-            CGP_ASSERT_OP(hasEdge_OLD(newEdgeRep),==,true);
             CGP_ASSERT_OP(hasEdge(newEdgeRep),==,true);
             // CALL CALLBACKS TO MERGE EDGES
             for(size_t cb=0;cb<mergeEdgeCallBacks_.size();++cb){
