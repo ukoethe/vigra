@@ -46,6 +46,10 @@ struct MergeGraphTest
 {
     typedef LABEL_TYPE LabelType;
     typedef vigra::MergeGraph<LabelType> MergeGraphType;
+    typedef typename MergeGraphType::NodeType NodeType;
+    typedef typename MergeGraphType::EdgeType EdgeType;
+    typedef std::vector<LabelType> Lvec;
+    typedef std::set<LabelType>    Lset;
 
     MergeGraphTest()
     {
@@ -254,26 +258,32 @@ struct MergeGraphTest
         //   3 | 4 | 5
         //   _   _   _
         //   6 | 7 | 8
+        Lset nodeSet;
+        Lvec nodeVec;
+        Lset edgeSet;
+        Lvec edgeVec;
+
+
         const size_t nChainNodes  = 9;
         const size_t nChainEdges  = 12;
         // 0 - 1 - 2 - .. nChainNodes-1
         MergeGraphType graph(nChainNodes,nChainEdges);
-        graph.setInitalEdge(0, 0,1);
-        graph.setInitalEdge(1, 1,2);
+        graph.setInitalEdge(0, 0,1);  const size_t e01=0;
+        graph.setInitalEdge(1, 1,2);  const size_t e12=1;
 
-        graph.setInitalEdge(2, 3,4);
-        graph.setInitalEdge(3, 4,5);
+        graph.setInitalEdge(2, 3,4);  const size_t e34=2;
+        graph.setInitalEdge(3, 4,5);  const size_t e45=3;
 
-        graph.setInitalEdge(4, 6,7);
-        graph.setInitalEdge(5, 7,8);
+        graph.setInitalEdge(4, 6,7);  const size_t e67=4;
+        graph.setInitalEdge(5, 7,8);  const size_t e78=5;
 
-        graph.setInitalEdge(6, 0,3);
-        graph.setInitalEdge(7, 1,4);
-        graph.setInitalEdge(8, 2,5);
+        graph.setInitalEdge(6, 0,3);  const size_t e03=6;
+        graph.setInitalEdge(7, 1,4);  const size_t e14=7;
+        graph.setInitalEdge(8, 2,5);  const size_t e25=8;
 
-        graph.setInitalEdge(9 , 3,6);
-        graph.setInitalEdge(10, 4,7);
-        graph.setInitalEdge(11, 5,8);
+        graph.setInitalEdge(9 , 3,6); const size_t e36=9;
+        graph.setInitalEdge(10, 4,7); const size_t e47=10;
+        graph.setInitalEdge(11, 5,8); const size_t e58=11;
 
         should(graph.numberOfNodes()==9);
         should(graph.numberOfEdges()==12);
@@ -291,17 +301,49 @@ struct MergeGraphTest
         // merge edge between 3-4
         // this will reduce the number of active edges by 1:
         // edge 2 will dissaper
+
+        //   0 | 1 | 2 
+        //   _  _   _
+        //   3   4 | 5
+        //   _   _   _
+        //   6 | 7 | 8
         graph.mergeRegions(2);
         should(graph.numberOfNodes()==8);
         should(graph.numberOfEdges()==11);
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
         edgeStateTrue[2]=0;
         shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
+        should(graph.reprNode(3)==graph.reprNode(4));
+        
+        const LabelType rep34 = graph.reprNode(3);
+        const LabelType del34 = (rep34 == 3 ? 4: 3);
 
-
-
-
-
+        const NodeType & n34=graph.getNode(graph.reprNode(3));
+        should(n34.numberOfEdges()==5);
+        should(n34.hasEdge(graph.reprEdge(e03)));  // 0-3
+        should(n34.hasEdge(graph.reprEdge(e14)));  // 1-4
+        should(n34.hasEdge(graph.reprEdge(e36)));  // 3-6
+        should(n34.hasEdge(graph.reprEdge(e47)));  // 4-7
+        should(n34.hasEdge(graph.reprEdge(e45)));  // 4-5
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==8);
+        should(nodeVec.size()==8);
+        should(nodeSet.find(rep34)!=nodeSet.end());
+        should(nodeSet.find(del34)==nodeSet.end());
+        should(nodeSet.find(0)!=nodeSet.end());
+        should(nodeSet.find(1)!=nodeSet.end());
+        should(nodeSet.find(2)!=nodeSet.end());
+        should(nodeSet.find(5)!=nodeSet.end());
+        should(nodeSet.find(6)!=nodeSet.end());
+        should(nodeSet.find(7)!=nodeSet.end());
+        // check representative edges
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesBegin());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesBegin());
+        should(edgeSet.size()==11);
+        should(edgeVec.size()==11);
     }
 
 };
