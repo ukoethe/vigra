@@ -201,6 +201,10 @@ public:
     }
 
 
+    const bool stateOfInitalEdge(const LabelType initalEdge)const{
+        const EdgeType edge=getEdge(initalEdge);
+        return (edge[0]!=edge[1]);
+    }
 
 
     template<class OUT_ITER>

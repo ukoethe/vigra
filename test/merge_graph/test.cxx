@@ -244,6 +244,66 @@ struct MergeGraphTest
             should(graph.numberOfNodes()==nChainNodes-e-1);
         }
     }
+
+    void testGrid()
+    {
+        // 3x3
+        //
+        //   0 | 1 | 2 
+        //   _  _   _
+        //   3 | 4 | 5
+        //   _   _   _
+        //   6 | 7 | 8
+        const size_t nChainNodes  = 9;
+        const size_t nChainEdges  = 12;
+        // 0 - 1 - 2 - .. nChainNodes-1
+        MergeGraphType graph(nChainNodes,nChainEdges);
+        graph.setInitalEdge(0, 0,1);
+        graph.setInitalEdge(1, 1,2);
+
+        graph.setInitalEdge(2, 3,4);
+        graph.setInitalEdge(3, 4,5);
+
+        graph.setInitalEdge(4, 6,7);
+        graph.setInitalEdge(5, 7,8);
+
+        graph.setInitalEdge(6, 0,3);
+        graph.setInitalEdge(7, 1,4);
+        graph.setInitalEdge(8, 2,5);
+
+        graph.setInitalEdge(9 , 3,6);
+        graph.setInitalEdge(10, 4,7);
+        graph.setInitalEdge(11, 5,8);
+
+        should(graph.numberOfNodes()==9);
+        should(graph.numberOfEdges()==12);
+        
+
+        // check inital values bevore any merges
+        bool edgeStateTrue[12]  ={1,1,1,1,1,1,1,1,1,1,1,1};
+        bool edgeStateCheck[12] ={0,0,0,0,0,0,0,0,0,0,0,0};
+
+
+        graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
+        shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
+
+
+        // merge edge between 3-4
+        // this will reduce the number of active edges by 1:
+        // edge 2 will dissaper
+        graph.mergeRegions(2);
+        should(graph.numberOfNodes()==8);
+        should(graph.numberOfEdges()==11);
+        graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
+        edgeStateTrue[2]=0;
+        shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
+
+
+
+
+
+    }
+
 };
 
 
@@ -380,7 +440,7 @@ struct MergeGraphTestSuite
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeSimpleDoubleEdgeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
-
+        add( testCase( &MergeGraphTest<vigra::UInt32>::testGrid));
 
 
     }
