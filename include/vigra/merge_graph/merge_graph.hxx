@@ -114,6 +114,30 @@ private:
     MergeGraph( const MergeGraph& other );      // non construction-copyable
     MergeGraph& operator=( const MergeGraph& ); // non copyable
 public:
+
+
+    
+    typedef partition::Partition<LabelType> UfdType;
+    typedef typename UfdType::const_iterator ConstUdfIter;
+
+    typedef ConstUdfIter EdgeIterator;
+    typedef ConstUdfIter NodeIterator;
+
+    EdgeIterator edgesBegin()const{
+        return edgeUfd_.begin();
+    }
+    EdgeIterator edgesEnd()const{
+        return edgeUfd_.end();
+    }
+
+    NodeIterator nodesBegin()const{
+        return nodeUfd_.begin();
+    }
+    NodeIterator nodesEnd()const{
+        return nodeUfd_.end();
+    }
+    
+
     MergeGraph(const size_t nNodes,const size_t nEdges);
     void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
 
@@ -569,7 +593,7 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
         nodeMaps_[m]->merge(nodes,newNodeRep);
     }
     */
-
+    edgeUfd_.eraseElement(toDeleteEdgeIndex);
 
     // construct the "DoubleMap"
     // - if an vector in the map has a size >=2 

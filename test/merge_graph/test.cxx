@@ -52,7 +52,7 @@ struct MergeGraphTest
 
     }
     
-    void constructorTest()
+    void mergeSimpleDoubleEdgeTest()
     {
         MergeGraphType graph(4,5);
         // 2x2 grid graph
@@ -157,6 +157,21 @@ struct MergeGraphTest
         graph.setInitalEdge(0,0,1);
         graph.setInitalEdge(1,0,2);
         graph.setInitalEdge(2,1,2);
+
+        {
+        std::vector<LabelType> activeEdgeVec(graph.edgesBegin(),graph.edgesEnd());
+        should(activeEdgeVec.size() == 3);
+        should(activeEdgeVec[0] == 0);
+        should(activeEdgeVec[1] == 1);
+        should(activeEdgeVec[2] == 2);
+        }
+
+        std::vector<LabelType> activeNodes(graph.nodesBegin(),graph.nodesEnd());
+        should(activeNodes.size() == 3);
+        should(activeNodes[0] == 0);
+        should(activeNodes[1] == 1);
+        should(activeNodes[2] == 2);
+
         should(graph.numberOfNodes() == 3);
         should(graph.numberOfEdges() == 3);
 
@@ -177,8 +192,10 @@ struct MergeGraphTest
         graph.mergeRegions(0);
         should(graph.numberOfNodes() == 2);
         should(graph.numberOfEdges() == 1);
-
-
+        {
+        std::vector<LabelType> activeEdgeVec(graph.edgesBegin(),graph.edgesEnd());
+        should(activeEdgeVec.size() == 1);
+        }
 
         should(graph.reprNode(0)==graph.reprNode(1));
         should(graph.reprNode(0)!=graph.reprNode(2));
@@ -212,6 +229,7 @@ struct MergeGraphTest
         // remove edges from 0 to nChainNodes -1
         for(size_t e=0;e<nChainNodes-1;++e){
             should(graph.numberOfEdges()==nChainEdges-e);
+            should(graph.numberOfNodes()==nChainNodes-e);
             // check that edge is there 
             should(graph.hasEdge(e));
             // fist node is rep of e, second node still untouched e+1
@@ -222,7 +240,8 @@ struct MergeGraphTest
             graph.mergeRegions(e);
 
             should(!graph.hasEdge(e));
-            
+            should(graph.numberOfEdges()==nChainEdges-e-1);
+            should(graph.numberOfNodes()==nChainNodes-e-1);
         }
     }
 };
@@ -234,7 +253,7 @@ struct MergeGraphTestSuite
     MergeGraphTestSuite()
     : vigra::test_suite("MergeGraphTestSuite")
     {   
-        add( testCase( &MergeGraphTest<vigra::UInt32>::constructorTest));
+        add( testCase( &MergeGraphTest<vigra::UInt32>::mergeSimpleDoubleEdgeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
 
