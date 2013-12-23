@@ -340,8 +340,8 @@ struct MergeGraphTest
         should(nodeSet.find(6)!=nodeSet.end());
         should(nodeSet.find(7)!=nodeSet.end());
         // check representative edges
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesBegin());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesBegin());
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
         should(edgeSet.size()==11);
         should(edgeVec.size()==11);
     }
