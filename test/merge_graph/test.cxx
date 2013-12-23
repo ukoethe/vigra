@@ -307,17 +307,15 @@ struct MergeGraphTest
         //   3   4 | 5
         //   _   _   _
         //   6 | 7 | 8
-        graph.mergeRegions(2);
+        graph.mergeRegions(e34);
         should(graph.numberOfNodes()==8);
         should(graph.numberOfEdges()==11);
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
-        edgeStateTrue[2]=0;
+        edgeStateTrue[e34]=0;
         shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
         should(graph.reprNode(3)==graph.reprNode(4));
-        
         const LabelType rep34 = graph.reprNode(3);
         const LabelType del34 = (rep34 == 3 ? 4: 3);
-
         const NodeType & n34=graph.getNode(graph.reprNode(3));
         should(n34.numberOfEdges()==5);
         should(n34.hasEdge(graph.reprEdge(e03)));  // 0-3
@@ -342,8 +340,64 @@ struct MergeGraphTest
         // check representative edges
         edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
         edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==11);
         should(edgeVec.size()==11);
+        should(edgeSet.find(e34)==edgeSet.end());
+        should(edgeSet.find(e01)!=edgeSet.end());
+        should(edgeSet.find(e12)!=edgeSet.end());
+        should(edgeSet.find(e03)!=edgeSet.end());
+        should(edgeSet.find(e14)!=edgeSet.end());
+        should(edgeSet.find(e25)!=edgeSet.end());
+        should(edgeSet.find(e45)!=edgeSet.end());
+        should(edgeSet.find(e36)!=edgeSet.end());
+        should(edgeSet.find(e47)!=edgeSet.end());
+        should(edgeSet.find(e58)!=edgeSet.end());
+        should(edgeSet.find(e67)!=edgeSet.end());
+        should(edgeSet.find(e78)!=edgeSet.end());
+
+        // merge edge between 6-7
+        // this will reduce the number of active edges by 2:
+        // edge e67 will dissaper and 3-6 4-7 will merge
+
+        //   0 | 1 | 2 
+        //   _  _   _
+        //   3   4 | 5
+        //   _   _   _
+        //   6   7 | 8
+        graph.mergeRegions(e67);
+        should(graph.numberOfNodes()==7);
+        should(graph.numberOfEdges()==9);
+        graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
+        edgeStateTrue[e67]=0;
+        shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
+        should(graph.reprNode(6)==graph.reprNode(7));
+        const LabelType rep67 = graph.reprNode(6);
+        const LabelType del67 = (rep67 == 6 ? 7: 6);
+        const NodeType & n67=graph.getNode(rep67);
+        should(graph.reprEdge(e36)==graph.reprEdge(e47));
+        should(n67.numberOfEdges()==2);
+        should(n67.hasEdge(graph.reprEdge(e36)));  // 0-3
+        should(n67.hasEdge(graph.reprEdge(e47)));  // 1-4
+        should(n67.hasEdge(graph.reprEdge(e78)));  // 3-6
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==7);
+        should(nodeVec.size()==7);
+        should(nodeSet.find(rep67)!=nodeSet.end());
+        should(nodeSet.find(del67)==nodeSet.end());
+        // check representative edges
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==9);
+        should(edgeVec.size()==9);
+        const size_t rep36_47 = graph.reprEdge(e36);
+        const size_t del36_47 = rep36_47 == e36 ? e47 : e36;
+        should(edgeSet.find(rep36_47)!=edgeSet.end());
+        should(edgeSet.find(del36_47)==edgeSet.end());
     }
 
 };
