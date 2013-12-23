@@ -421,7 +421,17 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e36));
         should(graph.numberOfNodes()==6);
         should(graph.numberOfEdges()==8);
-
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==6);
+        should(nodeVec.size()==6);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==8);
+        should(edgeVec.size()==8);
 
 
         // merge edge between 5-8  
@@ -436,6 +446,17 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e58));
         should(graph.numberOfNodes()==5);
         should(graph.numberOfEdges()==6);
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==5);
+        should(nodeVec.size()==5);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==6);
+        should(edgeVec.size()==6);
 
 
         // merge edge between 0-1 
@@ -450,6 +471,17 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e01));
         should(graph.numberOfNodes()==4);
         should(graph.numberOfEdges()==4);
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==4);
+        should(nodeVec.size()==4);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==4);
+        should(edgeVec.size()==4);
 
 
         // merge edge between 1-2
@@ -463,6 +495,17 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e12));
         should(graph.numberOfNodes()==3);
         should(graph.numberOfEdges()==3);
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==3);
+        should(nodeVec.size()==3);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==3);
+        should(edgeVec.size()==3);
 
 
         // merge edge between 4-5
@@ -477,6 +520,17 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e45));
         should(graph.numberOfNodes()==2);
         should(graph.numberOfEdges()==1);
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==2);
+        should(nodeVec.size()==2);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+        should(edgeSet.size()==1);
+        should(edgeVec.size()==1);
 
 
         // merge edge between 0-3
@@ -490,6 +544,22 @@ struct MergeGraphTest
         graph.mergeRegions(graph.reprEdge(e03));
         should(graph.numberOfNodes()==1);
         should(graph.numberOfEdges()==0);
+        // check representatives nodes
+        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
+        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
+        should(nodeSet.size()==1);
+        should(nodeVec.size()==1);
+        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
+        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
+
+        for(size_t i=0;i<edgeVec.size();++i){
+            std::cout<<edgeVec[i]<<"  ..... \n";
+        }
+
+        should(edgeSet.size()==0);
+        should(edgeVec.size()==0);
 
     }
 
