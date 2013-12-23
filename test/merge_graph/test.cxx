@@ -254,7 +254,7 @@ struct MergeGraphTest
         // 3x3
         //
         //   0 | 1 | 2 
-        //   _  _   _
+        //   _   _   _
         //   3 | 4 | 5
         //   _   _   _
         //   6 | 7 | 8
@@ -301,9 +301,9 @@ struct MergeGraphTest
         // merge edge between 3-4
         // this will reduce the number of active edges by 1:
         // edge 2 will dissaper
-
+        //
         //   0 | 1 | 2 
-        //   _  _   _
+        //   _   _   _
         //   3   4 | 5
         //   _   _   _
         //   6 | 7 | 8
@@ -362,9 +362,9 @@ struct MergeGraphTest
         // merge edge between 6-7
         // this will reduce the number of active edges by 2:
         // edge e67 will dissaper and 3-6 4-7 will merge
-
+        //
         //   0 | 1 | 2 
-        //   _  _   _
+        //   _   _   _
         //   3   4 | 5
         //   _   _   _
         //   6   7 | 8
@@ -400,11 +400,97 @@ struct MergeGraphTest
         should(edgeSet.size()==9);
         should(edgeVec.size()==9);
         const size_t rep36_47 = graph.reprEdge(e36);
-        const size_t del36_47 = rep36_47 == e36 ? e47 : e36;
+        const size_t del36_47 = (rep36_47 == e36 ? e47 : e36);
+        should(rep36_47 == e36 || rep36_47 == e47 );
+        should(rep36_47 != del36_47);
         should(graph.hasEdge(rep36_47));
         should(!graph.hasEdge(del36_47));
         should(edgeSet.find(rep36_47)!=edgeSet.end());
         should(edgeSet.find(del36_47)==edgeSet.end());
+
+
+        // merge edge between 3-6  (and 4-7)
+        // this will reduce the number of active edges by 1:
+        // edge  3-6 4-7 will dissapear
+        //
+        //   0 | 1 | 2 
+        //   _   _   _
+        //   3   4 | 5
+        //           _
+        //   6   7 | 8
+        graph.mergeRegions(graph.reprEdge(e36));
+        should(graph.numberOfNodes()==6);
+        should(graph.numberOfEdges()==8);
+
+
+
+        // merge edge between 5-8  
+        // this will reduce the number of active edges by 2:
+        // edge  5-8 will dissapear and 4-5 7-8 will be merged
+        //
+        //   0 | 1 | 2 
+        //   _   _   _
+        //   3   4 | 5
+        //            
+        //   6   7 | 8
+        graph.mergeRegions(graph.reprEdge(e58));
+        should(graph.numberOfNodes()==5);
+        should(graph.numberOfEdges()==6);
+
+
+        // merge edge between 0-1 
+        // this will reduce the number of active edges by 2:
+        // edge  0-1 will dissapear and 0-3 1-4 will be merged
+        //
+        //   0   1 | 2 
+        //   _   _   _
+        //   3   4 | 5
+        //            
+        //   6   7 | 8
+        graph.mergeRegions(graph.reprEdge(e01));
+        should(graph.numberOfNodes()==4);
+        should(graph.numberOfEdges()==4);
+
+
+        // merge edge between 1-2
+        // this will reduce the number of active edges by 1:
+        // edge  1-2 will dissaper
+        //   0   1   2 
+        //   _   _   _
+        //   3   4 | 5
+        //            
+        //   6   7 | 8
+        graph.mergeRegions(graph.reprEdge(e12));
+        should(graph.numberOfNodes()==3);
+        should(graph.numberOfEdges()==3);
+
+
+        // merge edge between 4-5
+        // this will reduce the number of active edges by 2:
+        // edge 4-5 will dissaper and the rest of edges
+        // will merge to a single edeg
+        //   0   1   2 
+        //   _   _   _
+        //   3   4   5
+        //            
+        //   6   7   8
+        graph.mergeRegions(graph.reprEdge(e45));
+        should(graph.numberOfNodes()==2);
+        should(graph.numberOfEdges()==1);
+
+
+        // merge edge between 0-3
+        // this will reduce the number of active edges by 1:
+        //
+        //   0   1   2 
+        //           
+        //   3   4   5
+        //            
+        //   6   7   8
+        graph.mergeRegions(graph.reprEdge(e03));
+        should(graph.numberOfNodes()==1);
+        should(graph.numberOfEdges()==0);
+
     }
 
 };
