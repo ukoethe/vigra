@@ -317,6 +317,9 @@ struct MergeGraphTest
         const LabelType rep34 = graph.reprNode(3);
         const LabelType del34 = (rep34 == 3 ? 4: 3);
         const NodeType & n34=graph.getNode(graph.reprNode(3));
+        should(graph.hasNode(rep34));
+        should(!graph.hasNode(del34));
+        should(!graph.hasEdge(e34));
         should(n34.numberOfEdges()==5);
         should(n34.hasEdge(graph.reprEdge(e03)));  // 0-3
         should(n34.hasEdge(graph.reprEdge(e14)));  // 1-4
@@ -388,6 +391,8 @@ struct MergeGraphTest
         should(nodeVec.size()==7);
         should(nodeSet.find(rep67)!=nodeSet.end());
         should(nodeSet.find(del67)==nodeSet.end());
+        should(graph.hasNode(rep67));
+        should(!graph.hasNode(del67));
         // check representative edges
         edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
         edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
@@ -396,6 +401,8 @@ struct MergeGraphTest
         should(edgeVec.size()==9);
         const size_t rep36_47 = graph.reprEdge(e36);
         const size_t del36_47 = rep36_47 == e36 ? e47 : e36;
+        should(graph.hasEdge(rep36_47));
+        should(!graph.hasEdge(del36_47));
         should(edgeSet.find(rep36_47)!=edgeSet.end());
         should(edgeSet.find(del36_47)==edgeSet.end());
     }
