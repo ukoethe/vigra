@@ -62,7 +62,7 @@ public:
     typedef typename MergeGraphType::LabelType LabelType;
     typedef T ValueType;
     typedef SELECTED SelectedStatisticsType;
-    typedef vigra::CoupledArrays<DIM, LabelType, ValueType > CoupledArraysType;
+    typedef vigra::CoupledArrays<DIM, ValueType ,LabelType> CoupledArraysType;
     typedef vigra::acc::AccumulatorChainArray<CoupledArraysType,SelectedStatisticsType> AccumulatorChainArrayType;
 
 
@@ -114,7 +114,7 @@ AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::AccumulatorChainMap(
     accChainArrayType_()
 {
     std::cout<<"extract Features\n";
-    //vigra::acc::extractFeatures(data,labels,accChainArrayType_);
+    vigra::acc::extractFeatures(data,labels,accChainArrayType_);
 }
 
 

@@ -39,6 +39,7 @@
 #include "vigra/multi_array.hxx"
 
 #include "vigra/merge_graph/merge_graph.hxx"
+#include "vigra/merge_graph/min_indexed_pq.hxx"
 #include "vigra/merge_graph/maps/accumulator_map.hxx"
 
 
@@ -252,7 +253,7 @@ struct MergeGraphTest
         }
     }
 
-    void testGrid()
+    void gridTest()
     {
         // 3x3
         //
@@ -592,8 +593,10 @@ struct MergeGraphTest
         labels(2)=2;
         labels(3)=3;
 
-        AccChainMapType accChainMap(graph,data,labels);
+        AccChainMapType nodeMap(graph,data,labels);
 
+        // register callbacks
+        graph.registerMergeNodeCallBackMemberFunction(nodeMap,& AccChainMapType::merge);
 
 
 
@@ -722,6 +725,27 @@ struct PartitonTest
     
 };
 
+
+struct MinIndexedPQTest
+{
+    typedef vigra::MinIndexedPQ<float> PqType;
+
+    MinIndexedPQTest()
+    {
+
+    }
+
+
+    void constructorTest(){
+        PqType pq(10);
+        should(pq.size()==0);
+        for(size_t i=0;i<10;++i){
+            should(!pq.contains(i));
+        }
+    }
+
+    
+};
         
 struct MergeGraphTestSuite
 : public vigra::test_suite
@@ -736,11 +760,11 @@ struct MergeGraphTestSuite
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeSimpleDoubleEdgeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
-        add( testCase( &MergeGraphTest<vigra::UInt32>::testGrid));
+        add( testCase( &MergeGraphTest<vigra::UInt32>::gridTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::accumulatorChaiMapTest));
 
 
-
+        add( testCase( &MinIndexedPQTest::constructorTest));
     }
 };
 

@@ -36,300 +36,322 @@ namespace vigra {
 template<class LABEL_TYPE>
 class MergeGraphNode{
 
-public:
-    typedef LABEL_TYPE LabelType;
+    public:
+        typedef LABEL_TYPE LabelType;
 
 
-    typedef typename std::set<LabelType>::const_iterator EdgeIterator;
+        typedef typename std::set<LabelType>::const_iterator EdgeIterator;
 
-    // query
-    size_t numberOfEdges()const{return edges_.size();}
-    bool hasEdge(const LabelType edge)const{return edges_.find(edge)!=edges_.end();}
+        // query
+        size_t numberOfEdges()const{return edges_.size();}
+        bool hasEdge(const LabelType edge)const{return edges_.find(edge)!=edges_.end();}
 
-    // modification
-    void  mergeEdges(const MergeGraphNode & other){
-        edges_.insert(other.edges_.begin(),other.edges_.end());
-    }
+        // modification
+        void  mergeEdges(const MergeGraphNode & other){
+            edges_.insert(other.edges_.begin(),other.edges_.end());
+        }
 
-    bool eraseEdge(const size_t edgeIndex){
-        return edges_.erase(edgeIndex)==1;
-    }
+        bool eraseEdge(const size_t edgeIndex){
+            return edges_.erase(edgeIndex)==1;
+        }
 
-    void eraseAndInsert(const LabelType removeEdge,const LabelType insertEdge){
-        edges_.erase(removeEdge);
-        edges_.insert(insertEdge);
-    }
+        void eraseAndInsert(const LabelType removeEdge,const LabelType insertEdge){
+            edges_.erase(removeEdge);
+            edges_.insert(insertEdge);
+        }
 
-    EdgeIterator edgesBegin()const{
-        return edges_.begin();
-    }
-    EdgeIterator edgesEnd()const{
-        return edges_.end();
-    }
+        EdgeIterator edgesBegin()const{
+            return edges_.begin();
+        }
+        EdgeIterator edgesEnd()const{
+            return edges_.end();
+        }
 
 
 
-//private:      
+   
     std::set<LabelType> edges_;
-
 };
 
 template<class LABEL_TYPE>
 class MergeGraphEdge{
 
-public:
-    typedef LABEL_TYPE LabelType;
-    bool hasNode(const LabelType node)const{
-        return node==first || node==second;
-    }
-    LabelType otherNode(const LabelType node)const{
-        CGP_ASSERT_OP(hasNode(node),==,true);
-        return (node==first ? second : first);
-    }
-    const LabelType & operator[](const LabelType i)const{
-        return (i==0 ? first : second);
-    }
-    LabelType & operator[](const LabelType i){
-        return (i==0 ? first : second);
-    }
-//private:
-    LabelType first;
-    LabelType second;
+    public:
+        typedef LABEL_TYPE LabelType;
+        bool hasNode(const LabelType node)const{
+            return node==first || node==second;
+        }
+        LabelType otherNode(const LabelType node)const{
+            CGP_ASSERT_OP(hasNode(node),==,true);
+            return (node==first ? second : first);
+        }
+        const LabelType & operator[](const LabelType i)const{
+            return (i==0 ? first : second);
+        }
+        LabelType & operator[](const LabelType i){
+            return (i==0 ? first : second);
+        }
+    //private:
+        LabelType first;
+        LabelType second;
+};
 
+
+template<class LABEL_TYPE>
+class MergeGraphCallbacks{
+    public:
+        typedef LABEL_TYPE  LabelType;
+        MergeGraphCallbacks(){}
+
+
+        template<class OBJ,class F>
+        void registerMergeNodeCallBackMemberFunction(OBJ & obj,F  f){
+            MergeNodeCallBackType internalF ;
+            //internalF = boost::bind(boost::mem_fn(&SelfType::merge), this , _1,_2);
+            internalF = boost::bind(boost::mem_fn(f), obj , _1,_2);
+            mergeNodeCallbacks_.push_back(internalF);
+        }
+    protected:
+        void callMergeNodeCallbacks(const LabelType a,const LabelType b){
+            for(size_t i=0;i<mergeNodeCallbacks_.size();++i){
+                mergeNodeCallbacks_[i](a,b);
+            }
+        }
+    private:
+        // node map callbacks typedefs
+        typedef boost::function<void (const LabelType,const LabelType)>  MergeNodeCallBackType;
+
+        // callback vectors
+        std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
 };
 
 template<class LABEL_TYPE>
-class MergeGraph{
-   
-
-public:
-    typedef LABEL_TYPE                  LabelType;
-    typedef MergeGraphEdge<LabelType>   EdgeType;
-    typedef MergeGraphNode<LabelType>   NodeType;
-    typedef std::map<vigra::UInt64 , std::vector<LabelType>  > DoubleMap;
-    // setup
-    
-private:
-    MergeGraph();                               // non empty-construction
-    MergeGraph( const MergeGraph& other );      // non construction-copyable
-    MergeGraph& operator=( const MergeGraph& ); // non copyable
-public:
+class MergeGraph : public MergeGraphCallbacks<LABEL_TYPE> {
+    public:
+        typedef LABEL_TYPE                  LabelType;
+        typedef MergeGraphEdge<LabelType>   EdgeType;
+        typedef MergeGraphNode<LabelType>   NodeType;
+        typedef std::map<vigra::UInt64 , std::vector<LabelType>  > DoubleMap;
+        // setup
+        
+    private:
+        MergeGraph();                               // non empty-construction
+        MergeGraph( const MergeGraph& other );      // non construction-copyable
+        MergeGraph& operator=( const MergeGraph& ); // non copyable
+    public:
 
 
-    
-    typedef detail_merge_graph::Partition<LabelType> UfdType;
-    typedef typename UfdType::const_iterator ConstUdfIter;
+        
+        typedef detail_merge_graph::Partition<LabelType> UfdType;
+        typedef typename UfdType::const_iterator ConstUdfIter;
 
-    typedef ConstUdfIter EdgeIterator;
-    typedef ConstUdfIter NodeIterator;
+        typedef ConstUdfIter EdgeIterator;
+        typedef ConstUdfIter NodeIterator;
 
-    EdgeIterator edgesBegin()const{
-        return edgeUfd_.begin();
-    }
-    EdgeIterator edgesEnd()const{
-        return edgeUfd_.end();
-    }
-
-    NodeIterator nodesBegin()const{
-        return nodeUfd_.begin();
-    }
-    NodeIterator nodesEnd()const{
-        return nodeUfd_.end();
-    }
-    
-
-    MergeGraph(const size_t nNodes,const size_t nEdges);
-    void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
-
-    // query
-    size_t numberOfNodes()const;
-    size_t numberOfEdges()const;
-    size_t initNumberOfNodes()const;
-    size_t initNumberOfEdges()const;
-
-
-    const EdgeType & getInitalEdge(const LabelType index){
-        return initEdges_[index];
-    }
-
-    //const EdgeType & getEdge_OLD(const LabelType index){
-    //    return dynamicEdges_[index];
-    //}
-
-    // _NEW means better implementation
-    EdgeType getEdge(const LabelType index)const{
-        EdgeType edge = initEdges_[index];
-        edge[0]=reprNode(edge[0]);
-        edge[1]=reprNode(edge[1]);
-        return edge;
-    }
-
-
-
-
-
-    const NodeType & getNode(const LabelType index){
-        return dynamicNodes_[index];
-    }
-
-    //bool hasEdge_OLD(const LabelType edgeIndex)const{
-    //    const bool hasEdge  = dynamicEdges_.find(edgeIndex)!=dynamicEdges_.end();
-    //    return hasEdge;
-    //}
-
-    bool hasEdge(const LabelType edgeIndex)const{
-        const LabelType rep = reprEdge(edgeIndex);
-        if(rep!=edgeIndex){
-            return false;
+        EdgeIterator edgesBegin()const{
+            return edgeUfd_.begin();
         }
-        else{
-            const EdgeType edge=getEdge(rep);
-            return( edge[0]!=edge[1] );
+        EdgeIterator edgesEnd()const{
+            return edgeUfd_.end();
         }
-    }
 
-    bool hasNode(const LabelType nodeIndex)const{
-        const bool hasNode  = dynamicNodes_.find(nodeIndex)!=dynamicNodes_.end();
-        return hasNode;
-    }
+        NodeIterator nodesBegin()const{
+            return nodeUfd_.begin();
+        }
+        NodeIterator nodesEnd()const{
+            return nodeUfd_.end();
+        }
+        
 
-    LabelType reprEdge(const LabelType edgeIndex)const{
-        return edgeUfd_.find(edgeIndex);
-    }
-    LabelType reprNode(const LabelType nodeIndex)const{
-        return nodeUfd_.find(nodeIndex);
-    }
+        MergeGraph(const size_t nNodes,const size_t nEdges);
+        void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
 
-
-    bool stateOfInitalEdge(const LabelType initalEdge)const{
-        const EdgeType edge=getEdge(initalEdge);
-        return (edge[0]!=edge[1]);
-    }
+        // query
+        size_t numberOfNodes()const;
+        size_t numberOfEdges()const;
+        size_t initNumberOfNodes()const;
+        size_t initNumberOfEdges()const;
 
 
-    template<class OUT_ITER>
-    void stateOfInitalEdges(OUT_ITER begin,OUT_ITER end)const{
-        const size_t d = std::distance(begin,end);
-        for(size_t ie=0;ie<initNumberOfEdges();++ie){
-            const EdgeType edge=getEdge(ie);
-            if(edge[0]!=edge[1]){
-                begin[ie]=1;
+        const EdgeType & getInitalEdge(const LabelType index){
+            return initEdges_[index];
+        }
+
+        //const EdgeType & getEdge_OLD(const LabelType index){
+        //    return dynamicEdges_[index];
+        //}
+
+        // _NEW means better implementation
+        EdgeType getEdge(const LabelType index)const{
+            EdgeType edge = initEdges_[index];
+            edge[0]=reprNode(edge[0]);
+            edge[1]=reprNode(edge[1]);
+            return edge;
+        }
+
+
+
+
+
+        const NodeType & getNode(const LabelType index){
+            return dynamicNodes_[index];
+        }
+
+        //bool hasEdge_OLD(const LabelType edgeIndex)const{
+        //    const bool hasEdge  = dynamicEdges_.find(edgeIndex)!=dynamicEdges_.end();
+        //    return hasEdge;
+        //}
+
+        bool hasEdge(const LabelType edgeIndex)const{
+            const LabelType rep = reprEdge(edgeIndex);
+            if(rep!=edgeIndex){
+                return false;
             }
             else{
-                begin[ie]=0;
+                const EdgeType edge=getEdge(rep);
+                return( edge[0]!=edge[1] );
             }
         }
-    }
+
+        bool hasNode(const LabelType nodeIndex)const{
+            const bool hasNode  = dynamicNodes_.find(nodeIndex)!=dynamicNodes_.end();
+            return hasNode;
+        }
+
+        LabelType reprEdge(const LabelType edgeIndex)const{
+            return edgeUfd_.find(edgeIndex);
+        }
+        LabelType reprNode(const LabelType nodeIndex)const{
+            return nodeUfd_.find(nodeIndex);
+        }
 
 
-    // modification
-    void mergeParallelEdges();
-
-    void mergeRegions(const LabelType edgeIndex);
-
-
-
-    // node map callbacks typedefs
-    typedef boost::function<void (const size_t,const size_t,const size_t)>  MergeEdgeCallBack;
-    typedef boost::function<void (const size_t) >                           EraseEdgeCallBack;
-    typedef boost::function<void (const size_t) >                           NhChangedEdgeCallBack;
+        bool stateOfInitalEdge(const LabelType initalEdge)const{
+            const EdgeType edge=getEdge(initalEdge);
+            return (edge[0]!=edge[1]);
+        }
 
 
-    typedef boost::signals2::signal<void (const size_t,const size_t,const size_t)>  MergeEdgeSignal;
-    typedef boost::signals2::signal<void (const size_t) >                           EraseEdgeSignal;
-    typedef boost::signals2::signal<void (const size_t) >                           NhChangedEdgeSignal;
-
-    void registerMergeEdgeCallBack(
-        MergeEdgeCallBack  callBack
-    ){
-        mergeEdgeCallBacks_.push_back(callBack);
-    }
-
-    void registgerEraseEdgeCallBack(
-        EraseEdgeCallBack  callBack
-    ){
-        eraseEdgeCallBacks_.push_back(callBack);
-    }
-
-    void registerNhChangedEdgeCallBack(
-        NhChangedEdgeCallBack  callBack
-    ){
-        nhChangedEdgeCallBacks_.push_back(callBack);
-    }
-    
-    template<class F>
-    void connectergeEdgeSignal(
-        F  callBack
-    ){
-        mergeEdgeSignal_.connect(callBack);
-    }
-
-    template<class F>
-    void connectEraseEdgeSignal(
-        F  callBack
-    ){
-        eraseEdgeSignal_.connect(callBack);
-    }
-
-    template<class F>
-    void connecthChangedEdgeSigna(
-        F  callBack
-    ){
-        nhChanendSignal_.connect(callBack);
-    }
- 
-    MergeEdgeSignal         mergeEdgeSignal_;
-    EraseEdgeSignal         eraseEdgeSignal_;
-    NhChangedEdgeSignal     nhChanendSignal_;
-    
-private:
+        template<class OUT_ITER>
+        void stateOfInitalEdges(OUT_ITER begin,OUT_ITER end)const{
+            const size_t d = std::distance(begin,end);
+            for(size_t ie=0;ie<initNumberOfEdges();++ie){
+                const EdgeType edge=getEdge(ie);
+                if(edge[0]!=edge[1]){
+                    begin[ie]=1;
+                }
+                else{
+                    begin[ie]=0;
+                }
+            }
+        }
 
 
-    std::vector<MergeEdgeCallBack>          mergeEdgeCallBacks_;
-    std::vector<EraseEdgeCallBack>          eraseEdgeCallBacks_;
-    std::vector<NhChangedEdgeCallBack>      nhChangedEdgeCallBacks_;
+        // modification
+        void mergeParallelEdges();
+
+        void mergeRegions(const LabelType edgeIndex);
 
 
 
+        // node map callbacks typedefs
+        typedef boost::function<void (const size_t,const size_t,const size_t)>  MergeEdgeCallBack;
+        typedef boost::function<void (const size_t) >                           EraseEdgeCallBack;
+        typedef boost::function<void (const size_t) >                           NhChangedEdgeCallBack;
 
 
-    typedef std::map<LabelType, EdgeType > EdgeMap;
-    typedef std::map<LabelType, NodeType > NodeMap;
+        typedef boost::signals2::signal<void (const size_t,const size_t,const size_t)>  MergeEdgeSignal;
+        typedef boost::signals2::signal<void (const size_t) >                           EraseEdgeSignal;
+        typedef boost::signals2::signal<void (const size_t) >                           NhChangedEdgeSignal;
+
+        void registerMergeEdgeCallBack(
+            MergeEdgeCallBack  callBack
+        ){
+            mergeEdgeCallBacks_.push_back(callBack);
+        }
+
+        void registgerEraseEdgeCallBack(
+            EraseEdgeCallBack  callBack
+        ){
+            eraseEdgeCallBacks_.push_back(callBack);
+        }
+
+        void registerNhChangedEdgeCallBack(
+            NhChangedEdgeCallBack  callBack
+        ){
+            nhChangedEdgeCallBacks_.push_back(callBack);
+        }
+        
+        template<class F>
+        void connectergeEdgeSignal(
+            F  callBack
+        ){
+            mergeEdgeSignal_.connect(callBack);
+        }
+
+        template<class F>
+        void connectEraseEdgeSignal(
+            F  callBack
+        ){
+            eraseEdgeSignal_.connect(callBack);
+        }
+
+        template<class F>
+        void connecthChangedEdgeSigna(
+            F  callBack
+        ){
+            nhChanendSignal_.connect(callBack);
+        }
+     
+        MergeEdgeSignal         mergeEdgeSignal_;
+        EraseEdgeSignal         eraseEdgeSignal_;
+        NhChangedEdgeSignal     nhChanendSignal_;
+        
+    private:
 
 
-    typedef typename EdgeMap::const_iterator ConstEdgeMapIterator;
-    typedef typename NodeMap::const_iterator ConstNodeMapIterator;
-
-
-    void combineDoubleEdges(const std::vector<LabelType> & ,const LabelType ,const LabelType );
-
-    
-
-
-    void fillDoubleMapAndRelabelNodes(const NodeType & node , DoubleMap & doubleMap,const LabelType relabelFrom,const LabelType relabelTo);
-
-    size_t nInitNodes_;
-    size_t nInitEdges_;
-
-    UfdType nodeUfd_;
-    UfdType edgeUfd_;
-
-    std::vector< EdgeType >     initEdges_;
-    
-
-    //EdgeMap dynamicEdges_;
-    NodeMap dynamicNodes_;
+        std::vector<MergeEdgeCallBack>          mergeEdgeCallBacks_;
+        std::vector<EraseEdgeCallBack>          eraseEdgeCallBacks_;
+        std::vector<NhChangedEdgeCallBack>      nhChangedEdgeCallBacks_;
 
 
 
 
+
+        typedef std::map<LabelType, EdgeType > EdgeMap;
+        typedef std::map<LabelType, NodeType > NodeMap;
+
+
+        typedef typename EdgeMap::const_iterator ConstEdgeMapIterator;
+        typedef typename NodeMap::const_iterator ConstNodeMapIterator;
+
+
+        void combineDoubleEdges(const std::vector<LabelType> & ,const LabelType ,const LabelType );
+
+        
+
+
+        void fillDoubleMapAndRelabelNodes(const NodeType & node , DoubleMap & doubleMap,const LabelType relabelFrom,const LabelType relabelTo);
+
+        size_t nInitNodes_;
+        size_t nInitEdges_;
+
+        UfdType nodeUfd_;
+        UfdType edgeUfd_;
+
+        std::vector< EdgeType >     initEdges_;
+        
+
+        //EdgeMap dynamicEdges_;
+        NodeMap dynamicNodes_;
 };
 
 
 
 template<class LABEL_TYPE>
 MergeGraph<LABEL_TYPE>::MergeGraph(const size_t nNodes,const size_t nEdges)
-:   nInitNodes_(nNodes),
+:   MergeGraphCallbacks<LABEL_TYPE>(),
+    nInitNodes_(nNodes),
     nInitEdges_(nEdges),
     nodeUfd_(nNodes),
     edgeUfd_(nEdges),
@@ -567,6 +589,7 @@ void MergeGraph<LABEL_TYPE>::mergeRegions(const LABEL_TYPE toDeleteEdgeIndex){
     // - we need to do this bevore any "merge" within the nodeMaps such that
     //   we can guarantee that the nodes maps are tidy when the edge-maps mergers
     //   are called
+    this->callMergeNodeCallbacks(newNodeRep,notNewNodeRep);
     /*
     for(size_t m=0;m<nodeMaps_.size();++m){
         nodeMaps_[m]->merge(nodes,newNodeRep);
