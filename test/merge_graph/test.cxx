@@ -36,8 +36,11 @@
 #include <iostream>
 #include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
-#include "vigra/merge_graph/merge_graph.hxx"
 #include "vigra/multi_array.hxx"
+
+#include "vigra/merge_graph/merge_graph.hxx"
+#include "vigra/merge_graph/maps/accumulator_map.hxx"
+
 
 using namespace vigra;
 
@@ -554,12 +557,46 @@ struct MergeGraphTest
         edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
 
-        for(size_t i=0;i<edgeVec.size();++i){
-            std::cout<<edgeVec[i]<<"  ..... \n";
-        }
-
         should(edgeSet.size()==0);
         should(edgeVec.size()==0);
+
+    }
+
+    void accumulatorChaiMapTest()
+    {
+        MergeGraphType graph(4,5);
+        // 2x2 grid graph
+        //  0 | 1
+        //  _   _ 
+        //  2 | 3
+
+        // set inital edges (with one double edge)
+        graph.setInitalEdge(0,0,1);
+        graph.setInitalEdge(1,2,3);
+        graph.setInitalEdge(2,0,2);
+        graph.setInitalEdge(3,1,3);
+        should(graph.numberOfNodes() == 4);
+        should(graph.numberOfEdges() == 5);
+
+        typedef vigra::acc::Select< vigra::acc::DataArg<1>, vigra::acc::LabelArg<2>, vigra::acc::Mean > AccChain;
+        typedef vigra::AccumulatorChainMap<MergeGraphType,2,float,AccChain > AccChainMapType;
+
+        typedef vigra::MultiArray<2,LabelType> LabelArrayType;
+        typedef vigra::MultiArray<2,float>     ValueTypeArrayType;
+
+        LabelArrayType     labels(typename LabelArrayType::difference_type(2,2));
+        ValueTypeArrayType data(typename ValueTypeArrayType::difference_type(2,2));
+
+        labels(0)=0;
+        labels(1)=1;
+        labels(2)=2;
+        labels(3)=3;
+
+        AccChainMapType accChainMap(graph,data,labels);
+
+
+
+
 
     }
 
@@ -700,6 +737,8 @@ struct MergeGraphTestSuite
         add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
         add( testCase( &MergeGraphTest<vigra::UInt32>::testGrid));
+        add( testCase( &MergeGraphTest<vigra::UInt32>::accumulatorChaiMapTest));
+
 
 
     }
