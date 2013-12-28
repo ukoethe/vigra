@@ -610,7 +610,7 @@ struct MergeGraphTest
         SumView sumView(nodeMap);
 
         // register callbacks
-        graph.registerMergeNodeCallBackMemberFunction(nodeMap,& AccChainMapType::merge);
+        graph.registerMergeNodeCallBack(nodeMap,& AccChainMapType::merge);
 
 
         //graph.mergeRegions(0);
