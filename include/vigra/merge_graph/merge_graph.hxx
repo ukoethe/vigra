@@ -24,127 +24,19 @@
 #include <vigra/multi_array.hxx>
 
 
+/* this project*/
+#include "partition.hxx"
+#include "macros.hxx"
+#include "merge_graph_node.hxx"
+#include "merge_graph_edge.hxx"
+#include "merge_graph_callbacks.hxx"
+
 /* this project (TO BE REFACTORED) */
 #include "partition.hxx"
 #include "macros.hxx"
 
 namespace vigra {
 
-
-
-
-template<class LABEL_TYPE>
-class MergeGraphNode{
-
-    public:
-        typedef LABEL_TYPE LabelType;
-
-
-        typedef typename std::set<LabelType>::const_iterator EdgeIterator;
-
-        // query
-        size_t numberOfEdges()const{return edges_.size();}
-        bool hasEdge(const LabelType edge)const{return edges_.find(edge)!=edges_.end();}
-
-        // modification
-        void  mergeEdges(const MergeGraphNode & other){
-            edges_.insert(other.edges_.begin(),other.edges_.end());
-        }
-
-        bool eraseEdge(const size_t edgeIndex){
-            return edges_.erase(edgeIndex)==1;
-        }
-
-        void eraseAndInsert(const LabelType removeEdge,const LabelType insertEdge){
-            edges_.erase(removeEdge);
-            edges_.insert(insertEdge);
-        }
-
-        EdgeIterator edgesBegin()const{
-            return edges_.begin();
-        }
-        EdgeIterator edgesEnd()const{
-            return edges_.end();
-        }
-
-
-
-   
-    std::set<LabelType> edges_;
-};
-
-template<class LABEL_TYPE>
-class MergeGraphEdge{
-
-    public:
-        typedef LABEL_TYPE LabelType;
-        bool hasNode(const LabelType node)const{
-            return node==first || node==second;
-        }
-        LabelType otherNode(const LabelType node)const{
-            CGP_ASSERT_OP(hasNode(node),==,true);
-            return (node==first ? second : first);
-        }
-        const LabelType & operator[](const LabelType i)const{
-            return (i==0 ? first : second);
-        }
-        LabelType & operator[](const LabelType i){
-            return (i==0 ? first : second);
-        }
-    //private:
-        LabelType first;
-        LabelType second;
-};
-
-
-template<class LABEL_TYPE>
-class MergeGraphCallbacks{
-    public:
-        typedef LABEL_TYPE  LabelType;
-        MergeGraphCallbacks(){}
-
-
-        template<class OBJ,class F>
-        void registerMergeNodeCallBack(OBJ & obj,F  f){
-            MergeNodeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
-            mergeNodeCallbacks_.push_back(internalF);
-        }
-        template<class OBJ,class F>
-        void registerMergeEdgeCallBack(OBJ & obj,F  f){
-            MergeEdgeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
-            mergeEdgeCallbacks_.push_back(internalF);
-        }
-        template<class OBJ,class F>
-        void registerEraseNodeCallBack(OBJ & obj,F  f){
-            EraseEdgeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
-            eraseEdgeCallbacks_.push_back(internalF);
-        }
-    protected:
-        void callMergeNodeCallbacks(const LabelType a,const LabelType b){
-            for(size_t i=0;i<mergeNodeCallbacks_.size();++i)
-                mergeNodeCallbacks_[i](a,b);
-        }
-        void callMergeEdgeCallbacks(const LabelType a,const LabelType b){
-            for(size_t i=0;i<mergeEdgeCallbacks_.size();++i)
-                mergeEdgeCallbacks_[i](a,b);
-        }
-        void callEraseEdgeCallbacks(const LabelType a){
-            for(size_t i=0;i<eraseEdgeCallbacks_.size();++i)
-                eraseEdgeCallbacks_[i](a);
-        }
-    private:
-        //callbacks typedefs
-        typedef boost::function<void (const LabelType,const LabelType)>  MergeNodeCallBackType;
-        typedef boost::function<void (const LabelType,const LabelType)>  MergeEdgeCallBackType;
-        typedef boost::function<void (const LabelType)>  EraseEdgeCallBackType;
-        // callback vectors
-        std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
-        std::vector<MergeEdgeCallBackType> mergeEdgeCallbacks_;
-        std::vector<EraseEdgeCallBackType> eraseEdgeCallbacks_;
-};
 
 template<class LABEL_TYPE>
 class MergeGraph : public MergeGraphCallbacks<LABEL_TYPE> {
