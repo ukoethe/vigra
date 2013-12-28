@@ -565,7 +565,7 @@ struct MergeGraphTest
 
     void accumulatorChaiMapTest()
     {
-        MergeGraphType graph(4,5);
+        MergeGraphType graph(4,4);
         // 2x2 grid graph
         //  0 | 1
         //  _   _ 
@@ -577,30 +577,54 @@ struct MergeGraphTest
         graph.setInitalEdge(2,0,2);
         graph.setInitalEdge(3,1,3);
         should(graph.numberOfNodes() == 4);
-        should(graph.numberOfEdges() == 5);
-
-        typedef vigra::acc::Select< vigra::acc::DataArg<1>, vigra::acc::LabelArg<2>, vigra::acc::Mean > AccChain;
-        typedef vigra::AccumulatorChainMap<MergeGraphType,2,float,AccChain > AccChainMapType;
+        should(graph.numberOfEdges() == 4);
+        typedef  float MapValueType;
+        typedef vigra::acc::Select< vigra::acc::DataArg<1>, vigra::acc::LabelArg<2>,vigra::acc::Sum, vigra::acc::Mean ,vigra::acc::Count> AccChain;
+        typedef vigra::AccumulatorChainMap<MergeGraphType,2,MapValueType,AccChain > AccChainMapType;
 
         typedef vigra::MultiArray<2,LabelType> LabelArrayType;
-        typedef vigra::MultiArray<2,float>     ValueTypeArrayType;
+        typedef vigra::MultiArray<2,MapValueType>     ValueTypeArrayType;
 
         LabelArrayType     labels(typename LabelArrayType::difference_type(2,2));
         ValueTypeArrayType data(typename ValueTypeArrayType::difference_type(2,2));
 
-        labels(0)=0;
-        labels(1)=1;
-        labels(2)=2;
-        labels(3)=3;
+
+        // view map 
+
+        typedef AccumulatorChainMapTagView<AccChainMapType,vigra::acc::Sum> SumView;
+
+
+
+        labels(0,0)=0;
+        labels(1,0)=1;
+        labels(0,1)=2;
+        labels(1,1)=3;
+
+
+        data(0,0)=1;
+        data(1,0)=2;
+        data(0,1)=3;
+        data(1,1)=4;
 
         AccChainMapType nodeMap(graph,data,labels);
+        SumView sumView(nodeMap);
 
         // register callbacks
         graph.registerMergeNodeCallBackMemberFunction(nodeMap,& AccChainMapType::merge);
 
 
+        //graph.mergeRegions(0);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(0))==1);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(1))==2);
 
 
+
+        should(sumView[graph.reprNode(0)]==1);
+        should(sumView[graph.reprNode(1)]==2);
+        graph.mergeRegions(0);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(0))==3);
+        should(nodeMap.get<vigra::acc::Sum>(graph.reprNode(0))==3);
+        should(sumView[graph.reprNode(0)]==3);
     }
 
 };

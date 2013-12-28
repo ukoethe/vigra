@@ -108,7 +108,7 @@ class MergeGraphCallbacks{
         void registerMergeNodeCallBackMemberFunction(OBJ & obj,F  f){
             MergeNodeCallBackType internalF ;
             //internalF = boost::bind(boost::mem_fn(&SelfType::merge), this , _1,_2);
-            internalF = boost::bind(boost::mem_fn(f), obj , _1,_2);
+            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
             mergeNodeCallbacks_.push_back(internalF);
         }
     protected:

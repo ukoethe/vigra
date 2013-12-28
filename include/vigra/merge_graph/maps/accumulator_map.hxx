@@ -23,24 +23,8 @@ namespace acc_map_detail{
 }
 
 
-/*
-using namespace vigra::acc;
-vigra::MultiArray<3, double> data(...);
-vigra::MultiArray<3, int> labels(...);
-AccumulatorChainArray<CoupledArrays<3, double, int>,
-Select<DataArg<1>, LabelArg<2>, // in which array to look (coordinates are always arg 0)
-Mean, Variance, //per-region statistics over values
-Coord<Mean>, Coord<Variance>, //per-region statistics over coordinates
-Global<Mean>, Global<Variance> > > //global statistics
-a;
-a.ignoreLabel(0); //statistics will not be computed for region 0 (e.g. background)
-extractFeatures(data, labels, a);
-int regionlabel = ...;
-std::cout << get<Mean>(a, regionlabel) << std::endl; //get Mean of region with label 'regionlabel'
-*/
 
-
-/** \brief Base class for any GraphMap (EdgeMap/NodeMap) which uses vigra::AccumulatorChain as ValueType
+/** \brief an Graph map which stores an vigra::AccumulatorChainArray 
 
 <b>\#include</b> \<vigra/merge_graph/maps/accumulator_chain_map.hxx\> <br/>
 Namespace: vigra
@@ -86,10 +70,51 @@ public:
     * @return void/nothing
     */
     void merge(const LabelType a,const LabelType b);
+
+
+    template<class TAG>
+    struct TagResult
+    {
+        typedef typename acc::LookupTag<TAG, AccumulatorChainArrayType>::result_type result_type;
+    };
+
+
+    template<class TAG>
+    typename acc::LookupTag<TAG, AccumulatorChainArrayType>::result_type
+    get(const LabelType label)const{
+        return acc::getAccumulator<TAG>(accChainArray_, label).get();
+    }
+
+    const AccumulatorChainArrayType & accChainArray()const{
+        return accChainArray_;
+    }
+
 private:
-    AccumulatorChainArrayType accChainArrayType_;
+    AccumulatorChainArrayType accChainArray_;
 };
 
+
+
+
+template<class ACC_CHAIN_MAP,class TAG>
+class AccumulatorChainMapTagView{
+    public:
+        typedef ACC_CHAIN_MAP AccumulatorChainMapType;
+        typedef typename AccumulatorChainMapType::LabelType LabelType;
+        typedef typename AccumulatorChainMapType::AccumulatorChainArrayType AccumulatorChainArrayType;
+        typedef typename acc::LookupTag<TAG, AccumulatorChainArrayType>::result_type result_type;
+
+        AccumulatorChainMapTagView(const AccumulatorChainMapType & accChainMap)
+        : accChainMap_(accChainMap){
+
+        }
+
+        result_type operator[](const LabelType label)const{
+            return accChainMap_. template  get<TAG>(label);
+        }
+    private:
+        const AccumulatorChainMapType & accChainMap_;
+};
 
 
 
@@ -99,7 +124,7 @@ void AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::merge(
     typename  AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::LabelType a,
     typename  AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::LabelType b
 ){
-    accChainArrayType_.merge(a,b);
+    accChainArray_.merge(a,b);
 }
 
 
@@ -111,10 +136,10 @@ AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::AccumulatorChainMap(
     typename  AccumulatorChainMap<MERGE_GRAPH,DIM,T,SELECTED,DYNAMIC>::LabelArrayType       & labels
 )
 :   GraphMapBase<MERGE_GRAPH>(graph),
-    accChainArrayType_()
+    accChainArray_()
 {
-    std::cout<<"extract Features\n";
-    vigra::acc::extractFeatures(data,labels,accChainArrayType_);
+    accChainArray_.setMaxRegionLabel(graph.initNumberOfNodes()-1);
+    vigra::acc::extractFeatures(data,labels,accChainArray_);
 }
 
 
