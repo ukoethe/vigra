@@ -14,6 +14,12 @@ template<class LABEL_TYPE>
 class MergeGraphCallbacks{
     public:
         typedef LABEL_TYPE  LabelType;
+        //callbacks typedefs
+        typedef boost::function<void (const LabelType,const LabelType)>  MergeItemsCallBackType;
+        typedef MergeItemsCallBackType                                   MergeNodeCallBackType;
+        typedef MergeItemsCallBackType                                   MergeEdgeCallBackType;
+        typedef boost::function<void (const LabelType)>                  EraseEdgeCallBackType;
+
         MergeGraphCallbacks(){}
 
 
@@ -35,6 +41,18 @@ class MergeGraphCallbacks{
             internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
             eraseEdgeCallbacks_.push_back(internalF);
         }
+
+
+        void registerMergeNodeCallBack(MergeNodeCallBackType  f){
+            mergeNodeCallbacks_.push_back(f);
+        }
+        void registerMergeEdgeCallBack(MergeEdgeCallBackType  f){
+            mergeEdgeCallbacks_.push_back(f);
+        }
+        void registerEraseNodeCallBack(EraseEdgeCallBackType  f){
+            eraseEdgeCallbacks_.push_back(f);
+        }
+
     protected:
         void callMergeNodeCallbacks(const LabelType a,const LabelType b){
             for(size_t i=0;i<mergeNodeCallbacks_.size();++i)
@@ -49,10 +67,7 @@ class MergeGraphCallbacks{
                 eraseEdgeCallbacks_[i](a);
         }
     private:
-        //callbacks typedefs
-        typedef boost::function<void (const LabelType,const LabelType)>  MergeNodeCallBackType;
-        typedef boost::function<void (const LabelType,const LabelType)>  MergeEdgeCallBackType;
-        typedef boost::function<void (const LabelType)>  EraseEdgeCallBackType;
+
         // callback vectors
         std::vector<MergeNodeCallBackType> mergeNodeCallbacks_;
         std::vector<MergeEdgeCallBackType> mergeEdgeCallbacks_;
