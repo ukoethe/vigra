@@ -1,3 +1,5 @@
+#ifndef VIGRA_MIN_INDEXED_PQ_HXX
+#define VIGRA_MIN_INDEXED_PQ_HXX
 /* vigra */
 #include <vigra/multi_array.hxx>
 #include <vigra/tinyvector.hxx>
@@ -253,3 +255,5 @@ namespace vigra{
     */
 
 }
+
+#endif // VIGRA_MIN_INDEXED_PQ_HXX

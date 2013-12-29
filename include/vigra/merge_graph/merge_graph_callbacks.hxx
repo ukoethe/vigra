@@ -49,7 +49,7 @@ class MergeGraphCallbacks{
         void registerMergeEdgeCallBack(MergeEdgeCallBackType  f){
             mergeEdgeCallbacks_.push_back(f);
         }
-        void registerEraseNodeCallBack(EraseEdgeCallBackType  f){
+        void registerEraseEdgeCallBack(EraseEdgeCallBackType  f){
             eraseEdgeCallbacks_.push_back(f);
         }
 

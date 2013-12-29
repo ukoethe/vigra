@@ -517,7 +517,7 @@ class injector_more_cell2(object):
             return type.__init__(self, name, bases, dict)
 
 
-class more_cgp(injector_more_cgp, Cgp):
+class more_cgp(injector_more_cgp, cgp.Cgp):
 
 
     def labelGrid(self,cellType,useTopologicalShape=True,out=None):
@@ -781,12 +781,12 @@ class _cell_helper(object):
       yield lowerCells[label-1]
 
 
-class more_cell0(injector_more_cell0,Cell0):
+class more_cell0(injector_more_cell0,cgp.Cell0):
 
   def boundingCellsGen(self):
     return _cell_helper.boundingCellsGen(self)
 
-class more_cell1(injector_more_cell1,Cell1):
+class more_cell1(injector_more_cell1,cgp.Cell1):
 
   def adjacencyGen(self):
     return _cell_helper.adjacencyGen(self)
@@ -797,7 +797,7 @@ class more_cell1(injector_more_cell1,Cell1):
   def boundedByCellsGen(self):
     return _cell_helper.boundedByCellsGen(self)
 
-class more_cell2(injector_more_cell2,Cell2):
+class more_cell2(injector_more_cell2,cgp.Cell2):
 
   def adjacencyGen(self):
     return _cell_helper.adjacencyGen(self)

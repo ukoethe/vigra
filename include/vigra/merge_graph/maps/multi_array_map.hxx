@@ -181,33 +181,62 @@ namespace view_maps {
 		typedef UInt32 LabelType;
 		typedef T value_type;
 
-		void merge(const LabelType a,const LabelType b){
-
+		void mergeEdges(const LabelType a,const LabelType b){
+			this->operator()(a)=getMixedWeight(a);
+			pq_.deleteKey(b);
 		} 
 		void eraseEdge(const LabelType label){
-
+			pq_.deleteKey(label);
 		}
 
+		template<class CB>
+		CB eraseEdgeCallback(){
+			return  boost::bind(boost::mem_fn(&MinWeightEdgeMap<T,MERGE_GRAPH,EDGE_MAP,NODE_MAP>::eraseEdge), this , _1);
+		}
 
 		template<class CB>
-		CB mergeCallback(){
-			
+		CB mergeEdgeCallback(){
+			return  boost::bind(boost::mem_fn(&MinWeightEdgeMap<T,MERGE_GRAPH,EDGE_MAP,NODE_MAP>::mergeEdges), this , _1,_2);
 		}
 
 		MinWeightEdgeMap(const MergeGraphType & mergeGraph,ArrayViewType & array,const EdgeMapType & edgeMap,const NodeMapType & nodeMap) 
 		:	ArrayViewType(array),
 			mergeGraph_(mergeGraph),
 			edgeMap_(edgeMap),
-			nodeMap_(nodeMap){
+			nodeMap_(nodeMap),
+			pq_(mergeGraph.initNumberOfEdges()){
 
+			// initalize mixed weights  and initalize pq
+			for(LabelType l=0;l<mergeGraph_.initNumberOfEdges();++l){
+				const T mixedWeight = getMixedWeight(l);
+				this->operator()(l)=mixedWeight;
+				pq_.insert(l,mixedWeight);
+			}
 		}
+
+		LabelType minWeightEdgeLabel(){
+			LabelType minLabel = pq_.minIndex();
+			while(mergeGraph_.hasEdge(minLabel)==false){
+				pq_.deleteKey(minLabel);
+				LabelType minLabel = pq_.minIndex();
+			}
+			return minLabel;
+		}
+
 	private:
-		//T 
+		T getMixedWeight(const LabelType label)const{
+			return edgeMap_(label);
+		}
+
+		void changePqWeight(const LabelType l,const T newWeigt){
+			pq_.changeKey(l,newWeigt);
+		}
 
 
 		const MergeGraphType & mergeGraph_;
 		const EdgeMapType 	 & edgeMap_;
 		const NodeMapType    & nodeMap_;
+		vigra::MinIndexedPQ<T> 	   pq_;
 	};
 
 

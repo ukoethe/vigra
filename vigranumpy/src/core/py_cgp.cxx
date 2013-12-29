@@ -36,7 +36,7 @@ template<class CGP>
 vigra::NumpyAnyArray cell1BoundsArray(
     const CGP & cgp
 ){
-    typedef vigra::NumpyArray<2,int>  ResultArray;
+    typedef vigra::NumpyArray<2,typename CGP::LabelType>  ResultArray;
     typedef typename ResultArray::difference_type ShapeType;
 
     typedef typename CGP::Cells0 Cells0;
@@ -187,7 +187,7 @@ vigra::NumpyArray<1, unsigned int> pyCgpSerialize(
 template<class CGP>
 const typename CGP::TopologicalGridType * merge2Cells(
     const CGP & cgp,
-    vigra::NumpyArray<1,npy_uint32> cell1States
+    vigra::NumpyArray<1,typename CGP::LabelType> cell1States
 ){
     typename CGP::TopologicalGridType * tgrid = new typename CGP::TopologicalGridType();
     cgp.merge2Cells(cell1States.begin(),cell1States.end(),*tgrid);

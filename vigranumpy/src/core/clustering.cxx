@@ -62,6 +62,40 @@ void setInitalEdges(
 }
 
 template<class LABEL_TYPE>
+vigra::NumpyAnyArray stateOfInitalEdges(
+    MergeGraph<LABEL_TYPE> & graph, 
+    vigra::NumpyArray<1 , LABEL_TYPE> res = vigra::NumpyArray<1,LABEL_TYPE >()
+){
+    const size_t initNumberOfEdges=graph.initNumberOfEdges();
+    res.reshapeIfEmpty(typename vigra::NumpyArray<1 , LABEL_TYPE>::difference_type(initNumberOfEdges));
+    graph.stateOfInitalEdges(res.begin(),res.end());
+    return res;
+}
+
+
+
+
+template<class MGRAPH>
+void registerMergeNodeCallBack(
+MGRAPH & graph, typename MGRAPH::MergeNodeCallBackType & callback
+){
+    graph.registerMergeNodeCallBack(callback);
+}
+template<class MGRAPH>
+void registerMergeEdgeCallBack(
+MGRAPH & graph, typename MGRAPH::MergeEdgeCallBackType & callback
+){
+    graph.registerMergeEdgeCallBack(callback);
+}
+template<class MGRAPH>
+void registerEraseEdgeCallBack(
+MGRAPH & graph, typename MGRAPH::EraseEdgeCallBackType & callback
+){
+    graph.registerEraseEdgeCallBack(callback);
+}
+
+
+template<class LABEL_TYPE>
 void defineMergeGraph(){
     using namespace python;
     docstring_options doc_options(true, true, false);
@@ -101,12 +135,17 @@ void defineMergeGraph(){
             ),
             "a  initNumberOfEdges x 2 array"
         )
-        //.def("stateOfInitalEdges",vigra::registerConverters(&stateOfInitalEdges),
-        //    (
-        //        arg("out")=object()
-        //    ),
-        //    "get edge state remapped on inital edges"
-        //)
+
+        .def("registerMergeNodeCallBack",&registerMergeNodeCallBack<MergeGraphType>,"register am MergeNode call-back")
+        .def("registerMergeEdgeCallBack",&registerMergeEdgeCallBack<MergeGraphType>,"register am MergeEdge call-back")
+        .def("registerEraseEdgeCallBack",&registerEraseEdgeCallBack<MergeGraphType>,"register am EraseNode call-back")
+
+        .def("stateOfInitalEdges",vigra::registerConverters(&stateOfInitalEdges<LABEL_TYPE>),
+            (
+                arg("out")=object()
+            ),
+            "get edge state remapped on inital edges"
+        )
         //.def("activeEdgeLabels",vigra::registerConverters(&activeEdgeLabels),
         //    (
         //        arg("out")=object()
@@ -132,6 +171,17 @@ TO_CONSTRUCT * constructWeightedMeanMap(
     const WEIGHT_MAP & weightMap
 ){
     return new TO_CONSTRUCT(array,weightMap);
+}
+
+
+template<class TO_CONSTRUCT,class MERGE_GRAPH,class ARRAY,class EDGE_MAP,class NODE_MAP>
+TO_CONSTRUCT * constructMinWeightEdgeMap(
+    const MERGE_GRAPH & graph,
+    ARRAY array,
+    const EDGE_MAP & edgeMap,
+    const NODE_MAP & nodeMap
+){
+    return new TO_CONSTRUCT(graph,array,edgeMap,nodeMap);
 }
 
 
@@ -176,11 +226,30 @@ void defineMaps(){
     typedef view_maps::WeightedMeanMap<1,ValueType,SumMap0>     WeightedMeanMap1;
     typedef typename WeightedMeanMap1::ArrayViewType            WeightedMeanMap1ArrayView;
 
-    class_<SumMap0,boost::noncopyable>("WeightedMeanMap1",no_init) 
+    class_<WeightedMeanMap0,boost::noncopyable>("WeightedMeanMap0",no_init) 
+    .def("__init__",make_constructor(registerConverters(&constructWeightedMeanMap<WeightedMeanMap0,WeightedMeanMap0ArrayView,SumMap0>)))
+    .def("mergeCallback",& WeightedMeanMap0:: template mergeCallback<MergeItemsCallBackType>,"callback to merge function")
+    ;
+
+    class_<WeightedMeanMap1,boost::noncopyable>("WeightedMeanMap1",no_init) 
     .def("__init__",make_constructor(registerConverters(&constructWeightedMeanMap<WeightedMeanMap1,WeightedMeanMap1ArrayView,SumMap0>)))
     .def("mergeCallback",& WeightedMeanMap1:: template mergeCallback<MergeItemsCallBackType>,"callback to merge function")
     ;
     
+
+    /////////////////////////////////
+    // Min weight edge map
+    /////////////////////////////////
+    typedef view_maps::MinWeightEdgeMap<ValueType,MergeGraphType,WeightedMeanMap0,WeightedMeanMap1> MinWeightEdgeMap;
+    typedef typename MinWeightEdgeMap::ArrayViewType             MinWeightEdgeMapArrayView;
+
+
+    class_<MinWeightEdgeMap,boost::noncopyable>("MinWeightEdgeMap",no_init) 
+    .def("__init__",make_constructor(registerConverters(&constructMinWeightEdgeMap<MinWeightEdgeMap,MergeGraphType,MinWeightEdgeMapArrayView,WeightedMeanMap0,WeightedMeanMap1>)))
+    .def("mergeEdgeCallback",& MinWeightEdgeMap:: template mergeEdgeCallback<MergeItemsCallBackType>,"callback to merge edges function")
+    .def("eraseEdgeCallback",& MinWeightEdgeMap:: template eraseEdgeCallback<EraseEdgeCallBackType>,"callback to erase edges function")
+    .def("minWeightEdgeLabel",&MinWeightEdgeMap::minWeightEdgeLabel,"get the label of the edge with min. weight")
+    ;
 }
 
 
