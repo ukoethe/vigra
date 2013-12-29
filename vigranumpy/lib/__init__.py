@@ -111,6 +111,7 @@ import noise
 import geometry
 import optimization
 import clustering
+import cgp
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 

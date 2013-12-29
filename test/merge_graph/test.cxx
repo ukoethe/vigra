@@ -634,7 +634,7 @@ template<class LABEL_TYPE>
 struct PartitonTest
 {
     typedef LABEL_TYPE LabelType;
-    typedef vigra::detail_merge_graph::Partition<LabelType> PartitionType;
+    typedef vigra::detail_merge_graph::IterablePartition<LabelType> PartitionType;
     typedef std::set<LabelType> SetType;
     typedef std::vector<LabelType> VecType;
     PartitonTest()

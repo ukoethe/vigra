@@ -25,14 +25,12 @@
 
 
 /* this project*/
-#include "partition.hxx"
-#include "macros.hxx"
 #include "merge_graph_node.hxx"
 #include "merge_graph_edge.hxx"
 #include "merge_graph_callbacks.hxx"
 
 /* this project (TO BE REFACTORED) */
-#include "partition.hxx"
+#include "iterable_partition.hxx"
 #include "macros.hxx"
 
 namespace vigra {
@@ -55,7 +53,7 @@ class MergeGraph : public MergeGraphCallbacks<LABEL_TYPE> {
 
 
         
-        typedef detail_merge_graph::Partition<LabelType> UfdType;
+        typedef detail_merge_graph::IterablePartition<LabelType> UfdType;
         typedef typename UfdType::const_iterator ConstUdfIter;
 
         typedef ConstUdfIter EdgeIterator;
