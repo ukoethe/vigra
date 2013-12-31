@@ -4,6 +4,21 @@ import numpy
 f       = '69015.jpg'
 sigma   = 1.8
 
+
+class SpecialMap(object):
+    def __init__(self):
+        pass
+
+    def mergeEdges(self,a,b):
+        print "merge Edges",a,b
+    def mergeNodes(self,a,b):
+        print "merge Nodes",a,b
+    def eraseEdge(self,a):
+        print "eraseEdge",a
+
+
+
+
 print "get input"
 img     = vigra.impex.readImage(f)
 gradmag = vigra.filters.gaussianGradientMagnitude(img,sigma)
@@ -55,12 +70,21 @@ print "get maps"
 edgeWeightMap     = vigra.clustering.WeightedMeanMap0(edgeWeights,size1Map)
 nodeFeatureMaps   = vigra.clustering.WeightedMeanMap1(nodeFeatures,size2Map)
 minWeightEdgeMap  = vigra.clustering.MinWeightEdgeMap(mergeGraph,ucmWeights,edgeWeightMap,nodeFeatureMaps)
+specialMap        = SpecialMap()
+pythonMap         = vigra.clustering.PythonMap(mergeGraph,specialMap)
+
+
+
 
 print "connect edge maps"
 mergeGraph.registerMergeEdgeCallBack(size1Map.mergeCallback())
 mergeGraph.registerMergeEdgeCallBack(edgeWeightMap.mergeCallback())
 mergeGraph.registerMergeEdgeCallBack(minWeightEdgeMap.mergeEdgeCallback())
 mergeGraph.registerEraseEdgeCallBack(minWeightEdgeMap.eraseEdgeCallback())
+
+mergeGraph.registerMergeNodeCallBack(pythonMap.mergeNodeCallback())
+mergeGraph.registerMergeEdgeCallBack(pythonMap.mergeEdgeCallback())
+mergeGraph.registerEraseEdgeCallBack(pythonMap.eraseEdgeCallback())
 
 print "connect node maps"
 mergeGraph.registerMergeNodeCallBack(size2Map.mergeCallback())

@@ -45,16 +45,18 @@
 
 using namespace vigra;
 
-template<class LABEL_TYPE>
+template<class ID_TYPE>
 struct MergeGraphTest
 {
-    typedef LABEL_TYPE LabelType;
-    typedef vigra::MergeGraph<LabelType> MergeGraphType;
-    typedef typename MergeGraphType::NodeType NodeType;
-    typedef typename MergeGraphType::EdgeType EdgeType;
-    typedef std::vector<LabelType> Lvec;
-    typedef std::set<LabelType>    Lset;
-
+    typedef ID_TYPE IdType;
+    typedef vigra::MergeGraph<IdType> MergeGraphType;
+    typedef typename MergeGraphType::Node Node;
+    typedef typename MergeGraphType::Edge Edge;
+    typedef std::vector<IdType> Lvec;
+    typedef std::set<IdType>    Lset;
+    typedef std::vector<Edge>       EVec;
+    typedef typename MergeGraphType::EdgeIdIt EdgeIdIt;
+    typedef typename MergeGraphType::EdgeIt EdgeIt;
     MergeGraphTest()
     {
 
@@ -78,82 +80,82 @@ struct MergeGraphTest
         should(graph.numberOfEdges() == 5);
 
         // check edge exists
-        should(graph.hasEdge(0));
-        should(graph.hasEdge(1));
-        should(graph.hasEdge(2));
-        should(graph.hasEdge(3));
-        should(graph.hasEdge(4));
+        should(graph.hasEdgeId(0));
+        should(graph.hasEdgeId(1));
+        should(graph.hasEdgeId(2));
+        should(graph.hasEdgeId(3));
+        should(graph.hasEdgeId(4));
         // check edges nodes
-        should(graph.getEdge(0)[0]==0);
-        should(graph.getEdge(0)[1]==1);
-        should(graph.getEdge(1)[0]==2);
-        should(graph.getEdge(1)[1]==3);
-        should(graph.getEdge(2)[0]==0);
-        should(graph.getEdge(2)[1]==2);
-        should(graph.getEdge(3)[0]==1);
-        should(graph.getEdge(3)[1]==3);
-        should(graph.getEdge(4)[0]==1);
-        should(graph.getEdge(4)[1]==3);
+        should(graph.edgeFromId(0)[0]==0);
+        should(graph.edgeFromId(0)[1]==1);
+        should(graph.edgeFromId(1)[0]==2);
+        should(graph.edgeFromId(1)[1]==3);
+        should(graph.edgeFromId(2)[0]==0);
+        should(graph.edgeFromId(2)[1]==2);
+        should(graph.edgeFromId(3)[0]==1);
+        should(graph.edgeFromId(3)[1]==3);
+        should(graph.edgeFromId(4)[0]==1);
+        should(graph.edgeFromId(4)[1]==3);
 
         // check nodes exist
-        should(graph.hasNode(0));
-        should(graph.hasNode(1));
-        should(graph.hasNode(2));
-        should(graph.hasNode(3));
+        should(graph.hasNodeId(0));
+        should(graph.hasNodeId(1));
+        should(graph.hasNodeId(2));
+        should(graph.hasNodeId(3));
         
         // check the number edges for each node
-        should(graph.getNode(0).numberOfEdges( )==2);
-        should(graph.getNode(1).numberOfEdges( )==3);
-        should(graph.getNode(2).numberOfEdges( )==2);
-        should(graph.getNode(3).numberOfEdges( )==3);
+        should(graph.nodeFromId(0).numberOfEdges( )==2);
+        should(graph.nodeFromId(1).numberOfEdges( )==3);
+        should(graph.nodeFromId(2).numberOfEdges( )==2);
+        should(graph.nodeFromId(3).numberOfEdges( )==3);
 
         // check edges
-        should(graph.getNode(0).hasEdge(0));
-        should(graph.getNode(0).hasEdge(2));
+        should(graph.nodeFromId(0).hasEdgeId(0));
+        should(graph.nodeFromId(0).hasEdgeId(2));
 
-        should(graph.getNode(1).hasEdge(0));
-        should(graph.getNode(1).hasEdge(3));
-        should(graph.getNode(1).hasEdge(4));
+        should(graph.nodeFromId(1).hasEdgeId(0));
+        should(graph.nodeFromId(1).hasEdgeId(3));
+        should(graph.nodeFromId(1).hasEdgeId(4));
 
-        should(graph.getNode(2).hasEdge(1));
-        should(graph.getNode(2).hasEdge(2));
+        should(graph.nodeFromId(2).hasEdgeId(1));
+        should(graph.nodeFromId(2).hasEdgeId(2));
 
-        should(graph.getNode(3).hasEdge(1));
-        should(graph.getNode(3).hasEdge(3));
-        should(graph.getNode(3).hasEdge(4));
+        should(graph.nodeFromId(3).hasEdgeId(1));
+        should(graph.nodeFromId(3).hasEdgeId(3));
+        should(graph.nodeFromId(3).hasEdgeId(4));
 
 
         // merge merge Parallel Edges 
         graph.mergeParallelEdges();
         should(graph.numberOfNodes() == 4);
         should(graph.numberOfEdges() == 4);
-        should(graph.reprEdge(3) == graph.reprEdge(4));
+        should(graph.reprEdgeId(3) == graph.reprEdgeId(4));
 
         // check the number edges for each node
         // (has changed since we merge edges)
-        should(graph.getNode(0).numberOfEdges( )==2);
-        should(graph.getNode(1).numberOfEdges( )==2);
-        should(graph.getNode(2).numberOfEdges( )==2);
-        should(graph.getNode(3).numberOfEdges( )==2);
+        should(graph.nodeFromId(0).numberOfEdges( )==2);
+        should(graph.nodeFromId(1).numberOfEdges( )==2);
+        should(graph.nodeFromId(2).numberOfEdges( )==2);
+        should(graph.nodeFromId(3).numberOfEdges( )==2);
 
         // check edges
-        should(graph.getNode(0).hasEdge(0));
-        should(graph.getNode(0).hasEdge(2));
+        should(graph.nodeFromId(0).hasEdgeId(0));
+        should(graph.nodeFromId(0).hasEdgeId(2));
 
-        should(graph.getNode(1).hasEdge(0));
-        should(graph.getNode(1).hasEdge(graph.reprEdge(3)));
-        should(graph.getNode(1).hasEdge(graph.reprEdge(4)));
+        should(graph.nodeFromId(1).hasEdgeId(0));
+        should(graph.nodeFromId(1).hasEdgeId(graph.reprEdgeId(3)));
+        should(graph.nodeFromId(1).hasEdgeId(graph.reprEdgeId(4)));
 
-        should(graph.getNode(2).hasEdge(1));
-        should(graph.getNode(2).hasEdge(2));
+        should(graph.nodeFromId(2).hasEdgeId(1));
+        should(graph.nodeFromId(2).hasEdgeId(2));
 
-        should(graph.getNode(3).hasEdge(1));
-        should(graph.getNode(3).hasEdge(graph.reprEdge(3)));
-        should(graph.getNode(3).hasEdge(graph.reprEdge(4)));
+        should(graph.nodeFromId(3).hasEdgeId(1));
+        should(graph.nodeFromId(3).hasEdgeId(graph.reprEdgeId(3)));
+        should(graph.nodeFromId(3).hasEdgeId(graph.reprEdgeId(4)));
 
         // check which edge is the deleted
-        LabelType deletedEdge = graph.reprEdge(3)==3 ? 4 : 3;
-        should(!graph.hasEdge(deletedEdge));
+        IdType deletedEdge = graph.reprEdgeId(3)==3 ? 4 : 3;
+        should(!graph.hasEdgeId(deletedEdge));
 
     }
     void mergeTest()
@@ -167,14 +169,14 @@ struct MergeGraphTest
         graph.setInitalEdge(2,1,2);
 
         {
-        std::vector<LabelType> activeEdgeVec(graph.edgesBegin(),graph.edgesEnd());
+        std::vector<IdType> activeEdgeVec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         should(activeEdgeVec.size() == 3);
         should(activeEdgeVec[0] == 0);
         should(activeEdgeVec[1] == 1);
         should(activeEdgeVec[2] == 2);
         }
 
-        std::vector<LabelType> activeNodes(graph.nodesBegin(),graph.nodesEnd());
+        std::vector<IdType> activeNodes(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         should(activeNodes.size() == 3);
         should(activeNodes[0] == 0);
         should(activeNodes[1] == 1);
@@ -190,9 +192,9 @@ struct MergeGraphTest
 
 
 
-        should(graph.reprEdge(0)==0);
-        should(graph.reprEdge(1)==1);
-        should(graph.reprEdge(2)==2);
+        should(graph.reprEdgeId(0)==0);
+        should(graph.reprEdgeId(1)==1);
+        should(graph.reprEdgeId(2)==2);
 
 
 
@@ -201,22 +203,22 @@ struct MergeGraphTest
         should(graph.numberOfNodes() == 2);
         should(graph.numberOfEdges() == 1);
         {
-        std::vector<LabelType> activeEdgeVec(graph.edgesBegin(),graph.edgesEnd());
+        std::vector<IdType> activeEdgeVec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         should(activeEdgeVec.size() == 1);
         }
 
-        should(graph.reprNode(0)==graph.reprNode(1));
-        should(graph.reprNode(0)!=graph.reprNode(2));
-        should(graph.reprNode(1)!=graph.reprNode(2));
+        should(graph.reprNodeId(0)==graph.reprNodeId(1));
+        should(graph.reprNodeId(0)!=graph.reprNodeId(2));
+        should(graph.reprNodeId(1)!=graph.reprNodeId(2));
 
-        should(graph.reprEdge(1)==graph.reprEdge(2));
-        should(!graph.reprEdge(0)==graph.reprEdge(1));
+        should(graph.reprEdgeId(1)==graph.reprEdgeId(2));
+        should(!graph.reprEdgeId(0)==graph.reprEdgeId(1));
 
-        should(graph.reprEdge(0)==0);
-        should(graph.reprEdge(1)!=0);
-        should(graph.reprEdge(2)!=0);
+        should(graph.reprEdgeId(0)==0);
+        should(graph.reprEdgeId(1)!=0);
+        should(graph.reprEdgeId(2)!=0);
 
-        should(graph.reprEdge(0)!=graph.reprEdge(2));
+        should(graph.reprEdgeId(0)!=graph.reprEdgeId(2));
     }
     void chainTest()
     {
@@ -239,15 +241,15 @@ struct MergeGraphTest
             should(graph.numberOfEdges()==nChainEdges-e);
             should(graph.numberOfNodes()==nChainNodes-e);
             // check that edge is there 
-            should(graph.hasEdge(e));
+            should(graph.hasEdgeId(e));
             // fist node is rep of e, second node still untouched e+1
-            should(graph.getEdge(e)[0]==graph.reprNode(e));
-            should(graph.getEdge(e)[1]==e+1);
+            should(graph.edgeFromId(e)[0]==graph.reprNodeId(e));
+            should(graph.edgeFromId(e)[1]==e+1);
 
             // remove the edge
             graph.mergeRegions(e);
 
-            should(!graph.hasEdge(e));
+            should(!graph.hasEdgeId(e));
             should(graph.numberOfEdges()==nChainEdges-e-1);
             should(graph.numberOfNodes()==nChainNodes-e-1);
         }
@@ -266,7 +268,7 @@ struct MergeGraphTest
         Lvec nodeVec;
         Lset edgeSet;
         Lvec edgeVec;
-
+        EVec explicitEdges;
 
         const size_t nChainNodes  = 9;
         const size_t nChainEdges  = 12;
@@ -317,22 +319,22 @@ struct MergeGraphTest
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
         edgeStateTrue[e34]=0;
         shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
-        should(graph.reprNode(3)==graph.reprNode(4));
-        const LabelType rep34 = graph.reprNode(3);
-        const LabelType del34 = (rep34 == 3 ? 4: 3);
-        const NodeType & n34=graph.getNode(graph.reprNode(3));
-        should(graph.hasNode(rep34));
-        should(!graph.hasNode(del34));
-        should(!graph.hasEdge(e34));
+        should(graph.reprNodeId(3)==graph.reprNodeId(4));
+        const IdType rep34 = graph.reprNodeId(3);
+        const IdType del34 = (rep34 == 3 ? 4: 3);
+        const Node & n34=graph.nodeFromId(graph.reprNodeId(3));
+        should(graph.hasNodeId(rep34));
+        should(!graph.hasNodeId(del34));
+        should(!graph.hasEdgeId(e34));
         should(n34.numberOfEdges()==5);
-        should(n34.hasEdge(graph.reprEdge(e03)));  // 0-3
-        should(n34.hasEdge(graph.reprEdge(e14)));  // 1-4
-        should(n34.hasEdge(graph.reprEdge(e36)));  // 3-6
-        should(n34.hasEdge(graph.reprEdge(e47)));  // 4-7
-        should(n34.hasEdge(graph.reprEdge(e45)));  // 4-5
+        should(n34.hasEdgeId(graph.reprEdgeId(e03)));  // 0-3
+        should(n34.hasEdgeId(graph.reprEdgeId(e14)));  // 1-4
+        should(n34.hasEdgeId(graph.reprEdgeId(e36)));  // 3-6
+        should(n34.hasEdgeId(graph.reprEdgeId(e47)));  // 4-7
+        should(n34.hasEdgeId(graph.reprEdgeId(e45)));  // 4-5
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==8);
         should(nodeVec.size()==8);
@@ -345,8 +347,8 @@ struct MergeGraphTest
         should(nodeSet.find(6)!=nodeSet.end());
         should(nodeSet.find(7)!=nodeSet.end());
         // check representative edges
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==11);
         should(edgeVec.size()==11);
@@ -378,37 +380,41 @@ struct MergeGraphTest
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
         edgeStateTrue[e67]=0;
         shouldEqualSequence(edgeStateTrue,edgeStateTrue+12,edgeStateCheck);
-        should(graph.reprNode(6)==graph.reprNode(7));
-        const LabelType rep67 = graph.reprNode(6);
-        const LabelType del67 = (rep67 == 6 ? 7: 6);
-        const NodeType & n67=graph.getNode(rep67);
-        should(graph.reprEdge(e36)==graph.reprEdge(e47));
+        should(graph.reprNodeId(6)==graph.reprNodeId(7));
+        const IdType rep67 = graph.reprNodeId(6);
+        const IdType del67 = (rep67 == 6 ? 7: 6);
+        const Node & n67=graph.nodeFromId(rep67);
+        should(graph.reprEdgeId(e36)==graph.reprEdgeId(e47));
         should(n67.numberOfEdges()==2);
-        should(n67.hasEdge(graph.reprEdge(e36)));  // 0-3
-        should(n67.hasEdge(graph.reprEdge(e47)));  // 1-4
-        should(n67.hasEdge(graph.reprEdge(e78)));  // 3-6
+        should(n67.hasEdgeId(graph.reprEdgeId(e36)));  // 0-3
+        should(n67.hasEdgeId(graph.reprEdgeId(e47)));  // 1-4
+        should(n67.hasEdgeId(graph.reprEdgeId(e78)));  // 3-6
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==7);
         should(nodeVec.size()==7);
         should(nodeSet.find(rep67)!=nodeSet.end());
         should(nodeSet.find(del67)==nodeSet.end());
-        should(graph.hasNode(rep67));
-        should(!graph.hasNode(del67));
+        should(graph.hasNodeId(rep67));
+        should(!graph.hasNodeId(del67));
         // check representative edges
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+
+
+
+
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==9);
         should(edgeVec.size()==9);
-        const size_t rep36_47 = graph.reprEdge(e36);
+        const size_t rep36_47 = graph.reprEdgeId(e36);
         const size_t del36_47 = (rep36_47 == e36 ? e47 : e36);
         should(rep36_47 == e36 || rep36_47 == e47 );
         should(rep36_47 != del36_47);
-        should(graph.hasEdge(rep36_47));
-        should(!graph.hasEdge(del36_47));
+        should(graph.hasEdgeId(rep36_47));
+        should(!graph.hasEdgeId(del36_47));
         should(edgeSet.find(rep36_47)!=edgeSet.end());
         should(edgeSet.find(del36_47)==edgeSet.end());
 
@@ -422,20 +428,47 @@ struct MergeGraphTest
         //   3   4 | 5
         //           _
         //   6   7 | 8
-        graph.mergeRegions(graph.reprEdge(e36));
+        graph.mergeRegions(graph.reprEdgeId(e36));
         should(graph.numberOfNodes()==6);
         should(graph.numberOfEdges()==8);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==6);
         should(nodeVec.size()==6);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        explicitEdges = EVec(graph.edgesBegin(),graph.edgesEnd());
+
+
+
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==8);
+        should(explicitEdges.size()==8);
         should(edgeVec.size()==8);
+
+        {
+            EdgeIdIt tmp     = graph.edgeIdsBegin();
+            ++ tmp;
+            should(tmp!=graph.edgeIdsBegin());
+            should(tmp!=lemon::INVALID);
+            -- tmp;
+            should(tmp==graph.edgeIdsBegin());
+
+
+            should(graph.edgeIdsBegin()!=lemon::INVALID);
+            should(graph.edgeIdsEnd()  ==lemon::INVALID);
+
+            should(graph.edgesBegin()!=lemon::INVALID);
+            should(graph.edgesEnd()==lemon::INVALID);
+
+            should(graph.nodeIdsBegin()!=lemon::INVALID);
+            should(graph.nodeIdsEnd()  ==lemon::INVALID);
+
+            should(graph.nodesBegin()!=lemon::INVALID);
+            should(graph.nodesEnd()==lemon::INVALID);
+        }
 
 
         // merge edge between 5-8  
@@ -447,17 +480,17 @@ struct MergeGraphTest
         //   3   4 | 5
         //            
         //   6   7 | 8
-        graph.mergeRegions(graph.reprEdge(e58));
+        graph.mergeRegions(graph.reprEdgeId(e58));
         should(graph.numberOfNodes()==5);
         should(graph.numberOfEdges()==6);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==5);
         should(nodeVec.size()==5);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==6);
         should(edgeVec.size()==6);
@@ -472,17 +505,17 @@ struct MergeGraphTest
         //   3   4 | 5
         //            
         //   6   7 | 8
-        graph.mergeRegions(graph.reprEdge(e01));
+        graph.mergeRegions(graph.reprEdgeId(e01));
         should(graph.numberOfNodes()==4);
         should(graph.numberOfEdges()==4);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==4);
         should(nodeVec.size()==4);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==4);
         should(edgeVec.size()==4);
@@ -496,17 +529,17 @@ struct MergeGraphTest
         //   3   4 | 5
         //            
         //   6   7 | 8
-        graph.mergeRegions(graph.reprEdge(e12));
+        graph.mergeRegions(graph.reprEdgeId(e12));
         should(graph.numberOfNodes()==3);
         should(graph.numberOfEdges()==3);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==3);
         should(nodeVec.size()==3);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==3);
         should(edgeVec.size()==3);
@@ -521,17 +554,17 @@ struct MergeGraphTest
         //   3   4   5
         //            
         //   6   7   8
-        graph.mergeRegions(graph.reprEdge(e45));
+        graph.mergeRegions(graph.reprEdgeId(e45));
         should(graph.numberOfNodes()==2);
         should(graph.numberOfEdges()==1);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==2);
         should(nodeVec.size()==2);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
         should(edgeSet.size()==1);
         should(edgeVec.size()==1);
@@ -545,17 +578,17 @@ struct MergeGraphTest
         //   3   4   5
         //            
         //   6   7   8
-        graph.mergeRegions(graph.reprEdge(e03));
+        graph.mergeRegions(graph.reprEdgeId(e03));
         should(graph.numberOfNodes()==1);
         should(graph.numberOfEdges()==0);
         // check representatives nodes
-        nodeSet=Lset(graph.nodesBegin(),graph.nodesEnd());
-        nodeVec=Lvec(graph.nodesBegin(),graph.nodesEnd());
+        nodeSet=Lset(graph.nodeIdsBegin(),graph.nodeIdsEnd());
+        nodeVec=Lvec(graph.nodeIdsBegin(),graph.nodeIdsEnd());
         shouldEqualSequence(nodeSet.begin(),nodeSet.end(),nodeVec.begin());
         should(nodeSet.size()==1);
         should(nodeVec.size()==1);
-        edgeSet=Lset(graph.edgesBegin(),graph.edgesEnd());
-        edgeVec=Lvec(graph.edgesBegin(),graph.edgesEnd());
+        edgeSet=Lset(graph.edgeIdsBegin(),graph.edgeIdsEnd());
+        edgeVec=Lvec(graph.edgeIdsBegin(),graph.edgeIdsEnd());
         shouldEqualSequence(edgeSet.begin(),edgeSet.end(),edgeVec.begin());
 
         should(edgeSet.size()==0);
@@ -582,7 +615,7 @@ struct MergeGraphTest
         typedef vigra::acc::Select< vigra::acc::DataArg<1>, vigra::acc::LabelArg<2>,vigra::acc::Sum, vigra::acc::Mean ,vigra::acc::Count> AccChain;
         typedef vigra::AccumulatorChainMap<MergeGraphType,2,MapValueType,AccChain > AccChainMapType;
 
-        typedef vigra::MultiArray<2,LabelType> LabelArrayType;
+        typedef vigra::MultiArray<2,IdType> LabelArrayType;
         typedef vigra::MultiArray<2,MapValueType>     ValueTypeArrayType;
 
         LabelArrayType     labels(typename LabelArrayType::difference_type(2,2));
@@ -614,29 +647,29 @@ struct MergeGraphTest
 
 
         //graph.mergeRegions(0);
-        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(0))==1);
-        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(1))==2);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNodeId(0))==1);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNodeId(1))==2);
 
 
 
-        should(sumView[graph.reprNode(0)]==1);
-        should(sumView[graph.reprNode(1)]==2);
+        should(sumView[graph.reprNodeId(0)]==1);
+        should(sumView[graph.reprNodeId(1)]==2);
         graph.mergeRegions(0);
-        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNode(0))==3);
-        should(nodeMap.get<vigra::acc::Sum>(graph.reprNode(0))==3);
-        should(sumView[graph.reprNode(0)]==3);
+        should(vigra::acc::get<vigra::acc::Sum>(nodeMap.accChainArray(),graph.reprNodeId(0))==3);
+        should(nodeMap.get<vigra::acc::Sum>(graph.reprNodeId(0))==3);
+        should(sumView[graph.reprNodeId(0)]==3);
     }
 
 };
 
 
-template<class LABEL_TYPE>
+template<class ID_TYPE>
 struct PartitonTest
 {
-    typedef LABEL_TYPE LabelType;
-    typedef vigra::detail_merge_graph::IterablePartition<LabelType> PartitionType;
-    typedef std::set<LabelType> SetType;
-    typedef std::vector<LabelType> VecType;
+    typedef ID_TYPE IdType;
+    typedef vigra::detail_merge_graph::IterablePartition<IdType> PartitionType;
+    typedef std::set<IdType> SetType;
+    typedef std::vector<IdType> VecType;
     PartitonTest()
     {
 
@@ -644,7 +677,7 @@ struct PartitonTest
 
     void trueReps(const PartitionType ufd,SetType &set){
         set.clear();
-        for(LabelType i=0;i<ufd.numberOfElements();++i){
+        for(IdType i=0;i<ufd.numberOfElements();++i){
             if(ufd.find(i)==i){
                 set.insert(i);
             }
@@ -653,13 +686,13 @@ struct PartitonTest
 
     void trueReps(const PartitionType ufd,SetType &set,SetType & c){
         set.clear();
-        for(LabelType i=0;i<ufd.numberOfElements();++i){
+        for(IdType i=0;i<ufd.numberOfElements();++i){
             if(ufd.find(i)==i){
                 set.insert(i);
             }
         }
         for(typename  SetType::const_iterator iter=c.begin();iter!=c.end();++iter){
-            const LabelType toRemove=*iter;
+            const IdType toRemove=*iter;
             should(set.find(toRemove)!=set.end());
             set.erase(toRemove);
         }
@@ -739,7 +772,7 @@ struct PartitonTest
         testReps(ufd,testRep);
         shouldEqualSequence(trueRep.begin(),trueRep.end(),testRep.begin());
 
-        LabelType rep12 = ufd.find(1);
+        IdType rep12 = ufd.find(1);
         erased.insert(rep12);
         ufd.eraseElement(rep12);
         trueReps(ufd,trueRep,erased);
@@ -778,14 +811,14 @@ struct MergeGraphTestSuite
     : vigra::test_suite("MergeGraphTestSuite")
     {   
 
-        add( testCase( &PartitonTest<vigra::UInt32>::iteratorTest1));
-        add( testCase( &PartitonTest<vigra::UInt32>::iteratorTest2));
+        add( testCase( &PartitonTest<vigra::Int32>::iteratorTest1));
+        add( testCase( &PartitonTest<vigra::Int32>::iteratorTest2));
 
-        add( testCase( &MergeGraphTest<vigra::UInt32>::mergeSimpleDoubleEdgeTest));
-        add( testCase( &MergeGraphTest<vigra::UInt32>::mergeTest));
-        add( testCase( &MergeGraphTest<vigra::UInt32>::chainTest));
-        add( testCase( &MergeGraphTest<vigra::UInt32>::gridTest));
-        add( testCase( &MergeGraphTest<vigra::UInt32>::accumulatorChaiMapTest));
+        add( testCase( &MergeGraphTest<vigra::Int32>::mergeSimpleDoubleEdgeTest));
+        add( testCase( &MergeGraphTest<vigra::Int32>::mergeTest));
+        add( testCase( &MergeGraphTest<vigra::Int32>::chainTest));
+        add( testCase( &MergeGraphTest<vigra::Int32>::gridTest));
+        add( testCase( &MergeGraphTest<vigra::Int32>::accumulatorChaiMapTest));
 
 
         add( testCase( &MinIndexedPQTest::constructorTest));

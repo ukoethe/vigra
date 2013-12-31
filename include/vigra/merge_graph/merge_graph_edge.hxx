@@ -9,28 +9,64 @@
 namespace vigra {
 
 
-template<class LABEL_TYPE>
+template<class ID_TYPE>
 class MergeGraphEdge{
 
     public:
-        typedef LABEL_TYPE LabelType;
-        bool hasNode(const LabelType node)const{
+        typedef ID_TYPE IdType;
+        MergeGraphEdge(){}
+        MergeGraphEdge(const IdType a,const IdType b)
+        :   first(a),
+            second(b){
+        }
+        bool hasNode(const IdType node)const{
             return node==first || node==second;
         }
-        LabelType otherNode(const LabelType node)const{
+        IdType otherNode(const IdType node)const{
             CGP_ASSERT_OP(hasNode(node),==,true);
             return (node==first ? second : first);
         }
-        const LabelType & operator[](const LabelType i)const{
+        const IdType & operator[](const IdType i)const{
             return (i==0 ? first : second);
         }
-        LabelType & operator[](const LabelType i){
+        IdType & operator[](const IdType i){
             return (i==0 ? first : second);
         }
     //private:
-        LabelType first;
-        LabelType second;
+        IdType first;
+        IdType second;
 };
+
+
+
+template<class ID_TYPE>
+class MergeGraphArc{
+
+    public:
+        typedef ID_TYPE IdType;
+        MergeGraphArc(){}
+        MergeGraphArc(const IdType a,const IdType b)
+        :   first(a),
+            second(b){
+        }
+        bool hasNode(const IdType node)const{
+            return node==first || node==second;
+        }
+        IdType otherNode(const IdType node)const{
+            CGP_ASSERT_OP(hasNode(node),==,true);
+            return (node==first ? second : first);
+        }
+        const IdType & operator[](const IdType i)const{
+            return (i==0 ? first : second);
+        }
+        IdType & operator[](const IdType i){
+            return (i==0 ? first : second);
+        }
+    //private:
+        IdType first;
+        IdType second;
+};
+
 
 
 } // end namespace vigra

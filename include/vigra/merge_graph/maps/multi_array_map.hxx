@@ -29,14 +29,14 @@ namespace view_maps {
         SumMap& operator=( const SumMap& ); 	// non copyable
 	public:
 		typedef MultiArrayView<1,T> ArrayViewType;
-		typedef UInt32 LabelType;
+		typedef Int32 IdType;
 		typedef T value_type;
 
-		//const value_type & operator[](const LabelType label)const{
+		//const value_type & operator[](const IdType label)const{
 		//	return this->operator(label);
 		//}
 
-		void merge(const LabelType a,const LabelType b){
+		void merge(const IdType a,const IdType b){
 			this->operator()(a)+=this->operator()(b);
 		} 
 
@@ -60,14 +60,14 @@ namespace view_maps {
         SumMap& operator=( const SumMap& ); 	// non copyable
 	public:
 		typedef MultiArrayView<DIM+1,T> ArrayViewType;
-		typedef UInt32 LabelType;
+		typedef Int32 IdType;
 		typedef T value_type;
 
-		//const value_type & operator[](const LabelType label)const{
+		//const value_type & operator[](const IdType label)const{
 		//	return this->operator(label);
 		//}
 
-		void merge(const LabelType a,const LabelType b){
+		void merge(const IdType a,const IdType b){
 			this->bindInner(a)+=this->bindInner(b);
 		} 
 
@@ -98,10 +98,10 @@ namespace view_maps {
 	public:
 		typedef WEIGHT_MAP WeightMapType;
 		typedef MultiArrayView<1,T> ArrayViewType;
-		typedef UInt32 LabelType;
+		typedef Int32 IdType;
 		typedef T value_type;
 
-		void merge(const LabelType a,const LabelType b){
+		void merge(const IdType a,const IdType b){
 			const T va=this->operator()(a);
 			const T vb=this->operator()(b);
 			const T wa=weightMap_(a);
@@ -133,10 +133,10 @@ namespace view_maps {
 	public:
 		typedef WEIGHT_MAP WeightMapType;
 		typedef MultiArrayView<DIM+1,T> ArrayViewType;
-		typedef UInt32 LabelType;
+		typedef Int32 IdType;
 		typedef T value_type;
 
-		void merge(const LabelType a,const LabelType b){
+		void merge(const IdType a,const IdType b){
 			const T wa=weightMap_(a);
 			const T wb=weightMap_(b);
 			vigra::MultiArrayView<DIM,T> va = this->bindInner(a);
@@ -178,15 +178,15 @@ namespace view_maps {
 		typedef EDGE_MAP    EdgeMapType;
 		typedef NODE_MAP	NodeMapType;
 		typedef MultiArrayView<1,T> ArrayViewType;
-		typedef UInt32 LabelType;
+		typedef Int32 IdType;
 		typedef T value_type;
 
-		void mergeEdges(const LabelType a,const LabelType b){
+		void mergeEdges(const IdType a,const IdType b){
 			this->operator()(a)=getMixedWeight(a);
-			pq_.deleteKey(b);
+			pq_.deleteValue(b);
 		} 
-		void eraseEdge(const LabelType label){
-			pq_.deleteKey(label);
+		void eraseEdge(const IdType label){
+			pq_.deleteValue(label);
 		}
 
 		template<class CB>
@@ -207,29 +207,29 @@ namespace view_maps {
 			pq_(mergeGraph.initNumberOfEdges()){
 
 			// initalize mixed weights  and initalize pq
-			for(LabelType l=0;l<mergeGraph_.initNumberOfEdges();++l){
+			for(IdType l=0;l<mergeGraph_.initNumberOfEdges();++l){
 				const T mixedWeight = getMixedWeight(l);
 				this->operator()(l)=mixedWeight;
 				pq_.insert(l,mixedWeight);
 			}
 		}
 
-		LabelType minWeightEdgeLabel(){
-			LabelType minLabel = pq_.minIndex();
-			while(mergeGraph_.hasEdge(minLabel)==false){
-				pq_.deleteKey(minLabel);
-				LabelType minLabel = pq_.minIndex();
+		IdType minWeightEdgeLabel(){
+			IdType minLabel = pq_.minIndex();
+			while(mergeGraph_.hasEdgeId(minLabel)==false){
+				pq_.deleteValue(minLabel);
+				IdType minLabel = pq_.minIndex();
 			}
 			return minLabel;
 		}
 
 	private:
-		T getMixedWeight(const LabelType label)const{
+		T getMixedWeight(const IdType label)const{
 			return edgeMap_(label);
 		}
 
-		void changePqWeight(const LabelType l,const T newWeigt){
-			pq_.changeKey(l,newWeigt);
+		void changePqWeight(const IdType l,const T newWeigt){
+			pq_.changeValue(l,newWeigt);
 		}
 
 

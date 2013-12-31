@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include "macros.hxx"
-
+#include <vigra/graphs.hxx>
 #include <boost/iterator/iterator_facade.hpp>
 
 namespace vigra {
@@ -23,7 +23,7 @@ struct  ConstRepIter
 :  public boost::iterator_facade<
       ConstRepIter<T>,
       T const,
-      boost::forward_traversal_tag
+      boost::bidirectional_traversal_tag
    >
 
 {
@@ -35,20 +35,23 @@ struct  ConstRepIter
 
 
    ConstRepIter(){
-
+      partition_=NULL;
+   }
+   ConstRepIter(lemon::Invalid ){
+      partition_=NULL;
    }
    //explicit ConstRepIter(node_base* p)
 
 
    bool isBegin()const{
-      return currentRep_==partition_->firstRep();
+      return partition_!=NULL  && currentRep_==partition_->firstRep();
    }
    bool isEnd()const{
-      return currentRep_>partition_->lastRep();
+      return  partition_==NULL || currentRep_>partition_->lastRep();
    }
 
    bool equal(const ConstRepIter & other)const{
-      return (this->isEnd() && other.isEnd() ) || this->currentRep_==other.currentRep_;
+      return   (this->isEnd() && other.isEnd() )  || ((this->isEnd()==other.isEnd() ) && this->currentRep_==other.currentRep_);
    }
 
    void increment(){
@@ -58,6 +61,16 @@ struct  ConstRepIter
       }
       else{
          currentRep_+=partition_->jumpVec_[currentRep_].second;
+      }
+   }
+
+   void decrement(){
+      if(partition_->jumpVec_[currentRep_].first==0){
+         VIGRA_ASSERT_OP(currentRep_,==,partition_->firstRep());
+         //currentRep_+=1;
+      }
+      else{
+         currentRep_-=partition_->jumpVec_[currentRep_].first;
       }
    }
 

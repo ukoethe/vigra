@@ -10,15 +10,15 @@
 
 namespace vigra {
 
-template<class LABEL_TYPE>
+template<class ID_TYPE>
 class MergeGraphCallbacks{
     public:
-        typedef LABEL_TYPE  LabelType;
+        typedef ID_TYPE  IdType;
         //callbacks typedefs
-        typedef boost::function<void (const LabelType,const LabelType)>  MergeItemsCallBackType;
+        typedef boost::function<void (const IdType,const IdType)>  MergeItemsCallBackType;
         typedef MergeItemsCallBackType                                   MergeNodeCallBackType;
         typedef MergeItemsCallBackType                                   MergeEdgeCallBackType;
-        typedef boost::function<void (const LabelType)>                  EraseEdgeCallBackType;
+        typedef boost::function<void (const IdType)>                  EraseEdgeCallBackType;
 
         MergeGraphCallbacks(){}
 
@@ -54,15 +54,15 @@ class MergeGraphCallbacks{
         }
 
     protected:
-        void callMergeNodeCallbacks(const LabelType a,const LabelType b){
+        void callMergeNodeCallbacks(const IdType a,const IdType b){
             for(size_t i=0;i<mergeNodeCallbacks_.size();++i)
                 mergeNodeCallbacks_[i](a,b);
         }
-        void callMergeEdgeCallbacks(const LabelType a,const LabelType b){
+        void callMergeEdgeCallbacks(const IdType a,const IdType b){
             for(size_t i=0;i<mergeEdgeCallbacks_.size();++i)
                 mergeEdgeCallbacks_[i](a,b);
         }
-        void callEraseEdgeCallbacks(const LabelType a){
+        void callEraseEdgeCallbacks(const IdType a){
             for(size_t i=0;i<eraseEdgeCallbacks_.size();++i)
                 eraseEdgeCallbacks_[i](a);
         }
