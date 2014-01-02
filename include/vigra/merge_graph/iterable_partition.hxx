@@ -10,7 +10,7 @@
 
 namespace vigra {
 
-namespace detail_merge_graph {
+namespace merge_graph_detail {
 
 
 template<class T>

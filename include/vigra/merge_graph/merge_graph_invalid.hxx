@@ -15,7 +15,7 @@ namespace vigra {
 
 
 
-namespace detail_merge_graph{
+namespace merge_graph_detail{
 	// Iterable partiton
 	template<class T>
 	inline bool operator == (const ConstRepIter<T> & iter,const lemon::Invalid & iv){
@@ -34,27 +34,66 @@ namespace detail_merge_graph{
 	inline bool operator != (const lemon::Invalid & iv , const ConstRepIter<T> & iter){
 	    return !iter.isEnd();
 	}
+
+
+	template<class ITER>
+	inline bool operator == (const IsEndIter<ITER> & iter,const lemon::Invalid & iv){
+    	return iter.isEnd();
+	}
+	template<class ITER>
+	inline bool operator == (const lemon::Invalid & iv,const IsEndIter<ITER> & iter){
+    	return iter.isEnd();
+	}
+	template<class ITER>
+	inline bool operator != (const IsEndIter<ITER> & iter,const lemon::Invalid & iv){
+    	return !iter.isEnd();
+	}
+	template<class ITER>
+	inline bool operator != (const lemon::Invalid & iv,const IsEndIter<ITER> & iter){
+    	return !iter.isEnd();
+	}
+
+
+
+
+	template<class FILTER,class ITER>
+	inline bool operator == (const FilterIter<FILTER,ITER> & iter,const lemon::Invalid & iv){
+    	return iter.isEnd();
+	}
+	template<class FILTER,class ITER>
+	inline bool operator == (const lemon::Invalid & iv,const FilterIter<FILTER,ITER> & iter){
+    	return iter.isEnd();
+	}
+	template<class FILTER,class ITER>
+	inline bool operator != (const FilterIter<FILTER,ITER> & iter,const lemon::Invalid & iv){
+    	return !iter.isEnd();
+	}
+	template<class FILTER,class ITER>
+	inline bool operator != (const lemon::Invalid & iv,const FilterIter<FILTER,ITER> & iter){
+    	return !iter.isEnd();
+	}
+
+
+	template<class TRANSFORM,class ITER,class REF,class VAL>
+	inline bool operator == (const TransformIter<TRANSFORM,ITER,REF,VAL> & iter,const lemon::Invalid & iv){
+    	return iter.isEnd();
+	}
+	template<class TRANSFORM,class ITER,class REF,class VAL>
+	inline bool operator == (const lemon::Invalid & iv,const TransformIter<TRANSFORM,ITER,REF,VAL> & iter){
+    	return iter.isEnd();
+	}
+	template<class TRANSFORM,class ITER,class REF,class VAL>
+	inline bool operator != (const TransformIter<TRANSFORM,ITER,REF,VAL> & iter,const lemon::Invalid & iv){
+    	return !iter.isEnd();
+	}
+	template<class TRANSFORM,class ITER,class REF,class VAL>
+	inline bool operator != (const lemon::Invalid & iv,const TransformIter<TRANSFORM,ITER,REF,VAL> & iter){
+    	return !iter.isEnd();
+	}
+
 }
 
 
-// merge graph item iterator (enge and node iterator)
-template<class MERGE_GRAPH,class GRAPH_ITEM_TYPE>
-inline bool operator == (const MergeGraphItemIterator<MERGE_GRAPH,GRAPH_ITEM_TYPE> & iter,const lemon::Invalid & iv){
-    return iter.isEnd();
-}
-template<class MERGE_GRAPH,class GRAPH_ITEM_TYPE>
-inline bool operator == (const lemon::Invalid & iv , const MergeGraphItemIterator<MERGE_GRAPH,GRAPH_ITEM_TYPE> & iter){
-    return iter.isEnd();
-}
-
-template<class MERGE_GRAPH,class GRAPH_ITEM_TYPE>
-inline bool operator != (const MergeGraphItemIterator<MERGE_GRAPH,GRAPH_ITEM_TYPE> & iter,const lemon::Invalid & iv){
-    return !iter.isEnd();
-}
-template<class MERGE_GRAPH,class GRAPH_ITEM_TYPE>
-inline bool operator != (const lemon::Invalid & iv , const MergeGraphItemIterator<MERGE_GRAPH,GRAPH_ITEM_TYPE> & iter){
-    return !iter.isEnd();
-}
 
 
 

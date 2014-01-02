@@ -57,13 +57,22 @@ class MergeGraphNode{
 
 
 
+    private:
+        //MergeGraphNode();                               // non empty-construction
+        //MergeGraphNode( const MergeGraphNode& other );      // non construction-copyable
+        //MergeGraphNode & operator=( const MergeGraphNode& ); // non assignable
+    public:
+        MergeGraphNode(){
 
-        MergeGraphNode(){}
-        MergeGraphNode(const IdType id)
-        :   id_(id){
         }
+        //MergeGraphNode(const IdType id)
+        //:   id_(id){
+        // }
         // query
         size_t numberOfEdges()const{return edges_.size();}
+        size_t edgeNum()const{return edges_.size();}
+         size_t num_edges()const{return edges_.size();}
+
         bool hasEdgeId(const IdType edge)const{return edges_.find(edge)!=edges_.end();}
 
         // modification

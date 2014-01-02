@@ -17,7 +17,6 @@
 #include <boost/function.hpp>
 //#include <boost/signals2.hpp>
 #include <boost/iterator/iterator_facade.hpp>
-#include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 
 /* vigra */
@@ -44,28 +43,55 @@ class MergeGraph
 : 
     public MergeGraphCallbacks<ID_TYPE>  // CALLBACKS
 {
+
     public:
-        typedef MergeGraph<ID_TYPE>      MergeGraphType;
-        typedef ID_TYPE                  IdType;
-        typedef MergeGraphEdge<IdType>   Edge;
-        typedef MergeGraphNode<IdType>   Node;
-        typedef MergeGraphArc<IdType>    Arc;
+    typedef ID_TYPE                  IdType;
+    typedef MergeGraph<ID_TYPE>      MergeGraphType;
+    typedef MergeGraphEdge<IdType>   Edge;
+    typedef MergeGraphNode<IdType>   Node;
+    typedef MergeGraphArc<IdType>    Arc;
+
+    private:
+        typedef merge_graph_detail::filter::SmallerThan<IdType> BackFilter;
+        typedef merge_graph_detail::transform::IdToGraphItem<MergeGraphType,Edge> IdToEdgeTransform;
+        typedef merge_graph_detail::transform::IdToGraphItem<MergeGraphType,Node> IdToNodeTransform;
+        typedef merge_graph_detail::transform::OtherNodeId<MergeGraphType>        OtherNodeIdTransform;
+        typedef merge_graph_detail::transform::OtherNode<MergeGraphType>          OtherNodeTransform;
+    public:
+        
+        
+
         typedef std::map<vigra::UInt64 , std::vector<IdType>  > DoubleMap;
-        typedef detail_merge_graph::IterablePartition<IdType> UfdType;
+        typedef merge_graph_detail::IterablePartition<IdType> UfdType;
         typedef typename UfdType::const_iterator ConstUdfIter;
-        typedef ConstUdfIter EdgeIdIt;
-        typedef ConstUdfIter NodeIdIt;
 
 
-        typedef MergeGraphItemIterator<MergeGraph<IdType>,Edge >            EdgeIt;
-        typedef MergeGraphItemIterator<MergeGraph<IdType>,Node >            NodeIt;
-        //typedef MergeGraphNodeIterator<MergeGraph<IdType> >                 NodeIt;
-        typedef MergeGraphNeigbourhoodIterator< MergeGraph<IdType> >        adjacency_iterator;
-        typedef adjacency_iterator                                          neighbor_vertex_iterator;
-        typedef boost::filter_iterator< 
-            merge_graph_detail::filter::SmallerThan<IdType>, 
-            adjacency_iterator
-        >                                                                   back_neighbor_vertex_iterator;
+        typedef ConstUdfIter                                                                                EdgeIdIt;
+        typedef ConstUdfIter                                                                                NodeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,EdgeIdIt,Edge,Edge>                     EdgeIt;
+        typedef merge_graph_detail::TransformIter<IdToNodeTransform,NodeIdIt,const Node &,Node >             NodeIt;
+
+
+        typedef typename Node::EdgeIdIt                                                                     NeighborEdgeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>             NeighborEdgeIt;
+
+
+        typedef merge_graph_detail::TransformIter<OtherNodeIdTransform,NeighborEdgeIdIt,IdType,IdType>      NeighborNodeIdIt;
+        typedef merge_graph_detail::TransformIter<OtherNodeTransform,NeighborEdgeIdIt,const Node &, Node >    NeighborNodeIt;
+
+
+
+
+        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIdIt>    BackNeighborNodeIdIt;
+
+
+        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIt>      BackNeighborNodeIt;
+
+
+        // redundandet typedefs
+        typedef NeighborNodeIt      adjacency_iterator;
+        typedef NeighborNodeIt      neighbor_vertex_iterator;
+        typedef BackNeighborNodeIt  back_neighbor_vertex_iterator;
         
 
 
@@ -119,6 +145,39 @@ class MergeGraph
         NodeIdIt  nodeIdsEnd()const;
         NodeIt    nodesBegin()const;
         NodeIt    nodesEnd()const;
+
+
+        NeighborEdgeIdIt neigbourEdgeIdsBegin(const Node & node)const{
+            return node.edgeIdsBegin();
+        }
+        NeighborEdgeIdIt neigbourEdgeIdsEnd(const Node & node)const{
+            return node.edgeIdsEnd();
+        }
+
+        NeighborEdgeIt neigbourEdgesBegin(const Node & node)const{
+            return NeighborEdgeIt(node.edgeIdsBegin(),IdToEdgeTransform(*this));
+        }
+        NeighborEdgeIt neigbourEdgesEnd(const Node & node)const{
+            return NeighborEdgeIt(node.edgeIdsEnd(),  IdToEdgeTransform(*this));
+        }
+
+        NeighborNodeIdIt neigbourNodeIdsBegin(const Node & node)const{
+            return NeighborNodeIdIt(node.edgeIdsBegin(),OtherNodeIdTransform(*this,node.id()));
+        }
+        NeighborNodeIdIt neigbourNodeIdsEnd(const Node & node)const{
+            return NeighborNodeIdIt(node.edgeIdsEnd(),  OtherNodeIdTransform(*this,node.id()));
+        }
+
+        NeighborNodeIt neigbourNodesBegin(const Node & node)const{
+            return NeighborNodeIt(node.edgeIdsBegin(),OtherNodeTransform(*this,node.id()));
+        }
+        NeighborNodeIt neigbourNodesEnd(const Node & node)const{
+            return NeighborNodeIt(node.edgeIdsEnd(),  OtherNodeTransform(*this,node.id()));
+        }
+
+
+
+
         neighbor_vertex_iterator get_neighbor_vertex_iterator(const Node & )const;
         neighbor_vertex_iterator get_neighbor_vertex_end_iterator(const Node &)const;
         back_neighbor_vertex_iterator get_back_neighbor_vertex_iterator(const Node & )const;
@@ -204,7 +263,7 @@ MergeGraph<ID_TYPE>::MergeGraph(const size_t nNodes,const size_t nEdges)
 {
      // fill nodes
     for(size_t n=0;n<nNodes;++n){
-        nodeVector_[n]=Node(n);
+        nodeVector_[n].id_ = n;
         CGP_ASSERT_OP(nodeUfd_.find(n),==,n);
     }
 }
@@ -359,25 +418,25 @@ MergeGraph<ID_TYPE>::edgeIdsEnd()const{
 template<class ID_TYPE>
 inline typename MergeGraph<ID_TYPE>::EdgeIt 
 MergeGraph<ID_TYPE>::edgesBegin()const{
-    return EdgeIt(*this,edgeIdsBegin());
+    return EdgeIt(edgeIdsBegin(),IdToEdgeTransform(*this));
 }
 
 template<class ID_TYPE>
 inline typename MergeGraph<ID_TYPE>::EdgeIt 
 MergeGraph<ID_TYPE>::edgesEnd()const{
-    return EdgeIt(*this,edgeIdsEnd());
+    return EdgeIt(edgeIdsEnd(), IdToEdgeTransform(*this));
 }
 
 template<class ID_TYPE>
 inline typename MergeGraph<ID_TYPE>::NodeIt 
 MergeGraph<ID_TYPE>::nodesBegin()const{
-    return NodeIt(*this,this->nodeIdsBegin());
+    return NodeIt(nodeIdsBegin(),IdToNodeTransform(*this));
 }
 
 template<class ID_TYPE>
 inline typename MergeGraph<ID_TYPE>::NodeIt 
 MergeGraph<ID_TYPE>::nodesEnd()const{
-    return NodeIt(*this,this->nodeIdsEnd());
+    return NodeIt(nodeIdsEnd(),IdToNodeTransform(*this));
 }
 
 template<class ID_TYPE>
@@ -696,9 +755,10 @@ void MergeGraph<ID_TYPE>::searchLocalDoubleEdges(
         ++edgeIter
     ){
         const IdType outEdgeIndex = *edgeIter;
+        //*edgeIter = reprEdgeId(outEdgeIndex);
         //CGP_ASSERT_OP(outEdgeIndex,!=,edgeIndex);
 
-        const Edge  oldEdge    = this->edgeFromId(outEdgeIndex);
+        const Edge  oldEdge    = this->edgeFromId(reprEdgeId(outEdgeIndex));
         //const IdType oldNodes[2]= {dynamicEdges_[outEdgeIndex].first,dynamicEdges_[outEdgeIndex].second };
         // do the relabling 
         IdType newNodes[2]={
@@ -806,6 +866,9 @@ void MergeGraph<ID_TYPE>::mergeRegions(
             //  - (all edges except the new representative "newEdgeRep")
             // furthermore  the edge-sets all nodes adjacent to the "newFormedNode"
             // must be visited since they might refere to nodes which are deleted /merged
+            
+            
+
             for(size_t td=0;td<edgeVec.size();++td){
 
                 // index of the edge which is considered for deletion
@@ -825,6 +888,7 @@ void MergeGraph<ID_TYPE>::mergeRegions(
                     //CGP_ASSERT_OP(dynamicEdges_[toMergeEdgeIndex].hasNodeId(newNodeRep),==,true);
                     const size_t adjacentNodeIndex = edgeFromId(toMergeEdgeIndex).otherNodeId(newNodeRep);
 
+                    newFormedNode.eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                     nodeVector_[adjacentNodeIndex].eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                     
                     // finaly delete the unneeded edge

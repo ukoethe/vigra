@@ -16,7 +16,7 @@
 /* boost */
 #include <boost/function.hpp>
 #include <boost/iterator/iterator_facade.hpp>
-
+#include <boost/iterator/filter_iterator.hpp>
 
 /* vigra */
 #include <vigra/multi_array.hxx>
@@ -44,6 +44,7 @@ namespace merge_graph_detail{
 
         template<class ID_TYPE>
         struct SmallerThan{
+            SmallerThan(){}
             SmallerThan(const ID_TYPE id)
             : id_(id){
             }
@@ -51,25 +52,6 @@ namespace merge_graph_detail{
                 return x < id_; 
             }
             const ID_TYPE id_;
-        };
-
-
-        template<class MERGE_GRAPH>
-        struct IsOutgoingArc{
-
-            typedef MERGE_GRAPH MergeGraphType;
-            typedef typename MergeGraphType::Edge Edge;
-            typedef typename MergeGraphType::IdType IdType;
-
-            IsOutgoingArc(const MergeGraphType & graph, const IdType nodeId)
-            :   graph_(&graph),
-                nodeId_(nodeId){
-            }
-            bool operator()(const Edge edge) { 
-                return edge[0]==nodeId_;
-            }
-            const MergeGraphType * graph_;
-            const IdType nodeId_;
         };
     }
 
@@ -111,7 +93,9 @@ namespace merge_graph_detail{
         struct OtherNodeId{
             typedef MERGE_GRAPH MergeGraphType;
             typedef typename MergeGraphType::IdType IdType;
-
+            OtherNodeId()
+            :graph_(NULL){
+            }
             OtherNodeId(const MergeGraphType & graph, const IdType ownNodeId)
             :   graph_(&graph),
                 ownNodeId_(ownNodeId){
@@ -119,12 +103,37 @@ namespace merge_graph_detail{
 
             // return the other node's is
             IdType operator()(const IdType edgeId)const{
-                return graph_->edgeFromId().otherNodeId(ownNodeId_);
+                return graph_->edgeFromId(edgeId).otherNodeId(ownNodeId_);
             }
-            const MergeGraphType graph_;
+            const MergeGraphType * graph_;
             IdType ownNodeId_;
 
         };
+        // get other node  from edge id
+        template<class MERGE_GRAPH>
+        struct OtherNode{
+            typedef MERGE_GRAPH MergeGraphType;
+            typedef typename MergeGraphType::IdType IdType;
+            typedef typename MergeGraphType::Node   Node;
+            OtherNode()
+            :graph_(NULL){
+            }
+            OtherNode(const MergeGraphType & graph, const IdType ownNodeId)
+            :   graph_(&graph),
+                ownNodeId_(ownNodeId){
+            }
+
+            // return the other node's is
+            const Node & operator()(IdType edgeId)const{
+                //CGP_ASSERT_OP(graph_,!=,NULL);
+                const IdType otherNodeId= graph_->edgeFromId(edgeId).otherNodeId(ownNodeId_);
+                return graph_->nodeFromId(otherNodeId);
+            }
+            const MergeGraphType * graph_;
+            IdType ownNodeId_;
+
+        };
+
     }
 
 
@@ -135,7 +144,9 @@ namespace merge_graph_detail{
     :   public ITER {
     public:
         IsEndIter()
-        :   valid_(false){            
+        :   ITER(),
+            end_(),
+            valid_(false){            
         }
 
         IsEndIter(ITER iter , ITER end)
@@ -152,31 +163,41 @@ namespace merge_graph_detail{
         bool valid_;
     };
 
-};
+    template<class FILTTER,class ITER>
+    class FilterIter
+    :   public boost::filter_iterator< FILTTER,ITER>
+    {
+    public:
+        FilterIter()
+        :   boost::filter_iterator< FILTTER,ITER>(){
+        }
+        FilterIter(const FILTTER & filter, ITER  pos, ITER end)
+        :   boost::filter_iterator< FILTTER,ITER>(filter,pos,end){
+        }
+        bool isEnd()const{
+            return *this == this->end();
+        }
+
+    };
+
+    template<class TRANSFORM,class ITER,class REF,class VAL>
+    class TransformIter
+    :   public boost::transform_iterator< TRANSFORM,ITER,REF,VAL>
+    {
+    public:
+        TransformIter()
+        :boost::transform_iterator< TRANSFORM,ITER,REF,VAL>(){
+        }
+        TransformIter(ITER  pos ,const TRANSFORM & transform)
+        :   boost::transform_iterator< TRANSFORM,ITER,REF,VAL>(pos,transform){
+        }
+        bool isEnd()const{
+            return this->base().isEnd();
+        }
+
+    };
 
 
-template<class MERGE_GRAPH,class GRAPH_ITEM_TYPE>
-class  MergeGraphItemIterator
-:   public boost::transform_iterator<
-        merge_graph_detail::transform::IdToGraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>, 
-        typename merge_graph_detail::GraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>::GraphItemIdIt,
-        typename merge_graph_detail::GraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>::result
-    > 
-{
-public: 
-    MergeGraphItemIterator(const MERGE_GRAPH & graph,typename merge_graph_detail::GraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>::GraphItemIdIt iterator)
-    : boost::transform_iterator<
-        merge_graph_detail::transform::IdToGraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>, 
-        typename merge_graph_detail::GraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>::GraphItemIdIt,
-        typename merge_graph_detail::GraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>::result
-    >(iterator,merge_graph_detail::transform::IdToGraphItem<MERGE_GRAPH,GRAPH_ITEM_TYPE>(graph)){
-    }
-    bool isBegin()const{
-        return this->base().isBegin();
-    }
-    bool isEnd()const{
-        return this->base().isEnd();
-    }
 };
 
 
@@ -185,7 +206,7 @@ template<class MERGE_GRAPH>
 class  MergeGraphNeigbourhoodIdIterator
 :   public boost::transform_iterator<
         merge_graph_detail::transform::OtherNodeId<MERGE_GRAPH>, 
-        typename MERGE_GRAPH::Node::EdgeIdSet::const_iterator,const typename MERGE_GRAPH::Node & ,typename MERGE_GRAPH::Node
+        typename MERGE_GRAPH::Node::EdgeIdSet::const_iterator,typename MERGE_GRAPH::IdType  ,typename MERGE_GRAPH::IdType
     > 
 {
     typedef MERGE_GRAPH MergeGraphType;
@@ -204,13 +225,36 @@ public:
         //return this->base()==end_;
         return this->base().isEnd();
     }
-private:
-    //BaseIteratorType end_;
+};
+
+template<class MERGE_GRAPH>
+class  MergeGraphNeigbourhoodIterator
+:   public boost::transform_iterator<
+        merge_graph_detail::transform::OtherNode<MERGE_GRAPH>, 
+        typename MERGE_GRAPH::Node::EdgeIdSet::const_iterator,const  typename MERGE_GRAPH::Node &  ,typename MERGE_GRAPH::Node
+    > 
+{
+    typedef MERGE_GRAPH MergeGraphType;
+    typedef typename MergeGraphType::IdType IdType;
+    typedef typename MergeGraphType::Node::EdgeIdSet::const_iterator BaseIteratorType;
+public:
+
+    MergeGraphNeigbourhoodIterator(const MergeGraphType & graph,const IdType ownNodeId ,const  BaseIteratorType pos)
+    :   boost::transform_iterator<
+            merge_graph_detail::transform::OtherNodeId<MERGE_GRAPH>, 
+            typename MERGE_GRAPH::Node::EdgeIdSet::const_iterator,const typename MERGE_GRAPH::Node & ,typename MERGE_GRAPH::Node
+        > (pos,merge_graph_detail::transform::OtherNodeId<MERGE_GRAPH>(graph,ownNodeId))
+    {
+    }
+    bool isEnd()const{
+        //return this->base()==end_;
+        return this->base().isEnd();
+    }
 };
 
 
 
-
+/*
 
 template<class MERGE_GRAPH>
 class  MergeGraphNeigbourhoodIterator
@@ -282,7 +326,7 @@ private:
     
 
 };
-
+*/
 
 
 

@@ -55,13 +55,162 @@ struct MergeGraphTest
     typedef std::vector<IdType> Lvec;
     typedef std::set<IdType>    Lset;
     typedef std::vector<Edge>       EVec;
-    typedef typename MergeGraphType::EdgeIdIt EdgeIdIt;
-    typedef typename MergeGraphType::EdgeIt EdgeIt;
+
+
+    typedef typename MergeGraphType::EdgeIdIt           EdgeIdIt;
+    typedef typename MergeGraphType::NodeIdIt           NodeIdIt;
+    typedef typename MergeGraphType::EdgeIt             EdgeIt;
+    typedef typename MergeGraphType::NodeIt             NodeIt;
+    typedef typename MergeGraphType::NeighborEdgeIdIt   NeighborEdgeIdIt;
+    typedef typename MergeGraphType::NeighborEdgeIt     NeighborEdgeIt;
+    typedef typename MergeGraphType::NeighborNodeIdIt   NeighborNodeIdIt;
+    typedef typename MergeGraphType::NeighborNodeIt     NeighborNodeIt;
+
     MergeGraphTest()
     {
 
     }
     
+
+    void consistency(const MergeGraphType & g){
+
+        {EdgeIdIt           iter; should(iter==lemon::INVALID); }
+        {NodeIdIt           iter; should(iter==lemon::INVALID); }
+        {EdgeIt             iter; should(iter==lemon::INVALID); }
+        {NodeIt             iter; should(iter==lemon::INVALID); }
+        {NeighborEdgeIdIt   iter; should(iter==lemon::INVALID); }
+        {NeighborEdgeIt     iter; should(iter==lemon::INVALID); }
+        {NeighborNodeIdIt   iter; should(iter==lemon::INVALID); }
+        {NeighborNodeIt     iter; should(iter==lemon::INVALID); }
+
+
+
+        const size_t nNodes=g.numberOfNodes();
+        const size_t nEdges=g.numberOfEdges();
+
+        should(std::distance(g.edgeIdsBegin(),  g.edgeIdsEnd()) == nEdges);
+        should(std::distance(g.edgesBegin(),    g.edgesEnd())   == nEdges);
+        should(std::distance(g.nodeIdsBegin(),  g.nodeIdsEnd()) == nNodes);
+        should(std::distance(g.nodesBegin(),    g.nodesEnd())   == nNodes);
+
+
+        // for all edges 
+        EdgeIdIt edgeIdIt=g.edgeIdsBegin();
+        EdgeIt   edgeIt=g.edgesBegin();
+
+        while(edgeIt!=lemon::INVALID && edgeIdIt!=lemon::INVALID){
+
+            const Edge   edge   = *edgeIt;
+            const IdType edgeId = *edgeIdIt;
+
+            should(g.id(edge)==edgeId);
+            
+            const IdType n0 = edge[0];
+            const IdType n1 = edge[1];      
+
+            should(g.nodeFromId(n0).hasEdgeId(edgeId));
+            should(g.nodeFromId(n1).hasEdgeId(edgeId));      
+
+            should(edge.hasNode(n0));
+            should(edge.hasNode(n1));
+
+            ++edgeIt;
+            ++edgeIdIt;
+        }
+        // both iterators should be invalid
+        should(edgeIt==lemon::INVALID );
+        should(edgeIdIt==lemon::INVALID );
+
+
+        // for all nodes 
+        NodeIdIt nodeIdIt=g.nodeIdsBegin();
+        NodeIt   nodeIt=g.nodesBegin();
+
+        while(nodeIt!=lemon::INVALID && nodeIdIt!=lemon::INVALID){
+
+            const Node & node   = *nodeIt;
+            const IdType nodeId = *nodeIdIt;
+
+            // node is active in graph
+            should(g.reprNodeId(nodeId)==nodeId);
+            should(g.hasNodeId(nodeId));
+
+            // both should point to same node
+            should(node.id()==nodeId);
+            should(g.id(node)==nodeId);
+
+            // check the edges of the node
+            const size_t numNodeEdges = node.edgeNum();
+            should(std::distance(g.neigbourEdgeIdsBegin(node),  g.neigbourEdgeIdsEnd(node)) == numNodeEdges);
+            should(std::distance(g.neigbourEdgesBegin(node),    g.neigbourEdgesEnd(node))   == numNodeEdges);
+            should(std::distance(g.neigbourNodeIdsBegin(node),  g.neigbourNodeIdsEnd(node)) == numNodeEdges);
+            should(std::distance(g.neigbourNodesBegin(node),    g.neigbourNodesEnd(node))   == numNodeEdges);
+
+            NeighborEdgeIdIt  nh_e_id  = g.neigbourEdgeIdsBegin(node);
+            NeighborEdgeIt    nh_e     = g.neigbourEdgesBegin(node);
+            NeighborNodeIdIt  nh_n_id  = g.neigbourNodeIdsBegin(node);
+            NeighborNodeIt    nh_n     = g.neigbourNodesBegin(node);
+
+            while(nh_e_id!=lemon::INVALID && nh_e!=lemon::INVALID && nh_n_id!=lemon::INVALID && nh_n!=lemon::INVALID){
+
+                const Edge     nh_edge    = *nh_e;
+                const IdType   nh_edge_id = *nh_e_id;
+                const Node   & nh_node    = *nh_n;
+                const IdType   nh_node_id = *nh_n_id;
+
+                // check that edge/node match id
+                should(nh_node.id()==nh_node_id);
+                should(g.hasNodeId( nh_node_id));
+                should(g.id(nh_node)==nh_node_id);
+                should(g.id(nh_edge)==nh_edge_id);
+
+                // check that its own rep
+                should(g.reprNodeId(nh_node_id)==nh_node_id);
+                should(g.reprEdgeId(nh_edge_id)==nh_edge_id);
+                should(g.hasEdgeId(nh_edge_id));
+
+                //check that its a neighbour node and not node itself
+                should(nodeId!=nh_node_id);
+
+                should(nh_edge[0]!=nh_edge[1]);
+                // check that edge is connected to both nodes
+                should(nh_edge.hasNode(nodeId));
+                should(nh_edge.hasNode(nh_node_id));
+
+
+                // check that both nodes have this edge
+                should(   node.hasEdgeId(nh_edge_id));
+                should(nh_node.hasEdgeId(nh_edge_id));
+
+                should(g.nodeFromId(g.id(nh_node)).hasEdgeId(nh_edge_id));
+                should(g.nodeFromId(nh_node.id()).hasEdgeId(nh_edge_id));
+                should(g.nodeFromId(nh_node_id).hasEdgeId(nh_edge_id));
+
+                
+
+                
+
+
+
+                ++nh_e_id;
+                ++nh_e;
+                ++nh_n_id;
+                ++nh_n;
+            }
+            // all 4 iterators should be invalid
+            should(nh_e_id==lemon::INVALID );
+            should(nh_e==lemon::INVALID );
+            should(nh_n_id==lemon::INVALID );
+            should(nh_n==lemon::INVALID );
+
+            ++nodeIdIt;
+            ++nodeIt;
+        }
+        // both iterators should be invalid
+        should(nodeIt==lemon::INVALID );
+        should(nodeIdIt==lemon::INVALID );
+    }
+
     void mergeSimpleDoubleEdgeTest()
     {
         MergeGraphType graph(4,5);
@@ -290,6 +439,14 @@ struct MergeGraphTest
         graph.setInitalEdge(9 , 3,6); const size_t e36=9;
         graph.setInitalEdge(10, 4,7); const size_t e47=10;
         graph.setInitalEdge(11, 5,8); const size_t e58=11;
+
+
+        should(graph.nodeFromId(0).hasEdgeId(0));
+        should(graph.nodeFromId(1).hasEdgeId(0));
+
+        std::cout<<"consistency \n";
+        consistency(graph);
+        std::cout<<"check done\n";
 
         should(graph.numberOfNodes()==9);
         should(graph.numberOfEdges()==12);
@@ -667,7 +824,7 @@ template<class ID_TYPE>
 struct PartitonTest
 {
     typedef ID_TYPE IdType;
-    typedef vigra::detail_merge_graph::IterablePartition<IdType> PartitionType;
+    typedef vigra::merge_graph_detail::IterablePartition<IdType> PartitionType;
     typedef std::set<IdType> SetType;
     typedef std::vector<IdType> VecType;
     PartitonTest()
