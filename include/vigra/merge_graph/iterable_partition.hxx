@@ -37,9 +37,9 @@ struct  ConstRepIter
    ConstRepIter(){
       partition_=NULL;
    }
-   ConstRepIter(lemon::Invalid ){
-      partition_=NULL;
-   }
+   //ConstRepIter(lemon::Invalid ){
+   //   partition_=NULL;
+   //}
    //explicit ConstRepIter(node_base* p)
 
 

@@ -22,7 +22,7 @@ class MergeGraphEdge{
         bool hasNode(const IdType node)const{
             return node==first || node==second;
         }
-        IdType otherNode(const IdType node)const{
+        IdType otherNodeId(const IdType node)const{
             CGP_ASSERT_OP(hasNode(node),==,true);
             return (node==first ? second : first);
         }
@@ -52,7 +52,7 @@ class MergeGraphArc{
         bool hasNode(const IdType node)const{
             return node==first || node==second;
         }
-        IdType otherNode(const IdType node)const{
+        IdType otherNodeId(const IdType node)const{
             CGP_ASSERT_OP(hasNode(node),==,true);
             return (node==first ? second : first);
         }

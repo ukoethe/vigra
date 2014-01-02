@@ -4,7 +4,7 @@
 
 /* std library */
 #include <set>
-
+#include "merge_graph_iterators.hxx"
 
 namespace vigra {
 
@@ -34,15 +34,28 @@ std::pair<OUT_TYPE,bool> first_set_intersection (
 } // end namespace merge_graph_detail
 
 
+template<class ID_TYPE>
+class MergeGraph;
+template<class MERGE_GRAPH>
+class  MergeGraphNeigbourhoodIterator;
+
 
 template<class ID_TYPE>
 class MergeGraphNode{
 
+        template< class MG_TYPE>
+        friend class MergeGraphNeigbourhoodIterator;
+
+        template<class ID_TYPE_MG>
+        friend class MergeGraph;
+
+
     public:
         typedef ID_TYPE IdType;
+        typedef std::set<IdType> EdgeIdSet;
+        typedef merge_graph_detail::IsEndIter< typename EdgeIdSet::const_iterator > EdgeIdIt;
 
 
-        typedef typename std::set<IdType>::const_iterator EdgeIdIt;
 
 
         MergeGraphNode(){}
@@ -77,10 +90,10 @@ class MergeGraphNode{
         }
 
         EdgeIdIt edgeIdsBegin()const{
-            return edges_.begin();
+            return EdgeIdIt(edges_.begin() ,edges_.end()) ;
         }
         EdgeIdIt edgeIdsEnd()const{
-            return edges_.end();
+            return EdgeIdIt(edges_.end() ,edges_.end()) ;
         }
 
         IdType id()const{
@@ -90,8 +103,16 @@ class MergeGraphNode{
             edges_.clear();
         }
 
-    std::set<IdType> edges_;
-    IdType id_;
+    private:
+
+        const EdgeIdSet & edgeIdSet()const{
+            return edges_;
+        }
+
+    public:
+
+        EdgeIdSet edges_;
+        IdType id_;
 };
 
 }
