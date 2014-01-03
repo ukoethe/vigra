@@ -52,7 +52,8 @@ class MergeGraph
     typedef MergeGraphArc<IdType>    Arc;
 
     private:
-        typedef merge_graph_detail::filter::SmallerThan<IdType> BackFilter;
+        typedef merge_graph_detail::filter::SmallerThan<IdType>                   BackFilter;
+        typedef merge_graph_detail::filter::BackEdgeIdFilter<MergeGraphType>      BackEdgeIdFilter;
         typedef merge_graph_detail::transform::IdToGraphItem<MergeGraphType,Edge> IdToEdgeTransform;
         typedef merge_graph_detail::transform::IdToGraphItem<MergeGraphType,Node> IdToNodeTransform;
         typedef merge_graph_detail::transform::OtherNodeId<MergeGraphType>        OtherNodeIdTransform;
@@ -66,29 +67,23 @@ class MergeGraph
         typedef typename UfdType::const_iterator ConstUdfIter;
 
 
-        typedef ConstUdfIter                                                                                EdgeIdIt;
-        typedef ConstUdfIter                                                                                NodeIdIt;
-        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,EdgeIdIt,Edge,Edge>                     EdgeIt;
-        typedef merge_graph_detail::TransformIter<IdToNodeTransform,NodeIdIt,const Node &,Node >             NodeIt;
+        typedef ConstUdfIter                                                                                    EdgeIdIt;
+        typedef ConstUdfIter                                                                                    NodeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,EdgeIdIt,Edge,Edge>                         EdgeIt;
+        typedef merge_graph_detail::TransformIter<IdToNodeTransform,NodeIdIt,const Node &,Node >                NodeIt;
+  
+        typedef typename Node::EdgeIdIt                                                                         NeighborEdgeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>                 NeighborEdgeIt;
+        typedef merge_graph_detail::TransformIter<OtherNodeIdTransform,NeighborEdgeIdIt,IdType,IdType>          NeighborNodeIdIt;
+        typedef merge_graph_detail::TransformIter<OtherNodeTransform,NeighborEdgeIdIt,const Node &, Node >      NeighborNodeIt;
 
-
-        typedef typename Node::EdgeIdIt                                                                     NeighborEdgeIdIt;
-        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>             NeighborEdgeIt;
-
-
-        typedef merge_graph_detail::TransformIter<OtherNodeIdTransform,NeighborEdgeIdIt,IdType,IdType>      NeighborNodeIdIt;
-        typedef merge_graph_detail::TransformIter<OtherNodeTransform,NeighborEdgeIdIt,const Node &, Node >    NeighborNodeIt;
-
-
-
-
-        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIdIt>    BackNeighborNodeIdIt;
-
-
-        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIt>      BackNeighborNodeIt;
-
+        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIdIt>                                    BackNeighborNodeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToNodeTransform,BackNeighborNodeIdIt,const Node &,Node >    BackNeighborNodeIt;
+        typedef merge_graph_detail::FilterIter< BackFilter,NeighborNodeIdIt>                                    BackNeighborEdgeIdIt;
+        typedef merge_graph_detail::TransformIter<IdToEdgeTransform,BackNeighborEdgeIdIt,Edge,Edge>             BackNeighborEdgeIt;
 
         // redundandet typedefs
+        typedef IdType              index_type;
         typedef NeighborNodeIt      adjacency_iterator;
         typedef NeighborNodeIt      neighbor_vertex_iterator;
         typedef BackNeighborNodeIt  back_neighbor_vertex_iterator;
@@ -175,7 +170,36 @@ class MergeGraph
             return NeighborNodeIt(node.edgeIdsEnd(),  OtherNodeTransform(*this,node.id()));
         }
 
+        BackNeighborNodeIdIt backNeigbourNodeIdsBegin(const Node & node)const{
+            return BackNeighborNodeIt( BackFilter(node.id()),neigbourNodeIdsBegin(),neigbourNodeIdsEnd() );
+        }
 
+        BackNeighborNodeIdIt backNeigbourNodeIdsEnd(const Node & node)const{
+            return BackNeighborNodeIt( BackFilter(node.id()),neigbourNodeIdsEnd(),neigbourNodeIdsEnd() );
+        }
+
+        BackNeighborNodeIt backNeigbourNodesBegin(const Node & node)const{
+            return BackNeighborNodeIt(node.backNeigbourNodeIdsBegin(),OtherNodeTransform(*this,node.id()));
+        }
+        BackNeighborNodeIt backNeigbourNodesEnd(const Node & node)const{
+            return BackNeighborNodeIt(node.backNeigbourNodeIdsEnd(),  OtherNodeTransform(*this,node.id()));
+        }
+
+        BackNeighborEdgeIdIt backNeigbourEdgeIdsBegin(const Node & node)const{
+            return BackNeighborEdgeIdIt(BackEdgeIdFilter(*this,node.id()),neigbourEdgeIdsBegin(),neigbourEdgeIdsEnd());
+        }
+
+        BackNeighborEdgeIdIt backNeigbourEdgeIdsEnd(const Node & node)const{
+            return BackNeighborEdgeIdIt(BackEdgeIdFilter(*this,node.id()),neigbourEdgeIdsEnd(),neigbourEdgeIdsEnd());
+        }
+
+        BackNeighborEdgeIt backNeigbourEdgesBegin(const Node & node)const{
+            return BackNeighborEdgeIt(backNeigbourEdgeIdsBegin(),IdToEdgeTransform(*this));
+        }
+
+        BackNeighborEdgeIt backNeigbourEdgesEnd(const Node & node)const{
+            return BackNeighborEdgeIt(backNeigbourEdgeIdsEnd(),IdToEdgeTransform(*this));
+        }
 
 
         neighbor_vertex_iterator get_neighbor_vertex_iterator(const Node & )const;

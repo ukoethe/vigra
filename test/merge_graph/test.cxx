@@ -57,14 +57,16 @@ struct MergeGraphTest
     typedef std::vector<Edge>       EVec;
 
 
-    typedef typename MergeGraphType::EdgeIdIt           EdgeIdIt;
-    typedef typename MergeGraphType::NodeIdIt           NodeIdIt;
-    typedef typename MergeGraphType::EdgeIt             EdgeIt;
-    typedef typename MergeGraphType::NodeIt             NodeIt;
-    typedef typename MergeGraphType::NeighborEdgeIdIt   NeighborEdgeIdIt;
-    typedef typename MergeGraphType::NeighborEdgeIt     NeighborEdgeIt;
-    typedef typename MergeGraphType::NeighborNodeIdIt   NeighborNodeIdIt;
-    typedef typename MergeGraphType::NeighborNodeIt     NeighborNodeIt;
+    typedef typename MergeGraphType::EdgeIdIt             EdgeIdIt;
+    typedef typename MergeGraphType::NodeIdIt             NodeIdIt;
+    typedef typename MergeGraphType::EdgeIt               EdgeIt;
+    typedef typename MergeGraphType::NodeIt               NodeIt;
+    typedef typename MergeGraphType::NeighborEdgeIdIt     NeighborEdgeIdIt;
+    typedef typename MergeGraphType::NeighborEdgeIt       NeighborEdgeIt;
+    typedef typename MergeGraphType::NeighborNodeIdIt     NeighborNodeIdIt;
+    typedef typename MergeGraphType::NeighborNodeIt       NeighborNodeIt;
+    typedef typename MergeGraphType::BackNeighborNodeIdIt BackNeighborNodeIdIt;
+    typedef typename MergeGraphType::BackNeighborNodeIt   BackNeighborNodeIt;
 
     MergeGraphTest()
     {
@@ -74,16 +76,16 @@ struct MergeGraphTest
 
     void consistency(const MergeGraphType & g){
 
-        {EdgeIdIt           iter; should(iter==lemon::INVALID); }
-        {NodeIdIt           iter; should(iter==lemon::INVALID); }
-        {EdgeIt             iter; should(iter==lemon::INVALID); }
-        {NodeIt             iter; should(iter==lemon::INVALID); }
-        {NeighborEdgeIdIt   iter; should(iter==lemon::INVALID); }
-        {NeighborEdgeIt     iter; should(iter==lemon::INVALID); }
-        {NeighborNodeIdIt   iter; should(iter==lemon::INVALID); }
-        {NeighborNodeIt     iter; should(iter==lemon::INVALID); }
-
-
+        {EdgeIdIt               iter; should(iter==lemon::INVALID); }
+        {NodeIdIt               iter; should(iter==lemon::INVALID); }
+        {EdgeIt                 iter; should(iter==lemon::INVALID); }
+        {NodeIt                 iter; should(iter==lemon::INVALID); }
+        {NeighborEdgeIdIt       iter; should(iter==lemon::INVALID); }
+        {NeighborEdgeIt         iter; should(iter==lemon::INVALID); }
+        {NeighborNodeIdIt       iter; should(iter==lemon::INVALID); }
+        {NeighborNodeIt         iter; should(iter==lemon::INVALID); }
+        {BackNeighborNodeIdIt   iter; should(iter==lemon::INVALID); }
+        {BackNeighborNodeIt     iter; should(iter==lemon::INVALID); }
 
         const size_t nNodes=g.numberOfNodes();
         const size_t nEdges=g.numberOfEdges();
@@ -471,6 +473,8 @@ struct MergeGraphTest
         //   _   _   _
         //   6 | 7 | 8
         graph.mergeRegions(e34);
+        consistency(graph);
+
         should(graph.numberOfNodes()==8);
         should(graph.numberOfEdges()==11);
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
@@ -532,6 +536,8 @@ struct MergeGraphTest
         //   _   _   _
         //   6   7 | 8
         graph.mergeRegions(e67);
+        consistency(graph);
+
         should(graph.numberOfNodes()==7);
         should(graph.numberOfEdges()==9);
         graph.stateOfInitalEdges(edgeStateCheck,edgeStateCheck+12);
@@ -586,6 +592,7 @@ struct MergeGraphTest
         //           _
         //   6   7 | 8
         graph.mergeRegions(graph.reprEdgeId(e36));
+        consistency(graph);
         should(graph.numberOfNodes()==6);
         should(graph.numberOfEdges()==8);
         // check representatives nodes
@@ -638,6 +645,8 @@ struct MergeGraphTest
         //            
         //   6   7 | 8
         graph.mergeRegions(graph.reprEdgeId(e58));
+        consistency(graph);
+
         should(graph.numberOfNodes()==5);
         should(graph.numberOfEdges()==6);
         // check representatives nodes
@@ -663,6 +672,7 @@ struct MergeGraphTest
         //            
         //   6   7 | 8
         graph.mergeRegions(graph.reprEdgeId(e01));
+        consistency(graph);
         should(graph.numberOfNodes()==4);
         should(graph.numberOfEdges()==4);
         // check representatives nodes
@@ -687,6 +697,7 @@ struct MergeGraphTest
         //            
         //   6   7 | 8
         graph.mergeRegions(graph.reprEdgeId(e12));
+        consistency(graph);
         should(graph.numberOfNodes()==3);
         should(graph.numberOfEdges()==3);
         // check representatives nodes
@@ -712,6 +723,7 @@ struct MergeGraphTest
         //            
         //   6   7   8
         graph.mergeRegions(graph.reprEdgeId(e45));
+        consistency(graph);
         should(graph.numberOfNodes()==2);
         should(graph.numberOfEdges()==1);
         // check representatives nodes
@@ -736,6 +748,7 @@ struct MergeGraphTest
         //            
         //   6   7   8
         graph.mergeRegions(graph.reprEdgeId(e03));
+        consistency(graph);
         should(graph.numberOfNodes()==1);
         should(graph.numberOfEdges()==0);
         // check representatives nodes

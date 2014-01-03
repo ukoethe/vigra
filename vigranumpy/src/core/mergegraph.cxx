@@ -42,6 +42,9 @@
 #include <vigra/numpy_array_converters.hxx>
 #include "vigra/merge_graph/merge_graph.hxx"
 
+
+#include "export_graph_visitor.hxx"
+
 namespace python = boost::python;
 
 namespace vigra
@@ -116,10 +119,10 @@ void defineMergeGraphT(){
             )
         ) 
     )
-        .def("initNumberOfNodes",&MergeGraphType::initNumberOfNodes,"get the initial number of nodes")
-        .def("initNumberOfEdges",&MergeGraphType::initNumberOfEdges,"get the initial number of edges")
-        .def("numberOfNodes",&MergeGraphType::numberOfNodes,"get the current number of nodes")
-        .def("numberOfEdges",&MergeGraphType::numberOfEdges,"get the current number of edges")
+        .def(LemonDirectedGraphCoreVisitor<MergeGraphType>())
+        .def(MergeGraphAddOnVisitor<MergeGraphType>())
+      
+       
         .def("mergeParallelEdges",&MergeGraphType::mergeParallelEdges,"merge parallel / double edges")
         .def("mergeRegions",&MergeGraphType::mergeRegions,"mergeTwoRegions")
         .def("setInitalEdge",&MergeGraphType::setInitalEdge,
@@ -136,12 +139,7 @@ void defineMergeGraphT(){
             ),
             "a  initNumberOfEdges x 2 array"
         )
-        // iterators
-        .def("nodeIterator", range< return_internal_reference<> >(
-                &MergeGraphType::nodesBegin  , 
-                &MergeGraphType::nodesEnd
-            )
-        )
+
 
 
 
