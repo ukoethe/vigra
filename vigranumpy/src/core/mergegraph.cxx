@@ -119,7 +119,12 @@ void defineMergeGraphT(){
             )
         ) 
     )
-        .def(LemonDirectedGraphCoreVisitor<MergeGraphType>())
+        .def(LemonDirectedGraphCoreVisitor<
+            MergeGraphType,
+            python::return_value_policy<python::return_by_value>,
+            python::return_value_policy<python::return_by_value>
+            >()
+        )
         .def(MergeGraphAddOnVisitor<MergeGraphType>())
       
        

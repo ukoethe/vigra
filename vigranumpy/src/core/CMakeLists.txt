@@ -82,3 +82,9 @@ VIGRA_ADD_NUMPY_MODULE(cgp SOURCES
     py_cell1vec.cxx
     py_cell2vec.cxx
   VIGRANUMPY)
+
+
+VIGRA_ADD_NUMPY_MODULE(rag SOURCES
+    rag.cxx
+    rag_rag.cxx
+  VIGRANUMPY)

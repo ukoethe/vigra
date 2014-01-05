@@ -85,6 +85,31 @@ struct  ConstRepIter
    
 };
 
+
+
+template<class T>
+inline bool operator == (const ConstRepIter<T> & iter,const lemon::Invalid & iv){
+    return iter.isEnd();
+}
+template<class T>
+inline bool operator == (const lemon::Invalid & iv , const ConstRepIter<T> & iter){
+    return iter.isEnd();
+}
+
+template<class T>
+inline bool operator != (const ConstRepIter<T> & iter,const lemon::Invalid & iv){
+    return !iter.isEnd();
+}
+template<class T>
+inline bool operator != (const lemon::Invalid & iv , const ConstRepIter<T> & iter){
+    return !iter.isEnd();
+}
+
+
+
+
+
+
 /// Disjoint set data structure with path compression.
 /// \ingroup datastructures
 template<class T>

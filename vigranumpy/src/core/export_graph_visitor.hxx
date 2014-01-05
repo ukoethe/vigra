@@ -8,9 +8,9 @@ namespace python = boost::python;
 namespace vigra{
 
 
-template<class GRAPH>
+template<class GRAPH,class NODE_RET_POLICY,class EDGE_RET_POLICY>
 class LemonDirectedGraphCoreVisitor 
-:   public boost::python::def_visitor<LemonDirectedGraphCoreVisitor<GRAPH> >
+:   public boost::python::def_visitor<LemonDirectedGraphCoreVisitor<GRAPH,NODE_RET_POLICY,EDGE_RET_POLICY> >
 {
 public:
 
@@ -22,9 +22,11 @@ public:
     typedef typename GraphType::index_type       index_type;
     typedef typename GraphType::Edge             Edge;
     typedef typename GraphType::Node             Node;
-    typedef typename GraphType::Arc              Arc;
+    //typedef typename GraphType::Arc              Arc;
 
-
+    typedef typename GraphType::NodeIt              NodeIt;
+    typedef typename GraphType::EdgeIt              EdgeIt;
+    typedef typename GraphType::NeighborNodeIt      NeighborNodeIt;
 
     template <class classT>
     void visit(classT& c) const
@@ -35,22 +37,35 @@ public:
             .add_property("nodeNum",    &GraphType::nodeNum )
             .add_property("maxEdgeId",  &GraphType::maxEdgeId )
             .add_property("maxEdgeId",  &GraphType::maxEdgeId )
+            // id functions
+            .def("id",&nodeId)
+            .def("id",&edgeId)
+            // get edge / node from id
+            .def("nodeFromId",&GraphType::nodeFromId,NODE_RET_POLICY() )
+            .def("edgeFromId",&GraphType::edgeFromId,EDGE_RET_POLICY() )
+
             // basic iterators
-            .def("nodeIterator", python::range< python::return_internal_reference<> >(
+            .def("nodeIterator", python::range< NODE_RET_POLICY >(
                     &GraphType::nodesBegin  , 
                     &GraphType::nodesEnd
                 )
             )
-            .def("edgeIterator", python::range< python::return_value_policy<python::return_by_value> >(
+            .def("edgeIterator", python::range< EDGE_RET_POLICY >(
                     &GraphType::edgesBegin  , 
                     &GraphType::edgesEnd
                 )
             )
+            //.def("neigbourNodeIterator",&neighborNodeIt)
         ;
     }
 
-   //static void foo(X& self);
-   // static void bar(X& self);
+   static index_type nodeId( const GraphType & self,const Node & node ){return  self.id(node);}
+   static index_type edgeId( const GraphType & self,const Edge & edge ){return  self.id(edge);}
+
+   //python::object  neighborNodeIt( const GraphType & self,const Node & node ){
+   //     return python::range<NODE_RET_POLICY>(self.neigbourNodesBegin(node),self.neigbourNodesEnd(node));
+   //}
+
 };
 
 template<class GRAPH>
@@ -67,7 +82,7 @@ public:
     typedef typename GraphType::index_type       index_type;
     typedef typename GraphType::Edge             Edge;
     typedef typename GraphType::Node             Node;
-    typedef typename GraphType::Arc              Arc;
+    //typedef typename GraphType::Arc              Arc;
 
 
 
