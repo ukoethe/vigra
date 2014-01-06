@@ -1,8 +1,12 @@
 #ifndef VIGRA_GRAPH_CRTP_BASE_HXX
 #define VIGRA_GRAPH_CRTP_BASE_HXX
 
-#include <vigra/graph_helper/graph_item_impl.hxx>
+/*boost*/
 #include <boost/iterator/iterator_facade.hpp>
+
+/*vigra*/
+#include <vigra/graph_helper/graph_item_impl.hxx>
+#include <vigra/is_end_filter_iterator.hxx>
 
 namespace vigra{
 namespace detail{
@@ -103,27 +107,112 @@ namespace detail{
 	};
 
 
+	template<class GRAPH>
+	class OutEdgeOnlyFilter{
+	public:
+		typedef typename GRAPH::Edge 		Edge;
+		typedef typename GRAPH::index_type 	index_type;
+		OutEdgeOnlyFilter()
+		: 	graph_(NULL),
+			ownNodeId_(-1){
+		}
+		OutEdgeOnlyFilter(const GRAPH & graph, const index_type ownNodeId)
+		: 	graph_(&graph),
+			ownNodeId_(ownNodeId){
+		}
+		bool operator()(const Edge & edge)const{
+			const index_type uid = graph_->id(graph_->u(edge));
+			return uid==ownNodeId_;
+		}
+	private:
+		const GRAPH * graph_;
+		index_type ownNodeId_;
+	};
+
+	template<class GRAPH>
+	class InEdgeOnlyFilter{
+	public:
+		typedef typename GRAPH::Edge 		Edge;
+		typedef typename GRAPH::index_type 	index_type;
+		InEdgeOnlyFilter()
+		: 	graph_(NULL),
+			ownNodeId_(-1){
+		}
+		InEdgeOnlyFilter(const GRAPH & graph, const index_type ownNodeId)
+		: 	graph_(&graph),
+			ownNodeId_(ownNodeId){
+		}
+		bool operator()(const Edge & edge)const{
+			const index_type vid = graph_->id(graph_->v(edge));
+			return vid==ownNodeId_;
+		}
+	private:
+		const GRAPH * graph_;
+		index_type ownNodeId_;
+	};
+
+	template<class GRAPH>
+	class BackEdgeOnlyFilter{
+	public:
+		typedef typename GRAPH::Edge 		Edge;
+		typedef typename GRAPH::index_type 	index_type;
+		BackEdgeOnlyFilter()
+		: 	graph_(NULL),
+			ownNodeId_(-1){
+		}
+		BackEdgeOnlyFilter(const GRAPH & graph, const index_type ownNodeId)
+		: 	graph_(&graph),
+			ownNodeId_(ownNodeId){
+		}
+		bool operator()(const Edge & edge)const{
+			const index_type otherNodeId = graph_->id(graph_->oppositeNode(graph_->nodeFromId(ownNodeId_),edge));
+			return otherNodeId<ownNodeId_;
+		}
+	private:
+		const GRAPH * graph_;
+		index_type ownNodeId_;
+	};
 
 
 
-	template<class GRAPH,class INDEX,class EDGE,class NODE,class EDGE_IT,class NODE_IT>
+
+	template<	class GRAPH,	class INDEX_TYPE,
+				class EDGE,		class NODE,
+				class EDGE_IT,	class NODE_IT,
+				class INC_EDGE_IT
+	>
 	class ArcHelper{
 
 	public:
-		typedef INDEX index_type;
-		typedef EDGE  Edge;
-		typedef NODE  Node;
-		typedef GenericArc<index_type> Arc;
+
+
+		typedef GenericArc<INDEX_TYPE> 			  Arc;
 		typedef FallbackArcIt<GRAPH,Arc,EDGE_IT>  ArcIt;
+
+
+		typedef FilterIter< InEdgeOnlyFilter<GRAPH> ,INC_EDGE_IT >   in_edge_iterator;
+
+
+
+		in_edge_iterator inEdgesBegin(const NODE & node)const{
+			return in_edge_iterator(InEdgeOnlyFilter<GRAPH>( graph(),graph().id(node)), 
+				graph().neigbourEdgesBegin(),graph().neigbourEdgesEnd()
+			);
+		}
+		in_edge_iterator inEdgesEnd(const NODE & node)const{
+			return in_edge_iterator(InEdgeOnlyFilter<GRAPH>( graph(),graph().id(node)), 
+				graph().neigbourEdgesEnd(),graph().neigbourEdgesEnd()
+			);
+		}
 
 
 		size_t arcNum()const{
 			return graph().edgeNum()*2;
 		}
-		index_type maxArcId()const{
-			return  graph().arcNum()-1;
+		INDEX_TYPE maxArcId()const{
+			return  graph().maxEdgeId()*2+1;
 		}
-		index_type arcId(const Arc & arc)const{
+		INDEX_TYPE arcId(const Arc & arc)const{
 			return arc.id();
 		}
 
@@ -134,34 +223,49 @@ namespace detail{
 			return ArcIt(graph(),graph().edgesBegin(),false,true);
 		}
 
-		Node source(const Arc & arc)const{
-			const index_type arcIndex  = graph().id(arc);
-			const index_type maxEdgeId = graph().maxEdgeId();
+
+        NODE oppositeNode(NODE const &n, const EDGE &e) const {
+            const NODE uNode = graph().u(e);
+            const NODE vNode = graph().v(e);
+            if(graph().id(uNode)==graph().id(n)){
+                return vNode;
+            }
+            else if(graph().id(vNode)==graph().id(n)){
+                return uNode;
+            }
+            else{
+                return NODE(-1);
+            }
+        }
+
+		NODE source(const Arc & arc)const{
+			const INDEX_TYPE arcIndex  = graph().id(arc);
+			const INDEX_TYPE maxEdgeId = graph().maxEdgeId();
 
 			if (arcIndex > maxEdgeId ){
-				const index_type edgeIndex = arcIndex-maxEdgeId-1;
-				const Edge edge = graph().edgeFromId(edgeIndex);
+				const INDEX_TYPE edgeIndex = arcIndex-maxEdgeId-1;
+				const EDGE edge = graph().edgeFromId(edgeIndex);
 				return graph().v(edge);
 			}
 			else{
-				const index_type edgeIndex = arcIndex;
-				const Edge edge = graph().edgeFromId(edgeIndex);
+				const INDEX_TYPE edgeIndex = arcIndex;
+				const EDGE edge = graph().edgeFromId(edgeIndex);
 				return graph().u(edge);
 			}
 		}
 
-		Node target(const Arc & arc)const{
-			const index_type arcIndex  = graph().id(arc);
-			const index_type maxEdgeId = graph().maxEdgeId();
+		NODE target(const Arc & arc)const{
+			const INDEX_TYPE arcIndex  = graph().id(arc);
+			const INDEX_TYPE maxEdgeId = graph().maxEdgeId();
 
 			if (arcIndex > maxEdgeId ){
-				const index_type edgeIndex = arcIndex-maxEdgeId-1;
-				const Edge edge = graph().edgeFromId(edgeIndex);
+				const INDEX_TYPE edgeIndex = arcIndex-maxEdgeId-1;
+				const EDGE edge = graph().edgeFromId(edgeIndex);
 				return graph().u(edge);
 			}
 			else{
-				const index_type edgeIndex = arcIndex;
-				const Edge edge = graph().edgeFromId(edgeIndex);
+				const INDEX_TYPE edgeIndex = arcIndex;
+				const EDGE edge = graph().edgeFromId(edgeIndex);
 				return graph().v(edge);
 			}
 		}

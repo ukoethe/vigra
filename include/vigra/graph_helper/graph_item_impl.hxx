@@ -107,46 +107,57 @@ class GenericEdgeImpl
 };
 
 
+template<class INDEX_TYPE>
+class GenericEdge;
 
+template<class INDEX_TYPE>
+class GenericArc{
+public:
+    typedef INDEX_TYPE index_type;
+    GenericArc(
+        const index_type id = static_cast<index_type>(-1),
+        const index_type edgeId = static_cast<index_type>(-1) 
+    )
+    :   id_(id),
+        edgeId_(edgeId){
 
+    }
+    index_type id()const{return id_;}
+    index_type edgeId()const{return id_;}
+
+    operator GenericEdge<INDEX_TYPE> () const{
+        return GenericEdge<INDEX_TYPE>(edgeId());
+    }
+
+private:
+    index_type id_;
+    index_type edgeId_;
+};
 
 template<class INDEX_TYPE>
 class GenericEdge{
 public:
     typedef INDEX_TYPE index_type;
 
-    GenericEdge(const GenericEdge & other )
-    : id_(other.id_){
 
-    }
-
-
-    GenericEdge( )
-    : id_(-1){
-
-    }
-    GenericEdge(const index_type id )
+    GenericEdge(const index_type id = static_cast<index_type>(-1) )
     : id_(id){
 
     }
+
+    GenericEdge(const GenericArc<INDEX_TYPE> & arc)
+    :   id_(arc.edgeId())
+    {
+    }
+
+
+
 
     index_type id()const{return id_;}
 private:
     index_type id_;
 };
 
-template<class INDEX_TYPE>
-class GenericArc{
-public:
-    typedef INDEX_TYPE index_type;
-    GenericArc(const index_type id = static_cast<index_type>(-1) )
-    : id_(id){
-
-    }
-    index_type id()const{return id_;}
-private:
-    index_type id_;
-};
 
 template<class INDEX_TYPE>
 class GenericNode{

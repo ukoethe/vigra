@@ -48,7 +48,7 @@ namespace vigra{
         }
 
         bool isBegin()const{
-            return current_ == 0 && size_!=0;
+            return current_ == 0;// && size_!=0;
         }
 
 
@@ -65,13 +65,31 @@ namespace vigra{
 
         void advance(const ptrdiff_t n){
             current_+=n;
+            if(current_>size_)
+                current_=size_;
         }
         ptrdiff_t distance_to(const EnumerationIterator & other)const{
-            return other.current_-current_;
+
+            if(isEnd() && other.isEnd()){
+                return 0;
+            }
+            else if(!isEnd() && other.isEnd()){
+                std::cout<<"other is end "<<size_-current_<<"\n";
+                return size_-current_;
+            }
+            else if(isEnd() && !other.isEnd()){
+               std::cout<<"i am end  "<<other.size_-other.current_<<" \n";
+               return -1*(other.size_-other.current_);
+            }
+            else{
+                return other.current_-current_;
+            }
+
+            
         }
         
         bool equal(const EnumerationIterator & other) const{
-            return current_ == other.current_ && size_==other.size_;
+            return   (isEnd() && other.isEnd() ) || (current_ == other.current_ && size_==other.size_);
         }
 
         const FROM_COUNTER & dereference() const { 

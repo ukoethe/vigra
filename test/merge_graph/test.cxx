@@ -121,7 +121,7 @@ struct MergeGraphTest
     }
 
     void consistency(const MergeGraphType & g){
-        /*
+        
         {EdgeIdIt               iter; should(iter==lemon::INVALID); }
         {NodeIdIt               iter; should(iter==lemon::INVALID); }
         {EdgeIt                 iter; should(iter==lemon::INVALID); }
@@ -133,8 +133,20 @@ struct MergeGraphTest
         {BackNeighborNodeIdIt   iter; should(iter==lemon::INVALID); }
         {BackNeighborNodeIt     iter; should(iter==lemon::INVALID); }
 
-        const size_t nNodes=g.numberOfNodes();
-        const size_t nEdges=g.numberOfEdges();
+        const size_t nNodes = g.nodeNum();
+        const size_t nEdges = g.edgeNum();
+        const size_t nArcs  = g.arcNum();
+
+        const size_t maxNodeId = g.maxNodeId();
+        const size_t maxEdgeId = g.maxEdgeId();
+        const size_t maxArcId  = g.maxArcId();
+
+
+
+        shouldEqual(maxEdgeId+maxEdgeId+1,maxArcId);
+        shouldEqual(nEdges*2,nArcs);
+
+
 
         should(std::distance(g.edgeIdsBegin(),  g.edgeIdsEnd()) == nEdges);
         should(std::distance(g.edgesBegin(),    g.edgesEnd())   == nEdges);
@@ -258,7 +270,7 @@ struct MergeGraphTest
         // both iterators should be invalid
         should(nodeIt==lemon::INVALID );
         should(nodeIdIt==lemon::INVALID );
-        */
+        
     }
 
 

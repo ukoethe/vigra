@@ -38,25 +38,15 @@
 namespace vigra {
 
 template<class ID_TYPE>
-class MergeGraph 
+class MergeGraphImpl 
 :   
-
-   // public detail::ArcHelper
-   // < 
-   //     Rag<DIM,IN_LABEL_TYPE> ,                            // RAG
-   //     ID_TYPE,                                            // INDEX_TYPE
-   //     detail::GenericEdge<ID_TYPE> ,                      // EDGE
-   //     detail::GenericNode<ID_TYPE> ,                      // NODE
-   //     EnumerationIterator< detail::GenericEdge<Int64> >,  // EDGE_IT 
-   //     EnumerationIterator< detail::GenericNode<Int64> >   // NODE_IT 
-   // > ,
     public MergeGraphCallbacks<ID_TYPE>  // CALLBACKS
 {
 
     public:
     typedef ID_TYPE                  IdType;
     typedef IdType                   index_type;
-    typedef MergeGraph<ID_TYPE>      MergeGraphType;
+    typedef MergeGraphImpl<ID_TYPE>  MergeGraphType;
 
     /*
     typedef MergeGraphEdge<IdType>   Edge;
@@ -125,11 +115,11 @@ class MergeGraph
         typedef size_t degree_size_type;
         
     private:
-        MergeGraph();                               // non empty-construction
-        MergeGraph( const MergeGraph& other );      // non construction-copyable
-        MergeGraph& operator=( const MergeGraph& ); // non copyable
+        MergeGraphImpl();                               // non empty-construction
+        MergeGraphImpl( const MergeGraphImpl& other );      // non construction-copyable
+        MergeGraphImpl& operator=( const MergeGraphImpl& ); // non copyable
     public:
-        MergeGraph(const size_t nNodes,const size_t nEdges);
+        MergeGraphImpl(const size_t nNodes,const size_t nEdges);
         void   setInitalEdge(const size_t initEdge,const size_t initNode0,const size_t initNode1);
 
         // query (sizes) 
@@ -165,12 +155,24 @@ class MergeGraph
             return nodeVector_[id(node)].edgeIdsEnd();
         }
 
+        // rename me
         NeighborEdgeIt neigbourEdgesBegin(const Node & node)const{
             return NeighborEdgeIt(neigbourEdgeIdsBegin(node),IdToEdgeTransform());
         }
         NeighborEdgeIt neigbourEdgesEnd(const Node & node)const{
             return NeighborEdgeIt(neigbourEdgeIdsEnd(node),  IdToEdgeTransform());
         }
+
+
+
+        NeighborEdgeIt incEdgeItBegin(const Node & node)const{
+            return NeighborEdgeIt(neigbourEdgeIdsBegin(node),IdToEdgeTransform());
+        }
+        NeighborEdgeIt incEdgeIt(const Node & node)const{
+            return NeighborEdgeIt(neigbourEdgeIdsEnd(node),  IdToEdgeTransform());
+        }
+
+
 
         NeighborNodeIdIt neigbourNodeIdsBegin(const Node & node)const{
             return NeighborNodeIdIt(neigbourEdgeIdsBegin(node),OtherNodeIdTransform(*this,node.id()));
@@ -245,19 +247,6 @@ class MergeGraph
         IdType id(const Edge & edge)const;
         IdType id(const Node & node)const;
 
-        Node oppositeNode(Node const &n, Edge const &e) const {
-            const Node uNode = u(e);
-            const Node vNode = v(e);
-            if(id(uNode)==id(n)){
-                return vNode;
-            }
-            else if(id(vNode)==id(n)){
-                return uNode;
-            }
-            else{
-                return Node(-1);
-            }
-        }
 
 
         degree_size_type degree(const Node & node)const;
@@ -280,7 +269,19 @@ class MergeGraph
         void mergeRegions(const IdType edgeIndex);
 
 
-
+        Node oppositeNode(Node const &n, const Edge &e) const {
+            const Node uNode = u(e);
+            const Node vNode = v(e);
+            if(id(uNode)==id(n)){
+                return vNode;
+            }
+            else if(id(vNode)==id(n)){
+                return uNode;
+            }
+            else{
+                return Node(-1);
+            }
+        }
   
     private:
         typedef std::map<IdType, Node > NodeMap;
@@ -301,9 +302,53 @@ class MergeGraph
 };
 
 
+template<class ID_TYPE>
+class MergeGraph 
+:   public MergeGraphImpl<ID_TYPE>,
+    public detail::ArcHelper
+    < 
+        MergeGraph<ID_TYPE> ,                               // GRAPH
+        typename MergeGraphImpl<ID_TYPE>::index_type,       // INDEX_TYPE
+        typename MergeGraphImpl<ID_TYPE>::Edge ,            // EDGE
+        typename MergeGraphImpl<ID_TYPE>::Node ,            // NODE
+        typename MergeGraphImpl<ID_TYPE>::EdgeIt,           // EDGE_IT 
+        typename MergeGraphImpl<ID_TYPE>::NodeIt,           // NODE_IT 
+        typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
+    >
+{
+public:
+    typedef MergeGraphImpl<ID_TYPE> MergeGraphImplType;
+    typedef detail::ArcHelper
+    < 
+        MergeGraph<ID_TYPE> ,                               // GRAPH
+        typename MergeGraphImpl<ID_TYPE>::index_type,       // INDEX_TYPE
+        typename MergeGraphImpl<ID_TYPE>::Edge ,            // EDGE
+        typename MergeGraphImpl<ID_TYPE>::Node ,            // NODE
+        typename MergeGraphImpl<ID_TYPE>::EdgeIt,           // EDGE_IT 
+        typename MergeGraphImpl<ID_TYPE>::NodeIt,           // NODE_IT 
+        typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
+    > ArcHelperType;
+    MergeGraph(const size_t nNodes,const size_t nEdges)
+    : MergeGraphImpl<ID_TYPE>(nNodes,nEdges){
+    }
+
+    typename MergeGraphImplType::index_type id(const typename ArcHelperType::Arc & arc)const{
+        return this->arcId(arc);
+    }
+
+    typename MergeGraphImplType::index_type id(const typename MergeGraphImplType::Node & node)const{
+        return static_cast<const MergeGraphImplType *>(this)->id(node);
+    }
+
+    typename MergeGraphImplType::index_type id(const typename MergeGraphImplType::Edge & edge)const{
+        return static_cast<const MergeGraphImplType *>(this)->id(edge);
+    }
+};
+
+
 
 template<class ID_TYPE>
-MergeGraph<ID_TYPE>::MergeGraph(const size_t nNodes,const size_t nEdges)
+MergeGraphImpl<ID_TYPE>::MergeGraphImpl(const size_t nNodes,const size_t nEdges)
 :   MergeGraphCallbacks<ID_TYPE>(),
     nInitNodes_(nNodes),
     nInitEdges_(nEdges),
@@ -320,8 +365,8 @@ MergeGraph<ID_TYPE>::MergeGraph(const size_t nNodes,const size_t nEdges)
 }
 
 template<class ID_TYPE>
-inline std::pair<typename MergeGraph<ID_TYPE>::IdType,bool> 
-MergeGraph<ID_TYPE>::findEdgeId(
+inline std::pair<typename MergeGraphImpl<ID_TYPE>::IdType,bool> 
+MergeGraphImpl<ID_TYPE>::findEdgeId(
     const IdType nodeIdA,
     const IdType nodeIdB
 )const{
@@ -329,8 +374,8 @@ MergeGraph<ID_TYPE>::findEdgeId(
 }
 
 template<class ID_TYPE>
-inline std::pair<typename MergeGraph<ID_TYPE>::Edge,     bool> 
-MergeGraph<ID_TYPE>::findEdge  (
+inline std::pair<typename MergeGraphImpl<ID_TYPE>::Edge,     bool> 
+MergeGraphImpl<ID_TYPE>::findEdge  (
     const IdType nodeIdA,
     const IdType nodeIdB
 )const{
@@ -342,52 +387,52 @@ MergeGraph<ID_TYPE>::findEdge  (
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::Node 
-MergeGraph<ID_TYPE>::u(const Edge & edge)const{
+inline typename MergeGraphImpl<ID_TYPE>::Node 
+MergeGraphImpl<ID_TYPE>::u(const Edge & edge)const{
     const index_type rnid = reprNodeId(initEdges_[id(edge)].u());
     return nodeFromId(rnid);
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::Node  
-MergeGraph<ID_TYPE>::v(const Edge & edge)const{
+inline typename MergeGraphImpl<ID_TYPE>::Node  
+MergeGraphImpl<ID_TYPE>::v(const Edge & edge)const{
     const index_type rnid = reprNodeId(initEdges_[id(edge)].v());
     return nodeFromId(rnid);
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::maxEdgeId()const {
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::maxEdgeId()const {
     return edgeUfd_.lastRep();
 }
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::maxNodeId()const {
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::maxNodeId()const {
     return nodeUfd_.lastRep();
 }
 
 
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::id(
-    const typename MergeGraph<ID_TYPE>::Edge & edge
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::id(
+    const typename MergeGraphImpl<ID_TYPE>::Edge & edge
 )const{
     return edge.id();
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::id(
-    const typename MergeGraph<ID_TYPE>::Node & node
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::id(
+    const typename MergeGraphImpl<ID_TYPE>::Node & node
 )const{
     return node.id();
 }
    
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::degree_size_type 
-MergeGraph<ID_TYPE>::degree(
-    const MergeGraph<ID_TYPE>::Node & node
+inline typename MergeGraphImpl<ID_TYPE>::degree_size_type 
+MergeGraphImpl<ID_TYPE>::degree(
+    const MergeGraphImpl<ID_TYPE>::Node & node
 )const{
     return static_cast<degree_size_type>( nodeVector_[id(node)].edgeNum() );
 }
@@ -395,57 +440,57 @@ MergeGraph<ID_TYPE>::degree(
 
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::EdgeIdIt 
-MergeGraph<ID_TYPE>::edgeIdsBegin()const{
+inline typename MergeGraphImpl<ID_TYPE>::EdgeIdIt 
+MergeGraphImpl<ID_TYPE>::edgeIdsBegin()const{
     return edgeUfd_.begin();
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::EdgeIdIt 
-MergeGraph<ID_TYPE>::edgeIdsEnd()const{
+inline typename MergeGraphImpl<ID_TYPE>::EdgeIdIt 
+MergeGraphImpl<ID_TYPE>::edgeIdsEnd()const{
     return edgeUfd_.end();
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::EdgeIt 
-MergeGraph<ID_TYPE>::edgesBegin()const{
+inline typename MergeGraphImpl<ID_TYPE>::EdgeIt 
+MergeGraphImpl<ID_TYPE>::edgesBegin()const{
     return EdgeIt(edgeIdsBegin(),IdToEdgeTransform());
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::EdgeIt 
-MergeGraph<ID_TYPE>::edgesEnd()const{
+inline typename MergeGraphImpl<ID_TYPE>::EdgeIt 
+MergeGraphImpl<ID_TYPE>::edgesEnd()const{
     return EdgeIt(edgeIdsEnd(), IdToEdgeTransform());
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::NodeIt 
-MergeGraph<ID_TYPE>::nodesBegin()const{
+inline typename MergeGraphImpl<ID_TYPE>::NodeIt 
+MergeGraphImpl<ID_TYPE>::nodesBegin()const{
     return NodeIt(nodeIdsBegin(),IdToNodeTransform());
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::NodeIt 
-MergeGraph<ID_TYPE>::nodesEnd()const{
+inline typename MergeGraphImpl<ID_TYPE>::NodeIt 
+MergeGraphImpl<ID_TYPE>::nodesEnd()const{
     return NodeIt(nodeIdsEnd(),IdToNodeTransform());
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::neighbor_vertex_iterator 
-MergeGraph<ID_TYPE>::get_neighbor_vertex_iterator(const Node & node)const{
+inline typename MergeGraphImpl<ID_TYPE>::neighbor_vertex_iterator 
+MergeGraphImpl<ID_TYPE>::get_neighbor_vertex_iterator(const Node & node)const{
     return neighbor_vertex_iterator(*this,this->id(node),node,node.edgeIdsBegin());
 }
 
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::neighbor_vertex_iterator 
-MergeGraph<ID_TYPE>::get_neighbor_vertex_end_iterator(const Node & node)const{
+inline typename MergeGraphImpl<ID_TYPE>::neighbor_vertex_iterator 
+MergeGraphImpl<ID_TYPE>::get_neighbor_vertex_end_iterator(const Node & node)const{
     return neighbor_vertex_iterator(*this,this->id(node),node,node.edgeIdsEnd());
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::back_neighbor_vertex_iterator 
-MergeGraph<ID_TYPE>::get_back_neighbor_vertex_iterator(const Node & node)const{
+inline typename MergeGraphImpl<ID_TYPE>::back_neighbor_vertex_iterator 
+MergeGraphImpl<ID_TYPE>::get_back_neighbor_vertex_iterator(const Node & node)const{
     return back_neighbor_vertex_iterator(
         BackFilter(this->id(node)),
         this->get_neighbor_vertex_iterator(),
@@ -455,8 +500,8 @@ MergeGraph<ID_TYPE>::get_back_neighbor_vertex_iterator(const Node & node)const{
 
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::back_neighbor_vertex_iterator 
-MergeGraph<ID_TYPE>::get_back_neighbor_vertex_end_iterator(const Node & node)const{
+inline typename MergeGraphImpl<ID_TYPE>::back_neighbor_vertex_iterator 
+MergeGraphImpl<ID_TYPE>::get_back_neighbor_vertex_end_iterator(const Node & node)const{
     return back_neighbor_vertex_iterator(
         BackFilter(this->id(node)),
         this->get_neighbor_vertex_end_iterator(),
@@ -465,29 +510,29 @@ MergeGraph<ID_TYPE>::get_back_neighbor_vertex_end_iterator(const Node & node)con
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::NodeIdIt 
-MergeGraph<ID_TYPE>::nodeIdsBegin()const{
+inline typename MergeGraphImpl<ID_TYPE>::NodeIdIt 
+MergeGraphImpl<ID_TYPE>::nodeIdsBegin()const{
     return nodeUfd_.begin();
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::NodeIdIt 
-MergeGraph<ID_TYPE>::nodeIdsEnd()const{
+inline typename MergeGraphImpl<ID_TYPE>::NodeIdIt 
+MergeGraphImpl<ID_TYPE>::nodeIdsEnd()const{
     return nodeUfd_.end();
 }
 
 template<class ID_TYPE>
-inline const typename MergeGraph<ID_TYPE>::Edge & 
-MergeGraph<ID_TYPE>::getInitalEdge(
-    const typename MergeGraph<ID_TYPE>::IdType index
+inline const typename MergeGraphImpl<ID_TYPE>::Edge & 
+MergeGraphImpl<ID_TYPE>::getInitalEdge(
+    const typename MergeGraphImpl<ID_TYPE>::IdType index
 ){
     return initEdges_[index];
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::Edge 
-MergeGraph<ID_TYPE>::edgeFromId(
-    const typename MergeGraph<ID_TYPE>::IdType index
+inline typename MergeGraphImpl<ID_TYPE>::Edge 
+MergeGraphImpl<ID_TYPE>::edgeFromId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType index
 )const{
     /*
     Edge edge = initEdges_[index];
@@ -495,21 +540,27 @@ MergeGraph<ID_TYPE>::edgeFromId(
     edge[1]=reprNodeId(edge[1]);
     return edge;
     */
-    return Edge(index);
+    if (hasEdgeId(index))
+        return Edge(index);
+    else
+        return Edge(-1);
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::Node 
-MergeGraph<ID_TYPE>::nodeFromId(
-    const typename MergeGraph<ID_TYPE>::IdType index
+inline typename MergeGraphImpl<ID_TYPE>::Node 
+MergeGraphImpl<ID_TYPE>::nodeFromId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType index
 )const{
-    return Node(index);
+    if(hasNodeId(index))
+        return Node(index);
+    else
+        return Node(-1);
 }
 
 template<class ID_TYPE>
 inline bool 
-MergeGraph<ID_TYPE>::hasEdgeId(
-    const typename MergeGraph<ID_TYPE>::IdType edgeIndex
+MergeGraphImpl<ID_TYPE>::hasEdgeId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType edgeIndex
 )const{
     const IdType reprEdgeIndex = reprEdgeId(edgeIndex);
     if(reprEdgeIndex!=edgeIndex){
@@ -527,31 +578,31 @@ MergeGraph<ID_TYPE>::hasEdgeId(
 
 template<class ID_TYPE>
 inline bool 
-MergeGraph<ID_TYPE>::hasNodeId(
-    const typename MergeGraph<ID_TYPE>::IdType nodeIndex
+MergeGraphImpl<ID_TYPE>::hasNodeId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType nodeIndex
 )const{
     return nodeUfd_.find(nodeIndex)==nodeIndex;
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::reprEdgeId(
-    const typename MergeGraph<ID_TYPE>::IdType edgeIndex
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::reprEdgeId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType edgeIndex
 )const{
     return edgeUfd_.find(edgeIndex);
 }
 
 template<class ID_TYPE>
-inline typename MergeGraph<ID_TYPE>::IdType 
-MergeGraph<ID_TYPE>::reprNodeId(
-    const typename MergeGraph<ID_TYPE>::IdType nodeIndex
+inline typename MergeGraphImpl<ID_TYPE>::IdType 
+MergeGraphImpl<ID_TYPE>::reprNodeId(
+    const typename MergeGraphImpl<ID_TYPE>::IdType nodeIndex
 )const{
     return nodeUfd_.find(nodeIndex);
 }
 
 template<class ID_TYPE>
-inline bool MergeGraph<ID_TYPE>::stateOfInitalEdge(
-    const typename MergeGraph<ID_TYPE>::IdType initalEdge
+inline bool MergeGraphImpl<ID_TYPE>::stateOfInitalEdge(
+    const typename MergeGraphImpl<ID_TYPE>::IdType initalEdge
 )const{
     const index_type rep = reprEdgeId(initalEdge);
     const index_type rnid0=  reprNodeId(initEdges_[rep].u());
@@ -561,7 +612,7 @@ inline bool MergeGraph<ID_TYPE>::stateOfInitalEdge(
 
 template<class ID_TYPE>
 template<class OUT_ITER>
-void MergeGraph<ID_TYPE>::stateOfInitalEdges(
+void MergeGraphImpl<ID_TYPE>::stateOfInitalEdges(
     OUT_ITER begin,
     OUT_ITER end
 )const{
@@ -573,7 +624,7 @@ void MergeGraph<ID_TYPE>::stateOfInitalEdges(
 }
 
 template<class ID_TYPE>
-inline void MergeGraph<ID_TYPE>::setInitalEdge(
+inline void MergeGraphImpl<ID_TYPE>::setInitalEdge(
     const size_t initEdge,
     const size_t initNode0,
     const size_t initNode1
@@ -590,50 +641,50 @@ inline void MergeGraph<ID_TYPE>::setInitalEdge(
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::numberOfNodes()const{
+inline size_t MergeGraphImpl<ID_TYPE>::numberOfNodes()const{
     return nodeUfd_.numberOfSets();
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::numberOfEdges()const{
+inline size_t MergeGraphImpl<ID_TYPE>::numberOfEdges()const{
     //return dynamicEdges_.size();
     return edgeUfd_.numberOfSets();
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::nodeNum()const{
+inline size_t MergeGraphImpl<ID_TYPE>::nodeNum()const{
     return numberOfNodes();
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::edgeNum()const{
+inline size_t MergeGraphImpl<ID_TYPE>::edgeNum()const{
     return numberOfEdges();
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::num_nodes()const{
+inline size_t MergeGraphImpl<ID_TYPE>::num_nodes()const{
     return numberOfNodes();
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::num_edges()const{
+inline size_t MergeGraphImpl<ID_TYPE>::num_edges()const{
     return numberOfEdges();
 }
 
 
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::initNumberOfNodes()const{
+inline size_t MergeGraphImpl<ID_TYPE>::initNumberOfNodes()const{
     return nInitNodes_;
 }
 
 template<class ID_TYPE>
-inline size_t MergeGraph<ID_TYPE>::initNumberOfEdges()const{
+inline size_t MergeGraphImpl<ID_TYPE>::initNumberOfEdges()const{
     return nInitEdges_;
 }
 
 template<class ID_TYPE>
-void MergeGraph<ID_TYPE>::mergeParallelEdges(){
+void MergeGraphImpl<ID_TYPE>::mergeParallelEdges(){
     typedef typename DoubleMap::const_iterator MapIter;
     DoubleMap pEdgeFinder;
     for(size_t e=0;e<nInitEdges_;++e){
@@ -663,7 +714,7 @@ void MergeGraph<ID_TYPE>::mergeParallelEdges(){
 }
 
 template<class ID_TYPE>
-void MergeGraph<ID_TYPE>::combineDoubleEdges(
+void MergeGraphImpl<ID_TYPE>::combineDoubleEdges(
     const std::vector<ID_TYPE> & toCombine,
     const ID_TYPE r0,
     const ID_TYPE r1
@@ -702,9 +753,9 @@ void MergeGraph<ID_TYPE>::combineDoubleEdges(
 }
 
 template<class ID_TYPE>
-void MergeGraph<ID_TYPE>::searchLocalDoubleEdges(
-    const MergeGraph<ID_TYPE>::NodeStorageType & node , 
-    MergeGraph<ID_TYPE>::DoubleMap & doubleMap,
+void MergeGraphImpl<ID_TYPE>::searchLocalDoubleEdges(
+    const MergeGraphImpl<ID_TYPE>::NodeStorageType & node , 
+    MergeGraphImpl<ID_TYPE>::DoubleMap & doubleMap,
     const ID_TYPE relabelFrom,
     const ID_TYPE relabelTo
 ){
@@ -743,8 +794,8 @@ void MergeGraph<ID_TYPE>::searchLocalDoubleEdges(
 }
 
 template<class ID_TYPE>
-void MergeGraph<ID_TYPE>::mergeRegions(
-    const typename MergeGraph<ID_TYPE>::IdType toDeleteEdgeIndex
+void MergeGraphImpl<ID_TYPE>::mergeRegions(
+    const typename MergeGraphImpl<ID_TYPE>::IdType toDeleteEdgeIndex
 ){
     //std::cout<<"merge edge "<<toDeleteEdgeIndex<<"\n";
     const size_t preNumNodes = this->numberOfNodes();
@@ -860,8 +911,14 @@ void MergeGraph<ID_TYPE>::mergeRegions(
                     //  - we want to get the nodes adjacent to the "newFormedNode"
                     //CGP_ASSERT_OP(dynamicEdges_[toMergeEdgeIndex].hasNodeId(newNodeRep),==,true);
                     //const size_t adjacentNodeIndex = edgeFromId(toMergeEdgeIndex).otherNodeId(newNodeRep);
-                    const size_t adjacentNodeIndex = id(oppositeNode(nodeFromId(newNodeRep),edgeFromId(toMergeEdgeIndex)));  
 
+
+                    const index_type nodeUId = id(u(toMergeEdgeIndex));
+                    const index_type nodeVId = id(v(toMergeEdgeIndex));
+
+
+                    //const size_t adjacentNodeIndex = id(this->oppositeNode(nodeFromId(newNodeRep),edgeFromId(toMergeEdgeIndex)));  
+                    const size_t adjacentNodeIndex = nodeUId == newNodeRep ? nodeVId : nodeUId ;
                     newFormedNode.eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
 
                     if(nodeVector_[adjacentNodeIndex].hasEdgeId(toMergeEdgeIndex)){
