@@ -56,6 +56,8 @@ namespace vigra{
 
 
 
+
+
     template<unsigned int DIM , class IN_LABEL_TYPE>
     class RagImpl
     {
@@ -154,6 +156,10 @@ namespace vigra{
         EdgeIt edgesBegin()const;
         EdgeIt edgesEnd()const  ;
 
+
+        NeighborEdgeIdIt neigbourEdgeIdsPos(const Node & node,const Edge & edge)const{
+            
+        }
         NeighborEdgeIdIt neigbourEdgeIdsBegin(const Node & node)const;
         NeighborEdgeIdIt neigbourEdgeIdsEnd(const Node & node)const;
 

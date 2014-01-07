@@ -114,6 +114,15 @@ template<class INDEX_TYPE>
 class GenericArc{
 public:
     typedef INDEX_TYPE index_type;
+
+    GenericArc(const lemon::Invalid & iv)
+    :   id_(-1),
+        edgeId_(-1){
+
+    }
+
+
+
     GenericArc(
         const index_type id = static_cast<index_type>(-1),
         const index_type edgeId = static_cast<index_type>(-1) 
@@ -139,6 +148,10 @@ class GenericEdge{
 public:
     typedef INDEX_TYPE index_type;
 
+    GenericEdge(const lemon::Invalid & iv)
+    : id_(-1){
+
+    }
 
     GenericEdge(const index_type id = static_cast<index_type>(-1) )
     : id_(id){
@@ -163,6 +176,12 @@ template<class INDEX_TYPE>
 class GenericNode{
 public:
     typedef INDEX_TYPE index_type;
+
+    GenericNode(const lemon::Invalid & iv)
+    : id_(-1){
+
+    }
+
     GenericNode(const index_type id = static_cast<index_type>(-1) )
     : id_(id){
         
