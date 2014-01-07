@@ -74,11 +74,9 @@ namespace vigra{
                 return 0;
             }
             else if(!isEnd() && other.isEnd()){
-                std::cout<<"other is end "<<size_-current_<<"\n";
                 return size_-current_;
             }
             else if(isEnd() && !other.isEnd()){
-               std::cout<<"i am end  "<<other.size_-other.current_<<" \n";
                return -1*(other.size_-other.current_);
             }
             else{

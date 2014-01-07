@@ -22,66 +22,37 @@
 
 namespace vigra{
 
-    template<class GRAPH>
-    struct RagEdgeIt 
-    : public EnumerationIterator< typename GRAPH::Edge > {
-
+    template<class GRAPH,class ITEM>
+    struct RagItemIt 
+    :   public EnumerationIterator< ITEM > {
     private:
-            typedef EnumerationIterator<typename GRAPH::Edge > BaseIterType;
-
+        typedef EnumerationIterator< ITEM > BaseIterType;
     public:
-            typedef GRAPH Graph;
-            typedef typename Graph::Edge Edge;
-            typedef typename Graph::index_type index_type;
+        typedef GRAPH Graph;
+        typedef typename Graph::index_type index_type;
+        // make this private
+        RagItemIt(const index_type pos,const index_type size)
+        :   BaseIterType(pos,size){
+        }
+        // default constructor
+        RagItemIt()
+        :   BaseIterType(0,0){
+        }
+        RagItemIt(const RagItemIt & other)
+        :   BaseIterType(other){
+        }
 
-            // make this private
-            RagEdgeIt(const index_type pos,const index_type size)
-            :   BaseIterType(pos,size){
-
-            }
-
-            // default constructor
-            RagEdgeIt()
-            :   BaseIterType(0,0){
-            }
-            RagEdgeIt(const RagEdgeIt & other)
-            :   BaseIterType(other){
-            }
-
-            // Invalid constructor & conversion. 
-            RagEdgeIt(const lemon::Invalid & invalid)
-            :   BaseIterType(0,0){
-            }
-
-            RagEdgeIt(const Graph & g)
-            :   BaseIterType(0,g.edgeNum()){
-
-            }
-
-            RagEdgeIt(const Graph & g,const Edge & edge)
-            :   BaseIterType(g.id(edge),g.edgeNum()){
-            }
+        // Invalid constructor & conversion. 
+        RagItemIt(const lemon::Invalid & invalid)
+        :   BaseIterType(0,0){
+        }
+        RagItemIt(const Graph & g)
+        :   BaseIterType(0, GraphItemHelper<GRAPH,ITEM>::itemNum(g) ){
+        }
+        RagItemIt(const Graph & g,const ITEM & item)
+        :   BaseIterType(g.id(item), GraphItemHelper<GRAPH,ITEM>::itemNum(g) ){
+        }
     };
-    /*
-    template<class GRAPH>
-    inline bool operator == (const RagEdgeIt<GRAPH> & iter,const lemon::Invalid & iv){
-        return iter.isEnd(); 
-    }
-    template<class GRAPH>
-    inline bool operator == (const lemon::Invalid & iv , const RagEdgeIt<GRAPH> & iter){
-       return iter.isEnd(); 
-    }
-
-    template<class GRAPH>
-    inline bool operator != (const RagEdgeIt<GRAPH> & iter,const lemon::Invalid & iv){
-       return !iter.isEnd(); 
-    }
-    template<class GRAPH>
-    inline bool operator != (const lemon::Invalid & iv , const RagEdgeIt<GRAPH> & iter){
-        return !iter.isEnd(); 
-    }
-    */
-
 
 
 
@@ -119,9 +90,8 @@ namespace vigra{
         typedef std::vector<EdgeStorageType> EdgeVector;
     public:
 
-        typedef RagEdgeIt<RagImplType>                                                      EdgeIt;
-        //typedef EnumerationIterator<Edge>                                                   EdgeIt;
-        typedef EnumerationIterator<Node>                                                   NodeIt;
+        typedef RagItemIt<RagImplType,Edge>                                                      EdgeIt;
+        typedef RagItemIt<RagImplType,Node>                                                      NodeIt;
 
         typedef typename NodeStorageType::EdgeIdIt                                          NeighborEdgeIdIt;
         typedef TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>                 NeighborEdgeIt;

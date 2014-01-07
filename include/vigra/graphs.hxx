@@ -276,6 +276,39 @@ inline bool operator!=(Invalid, T const & t)
 } // namespace lemon
 
 namespace vigra {
+
+
+template<class GRAPH,class ITEM>
+struct GraphItemHelper;
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Edge Item;
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxEdgeId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.edgeNum();
+    }
+};
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Edge Item;
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxNodeId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.nodeNum();
+    }
+};
+
+
+
 namespace lemon_graph { 
 
 // vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library
