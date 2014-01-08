@@ -312,8 +312,8 @@ class MergeGraph
         typename MergeGraphImpl<ID_TYPE>::Edge ,            // EDGE
         typename MergeGraphImpl<ID_TYPE>::Node ,            // NODE
         typename MergeGraphImpl<ID_TYPE>::EdgeIt,           // EDGE_IT 
-        typename MergeGraphImpl<ID_TYPE>::NodeIt,           // NODE_IT 
-        typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
+        typename MergeGraphImpl<ID_TYPE>::NodeIt            // NODE_IT 
+        //typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
     >
 {
 public:
@@ -325,8 +325,8 @@ public:
         typename MergeGraphImpl<ID_TYPE>::Edge ,            // EDGE
         typename MergeGraphImpl<ID_TYPE>::Node ,            // NODE
         typename MergeGraphImpl<ID_TYPE>::EdgeIt,           // EDGE_IT 
-        typename MergeGraphImpl<ID_TYPE>::NodeIt,           // NODE_IT 
-        typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
+        typename MergeGraphImpl<ID_TYPE>::NodeIt            // NODE_IT 
+        //typename MergeGraphImpl<ID_TYPE>::NeighborEdgeIdIt  // NEIGHBOR_EDGE_ID_IT
     > ArcHelperType;
     MergeGraph(const size_t nNodes,const size_t nEdges)
     : MergeGraphImpl<ID_TYPE>(nNodes,nEdges){

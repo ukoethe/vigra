@@ -178,8 +178,7 @@ namespace detail{
 
 	template<	class GRAPH,	class INDEX_TYPE,
 				class EDGE,		class NODE,
-				class EDGE_IT,	class NODE_IT,
-				class INC_EDGE_IT
+				class EDGE_IT,	class NODE_IT
 	>
 	class ArcHelper{
 
@@ -188,22 +187,6 @@ namespace detail{
 
 		typedef GenericArc<INDEX_TYPE> 			  Arc;
 		typedef FallbackArcIt<GRAPH,Arc,EDGE_IT>  ArcIt;
-
-
-		typedef FilterIter< InEdgeOnlyFilter<GRAPH> ,INC_EDGE_IT >   in_edge_iterator;
-
-
-
-		in_edge_iterator inEdgesBegin(const NODE & node)const{
-			return in_edge_iterator(InEdgeOnlyFilter<GRAPH>( graph(),graph().id(node)), 
-				graph().neigbourEdgesBegin(),graph().neigbourEdgesEnd()
-			);
-		}
-		in_edge_iterator inEdgesEnd(const NODE & node)const{
-			return in_edge_iterator(InEdgeOnlyFilter<GRAPH>( graph(),graph().id(node)), 
-				graph().neigbourEdgesEnd(),graph().neigbourEdgesEnd()
-			);
-		}
 
 
 		size_t arcNum()const{

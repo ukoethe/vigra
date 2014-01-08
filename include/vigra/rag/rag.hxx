@@ -109,14 +109,6 @@ namespace vigra{
         typedef RagItemIt<RagImplType,Edge>                                                      EdgeIt;
         typedef RagItemIt<RagImplType,Node>                                                      NodeIt;
 
-        typedef typename NodeStorageType::EdgeIdIt                                          NeighborEdgeIdIt;
-        friend class detail::GenericIncEdgeIt<RagImplType,typename NodeStorageType::EdgeIdIt > ;
-
-
-
-        typedef TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>                 NeighborEdgeIt;
-        typedef TransformIter<OtherNodeIdTransform,NeighborEdgeIdIt,index_type,index_type>  NeighborNodeIdIt;
-        typedef TransformIter<OtherNodeTransform,NeighborEdgeIdIt,Node, Node >              NeighborNodeIt;
 
         typedef UInt32 CoordinateElementType;
         typedef TinyVector<CoordinateElementType,4> EdgeCoordinate;
@@ -153,6 +145,23 @@ namespace vigra{
         Node v(const Edge & edge)const{
             return Node(edges_[id(edge)].v());
         }
+        Node oppositeNode(Node const &n, const Edge &e) const {
+            const Node uNode = u(e);
+            const Node vNode = v(e);
+            if(id(uNode)==id(n)){
+                return vNode;
+            }
+            else if(id(vNode)==id(n)){
+                return uNode;
+            }
+            else{
+                return Node(-1);
+            }
+        }
+
+        const NodeStorageType & nodeImpl(const Node & node)const{
+        	return nodes_[id(node)];
+        }
 
 
         // ids 
@@ -173,23 +182,6 @@ namespace vigra{
 
         EdgeIt edgesBegin()const;
         EdgeIt edgesEnd()const  ;
-
-
-        NeighborEdgeIdIt neigbourEdgeIdsPos(const Node & node,const Edge & edge)const{
-            return nodes_[id(node)].find(id(edge));
-        }
-        NeighborEdgeIdIt neigbourEdgeIdsBegin(const Node & node)const;
-        NeighborEdgeIdIt neigbourEdgeIdsEnd(const Node & node)const;
-
-        NeighborEdgeIt neigbourEdgesBegin(const Node & node)const;
-        NeighborEdgeIt neigbourEdgesEnd(const Node & node)const;
-
-
-        NeighborNodeIdIt neigbourNodeIdsBegin(const Node & node)const;
-        NeighborNodeIdIt neigbourNodeIdsEnd(const Node & node)const;
-
-        NeighborNodeIt neigbourNodesBegin(const Node & node)const;
-        NeighborNodeIt neigbourNodesEnd(const Node & node)const;
 
 
         // extractors
@@ -224,8 +216,8 @@ namespace vigra{
             typename RagImpl<DIM,IN_LABEL_TYPE>::Edge ,             // EDGE
             typename RagImpl<DIM,IN_LABEL_TYPE>::Node ,             // NODE
             typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt,            // EDGE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt,            // NODE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
+            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt             // NODE_IT 
+            //typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
 
         >
     {
@@ -237,8 +229,8 @@ namespace vigra{
             typename RagImpl<DIM,IN_LABEL_TYPE>::Edge ,             // EDGE
             typename RagImpl<DIM,IN_LABEL_TYPE>::Node ,             // NODE
             typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt,            // EDGE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt,            // NODE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
+            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt             // NODE_IT 
+            //typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
         > ArcHelperType;
 
         public:
@@ -452,69 +444,8 @@ namespace vigra{
         return EdgeIt(edgeNum(),edgeNum());
     }
 
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourEdgeIdsBegin(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return nodes_[id(node)].edgeIdsBegin();
-    }
 
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourEdgeIdsEnd(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return nodes_[id(node)].edgeIdsEnd();
-    }
 
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourEdgesBegin(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborEdgeIt(neigbourEdgeIdsBegin(),IdToEdgeTransform());
-    }
-
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourEdgesEnd(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborEdgeIt(neigbourEdgeIdsEnd(),  IdToEdgeTransform());
-    }
-
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborNodeIdIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourNodeIdsBegin(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborNodeIdIt(neigbourEdgeIdsBegin(),OtherNodeIdTransform(*this,node.id()));
-    }
-
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborNodeIdIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourNodeIdsEnd(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborNodeIdIt(neigbourEdgeIdsEnd(),  OtherNodeIdTransform(*this,node.id()));
-    }
-
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborNodeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourNodesBegin(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborNodeIt(neigbourEdgeIdsBegin(),OtherNodeTransform(*this,node.id()));
-    }
-
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborNodeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::neigbourNodesEnd(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
-    )const{
-        return NeighborNodeIt(neigbourEdgeIdsBegin(),  OtherNodeTransform(*this,node.id()));
-    }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
     void RagImpl<DIM,IN_LABEL_TYPE>::extractEdgeCoordinates( 
