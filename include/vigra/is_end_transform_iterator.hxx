@@ -6,6 +6,19 @@
 
 namespace vigra{
 
+    template<class TRANSFORM,class ITER,class REF,class VAL>
+    class NewTransformIter
+    :   public boost::transform_iterator< TRANSFORM,ITER,REF,VAL>
+    {
+    public:
+        NewTransformIter()
+        :boost::transform_iterator< TRANSFORM,ITER,REF,VAL>(){
+        }
+        NewTransformIter(ITER  pos ,const TRANSFORM & transform)
+        :   boost::transform_iterator< TRANSFORM,ITER,REF,VAL>(pos,transform){
+        }
+    };
+
 
     template<class TRANSFORM,class ITER,class REF,class VAL>
     class TransformIter

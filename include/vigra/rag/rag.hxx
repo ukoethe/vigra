@@ -1,6 +1,20 @@
 #ifndef VIGRA_RAG_HXX
 #define VIGRA_RAG_HXX
 
+
+
+// WHY RAG SHOULD TAKE VIEW AND NOT(!) GRAPH WITH LABLED NODE MAP
+// - WHO SHOULD EXTRACT EDGE FEATURES 
+//    - if rag TAKES graph then we do not know anything about edge coordinates ?
+//      we could use a edgeMap or nodeMap of features, but who is going to
+//      extract the inital features....anyone who should do does
+//      need to know about the RAG and the labeling and also
+//      which edge correspondes to which pixels.....and well..this
+//      whould need another data structure
+//      
+
+
+
 /*std*/
 #include <vector>
 #include  <set>
@@ -19,7 +33,7 @@
 #include <vigra/algorithm.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 #include <vigra/graph_helper/graph_crtp_base.hxx>
-
+#include <vigra/graph_helper/graph_iterator_helper.hxx>
 namespace vigra{
 
     template<class GRAPH,class ITEM>
@@ -96,6 +110,10 @@ namespace vigra{
         typedef RagItemIt<RagImplType,Node>                                                      NodeIt;
 
         typedef typename NodeStorageType::EdgeIdIt                                          NeighborEdgeIdIt;
+        friend class detail::GenericIncEdgeIt<RagImplType,typename NodeStorageType::EdgeIdIt > ;
+
+
+
         typedef TransformIter<IdToEdgeTransform,NeighborEdgeIdIt,Edge,Edge>                 NeighborEdgeIt;
         typedef TransformIter<OtherNodeIdTransform,NeighborEdgeIdIt,index_type,index_type>  NeighborNodeIdIt;
         typedef TransformIter<OtherNodeTransform,NeighborEdgeIdIt,Node, Node >              NeighborNodeIt;
@@ -158,7 +176,7 @@ namespace vigra{
 
 
         NeighborEdgeIdIt neigbourEdgeIdsPos(const Node & node,const Edge & edge)const{
-            
+            return nodes_[id(node)].find(id(edge));
         }
         NeighborEdgeIdIt neigbourEdgeIdsBegin(const Node & node)const;
         NeighborEdgeIdIt neigbourEdgeIdsEnd(const Node & node)const;

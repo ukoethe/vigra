@@ -4,9 +4,235 @@
 #include <vigra/is_end_iterator.hxx>
 #include <vigra/algorithm.hxx>
 #include <vigra/tinyvector.hxx>
+#include <boost/iterator/iterator_facade.hpp>
 
 namespace vigra{
 namespace detail{
+
+/*
+class MyIterator : public std::iterator<std::input_iterator_tag, int>
+{
+  int* p;
+public:
+  MyIterator(int* x) :p(x) {}
+  MyIterator(const MyIterator& mit) : p(mit.p) {}
+  MyIterator& operator++() {++p;return *this;}
+  MyIterator operator++(int) {MyIterator tmp(*this); operator++(); return tmp;}
+  bool operator==(const MyIterator& rhs) {return p==rhs.p;}
+  bool operator!=(const MyIterator& rhs) {return p!=rhs.p;}
+  int& operator*() {return *p;}
+};
+*/
+
+
+template<class GRAPH>
+struct NeighborNodeFilter{
+    typedef typename GRAPH::Node ResultType;
+
+
+    bool static valid(
+    ResultType const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        return true;
+    }
+
+
+     static transform(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        return g.oppositeNode(g.nodeFromId(ownNodeId), g.edgeFromId(edegeId) );    
+    }
+
+    static bool IsFilter = false ; 
+};
+
+template<class GRAPH>
+struct IncEdgeFilter{
+    typedef typename GRAPH::Edge ResultType;
+
+    template<GRAPH>
+    bool static valid(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        return true;
+    }
+
+    template<GRAPH>
+    ResultType static transform(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        return g.edgeFromId(edgeId);    
+    }
+
+    static bool IsFilter = false ; 
+};
+
+template<class GRAPH>
+struct BackEdgeFilter{
+    typedef typename GRAPH::Edge ResultType;
+
+    bool static valid(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId
+    ){
+        return g.id(g.oppositeNode(g.nodeFromId(ownNodeId), g.edgeFromId(edegeId) )) < ownNodeId;
+    } 
+
+    ResultType static transform(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        return g.edgeFromId(edgeId);
+    }
+
+    static bool IsFilter = true ; 
+};
+
+template<class GRAPH>
+struct IsOutFilter{
+    typedef typename GRAPH::Arc ResultType;
+
+    bool static valid(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId
+    ){
+        return  g.id(g.u(g.edgeId(edegeId)))==ownNodeId;
+    } 
+    ResultType static transform(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        const typename GRAPH::Edge edge g.edgeFromId(edgeId);
+        return g.direct(edge);
+        //direct (Edge const &e, Node const &n)
+    }
+
+    static bool IsFilter = true ; 
+};
+
+template<class GRAPH>
+struct IsInFilter{
+    typedef typename GRAPH::Arc ResultType;
+
+    bool static valid(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId
+    ){
+        return  g.id(g.v(g.edgeId(edegeId)))==ownNodeId;
+    } 
+    ResultType static transform(
+        const GRAPH & g,
+        const typename GRAPH::index_type edegeId,
+        const typename GRAPH::index_type ownNodeId, 
+        const const typename GRAPH::index_type otherItemId
+    ){
+        const typename GRAPH::Edge edge g.edgeFromId(edgeId);
+        return g.direct(edge,g.v(edge));
+    }
+    static bool IsFilter = true ; 
+};
+
+
+//  This class with the filter above can create 
+//  the following lemon iterators :
+//   - IncEdgeIt
+//   - OutArcIt
+//   - 
+//
+//
+template<class GRAPH,class NODE_IMPL,class FILTER>    
+class GenericIncEdgeIt
+
+:  public boost::iterator_facade<
+      GenericIncEdgeIt<GRAPH,NODE_IMPL,FILTER>,
+      typename FILTER::ResultType const,
+      boost::forward_traversal_tag
+   >
+{
+public:
+
+    typedef GRAPH Graph;
+    typedef typename Graph::NodeIt NodeIt;
+    typedef Graph::Edge Edge;
+    typedef Graph::Node Node;
+    typedef typename GraphItemHelper<typename FILTER::ResultType>  ResultItem
+
+    // default constructor
+    GenericIncEdgeIt(const lemon::Invalid & invalid = lemon::INVALID)
+    :   nodeImpl_(NULL),
+        graph_(NULL),
+        ownNodeId_(-1),
+        idIter_(),
+        resultItem_(lemon::INVALID){
+    }
+
+    // from a given node
+    GenericIncEdgeIt(const Graph & g , const Node & node)
+    :   nodeImpl_(NULL),
+        graph_(&g),
+        idIter_(),
+        ownNodeId_(g.id(node)),
+        resultItem_(lemon::INVALID){
+            // get first node
+            const Node firstNode  * NodeIt(g);
+            nodeImpl_(&g.nodeImpl(firstNode));
+    }
+
+private:
+    friend class boost::iterator_core_access;
+
+    typedef NODE_IMPL NodeImpl;
+    typedef typename NodeImpl::EdgeIdIt EdgeIdIt;
+
+    bool isEnd()const{
+        return  (nodeImpl_==NULL  || idIter_==nodeImpl_.edgeIdsEnd());      
+    }
+    bool isBegin()const{
+        return (nodeImpl_!=NULL &&  idIter_==nodeImpl_.edgeIdsBegin());
+    }
+
+    void increment()const{
+        ++idIter_;
+        if(FILTER::IsFilter){
+            while(idIter_!=nodeImpl_->edgeIdsEnd() && !FILTER::valid(*graph_,*idIter_,ownNodeId_){
+                ++idIter_;
+            }
+        }
+    }
+
+    // might no need to make this constant
+    // therefore we would lose the "mutabe"
+    const ResultItem & dereference()const{
+        resultItem_ =  FILTER::transform(*graph_,*idIter_,ownNodeId_)
+        return resultItem_;
+    }
+
+
+    const NODE_IMPL * nodeImpl_;
+    const GRAPH     * graph_;
+    const index_type  ownNodeId_;
+    EdgeIdIt idIter_;
+    mutable ResultItem resultItem_;
+};
 
 
 

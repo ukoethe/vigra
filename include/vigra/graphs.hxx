@@ -285,6 +285,8 @@ template<class GRAPH>
 struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
     typedef typename GRAPH::index_type index_type ;
     typedef typename GRAPH::Edge Item;
+    typedef typename GRAPH::EdgeIt ItemIt;
+
 
     static index_type maxItemId(const GRAPH & g){
         return g.maxEdgeId();
@@ -292,12 +294,15 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
     static index_type itemNum(const GRAPH & g){
         return g.edgeNum();
     }
+
 };
 
 template<class GRAPH>
 struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
     typedef typename GRAPH::index_type index_type ;
     typedef typename GRAPH::Edge Item;
+    typedef typename GRAPH::EdgeIt ItemIt;
+
 
     static index_type maxItemId(const GRAPH & g){
         return g.maxNodeId();
@@ -306,6 +311,24 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
         return g.nodeNum();
     }
 };
+
+
+template<class GRAPH>
+struct GraphItemHelper<GRAPH,typename GRAPH::Arc>{
+    typedef typename GRAPH::index_type index_type ;
+    typedef typename GRAPH::Arc Item;
+    typedef typename GRAPH::ArcIt ItemIt;
+
+
+    static index_type maxItemId(const GRAPH & g){
+        return g.maxArcId();
+    }
+    static index_type itemNum(const GRAPH & g){
+        return g.arcNum();
+    }
+};
+
+
 
 
 
