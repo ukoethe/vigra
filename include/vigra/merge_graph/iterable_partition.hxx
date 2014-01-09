@@ -34,8 +34,10 @@ struct  ConstRepIter
    }
 
 
-   ConstRepIter(){
-      partition_=NULL;
+   ConstRepIter()
+   :  partition_(NULL),
+      currentRep_()
+   {
    }
    //ConstRepIter(lemon::Invalid ){
    //   partition_=NULL;
@@ -151,6 +153,7 @@ public:
       return lastRep_;
    }
    typedef ConstRepIter<T> const_iterator;
+
    const_iterator begin()const{
       if(numberOfSets_!=0)
          return ConstRepIter<T>(*this,firstRep_);
@@ -160,6 +163,16 @@ public:
    const_iterator end()const{
       return ConstRepIter<T>(*this,lastRep_+1);
    }
+
+
+   const_iterator iteratorAt(const value_type & rep)const{
+      if(numberOfSets_!=0)
+         return ConstRepIter<T>(*this,rep);
+      else
+         return ConstRepIter<T>(*this,lastRep_+1);
+   }
+
+
 
    void eraseElement(const value_type & value,const bool reduceSize=true){
       const T notRep=value;

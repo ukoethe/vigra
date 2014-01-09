@@ -309,7 +309,56 @@ struct Rag2Test{
         should( rag.id(rag.target(allArcs[6]))==rag.id(rag.u(allEdges[2])));
         should( rag.id(rag.target(allArcs[7]))==rag.id(rag.u(allEdges[3])));
     }
+    void ragArcTest()
+    {
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+        
+        // check sources and targets of arcs which are just the "natural edges"
+        should(  g.source(g.arcFromId(1)) == g.u(g.edgeFromId(1)) );
+        should(  g.source(g.arcFromId(2)) == g.u(g.edgeFromId(2)) );
+        should(  g.source(g.arcFromId(3)) == g.u(g.edgeFromId(3)) );
+        should(  g.source(g.arcFromId(4)) == g.u(g.edgeFromId(4)) );
 
+        should(  g.target(g.arcFromId(1)) == g.v(g.edgeFromId(1)) );
+        should(  g.target(g.arcFromId(2)) == g.v(g.edgeFromId(2)) );
+        should(  g.target(g.arcFromId(3)) == g.v(g.edgeFromId(3)) );
+        should(  g.target(g.arcFromId(4)) == g.v(g.edgeFromId(4)) );
+
+
+
+
+        // check sources and targets of arcs which are flipped "natural edges"
+        should(  g.source(g.arcFromId(5)) == g.v(g.edgeFromId(1)) );
+        should(  g.source(g.arcFromId(6)) == g.v(g.edgeFromId(2)) );
+        should(  g.source(g.arcFromId(7)) == g.v(g.edgeFromId(3)) );
+        should(  g.source(g.arcFromId(8)) == g.v(g.edgeFromId(4)) );
+
+        should(  g.target(g.arcFromId(5)) == g.u(g.edgeFromId(1)) );
+        should(  g.target(g.arcFromId(6)) == g.u(g.edgeFromId(2)) );
+        should(  g.target(g.arcFromId(7)) == g.u(g.edgeFromId(3)) );
+        should(  g.target(g.arcFromId(8)) == g.u(g.edgeFromId(4)) );
+
+        // check that arcs are convertible to edges
+        should(Edge(g.arcFromId(1))==g.edgeFromId(1));
+        should(Edge(g.arcFromId(2))==g.edgeFromId(2));
+        should(Edge(g.arcFromId(3))==g.edgeFromId(3));
+        should(Edge(g.arcFromId(4))==g.edgeFromId(4));
+        should(Edge(g.arcFromId(5))==g.edgeFromId(1));
+        should(Edge(g.arcFromId(6))==g.edgeFromId(2));
+        should(Edge(g.arcFromId(7))==g.edgeFromId(3));
+        should(Edge(g.arcFromId(8))==g.edgeFromId(4));
+
+    }
 
     void ragEdgeItTest()
     {
@@ -895,6 +944,7 @@ struct RagTestSuite
         add( testCase( &EnumerationIteratorTest::fillTest));
 
         add( testCase( &Rag2Test<vigra::UInt32>::ragTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragArcTest));
         add( testCase( &Rag2Test<vigra::UInt32>::ragFindEdgeTest));
         add( testCase( &Rag2Test<vigra::UInt32>::ragUVOrderTest));
         add( testCase( &Rag2Test<vigra::UInt32>::ragEdgeItTest));

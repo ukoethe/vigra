@@ -99,7 +99,7 @@ namespace vigra{
                 const typename GRAPH::index_type ownNodeId
             ){
                 const typename GRAPH::Edge edge(g.edgeFromId(edgeId));
-                return g.direct(edge);
+                return g.direct(edge,true);
                 //direct (Edge const &e, Node const &n)
             }
 
@@ -123,7 +123,7 @@ namespace vigra{
                 const typename GRAPH::index_type ownNodeId
             ){
                 const typename GRAPH::Edge edge(g.edgeFromId(edgeId));
-                return g.direct(edge);
+                return g.direct(edge,true);
             }
             static const bool IsFilter = true ; 
         };
