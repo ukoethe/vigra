@@ -33,7 +33,7 @@
 #include <vigra/algorithm.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 #include <vigra/graph_helper/graph_crtp_base.hxx>
-#include <vigra/graph_helper/graph_iterator_helper.hxx>
+
 namespace vigra{
 
     template<class GRAPH,class ITEM>
@@ -50,7 +50,7 @@ namespace vigra{
         }
         // default constructor
         RagItemIt()
-        :   BaseIterType(0,0){
+        :   BaseIterType(0,0,1){
         }
         RagItemIt(const RagItemIt & other)
         :   BaseIterType(other){
@@ -58,14 +58,88 @@ namespace vigra{
 
         // Invalid constructor & conversion. 
         RagItemIt(const lemon::Invalid & invalid)
-        :   BaseIterType(0,0){
+        :   BaseIterType(0,0,1){
         }
         RagItemIt(const Graph & g)
-        :   BaseIterType(0, GraphItemHelper<GRAPH,ITEM>::itemNum(g) ){
+        :   BaseIterType(0, GraphItemHelper<GRAPH,ITEM>::itemNum(g) ,1){
         }
         RagItemIt(const Graph & g,const ITEM & item)
-        :   BaseIterType(g.id(item), GraphItemHelper<GRAPH,ITEM>::itemNum(g) ){
+        :   BaseIterType(g.id(item)-1, GraphItemHelper<GRAPH,ITEM>::itemNum(g) , 1 ){
         }
+    };
+
+    // specialization for arc
+    template<class GRAPH>
+    class RagItemIt<GRAPH,typename GRAPH::Arc>
+    : public boost::iterator_facade<
+        RagItemIt<GRAPH,typename GRAPH::Arc>,
+        const typename GRAPH::Arc,
+        //boost::forward_traversal_tag 
+        boost::forward_traversal_tag
+    >
+    {
+    public:
+        typedef GRAPH Graph;
+        typedef typename Graph::index_type index_type;
+        typedef typename Graph::Arc   Arc;
+
+        RagItemIt(const lemon::Invalid &  invalid = lemon::INVALID)
+        :   current_(0),
+            maxEdgeId_(0),
+            maxArcId_(0){
+        }
+
+        RagItemIt(const Graph & g)
+        :   current_(1),
+            maxEdgeId_(g.maxEdgeId()),
+            maxArcId_(g.maxArcId()){
+        }
+        RagItemIt(const Graph & g,const Arc & arc)
+        :   current_(g.id(arc)),
+            maxEdgeId_(g.maxEdgeId()),
+            maxArcId_(g.maxArcId()){
+        }
+    private:
+
+        bool isEnd()const{
+            return  (maxArcId_==0 && current_==0 )||  current_>maxArcId_;
+        }
+
+        bool isBegin()const{
+            return current_ == 0 && maxArcId_!=0;
+        }
+
+
+
+        friend class boost::iterator_core_access;
+
+        void increment() {
+            ++current_;
+        }
+        
+
+        
+        bool equal(const RagItemIt & other) const{
+            return   (isEnd() && other.isEnd() ) || (current_ == other.current_);
+        }
+
+        const Arc & dereference() const { 
+            if(current_<=maxEdgeId_){
+                arc_ =  Arc(current_,current_);
+            }
+            else {
+                arc_ =  Arc(current_,current_-maxEdgeId_);
+            }
+            return arc_;
+        }
+
+
+
+
+        ptrdiff_t current_;
+        ptrdiff_t maxEdgeId_;
+        ptrdiff_t maxArcId_;
+        mutable Arc arc_;
     };
 
 
@@ -73,11 +147,10 @@ namespace vigra{
 
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    class RagImpl
+    class Rag
     {
     private:
-        typedef RagImpl<DIM,IN_LABEL_TYPE> RagType;
-        typedef RagImpl<DIM,IN_LABEL_TYPE> RagImplType;
+        typedef Rag<DIM,IN_LABEL_TYPE> RagType;
         
     public:
         typedef IN_LABEL_TYPE InLabelType;
@@ -94,21 +167,21 @@ namespace vigra{
 
         typedef detail::GenericNode<index_type>  Node;
         typedef detail::GenericEdge<index_type>  Edge;
+        typedef detail::GenericArc<index_type>   Arc;
     private:
 
-        typedef detail::filter::SmallerThan<index_type>                 BackFilter;
-        typedef detail::filter::BackEdgeIdFilter<RagType>               BackEdgeIdFilter;
-        typedef detail::transform::IdToItem<index_type,Edge  >          IdToEdgeTransform;
-        typedef detail::transform::IdToItem<index_type,Node  >          IdToNodeTransform;
-        typedef detail::transform::OtherNodeId<RagType>                 OtherNodeIdTransform;
-        typedef detail::transform::OtherNode<RagType>                   OtherNodeTransform;
         typedef std::vector<NodeStorageType> NodeVector;
         typedef std::vector<EdgeStorageType> EdgeVector;
     public:
 
-        typedef RagItemIt<RagImplType,Edge>                                                      EdgeIt;
-        typedef RagItemIt<RagImplType,Node>                                                      NodeIt;
+        typedef RagItemIt<RagType,Edge>                                                                 EdgeIt;
+        typedef RagItemIt<RagType,Node>                                                                 NodeIt;
+        typedef RagItemIt<RagType,Arc>                                                                  ArcIt;
+        typedef detail::GenericIncEdgeIt<RagType,NodeStorageType,detail::NeighborNodeFilter<RagType> >  NeighborNodeIt;
+        typedef detail::GenericIncEdgeIt<RagType,NodeStorageType,detail::IncEdgeFilter<RagType>      >  IncEdgeIt;
 
+        typedef detail::GenericIncEdgeIt<RagType,NodeStorageType,detail::IsInFilter<RagType>      >     InArcIt;
+        typedef detail::GenericIncEdgeIt<RagType,NodeStorageType,detail::IsOutFilter<RagType>     >     OutArcIt;
 
         typedef UInt32 CoordinateElementType;
         typedef TinyVector<CoordinateElementType,4> EdgeCoordinate;
@@ -123,8 +196,8 @@ namespace vigra{
 
     // public member functions
     public:
-        RagImpl();
-        RagImpl(const InputLabelingView & labels);
+        Rag();
+        Rag(const InputLabelingView & labels);
     
 
 
@@ -132,19 +205,77 @@ namespace vigra{
         // sizes
         index_type edgeNum()const;
         index_type nodeNum()const;
+        index_type arcNum()const{return edgeNum()*2;}
         
         index_type maxEdgeId()const;
         index_type maxNodeId()const;
+        index_type maxArcId()const{
+            return maxEdgeId()*2;
+        }
 
+        Arc direct(const Edge & edge)const{
+            return Arc(id(edge),id(edge));
+        }
+
+        Arc direct(const Edge & edge,const Node & node)const{
+            if(u(edge)==node){
+                std::cout<<"direct  no flip\n";
+                return Arc(id(edge),id(edge));
+            }
+            else if(v(edge)==node){
+
+                std::cout<<"direct   flip\n";
+                return Arc(id(edge)+maxEdgeId(),id(edge));
+            }
+            else{
+                std::cout<<"\n\n\n  WAAARNING !!! \n\n\n";
+                return Arc(lemon::INVALID);
+            }
+        }
 
         // u / v
 
         Node u(const Edge & edge)const{
-            return Node(edges_[id(edge)].u());
+            return Node(edges_[id(edge)-1].u());
         }
         Node v(const Edge & edge)const{
-            return Node(edges_[id(edge)].v());
+            return Node(edges_[id(edge)-1].v());
         }
+
+
+        Node source(const Arc & arc)const{
+            const index_type arcIndex  = id(arc);
+            if (arcIndex > maxEdgeId() ){
+                std::cout<<"source from  flip\n";
+                const index_type edgeIndex = arc.edgeId();
+                const Edge edge = edgeFromId(edgeIndex);
+                return v(edge);
+            }
+            else{
+                std::cout<<"source from no flip\n";
+                const index_type edgeIndex = arcIndex;
+                const Edge edge = edgeFromId(edgeIndex);
+                return u(edge);
+            }
+        }
+
+        Node target(const Arc & arc)const{
+            const index_type arcIndex  = id(arc);
+            if (arcIndex > maxEdgeId() ){
+                std::cout<<"target from flip\n";
+                const index_type edgeIndex = arcIndex-maxEdgeId();
+                const Edge edge = edgeFromId(edgeIndex);
+                return u(edge);
+            }
+            else{
+                std::cout<<"target from no flip\n";
+                const index_type edgeIndex = arcIndex;
+                const Edge edge = edgeFromId(edgeIndex);
+                return v(edge);
+            }
+        }
+
+
         Node oppositeNode(Node const &n, const Edge &e) const {
             const Node uNode = u(e);
             const Node vNode = v(e);
@@ -160,18 +291,29 @@ namespace vigra{
         }
 
         const NodeStorageType & nodeImpl(const Node & node)const{
-        	return nodes_[id(node)];
+        	return nodes_[id(node)-1];
         }
 
 
         // ids 
         index_type id(const Node & node)const;
         index_type id(const Edge & edge)const;
-
+        index_type id(const Arc & arc)const{
+            return arc.id();
+        }
 
         // get edge / node from id
         Edge  edgeFromId(const index_type id)const;
         Node  nodeFromId(const index_type id)const;
+        Arc   arcFromId(const index_type id)const{
+            if(id>maxEdgeId()){
+                return Arc(id,id);
+            }
+            else{
+                return Arc(id,id-(maxEdgeId()+1));
+            }
+        }
+
 
         // find edge
         Edge findEdge(const Node & a,const Node & b)const;
@@ -206,57 +348,9 @@ namespace vigra{
     };
 
 
-    template<unsigned int DIM , class IN_LABEL_TYPE>
-    class Rag
-    :   public RagImpl<DIM,IN_LABEL_TYPE>,
-        public detail::ArcHelper
-        < 
-            Rag<DIM,IN_LABEL_TYPE> ,                                // GRAPH
-            typename RagImpl<DIM,IN_LABEL_TYPE>::index_type,        // INDEX_TYPE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::Edge ,             // EDGE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::Node ,             // NODE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt,            // EDGE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt             // NODE_IT 
-            //typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
-
-        >
-    {
-        typedef RagImpl<DIM,IN_LABEL_TYPE> RagImplType;
-        typedef detail::ArcHelper
-        < 
-            Rag<DIM,IN_LABEL_TYPE> ,                                // GRAPH
-            typename RagImpl<DIM,IN_LABEL_TYPE>::index_type,        // INDEX_TYPE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::Edge ,             // EDGE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::Node ,             // NODE
-            typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt,            // EDGE_IT 
-            typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt             // NODE_IT 
-            //typename RagImpl<DIM,IN_LABEL_TYPE>::NeighborEdgeIdIt   // NEIGHBOR_EDGE_ID_IT
-        > ArcHelperType;
-
-        public:
-            Rag()
-            :   RagImpl<DIM,IN_LABEL_TYPE>(){
-            }
-            Rag(const typename RagImpl<DIM,IN_LABEL_TYPE>::InputLabelingView & labels)
-            :   RagImpl<DIM,IN_LABEL_TYPE>(labels){
-            }
-
-            typename RagImplType::index_type id(const typename ArcHelperType::Arc & arc)const{
-                return this->arcId(arc);
-            }
-            typename RagImplType::index_type id(const typename RagImplType::Node & node)const{
-                return static_cast<const RagImplType *>(this)->id(node);
-            }
-
-            typename RagImplType::index_type id(const typename RagImplType::Edge & edge)const{
-                return static_cast<const RagImplType *>(this)->id(edge);
-            }
-
-    
-    };
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    RagImpl<DIM,IN_LABEL_TYPE>::RagImpl()
+    Rag<DIM,IN_LABEL_TYPE>::Rag()
     :   nodes_(),
         edges_(),
         labeling_(),
@@ -265,8 +359,8 @@ namespace vigra{
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    RagImpl<DIM,IN_LABEL_TYPE>::RagImpl(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::InputLabelingView & labels
+    Rag<DIM,IN_LABEL_TYPE>::Rag(
+        const typename Rag<DIM,IN_LABEL_TYPE>::InputLabelingView & labels
     )
     :   nodes_(),
         edges_(),
@@ -279,12 +373,15 @@ namespace vigra{
         // get min max label
         const UInt64 minLabel = *std::min_element(labels.begin(),labels.end());
         const UInt64 maxLabel = *std::max_element(labels.begin(),labels.end());
+        if(minLabel!=1){
+            throw std::runtime_error("minimum label must be 1");
+        }
 
         // allocate space for nodes
-        nodes_.resize(maxLabel+1);
+        nodes_.resize(maxLabel);
 
-        for(index_type nodeIndex=0;nodeIndex<=maxLabel;++nodeIndex){
-            nodes_[nodeIndex].id_=nodeIndex;
+        for(index_type nodeLabel=1;nodeLabel<=maxLabel;++nodeLabel){
+            nodes_[nodeLabel-1].id_=nodeLabel;
         }
 
         // get grid graph from shape
@@ -319,82 +416,82 @@ namespace vigra{
         // allocate space for edges
         edges_.resize(edgeSet.size());
         typedef typename std::set<UInt64>::const_iterator EdgeSetIt;
-        index_type edgeIndex=0;
+        index_type edgeLabel=1;
 
         // fill graph
         for(EdgeSetIt iter=edgeSet.begin();iter!=edgeSet.end();++iter){
             const UInt64 key = *iter;
             const UInt64 l1 = key / (maxLabel+1);
             const UInt64 l0 = key - l1*(maxLabel+1);
-            EdgeStorageType & edge  = edges_[edgeIndex];
+            EdgeStorageType & edge  = edges_[edgeLabel-1];
             edge[0]=l0;
             edge[1]=l1;
-            edge[2]=edgeIndex;
+            edge[2]=edgeLabel;
 
-            NodeStorageType & n0 = nodes_[l0];
-            NodeStorageType & n1 = nodes_[l1];
-            n0.insertEdgeId(edgeIndex);
-            n1.insertEdgeId(edgeIndex);
-            ++edgeIndex;
+            NodeStorageType & n0 = nodes_[l0-1];
+            NodeStorageType & n1 = nodes_[l1-1];
+            n0.insertEdgeId(edgeLabel);
+            n1.insertEdgeId(edgeLabel);
+            ++edgeLabel;
         }
 
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::edgeNum()const{
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::edgeNum()const{
         return edges_.size();
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::nodeNum()const{
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::nodeNum()const{
         return nodes_.size();
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::maxEdgeId()const{
-        return edgeNum()-1;
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::maxEdgeId()const{
+        return edgeNum();
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::maxNodeId()const{
-        return nodeNum()-1;
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::maxNodeId()const{
+        return nodeNum();
     }
 
 
     // ids 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::id(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & node
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::id(
+        const typename Rag<DIM,IN_LABEL_TYPE>::Node & node
     )const{
         return node.id();
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::index_type 
-    RagImpl<DIM,IN_LABEL_TYPE>::id(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Edge & edge
+    inline typename Rag<DIM,IN_LABEL_TYPE>::index_type 
+    Rag<DIM,IN_LABEL_TYPE>::id(
+        const typename Rag<DIM,IN_LABEL_TYPE>::Edge & edge
     )const{
         return edge.id();
     }
 
     // get edge / node from id
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::Edge 
-    RagImpl<DIM,IN_LABEL_TYPE>::edgeFromId(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::index_type id
+    inline typename Rag<DIM,IN_LABEL_TYPE>::Edge 
+    Rag<DIM,IN_LABEL_TYPE>::edgeFromId(
+        const typename Rag<DIM,IN_LABEL_TYPE>::index_type id
     )const{
         return Edge(id);
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::Node 
-    RagImpl<DIM,IN_LABEL_TYPE>::nodeFromId(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::index_type id
+    inline typename Rag<DIM,IN_LABEL_TYPE>::Node 
+    Rag<DIM,IN_LABEL_TYPE>::nodeFromId(
+        const typename Rag<DIM,IN_LABEL_TYPE>::index_type id
     )const{
         return Node(id);
     }
@@ -403,12 +500,12 @@ namespace vigra{
 
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline  typename RagImpl<DIM,IN_LABEL_TYPE>::Edge  
-    RagImpl<DIM,IN_LABEL_TYPE>::findEdge(
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & a,
-        const typename RagImpl<DIM,IN_LABEL_TYPE>::Node & b
+    inline  typename Rag<DIM,IN_LABEL_TYPE>::Edge  
+    Rag<DIM,IN_LABEL_TYPE>::findEdge(
+        const typename Rag<DIM,IN_LABEL_TYPE>::Node & a,
+        const typename Rag<DIM,IN_LABEL_TYPE>::Node & b
     )const{
-        std::pair<index_type,bool> res =  nodes_[id(a)].sharedEdge(nodes_[id(b)]);
+        std::pair<index_type,bool> res =  nodes_[id(a)-1].sharedEdge(nodes_[id(b)-1]);
         if(res.second){
             return Edge(res.first);
         }
@@ -420,27 +517,27 @@ namespace vigra{
 
     // iterators
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::nodesBegin()const{
+    inline typename Rag<DIM,IN_LABEL_TYPE>::NodeIt 
+    Rag<DIM,IN_LABEL_TYPE>::nodesBegin()const{
         return NodeIt(0,nodeNum());
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::NodeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::nodesEnd()const{  
+    inline typename Rag<DIM,IN_LABEL_TYPE>::NodeIt 
+    Rag<DIM,IN_LABEL_TYPE>::nodesEnd()const{  
         return NodeIt(nodeNum(),nodeNum());
     }
 
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::edgesBegin()const{
+    inline typename Rag<DIM,IN_LABEL_TYPE>::EdgeIt 
+    Rag<DIM,IN_LABEL_TYPE>::edgesBegin()const{
         return EdgeIt(0,edgeNum());
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    inline typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeIt 
-    RagImpl<DIM,IN_LABEL_TYPE>::edgesEnd()const{  
+    inline typename Rag<DIM,IN_LABEL_TYPE>::EdgeIt 
+    Rag<DIM,IN_LABEL_TYPE>::edgesEnd()const{  
         return EdgeIt(edgeNum(),edgeNum());
     }
 
@@ -448,8 +545,8 @@ namespace vigra{
 
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    void RagImpl<DIM,IN_LABEL_TYPE>::extractEdgeCoordinates( 
-        typename RagImpl<DIM,IN_LABEL_TYPE>::EdgeCoordinatesVector & coordsVec 
+    void Rag<DIM,IN_LABEL_TYPE>::extractEdgeCoordinates( 
+        typename Rag<DIM,IN_LABEL_TYPE>::EdgeCoordinatesVector & coordsVec 
     )const{
         // resize coords Vec
         coordsVec.resize(edgeNum());
@@ -493,8 +590,8 @@ namespace vigra{
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    void RagImpl<DIM,IN_LABEL_TYPE>::extractNodeCoordinates( 
-        typename RagImpl<DIM,IN_LABEL_TYPE>::NodeCoordinatesVector & coordsVec 
+    void Rag<DIM,IN_LABEL_TYPE>::extractNodeCoordinates( 
+        typename Rag<DIM,IN_LABEL_TYPE>::NodeCoordinatesVector & coordsVec 
     )const{
 
     }

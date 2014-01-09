@@ -45,28 +45,28 @@ public:
             .def("edgeFromId",&GraphType::edgeFromId,EDGE_RET_POLICY() )
 
             // basic iterators
-            .def("nodeIterator", python::range< NODE_RET_POLICY >(
-                    &GraphType::nodesBegin  , 
-                    &GraphType::nodesEnd
-                )
-            )
-            .def("edgeIterator", python::range< EDGE_RET_POLICY >(
-                    &GraphType::edgesBegin  , 
-                    &GraphType::edgesEnd
-                )
-            )
-            .def("incEdgeIdIt",&incEdgeIdIt)
+            //.def("nodeIterator", python::range< NODE_RET_POLICY >(
+            //        &GraphType::nodesBegin  , 
+            //        &GraphType::nodesEnd
+            //    )
+            //)
+            //.def("edgeIterator", python::range< EDGE_RET_POLICY >(
+            //        &GraphType::edgesBegin  , 
+            //        &GraphType::edgesEnd
+            //    )
+            //)
+            //.def("incEdgeIdIt",&incEdgeIdIt)
         ;
     }
 
    static index_type nodeId( const GraphType & self,const Node & node ){return  self.id(node);}
    static index_type edgeId( const GraphType & self,const Edge & edge ){return  self.id(edge);}
-   static python::object  incEdgeIdIt( const GraphType & self,const Node & node ){
-        return python::range< python::objects::default_iterator_call_policies, index_type >(
-            boost::bind( boost::mem_fn(&GraphType::neigbourEdgeIdsBegin) , &self , node),
-            boost::bind( boost::mem_fn(&GraphType::neigbourEdgeIdsEnd)   , &self , node)
-        );
-   }
+   //static python::object  incEdgeIdIt( const GraphType & self,const Node & node ){
+   //     return python::range< python::objects::default_iterator_call_policies, index_type >(
+   //         boost::bind( boost::mem_fn(&GraphType::neigbourEdgeIdsBegin) , &self , node),
+   //         boost::bind( boost::mem_fn(&GraphType::neigbourEdgeIdsEnd)   , &self , node)
+   //     );
+   //}
 
 };
 

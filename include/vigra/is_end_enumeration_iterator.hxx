@@ -21,26 +21,30 @@ namespace vigra{
 
         EnumerationIterator(const lemon::Invalid  invalid)
         :   current_(0),
-            size_(0){
+            size_(0),
+            offset_(0){
         }
 
 
         EnumerationIterator()
         :   current_(0),
-            size_(0){
+            size_(0),
+            offset_(0){
         }
 
         EnumerationIterator(const EnumerationIterator & other)
         :   current_(other.current_),
-            size_(other.size_){
+            size_(other.size_),
+            offset_(other.offset_){
         }
 
 
 
 
-        explicit EnumerationIterator(const ptrdiff_t current , const ptrdiff_t size)
+        explicit EnumerationIterator(const ptrdiff_t current , const ptrdiff_t size, const ptrdiff_t offset = 0)
         :   current_(current),
-            size_(size){
+            size_(size),
+            offset_(offset){
         }
 
         bool isEnd()const{
@@ -91,7 +95,7 @@ namespace vigra{
         }
 
         const FROM_COUNTER & dereference() const { 
-            val_ =  FROM_COUNTER(current_);
+            val_ =  FROM_COUNTER(current_+offset_);
             return val_;
         }
 
@@ -100,6 +104,7 @@ namespace vigra{
 
         ptrdiff_t current_;
         ptrdiff_t size_;
+        ptrdiff_t offset_;
 
         mutable FROM_COUNTER val_;
     };

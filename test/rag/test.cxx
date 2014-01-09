@@ -198,6 +198,11 @@ struct Rag2Test{
     typedef typename RagType::Arc                Arc;
     typedef typename RagType::EdgeIt             EdgeIt;
     typedef typename RagType::NodeIt             NodeIt;
+    typedef typename RagType::ArcIt              ArcIt;
+    typedef typename RagType::IncEdgeIt          IncEdgeIt;
+    typedef typename RagType::InArcIt            InArcIt;
+    typedef typename RagType::OutArcIt           OutArcIt;
+
     typedef typename RagType::NeighborNodeIt     NeighborNodeIt;
     typedef typename RagType::InputLabelingView  InputLabelingView;
     typedef typename RagType::InputLabelingArray InputLabelingArray;
@@ -212,14 +217,14 @@ struct Rag2Test{
         // create labels
         InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
 
-        // 0 |2
-        // __ __
         // 1 |3
+        // __ __
+        // 2 |4
 
-        labels(0,0)=0;
-        labels(0,1)=1;
-        labels(1,0)=2;
-        labels(1,1)=3;
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
 
 
         // create rag
@@ -231,35 +236,44 @@ struct Rag2Test{
         should(rag.edgeNum()==4);
         should(rag.nodeNum()==4);
         should(rag.arcNum()==8);
-        should(rag.maxEdgeId()==3);
-        should(rag.maxNodeId()==3);
-        should(rag.maxArcId()==7);
+        should(rag.maxEdgeId()==4);
+        should(rag.maxNodeId()==4);
+        should(rag.maxArcId()==8);
 
-        should( rag.findEdge(rag.nodeFromId(0),rag.nodeFromId(2) )!=lemon::INVALID);
-        should( rag.findEdge(rag.nodeFromId(0),rag.nodeFromId(1) )!=lemon::INVALID);
         should( rag.findEdge(rag.nodeFromId(1),rag.nodeFromId(3) )!=lemon::INVALID);
-        should( rag.findEdge(rag.nodeFromId(2),rag.nodeFromId(3) )!=lemon::INVALID);
-        should( rag.findEdge(rag.nodeFromId(0),rag.nodeFromId(3) )==lemon::INVALID);
-        should( rag.findEdge(rag.nodeFromId(1),rag.nodeFromId(2) )==lemon::INVALID);
+        should( rag.findEdge(rag.nodeFromId(1),rag.nodeFromId(2) )!=lemon::INVALID);
+        should( rag.findEdge(rag.nodeFromId(2),rag.nodeFromId(4) )!=lemon::INVALID);
+        should( rag.findEdge(rag.nodeFromId(3),rag.nodeFromId(4) )!=lemon::INVALID);
+        should( rag.findEdge(rag.nodeFromId(1),rag.nodeFromId(4) )==lemon::INVALID);
+        should( rag.findEdge(rag.nodeFromId(2),rag.nodeFromId(3) )==lemon::INVALID);
+
+        NodeIt nbegin(rag);
+        NodeIt nend(lemon::INVALID);
+
+        EdgeIt ebegin(rag);
+        EdgeIt eend(lemon::INVALID);
 
 
-        std::vector<Node> allNodes(rag.nodesBegin(),rag.nodesEnd());
+        ArcIt abegin(rag);
+        ArcIt aend(lemon::INVALID);
+
+        std::vector<Node> allNodes(nbegin,nend);
         should(allNodes.size()==4);
 
-        std::vector<Edge> allEdges(rag.edgesBegin(),rag.edgesEnd());
+        std::vector<Edge> allEdges(ebegin,eend);
         should(allEdges.size()==4);
 
 
-        should(0==rag.id( allEdges[0] ) );
-        should(1==rag.id( allEdges[1] ) );
-        should(2==rag.id( allEdges[2] ) );
-        should(3==rag.id( allEdges[3] ) );
+        should(1==rag.id( allEdges[0] ) );
+        should(2==rag.id( allEdges[1] ) );
+        should(3==rag.id( allEdges[2] ) );
+        should(4==rag.id( allEdges[3] ) );
         
 
-        std::vector<Arc>  allArcs( rag.arcsBegin() ,rag.arcsEnd());
+        std::vector<Arc>  allArcs( abegin,aend);
         should(allArcs.size() ==8);
         for(size_t a=0;a<allArcs.size();++a){
-            should(a==rag.id( allArcs[a] ) );
+            should(a+1==rag.id( allArcs[a] ) );
         }
         
 
@@ -301,13 +315,14 @@ struct Rag2Test{
     {
         // create labels
         InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 0 |2
-        // __ __
         // 1 |3
-        labels(0,0)=0;
-        labels(0,1)=1;
-        labels(1,0)=2;
-        labels(1,1)=3;
+        // __ __
+        // 2 |4
+
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
         // create rag
         RagType g(labels);
 
@@ -322,10 +337,10 @@ struct Rag2Test{
             
             std::vector<Edge> edgeVec(begin,invalid);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(0,g.id(edgeVec[0]));
-            shouldEqual(1,g.id(edgeVec[1]));
-            shouldEqual(2,g.id(edgeVec[2]));
-            shouldEqual(3,g.id(edgeVec[3]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(3,g.id(edgeVec[2]));
+            shouldEqual(4,g.id(edgeVec[3]));
         }
         {
             EdgeIt begin(g);
@@ -334,25 +349,25 @@ struct Rag2Test{
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(4,edgeVec.size());
-            shouldEqual(0,g.id(edgeVec[0]));
-            shouldEqual(1,g.id(edgeVec[1]));
-            shouldEqual(2,g.id(edgeVec[2]));
-            shouldEqual(3,g.id(edgeVec[3]));
+            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(3,g.id(edgeVec[2]));
+            shouldEqual(4,g.id(edgeVec[3]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(1));
+            EdgeIt begin(g,g.edgeFromId(2));
             should(begin!=lemon::INVALID);
 
             EdgeIt empty;
             std::vector<Edge> edgeVec(begin,empty);
             shouldEqual(3,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
-            shouldEqual(3,g.id(edgeVec[2]));
+            shouldEqual(2,g.id(edgeVec[0]));
+            shouldEqual(3,g.id(edgeVec[1]));
+            shouldEqual(4,g.id(edgeVec[2]));
         }
         {
-            EdgeIt begin(g,g.edgeFromId(1));
-            EdgeIt end(g,g.edgeFromId(2));
+            EdgeIt begin(g,g.edgeFromId(2));
+            EdgeIt end(g,g.edgeFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -361,33 +376,33 @@ struct Rag2Test{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(1,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
+            shouldEqual(2,g.id(edgeVec[0]));
         }
 
         {
-            EdgeIt begin(g,g.edgeFromId(1));
-            EdgeIt end(g,g.edgeFromId(3));
+            EdgeIt begin(g,g.edgeFromId(2));
+            EdgeIt end(g,g.edgeFromId(4));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Edge> edgeVec(begin,end);
             shouldEqual(2,edgeVec.size());
-            shouldEqual(1,g.id(edgeVec[0]));
-            shouldEqual(2,g.id(edgeVec[1]));
+            shouldEqual(2,g.id(edgeVec[0]));
+            shouldEqual(3,g.id(edgeVec[1]));
         }
     }
     void ragNodeItTest()
     {
         // create labels
         InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
-        // 0 |2
-        // __ __
         // 1 |3
-        labels(0,0)=0;
-        labels(0,1)=1;
-        labels(1,0)=2;
-        labels(1,1)=3;
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
         // create rag
         RagType g(labels);
         {
@@ -397,10 +412,10 @@ struct Rag2Test{
             should(begin!=lemon::INVALID);            
             std::vector<Node> nodeVec(begin,invalid);
             shouldEqual(4,nodeVec.size());
-            shouldEqual(0,g.id(nodeVec[0]));
-            shouldEqual(1,g.id(nodeVec[1]));
-            shouldEqual(2,g.id(nodeVec[2]));
-            shouldEqual(3,g.id(nodeVec[3]));
+            shouldEqual(1,g.id(nodeVec[0]));
+            shouldEqual(2,g.id(nodeVec[1]));
+            shouldEqual(3,g.id(nodeVec[2]));
+            shouldEqual(4,g.id(nodeVec[3]));
         }
         {
             NodeIt begin(g);
@@ -409,25 +424,25 @@ struct Rag2Test{
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
             shouldEqual(4,nodeVec.size());
-            shouldEqual(0,g.id(nodeVec[0]));
-            shouldEqual(1,g.id(nodeVec[1]));
-            shouldEqual(2,g.id(nodeVec[2]));
-            shouldEqual(3,g.id(nodeVec[3]));
+            shouldEqual(1,g.id(nodeVec[0]));
+            shouldEqual(2,g.id(nodeVec[1]));
+            shouldEqual(3,g.id(nodeVec[2]));
+            shouldEqual(4,g.id(nodeVec[3]));
         }
         {
-            NodeIt begin(g,g.nodeFromId(1));
+            NodeIt begin(g,g.nodeFromId(2));
             should(begin!=lemon::INVALID);
 
             NodeIt empty;
             std::vector<Node> nodeVec(begin,empty);
             shouldEqual(3,nodeVec.size());
-            shouldEqual(1,g.id(nodeVec[0]));
-            shouldEqual(2,g.id(nodeVec[1]));
-            shouldEqual(3,g.id(nodeVec[2]));
+            shouldEqual(2,g.id(nodeVec[0]));
+            shouldEqual(3,g.id(nodeVec[1]));
+            shouldEqual(4,g.id(nodeVec[2]));
         }
         {
-            NodeIt begin(g,g.nodeFromId(1));
-            NodeIt end(g,g.nodeFromId(2));
+            NodeIt begin(g,g.nodeFromId(2));
+            NodeIt end(g,g.nodeFromId(3));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);    
@@ -436,23 +451,432 @@ struct Rag2Test{
             shouldEqual(std::distance(begin,end),1);
             std::vector<Node> nodeVec(begin,end);
             shouldEqual(1,nodeVec.size());
-            shouldEqual(1,g.id(nodeVec[0]));
+            shouldEqual(2,g.id(nodeVec[0]));
         }
 
         {
-            NodeIt begin(g,g.nodeFromId(1));
-            NodeIt end(g,g.nodeFromId(3));
+            NodeIt begin(g,g.nodeFromId(2));
+            NodeIt end(g,g.nodeFromId(4));
 
             should(begin!=lemon::INVALID);
             should(end!=lemon::INVALID);
 
             std::vector<Node> nodeVec(begin,end);
             shouldEqual(2,nodeVec.size());
-            shouldEqual(1,g.id(nodeVec[0]));
-            shouldEqual(2,g.id(nodeVec[1]));
+            shouldEqual(2,g.id(nodeVec[0]));
+            shouldEqual(3,g.id(nodeVec[1]));
         }
     }
+    void ragArcItTest()
+    {
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+        {
+            ArcIt begin(g);
+            ArcIt invalid(lemon::INVALID);
+            should(begin!=lemon::INVALID);
+            shouldEqual(std::distance(begin,invalid),8);            
+            std::vector<Arc> arcVec(begin,invalid);
+            shouldEqual(8,arcVec.size());
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
+            shouldEqual(3,g.id(arcVec[2]));
+            shouldEqual(4,g.id(arcVec[3]));
+            shouldEqual(5,g.id(arcVec[4]));
+            shouldEqual(6,g.id(arcVec[5]));
+            shouldEqual(7,g.id(arcVec[6]));
+            shouldEqual(8,g.id(arcVec[7]));
+        }
+        {
+            ArcIt begin(g);
+            should(begin!=lemon::INVALID);
+
+            ArcIt empty;
+            std::vector<Arc> arcVec(begin,empty);
+            shouldEqual(8,arcVec.size());
+            shouldEqual(1,g.id(arcVec[0]));
+            shouldEqual(2,g.id(arcVec[1]));
+            shouldEqual(3,g.id(arcVec[2]));
+            shouldEqual(4,g.id(arcVec[3]));
+            shouldEqual(5,g.id(arcVec[4]));
+            shouldEqual(6,g.id(arcVec[5]));
+            shouldEqual(7,g.id(arcVec[6]));
+            shouldEqual(8,g.id(arcVec[7]));
+        }
+        {
+            ArcIt begin(g,g.arcFromId(2));
+            should(begin!=lemon::INVALID);
+
+            ArcIt empty;
+            std::vector<Arc> arcVec(begin,empty);
+            shouldEqual(7,arcVec.size());
+            shouldEqual(2,g.id(arcVec[0]));
+            shouldEqual(3,g.id(arcVec[1]));
+            shouldEqual(4,g.id(arcVec[2]));
+            shouldEqual(5,g.id(arcVec[3]));
+            shouldEqual(6,g.id(arcVec[4]));
+            shouldEqual(7,g.id(arcVec[5]));
+            shouldEqual(8,g.id(arcVec[6]));
+        }
+        {
+            ArcIt begin(g,g.arcFromId(2));
+            ArcIt end(g,g.arcFromId(3));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);    
+            should(begin!=end);
+
+            shouldEqual(std::distance(begin,end),1);
+            std::vector<Arc> arcVec(begin,end);
+            shouldEqual(1,arcVec.size());
+            shouldEqual(2,g.id(arcVec[0]));
+        }
+
+        {
+            ArcIt begin(g,g.arcFromId(2));
+            ArcIt end(g,g.arcFromId(4));
+
+            should(begin!=lemon::INVALID);
+            should(end!=lemon::INVALID);
+
+            std::vector<Arc> arcVec(begin,end);
+            shouldEqual(2,arcVec.size());
+            shouldEqual(2,g.id(arcVec[0]));
+            shouldEqual(3,g.id(arcVec[1]));
+        }
+    }
+
+    void ragFindEdgeTest(){
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+
+        const Node n1=g.nodeFromId(1);
+        const Node n2=g.nodeFromId(2);
+        const Node n3=g.nodeFromId(3);
+        const Node n4=g.nodeFromId(4);
+
+        const Edge e12 = g.findEdge(n1,n2);
+        const Edge e13 = g.findEdge(n1,n3);
+        const Edge e24 = g.findEdge(n2,n4);
+        const Edge e34 = g.findEdge(n3,n4);
+
+
+
+        should(e12!=lemon::INVALID);
+        should(e13!=lemon::INVALID);
+        should(e24!=lemon::INVALID);
+        should(e34!=lemon::INVALID);
+
+
+        should(g.findEdge(n2,n3)==lemon::INVALID);
+        should(g.findEdge(n3,n2)==lemon::INVALID);
+        should(g.findEdge(n1,n4)==lemon::INVALID);
+        should(g.findEdge(n4,n1)==lemon::INVALID);
+
+    }
+
+    void ragUVOrderTest(){
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+
+        const Node n1=g.nodeFromId(1);
+        const Node n2=g.nodeFromId(2);
+        const Node n3=g.nodeFromId(3);
+        const Node n4=g.nodeFromId(4);
+
+        const Edge e12 = g.findEdge(n1,n2);
+        const Edge e13 = g.findEdge(n1,n3);
+        const Edge e24 = g.findEdge(n2,n4);
+        const Edge e34 = g.findEdge(n3,n4);
+
+
+        // for rag id(u(edge)) < id(v(edge));
+        should(g.id(g.u(e12))<g.id(g.v(e12)));
+        should(g.id(g.u(e12))<g.id(g.v(e12)));
+        should(g.id(g.u(e12))<g.id(g.v(e12)));
+        should(g.id(g.u(e12))<g.id(g.v(e12)));
+    }
+
+    void ragIncEdgeItTest()
+    {
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+
+        Node n1=g.nodeFromId(1);
+        Node n2=g.nodeFromId(2);
+        Node n3=g.nodeFromId(3);
+        Node n4=g.nodeFromId(4);
+
+        Edge e12 = g.findEdge(n1,n2);
+        Edge e13 = g.findEdge(n1,n3);
+        Edge e24 = g.findEdge(n2,n4);
+        Edge e34 = g.findEdge(n3,n4);
+
+        // get edges
+
+
+        {
+            IncEdgeIt a(g,n1);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e13)!=eSet.end());
+            should(eSet.find(e12)!=eSet.end());
+            should(eSet.find(e34)==eSet.end());
+            should(eSet.find(e24)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n2);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e12)!=eSet.end());
+            should(eSet.find(e24)!=eSet.end());
+            should(eSet.find(e34)==eSet.end());
+            should(eSet.find(e13)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n3);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e13)!=eSet.end());
+            should(eSet.find(e34)!=eSet.end());
+            should(eSet.find(e12)==eSet.end());
+            should(eSet.find(e24)==eSet.end());
+        }
+        {
+            IncEdgeIt a(g,n4);
+            IncEdgeIt b(lemon::INVALID);
+            should(a!=b);
+            should(b==lemon::INVALID);
+            should(a!=lemon::INVALID);
+            shouldEqual(std::distance(a,b),2);
+
+            std::set<Edge> eSet(a,b);
+            shouldEqual(eSet.size(),2);
+            should(eSet.find(e24)!=eSet.end());
+            should(eSet.find(e34)!=eSet.end());
+            should(eSet.find(e12)==eSet.end());
+            should(eSet.find(e13)==eSet.end());
+        }
+
     
+    }
+
+
+    void ragInArcItTest()
+    {
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+
+        Node n1=g.nodeFromId(1);
+        Node n2=g.nodeFromId(2);
+        Node n3=g.nodeFromId(3);
+        Node n4=g.nodeFromId(4);
+
+        Edge e12 = g.findEdge(n1,n2);
+        Edge e13 = g.findEdge(n1,n3);
+        Edge e24 = g.findEdge(n2,n4);
+        Edge e34 = g.findEdge(n3,n4);
+
+        // get incoming arcs
+        {
+            InArcIt a(g,n1);
+            InArcIt b(lemon::INVALID);
+            // this node has NO in arcs !
+            should(a==b);
+            shouldEqual(std::distance(a,b),0);
+        }
+        {
+            InArcIt a(g,n2);
+            InArcIt b(lemon::INVALID);
+            // this node has 1 incoming arc
+            should(a!=b);
+            shouldEqual(std::distance(a,b),1);
+            Arc arc(*a);
+            Node source = g.source(arc);
+            Node target = g.target(arc);
+            shouldEqual(g.id(target),g.id(n2));
+            shouldEqual(g.id(source),g.id(n1));
+        }
+        {
+            InArcIt a(g,n3);
+            InArcIt b(lemon::INVALID);
+            should(a!=b);
+            shouldEqual(std::distance(a,b),1);
+            Arc arc(*a);
+            Node source = g.source(arc);
+            Node target = g.target(arc);
+            shouldEqual(g.id(target),g.id(n3));
+            shouldEqual(g.id(source),g.id(n1));
+        }
+        {
+            InArcIt a(g,n4);
+            InArcIt b(lemon::INVALID);
+            // this node has 1 incoming arc
+            should(a!=b);
+            shouldEqual(std::distance(a,b),2);
+            Arc arc1(*a); ++a;
+            Arc arc2(*a); ++a;
+            should(a==b);
+            should(a==lemon::INVALID);
+            Node source1 = g.source(arc1);
+            Node target1 = g.target(arc1);
+            Node source2 = g.source(arc2);
+            Node target2 = g.target(arc2);
+            shouldEqual(g.id(target1),g.id(n4));
+            shouldEqual(g.id(target2),g.id(n4));
+            should(source1 !=source2 );
+            should(source1==n2 || source2==n2);
+            should(source1==n3 || source2==n3);
+
+        }
+    
+    }
+
+
+    void ragOutArcItTest()
+    {
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(2,2));
+
+        // 1 |3
+        // __ __
+        // 2 |4
+        labels(0,0)=1;
+        labels(0,1)=2;
+        labels(1,0)=3;
+        labels(1,1)=4;
+        // create rag
+        RagType g(labels);
+
+        Node n1=g.nodeFromId(1);
+        Node n2=g.nodeFromId(2);
+        Node n3=g.nodeFromId(3);
+        Node n4=g.nodeFromId(4);
+
+        Edge e12 = g.findEdge(n1,n2);
+        Edge e13 = g.findEdge(n1,n3);
+        Edge e24 = g.findEdge(n2,n4);
+        Edge e34 = g.findEdge(n3,n4);
+
+
+        {
+            OutArcIt a(g,n1);
+            OutArcIt b(lemon::INVALID);
+            should(a!=b);
+            shouldEqual(std::distance(a,b),2);
+            Arc arc1(*a); ++a;
+            Arc arc2(*a); ++a;
+            should(a==b);
+            should(a==lemon::INVALID);
+            Node source1 = g.source(arc1);
+            Node target1 = g.target(arc1);
+            Node source2 = g.source(arc2);
+            Node target2 = g.target(arc2);
+            shouldEqual(g.id(source1),g.id(n1));
+            shouldEqual(g.id(source2),g.id(n1));
+            should(target1 !=target2 );
+            should(target1==n2 || target2==n2);
+            should(target1==n3 || target2==n3);
+        }
+        {
+            OutArcIt a(g,n2);
+            OutArcIt b(lemon::INVALID);
+            should(a!=b);
+            shouldEqual(std::distance(a,b),1);
+            Arc arc(*a);
+            Node source = g.source(arc);
+            Node target = g.target(arc);
+            shouldEqual(g.id(source),g.id(n2));
+            shouldEqual(g.id(target),g.id(n4));
+            
+        }
+        {
+            OutArcIt a(g,n3);
+            OutArcIt b(lemon::INVALID);
+            should(a!=b);
+            shouldEqual(std::distance(a,b),1);
+            Arc arc(*a);
+            Node source = g.source(arc);
+            Node target = g.target(arc);
+            shouldEqual(g.id(target),g.id(n4));
+            shouldEqual(g.id(source),g.id(n3));
+        }
+        {
+            OutArcIt a(g,n4);
+            OutArcIt b(lemon::INVALID);
+            should(a==lemon::INVALID);
+            should(a==b);
+            shouldEqual(std::distance(a,b),0);
+        }
+    
+    }
 };
 
 
@@ -471,8 +895,15 @@ struct RagTestSuite
         add( testCase( &EnumerationIteratorTest::fillTest));
 
         add( testCase( &Rag2Test<vigra::UInt32>::ragTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragFindEdgeTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragUVOrderTest));
         add( testCase( &Rag2Test<vigra::UInt32>::ragEdgeItTest));
         add( testCase( &Rag2Test<vigra::UInt32>::ragNodeItTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragArcItTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragIncEdgeItTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragInArcItTest));
+        add( testCase( &Rag2Test<vigra::UInt32>::ragOutArcItTest));
+
 
     }
 };
