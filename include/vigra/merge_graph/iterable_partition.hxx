@@ -172,7 +172,9 @@ public:
          return ConstRepIter<T>(*this,lastRep_+1);
    }
 
-
+   bool isErased(const value_type & value)const{
+      return jumpVec_[value].first == -1 && jumpVec_[value].second == -1;
+   }
 
    void eraseElement(const value_type & value,const bool reduceSize=true){
       const T notRep=value;
@@ -202,12 +204,14 @@ public:
       if(reduceSize){
          --numberOfSets_;
       }
+      jumpVec_[notRep].first  =-1;
+      jumpVec_[notRep].second =-1;
    }
 
 private:
    std::vector<value_type> parents_;
    std::vector<value_type> ranks_;
-   std::vector< std::pair< T, T> > jumpVec_;
+   std::vector< std::pair< vigra::Int64, vigra::Int64> > jumpVec_;
    value_type firstRep_;
    value_type lastRep_;
    value_type numberOfElements_;

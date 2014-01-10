@@ -1083,15 +1083,12 @@ struct MergeGraphTestSuite
 
         add( testCase( &PartitonTest<vigra::Int32>::iteratorTest1));
         add( testCase( &PartitonTest<vigra::Int32>::iteratorTest2));
-
-        add( testCase( &MergeGraphTest<vigra::Int32>::mergeSimpleDoubleEdgeTest));
-        add( testCase( &MergeGraphTest<vigra::Int32>::mergeTest));
-        add( testCase( &MergeGraphTest<vigra::Int32>::chainTest));
-        add( testCase( &MergeGraphTest<vigra::Int32>::gridTest));
+        //add( testCase( &MergeGraphTest<vigra::Int32>::mergeSimpleDoubleEdgeTest));
+        //add( testCase( &MergeGraphTest<vigra::Int32>::mergeTest));
+        //add( testCase( &MergeGraphTest<vigra::Int32>::chainTest));
+        //add( testCase( &MergeGraphTest<vigra::Int32>::gridTest));
         //add( testCase( &MergeGraphTest<vigra::Int32>::accumulatorChaiMapTest));
-
-
-        add( testCase( &MinIndexedPQTest::constructorTest));
+        //add( testCase( &MinIndexedPQTest::constructorTest));
     }
 };
 

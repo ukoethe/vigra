@@ -64,12 +64,12 @@ VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
     optimization.cxx
   VIGRANUMPY)
 
-VIGRA_ADD_NUMPY_MODULE(clustering SOURCES
-    mergegraph.cxx
-    minindexedpq.cxx
-    mergegraphmaps.cxx
-    clustering.cxx
-  VIGRANUMPY)
+#VIGRA_ADD_NUMPY_MODULE(clustering SOURCES
+#    mergegraph.cxx
+#    minindexedpq.cxx
+#    mergegraphmaps.cxx
+#    clustering.cxx
+#  VIGRANUMPY)
 
 
 VIGRA_ADD_NUMPY_MODULE(cgp SOURCES

@@ -21,12 +21,10 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/multi_array.hxx>
-#include <vigra/is_end_transform_iterator.hxx>
-#include <vigra/is_end_filter_iterator.hxx>
-#include <vigra/graph_iterator_functors.hxx>
-#include <vigra/graph_api_helper.hxx>
+
+#include <vigra/graphs.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
-#include <vigra/graph_helper/graph_crtp_base.hxx>
+
 
 
 
@@ -697,14 +695,19 @@ inline bool
 MergeGraphAdaptor<GRAPH>::hasEdgeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType edgeIndex
 )const{
-    const IdType reprEdgeIndex = reprEdgeId(edgeIndex);
-    if(reprEdgeIndex!=edgeIndex){
-        return false;
+    if(!edgeUfd_.isErased(edgeIndex)){
+        const IdType reprEdgeIndex = reprEdgeId(edgeIndex);
+        if(reprEdgeIndex!=edgeIndex){
+            return false;
+        }
+        else{
+            const index_type rnid0=  uId(reprEdgeIndex);
+            const index_type rnid1=  vId(reprEdgeIndex);
+            return rnid0!=rnid1;
+        }
     }
     else{
-        const index_type rnid0=  uId(reprEdgeIndex);
-        const index_type rnid1=  vId(reprEdgeIndex);
-        return rnid0!=rnid1;
+        return false;
     }
 }
 
@@ -713,7 +716,7 @@ inline bool
 MergeGraphAdaptor<GRAPH>::hasNodeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType nodeIndex
 )const{
-    return nodeUfd_.find(nodeIndex)==nodeIndex;
+    return !nodeUfd_.isErased(nodeIndex) && nodeUfd_.find(nodeIndex)==nodeIndex;
 }
 
 template<class GRAPH>
@@ -884,7 +887,7 @@ void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
         //};
 
         IdType newNodes[2]={
-            uId(oldEdge),vId(oldEdge)
+            uId(id(oldEdge)),vId(id(oldEdge))
         };
 
 
@@ -894,7 +897,7 @@ void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
         if(newNodes[1]<newNodes[0]){
             std::swap(newNodes[1],newNodes[0]);
         }
-        const size_t  key = newNodes[0] + newNodes[1]*this->initNumberOfNodes();
+        const size_t  key = newNodes[0] + newNodes[1]*(this->maxNodeId()+1);
         doubleMap[key].push_back(outEdgeIndex);
     }
 }

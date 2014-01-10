@@ -1,7 +1,6 @@
 #ifndef VIGRA_NODE_IMPL_HXX
 #define VIGRA_NODE_IMPL_HXX
 
-#include <vigra/is_end_iterator.hxx>
 #include <vigra/algorithm.hxx>
 #include <vigra/tinyvector.hxx>
 #include <boost/iterator/iterator_facade.hpp>
@@ -227,8 +226,8 @@ namespace vigra{
             public:
                 typedef INDEX_TYPE index_type;
                 typedef SET_TYPE EdgeIdSet;
-                typedef IsEndIter< typename EdgeIdSet::const_iterator > EdgeIdIt;
-
+                //typedef IsEndIter< typename EdgeIdSet::const_iterator > EdgeIdIt;
+                typedef typename EdgeIdSet::const_iterator              EdgeIdIt;
 
 
             private:
@@ -273,10 +272,12 @@ namespace vigra{
                 }
 
                 EdgeIdIt edgeIdsBegin()const{
-                    return EdgeIdIt(edges_.begin() ,edges_.end()) ;
+                    //return EdgeIdIt(edges_.begin() ,edges_.end()) ;
+                    return edges_.begin();
                 }
                 EdgeIdIt edgeIdsEnd()const{
-                    return EdgeIdIt(edges_.end() ,edges_.end()) ;
+                    //return EdgeIdIt(edges_.end() ,edges_.end()) ;
+                    return edges_.end();
                 }
 
                 index_type id()const{

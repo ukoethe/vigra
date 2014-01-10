@@ -25,14 +25,19 @@
 #include <vigra/graphs.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/random_access_set.hxx>
-#include <vigra/is_end_iterator.hxx>
-#include <vigra/is_end_transform_iterator.hxx>
-#include <vigra/is_end_filter_iterator.hxx>
-#include <vigra/is_end_enumeration_iterator.hxx>
-#include <vigra/graph_iterator_functors.hxx>
+
+
+//#include <vigra/is_end_iterator.hxx>
+//#include <vigra/is_end_transform_iterator.hxx>
+//#include <vigra/is_end_filter_iterator.hxx>
+//#include <vigra/is_end_enumeration_iterator.hxx>
+//#include <vigra/graph_iterator_functors.hxx>
+//#include <vigra/graph_helper/graph_crtp_base.hxx>
+
+
 #include <vigra/algorithm.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
-#include <vigra/graph_helper/graph_crtp_base.hxx>
+
 #include <vigra/rag/rag_iterators.hxx>
 
 namespace vigra{

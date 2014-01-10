@@ -52,6 +52,7 @@ struct Rag2MergeGraphTest{
     typedef vigra::Rag<2,InLabelType>            RagType;
     typedef vigra::MergeGraphAdaptor<RagType>    MergeGraphType;
     typedef typename MergeGraphType::index_type  index_type;
+    typedef typename MergeGraphType::IdType      IdType;
     typedef typename RagType::Node               RagNode;
     typedef typename RagType::Edge               RagEdge;
     typedef typename RagType::Arc                RagArc;
@@ -80,6 +81,53 @@ struct Rag2MergeGraphTest{
 
     RagType rag2x2_;
 
+    bool nodeHasEdge(const MergeGraphType & g,const index_type n,const index_type & e)const{
+        const Edge edge  = g.edgeFromId(e);
+        const IdType u   = g.id(g.u(edge));
+        const IdType v   = g.id(g.v(edge));
+        return n==u || n==v;
+    }
+
+    bool nodeHasEdge(const MergeGraphType & g,const Node & node,const index_type & e)const{
+        const Edge edge  = g.edgeFromId(e);
+        const IdType u   = g.id(g.u(edge));
+        const IdType v   = g.id(g.v(edge));
+        const IdType n   = g.id(node);
+        return n==u || n==v;
+    }
+    bool edgeHasNode(const MergeGraphType & g, Edge edge, Node node){
+        if(  g.id(g.u(edge)) == g.id(node) ){
+            return true;
+        }
+        else if(g.id(g.v(edge)) == g.id(node) ){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    bool edgeHasNode(const MergeGraphType & g, Edge edge, IdType node){
+        if(  g.id(g.u(edge)) == node ){
+            return true;
+        }
+        else if(g.id(g.v(edge)) == node){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+
+
+    size_t nodeDegree(const MergeGraphType & g ,index_type n)const{
+        return g.degree(g.nodeFromId(n));
+    }
+    size_t nodeDegree(const MergeGraphType & g ,const Node & n)const{
+        return g.degree(n);
+    }
 
 
     Rag2MergeGraphTest(){
@@ -858,6 +906,89 @@ struct Rag2MergeGraphTest{
         }
     
     }
+
+
+    void ragMergeChainTest()
+    {
+
+        const size_t nChainNodes  = 6;
+        const size_t nChainEdges  = nChainNodes-1;
+
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(nChainNodes,1));
+
+        for(index_type i=0;i<nChainNodes;++i){
+            labels(i)=i+1;
+        }
+        RagType rag(labels);
+
+        
+        should(rag.edgeFromId(0)==lemon::INVALID);
+        should(rag.edgeFromId(6)==lemon::INVALID);
+        should(rag.edgeFromId(1)!=lemon::INVALID);
+        should(rag.edgeFromId(2)!=lemon::INVALID);
+        should(rag.edgeFromId(3)!=lemon::INVALID);
+        should(rag.edgeFromId(4)!=lemon::INVALID);
+        should(rag.edgeFromId(5)!=lemon::INVALID);
+
+
+
+
+
+        MergeGraphType g(rag);
+        should(g.edgeFromId(0)==lemon::INVALID);
+        should(g.edgeFromId(6)==lemon::INVALID);
+        should(g.edgeFromId(1)!=lemon::INVALID);
+        should(g.edgeFromId(2)!=lemon::INVALID);
+        should(g.edgeFromId(3)!=lemon::INVALID);
+        should(g.edgeFromId(4)!=lemon::INVALID);
+        should(g.edgeFromId(5)!=lemon::INVALID);
+
+        should(g.nodeFromId(0)==lemon::INVALID);
+        should(g.nodeFromId(7)==lemon::INVALID);
+
+        should(g.nodeFromId(1)!=lemon::INVALID);
+        should(g.nodeFromId(2)!=lemon::INVALID);
+        should(g.nodeFromId(3)!=lemon::INVALID);
+        should(g.nodeFromId(4)!=lemon::INVALID);
+        should(g.nodeFromId(5)!=lemon::INVALID);
+        should(g.nodeFromId(6)!=lemon::INVALID);
+
+
+
+        should(g.nodeNum() == nChainNodes);
+        should(g.edgeNum() == nChainEdges);
+
+
+        // remove edges from 1 to 5
+
+
+        for(size_t e=1;e<=5;++e){
+
+
+
+            should(g.edgeNum()==nChainEdges-(e-1));
+            should(g.nodeNum()==nChainNodes-(e-1));
+            // check that edge is there 
+            should(g.hasEdgeId(e));
+            should(g.edgeFromId(e)!=lemon::INVALID);
+
+
+            // fist node is rep of e, second node still untouched e+1
+            should(g.id(g.u(g.edgeFromId(e)))==g.reprNodeId(e));
+
+
+            should(g.id(g.v(g.edgeFromId(e)))==e+1);
+
+            // remove the edge
+
+            g.mergeRegions(e);
+
+            should(!g.hasEdgeId(e));
+            should(g.edgeFromId(e)==lemon::INVALID);
+            should(g.edgeNum()==nChainEdges-(e-1)-1);
+            should(g.nodeNum()==nChainNodes-(e-1)-1);
+        }
+    }
 };
 
 
@@ -880,6 +1011,9 @@ struct RagMergeGraphAdaptorTestSuite
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragInArcItTest));
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragOutArcItTest));
 
+
+        // test which ragMergeChainTest
+        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeChainTest));
 
     }
 };
