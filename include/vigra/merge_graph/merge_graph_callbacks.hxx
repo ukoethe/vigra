@@ -36,9 +36,9 @@ class MergeGraphCallbacks{
             mergeEdgeCallbacks_.push_back(internalF);
         }
         template<class OBJ,class F>
-        void registerEraseNodeCallBack(OBJ & obj,F  f){
+        void registerEraseEdgeCallBack(OBJ & obj,F  f){
             EraseEdgeCallBackType internalF ;
-            internalF = boost::bind(boost::mem_fn(f), &obj , _1,_2);
+            internalF = boost::bind(boost::mem_fn(f), &obj , _1);
             eraseEdgeCallbacks_.push_back(internalF);
         }
 

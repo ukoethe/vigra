@@ -484,8 +484,6 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     edgeUfd_(graph.maxEdgeId()+1),
     nodeVector_(graph.maxNodeId()+1)
 {
-
-
     for(index_type possibleNodeId = 0 ; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId){
         if(graph_.nodeFromId(possibleNodeId)==lemon::INVALID){
             nodeUfd_.eraseElement(possibleNodeId);
@@ -498,6 +496,8 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     
     for(index_type possibleEdgeId = 0 ; possibleEdgeId <= graph_.maxEdgeId(); ++possibleEdgeId){
 
+
+
         const GraphEdge possibleEdge(graph_.edgeFromId(possibleEdgeId));
 
         
@@ -505,10 +505,17 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
             edgeUfd_.eraseElement(possibleEdgeId);
         }
         else{
-            CGP_ASSERT_OP(nodeUfd_.find(possibleEdgeId),==,possibleEdgeId);
+
+            CGP_ASSERT_OP(edgeUfd_.find(possibleEdgeId),==,possibleEdgeId);
 
             const index_type guid = graphUId(possibleEdgeId);
             const index_type gvid = graphVId(possibleEdgeId);
+
+            CGP_ASSERT_OP(guid,<=,graph.maxNodeId());
+            CGP_ASSERT_OP(gvid,<=,graph.maxNodeId());
+
+            CGP_ASSERT_OP(guid,>=,0);
+            CGP_ASSERT_OP(gvid,>=,0);
 
 
             nodeVector_[ guid ].insertEdgeId(possibleEdgeId);

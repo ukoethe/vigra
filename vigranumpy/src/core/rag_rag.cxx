@@ -39,24 +39,102 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/rag/rag.hxx>
+#include <vigra/ucm.hxx>
 #include "export_graph_visitor.hxx"
 
 namespace python = boost::python;
 
 namespace vigra{
 
-void defineRag(){
+
+
+
+//// helper functions
+template<class RAG,class LABELS>
+RAG * makeRag(const LABELS & labeling){
+    return new RAG(labeling);
+}
+
+
+// exporter  / definer functions 
+
+void defineRagClass(){
 
     typedef Rag<2,UInt32> RagType;
+    typedef RagType::InputLabelingView InputLabelingView;
+    typedef RagType::InLabelType InLabelType;
+    typedef NumpyArray<RagType::Dimension ,vigra::Singleband < InLabelType > > NumpyLabelArray;
 
+    // rag class itself
     python::class_<RagType>("Rag",python::init<>())
+    //python::class_<RagType>("Rag",python::init<const NumpyLabelArray & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()] )
     .def(LemonDirectedGraphCoreVisitor<
             RagType,
             python::return_value_policy<python::return_by_value>,
             python::return_value_policy<python::return_by_value>
         >()
     )
+    .def("__init__",python::make_constructor(registerConverters(&makeRag<RagType,NumpyLabelArray>) /*,python::with_custodian_and_ward<1,2>()*/ ) )
     ;
+}
+
+void defineRagMaps(){
+    typedef Rag<2,UInt32> RagType;
+    typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+    typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
+
+    
+    python::class_<RagEdgeCoordinatesMap>("RagEdgeCoordinatesMap",python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
+    .def("size",&RagEdgeCoordinatesMap::size,"size");
+    ;
+
+    
+    python::class_<RagEdgeFloatMap>("RagEdgeFloatMap",python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
+    .def("size",&RagEdgeFloatMap::size,"size");
+    ;
+}
+
+// .def("__init__",make_constructor(registerConverters(&constructPythonMap<PythonMapType,MergeGraphType>)))
+
+
+void defineRag(){
+
+    typedef Rag<2,UInt32> RagType;
+    typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+    typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
+    typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+    //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
+    // the rag class itself
+    defineRagClass();
+    // define all maps
+    defineRagMaps();
+
+    
+
+    // free functions
+    python::def("extractEdgeCoordinates",& extractEdgeCoordinates<2,UInt32>,
+        "extract the coordinates of the given graph");
+
+
+    python::def("extractEdgeFeaturesFromImage",
+        registerConverters(
+            & extractEdgeFeaturesFromImage<
+                RagType,
+                RagEdgeCoordinatesMap,
+                SingleBandFloatImage,
+                RagEdgeFloatMap
+            >
+        )
+    );
+
+
+    python::def("ucmTransform",
+        & ucmTransform<
+            RagType,
+            RagEdgeFloatMap,
+            RagEdgeFloatMap
+        >
+    );
 }
 
 } // namespace vigra

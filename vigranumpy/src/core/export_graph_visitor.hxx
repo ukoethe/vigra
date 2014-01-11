@@ -36,7 +36,7 @@ public:
             .add_property("edgeNum",    &GraphType::edgeNum )
             .add_property("nodeNum",    &GraphType::nodeNum )
             .add_property("maxEdgeId",  &GraphType::maxEdgeId )
-            .add_property("maxEdgeId",  &GraphType::maxEdgeId )
+            .add_property("maxNodeId",  &GraphType::maxNodeId )
             // id functions
             .def("id",&nodeId)
             .def("id",&edgeId)

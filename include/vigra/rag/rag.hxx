@@ -19,13 +19,16 @@
 #include <vector>
 #include  <set>
 
+/*boost*/
+#include <boost/foreach.hpp>
+
 /*vigra*/
 #include <vigra/multi_array.hxx>
 #include <vigra/multi_gridgraph.hxx>
 #include <vigra/graphs.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/random_access_set.hxx>
-
+#include <vigra/graph_helper/dense_map.hxx>
 
 //#include <vigra/is_end_iterator.hxx>
 //#include <vigra/is_end_transform_iterator.hxx>
@@ -56,6 +59,7 @@ namespace vigra{
         typedef MultiArrayView<DIM,InLabelType>                           InputLabelingView;
         typedef MultiArray<DIM,InLabelType>                               InputLabelingArray;
         typedef Int64                                                     index_type;
+        const static unsigned int Dimension = DIM;
     private:
         // private typedes which are needed for defining public typedes
         typedef Rag<DIM,IN_LABEL_TYPE>                                    RagType;
@@ -81,12 +85,15 @@ namespace vigra{
 
         // RAG's addition typedefs 
         typedef UInt32                                                    CoordinateElementType;
-        typedef TinyVector<CoordinateElementType,4>                       EdgeCoordinate;
-        typedef TinyVector<CoordinateElementType,2>                       NodeCoordinate;
+        typedef TinyVector<CoordinateElementType,DIM>                     EdgeCoordinate;
+        typedef TinyVector<CoordinateElementType,DIM  >                   NodeCoordinate;
         typedef std::vector<EdgeCoordinate>                               EdgeCoordinates;
         typedef std::vector<NodeCoordinate>                               NodeCoordinates;
-        typedef std::vector<EdgeCoordinates>                              EdgeCoordinatesVector;
-        typedef std::vector<NodeCoordinates>                              NodeCoordinatesVector;
+
+
+        // predefined map types 
+        typedef DenseEdgeReferenceMap<RagType,EdgeCoordinates>            EdgeCoordinatesMap;
+        typedef DenseNodeReferenceMap<RagType,NodeCoordinates>            NodeCoordinatesMap;
 
 
     // public member functions
@@ -143,8 +150,8 @@ namespace vigra{
 
 
         // extractors
-        void extractEdgeCoordinates( EdgeCoordinatesVector & coordsVec )const;
-        void extractNodeCoordinates( NodeCoordinatesVector & coordsVec )const;
+        void extractEdgeCoordinates( EdgeCoordinatesMap & coordsVec )const;
+        void extractNodeCoordinates( NodeCoordinatesMap & coordsVec )const;
 
     private:
         // private typedefs
@@ -584,17 +591,25 @@ namespace vigra{
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
     void Rag<DIM,IN_LABEL_TYPE>::extractEdgeCoordinates( 
-        typename Rag<DIM,IN_LABEL_TYPE>::EdgeCoordinatesVector & coordsVec 
+        typename Rag<DIM,IN_LABEL_TYPE>::EdgeCoordinatesMap & coordMap 
     )const{
-        // resize coords Vec
-        coordsVec.resize(edgeNum());
-        // get grid graph from shape
+
+        // get min max label (todo , remove this / refactore minLabel-maxLabel)
+        const UInt64 minLabel = *std::min_element(labeling_.begin(),labeling_.end());
+        const UInt64 maxLabel = *std::max_element(labeling_.begin(),labeling_.end());
+        if(minLabel!=1){
+            throw std::runtime_error("minimum label must be 1");
+        }
+
+
+        // get grid graph types
         typedef GridGraph<DIM,boost::undirected_tag> GridGraphType;
-        typedef typename GridGraphType::IndexMap GridGraphIndexMapType;
-        typedef typename GridGraphType::Node     GridGraphNode;
-        typedef typename GridGraphType::NodeIt   GridGraphGraphScanner;
-        typedef typename GridGraphType::OutArcIt GridGraphNeighborIterator;
-        typedef typename GridGraphIndexMapType::value_type GridGraphCoordType;
+        typedef typename GridGraphType::IndexMap     GridGraphIndexMapType;
+        typedef typename GridGraphType::Node         GridGraphNode;
+        typedef typename GridGraphType::NodeIt       GridGraphGraphScanner;
+        typedef typename GridGraphType::OutArcIt     GridGraphNeighborIterator;
+
+        // construct grid graph
         GridGraphType   g(labeling_.shape());
         GridGraphIndexMapType indexMap = g.indexMap();
 
@@ -603,25 +618,26 @@ namespace vigra{
         // iterate over all nodes (i.e. pixels)
         for (GridGraphGraphScanner node(g); node != lemon::INVALID; ++node){
 
-            const GridGraphCoordType & nodeCoord = indexMap[*node];
-            const InLabelType label = labeling_[nodeCoord];
 
+            const InLabelType label = labeling_[indexMap[*node]];
             // iterate over all neighbors of the current node
-            bool is_local_maximum = true;
             for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
                 const GridGraphNode otherNode = g.target(*arc);
-                const GridGraphCoordType & otherNodeCoord = indexMap[*otherNode];
-                const InLabelType otherLabel = labeling_[otherNodeCoord];
+                const InLabelType otherLabel = labeling_[indexMap[otherNode]];
 
                 if(otherLabel!=label){
-                    // get the edge index
-                    Edge  e = findEdge(nodeFromId(label),nodeFromId(otherLabel));
-                    if(e==lemon::INVALID){
+                    // find the the edge
+                    const Edge edge = findEdge(nodeFromId(label),nodeFromId(otherLabel));
+                    // remove when unit tests are finished
+                    if(edge==lemon::INVALID){
                         throw std::runtime_error("internal error");
                     }
-                    const index_type edgeIndex = this->id(e);
-                    const EdgeCoordinate edgeCoord( nodeCoord[0],nodeCoord[1],otherNodeCoord[0],otherNodeCoord[1]);
-                    coordsVec[edgeIndex].push_back(edgeCoord);
+                    // add coordinates
+                    EdgeCoordinate e1=indexMap[*node];
+                    EdgeCoordinate e2=indexMap[otherNode];
+                    EdgeCoordinates & coords = coordMap[edge];
+                    coords.push_back(e1);
+                    coords.push_back(e2);
                 }
             }
         }
@@ -629,9 +645,80 @@ namespace vigra{
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
     void Rag<DIM,IN_LABEL_TYPE>::extractNodeCoordinates( 
-        typename Rag<DIM,IN_LABEL_TYPE>::NodeCoordinatesVector & coordsVec 
+        typename Rag<DIM,IN_LABEL_TYPE>::NodeCoordinatesMap & coordsVec 
     )const{
 
+    }
+
+
+
+    /// FREE FUNCTIONS / TRAIT CLASSES
+
+    template<class G>
+    struct GraphCoordinateTraits{
+        typedef typename G::EdgeCoordinatesMap EdgeCoordinatesMap;
+        typedef typename G::NodeCoordinatesMap NodeCoordinatesMap;
+    };
+
+
+
+    template<class G>
+    void extractEdgeCoordinates(const G & g, typename GraphCoordinateTraits<G>::EdgeCoordinatesMap & coordMap){
+        throw std::runtime_error("need to be specialized for GRAPH");
+    }
+
+    template<unsigned int DIM,class IN_LABEL_TYPE>
+    void extractEdgeCoordinates(
+        const Rag<DIM,IN_LABEL_TYPE> & g, typename GraphCoordinateTraits< Rag<DIM,IN_LABEL_TYPE> >::EdgeCoordinatesMap & coordMap
+    ){
+        g.extractEdgeCoordinates(coordMap);
+    }
+
+
+
+
+    template<class G,class COORD_MAP, class IMAGE_TYPE,class OUT_MAP>
+    void extractEdgeFeaturesFromImage(
+        const G &             g,
+        const COORD_MAP &     coordMap,
+        const IMAGE_TYPE &    image,
+        OUT_MAP &             outMap
+    ){
+
+        // typedefs of graph
+        typedef typename G::EdgeIt EdgeIt;
+        typedef typename G::Edge   Edge;
+
+        // typedefs of coord map
+        typedef typename COORD_MAP::ConstReference      ConstCordVecRef;
+        typedef typename COORD_MAP::Value::value_type   Coordinate;
+
+        // typedefs of the image
+        typedef typename IMAGE_TYPE::value_type ImageValueType;
+
+        // iterate over all edges
+        for(EdgeIt e(g);e!=lemon::INVALID;++e){
+            const Edge edge = *e;
+            // get a const reference to the coordinates for the edge
+            ConstCordVecRef coordVec = coordMap[edge];
+
+
+            const size_t coordNum = std::distance(coordVec.begin(),coordVec.end());
+            // iterate over all coordinates
+            size_t c=0;
+            ImageValueType accVal=image[*coordVec.begin()];
+            BOOST_FOREACH( const Coordinate & coord, coordVec )
+            {   
+                if(c==0)
+                    accVal=image[coord];
+                else
+                    accVal+=image[coord];
+                ++c;
+            }
+            accVal/=coordNum;
+            outMap[edge]=accVal;
+
+        }
     }
 
 }

@@ -112,6 +112,7 @@ import geometry
 import optimization
 import clustering
 import cgp
+import rag
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 
