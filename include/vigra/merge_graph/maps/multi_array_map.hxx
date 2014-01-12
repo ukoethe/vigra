@@ -140,13 +140,13 @@ namespace view_maps {
             const T wa=weightMap_(a);
             const T wb=weightMap_(b);
             vigra::MultiArrayView<DIM,T> va = this->bindInner(a);
-            vigra::MultiArrayView<DIM,T>     vb = this->bindInner(b);
-            //a=(a*wa+b*wb)
-            va*=wa;
-            vb*=wb;
-            va+=vb;
-            va/=(wa+wb);
-            vb/=wb;
+            vigra::MultiArray<DIM,T> vb = this->bindInner(b);
+            va=(va*wa+vb*wb);
+            //va*=wa;
+            //vb*=wb;
+            //va+=vb;
+            //va/=(wa+wb);
+            //vb/=wb;
         } 
 
 
@@ -166,6 +166,75 @@ namespace view_maps {
 
 
 
+    template<class T,class MERGE_GRAPH>
+    class MinWeightEdgeMapSimple : public MultiArrayView<1,T> {
+    private:
+        MinWeightEdgeMapSimple();                                           // non empty-construction
+        MinWeightEdgeMapSimple( const MinWeightEdgeMapSimple& other );          // non construction-copyable
+        MinWeightEdgeMapSimple& operator=( const MinWeightEdgeMapSimple& );     // non copyable
+    public:
+        typedef MERGE_GRAPH MergeGraphType;
+        typedef typename MergeGraphType::Edge   Edge;
+        typedef typename MergeGraphType::EdgeIt EdgeIt;
+        typedef MultiArrayView<1,T> ArrayViewType;
+        typedef Int32 IdType;
+        typedef T value_type;
+
+
+        void operator[](const Edge edge)const{
+            return MultiArrayView<1,T>::operator()(mergeGraph_.id(edge));
+        }
+
+
+        void mergeEdges(const IdType a,const IdType b){
+            pq_.deleteValue(b);
+            changePqWeight(a,this->operator()(a));
+        } 
+        void eraseEdge(const IdType label){
+            pq_.deleteValue(label);
+        }
+
+        template<class CB>
+        CB eraseEdgeCallback(){
+            return  boost::bind(boost::mem_fn(&MinWeightEdgeMapSimple<T,MERGE_GRAPH>::eraseEdge), this , _1);
+        }
+
+        template<class CB>
+        CB mergeEdgeCallback(){
+            return  boost::bind(boost::mem_fn(&MinWeightEdgeMapSimple<T,MERGE_GRAPH>::mergeEdges), this , _1,_2);
+        }
+
+        MinWeightEdgeMapSimple(const MergeGraphType & mergeGraph,ArrayViewType & array) 
+        :   ArrayViewType(array),
+            mergeGraph_(mergeGraph),
+            pq_(mergeGraph.maxEdgeId()+1){
+            for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
+                const Edge edge = *e;
+                const IdType edgeId = mergeGraph_.id(edge);
+                pq_.insert(edgeId,this->operator()(edgeId));
+            }
+        }
+
+        IdType minWeightEdgeLabel(){
+            IdType minLabel = pq_.minIndex();
+            while(mergeGraph_.hasEdgeId(minLabel)==false){
+                pq_.deleteValue(minLabel);
+                IdType minLabel = pq_.minIndex();
+            }
+            return minLabel;
+        }
+
+    private:
+        void changePqWeight(const IdType l,const T newWeigt){
+            pq_.changeValue(l,newWeigt);
+        }
+        const MergeGraphType & mergeGraph_;
+        vigra::MinIndexedPQ<T>     pq_;
+    };
+
+
+
+
 
     template<class T,class MERGE_GRAPH,class EDGE_MAP,class NODE_MAP>
     class MinWeightEdgeMap : public MultiArrayView<1,T> {
@@ -175,11 +244,17 @@ namespace view_maps {
         MinWeightEdgeMap& operator=( const MinWeightEdgeMap& );     // non copyable
     public:
         typedef MERGE_GRAPH MergeGraphType;
+        typedef typename MergeGraphType::Edge Edge;
         typedef EDGE_MAP    EdgeMapType;
         typedef NODE_MAP    NodeMapType;
         typedef MultiArrayView<1,T> ArrayViewType;
         typedef Int32 IdType;
         typedef T value_type;
+
+
+        void operator[](const Edge edge)const{
+            return MultiArrayView<1,T>::operator()(mergeGraph_.id(edge));
+        }
 
         void mergeEdges(const IdType a,const IdType b){
             this->operator()(a)=getMixedWeight(a);
@@ -222,7 +297,6 @@ namespace view_maps {
             }
             return minLabel;
         }
-
     private:
         T getMixedWeight(const IdType label)const{
             return edgeMap_(label);
@@ -240,87 +314,6 @@ namespace view_maps {
     };
 
 
-
-
-
-
-    template<class T,class MERGE_GRAPH,class EDGE_MAP>
-    class MinWeightEdgeMapSimple : public MultiArrayView<1,T> {
-    private:
-        MinWeightEdgeMapSimple();                                           // non empty-construction
-        MinWeightEdgeMapSimple( const MinWeightEdgeMapSimple& other );          // non construction-copyable
-        MinWeightEdgeMapSimple& operator=( const MinWeightEdgeMapSimple& );     // non copyable
-    public:
-        typedef MERGE_GRAPH MergeGraphType;
-        typedef typename MergeGraphType::EdgeIt EdgeIt;
-        typedef EDGE_MAP    EdgeMapType;
-        typedef MultiArrayView<1,T> ArrayViewType;
-        typedef Int32 IdType;
-        typedef T value_type;
-
-        void mergeEdges(const IdType a,const IdType b){
-            this->operator()(a)=getMixedWeight(a);
-            pq_.deleteValue(b);
-        } 
-        void eraseEdge(const IdType label){
-            pq_.deleteValue(label);
-        }
-
-        template<class CB>
-        CB eraseEdgeCallback(){
-            return  boost::bind(boost::mem_fn(&MinWeightEdgeMapSimple<T,MERGE_GRAPH,EDGE_MAP>::eraseEdge), this , _1);
-        }
-
-        template<class CB>
-        CB mergeEdgeCallback(){
-            return  boost::bind(boost::mem_fn(&MinWeightEdgeMapSimple<T,MERGE_GRAPH,EDGE_MAP>::mergeEdges), this , _1,_2);
-        }
-
-        MinWeightEdgeMapSimple(const MergeGraphType & mergeGraph,ArrayViewType & array,const EdgeMapType & edgeMap) 
-        :   ArrayViewType(array),
-            mergeGraph_(mergeGraph),
-            edgeMap_(edgeMap),
-            pq_(mergeGraph.maxEdgeId()+1){
-
-
-
-            // initalize mixed weights  and initalize pq
-            for(IdType l=0;l<mergeGraph_.maxEdgeId()+1;++l){
-
-                if(mergeGraph.edgeFromId(l)!=lemon::INVALID){
-
-                    const T mixedWeight = getMixedWeight(l);
-                    this->operator()(l)=mixedWeight;
-                    pq_.insert(l,mixedWeight);
-                }
-
-
-            }
-        }
-
-        IdType minWeightEdgeLabel(){
-            IdType minLabel = pq_.minIndex();
-            while(mergeGraph_.hasEdgeId(minLabel)==false){
-                pq_.deleteValue(minLabel);
-                IdType minLabel = pq_.minIndex();
-            }
-            return minLabel;
-        }
-
-    private:
-        T getMixedWeight(const IdType label)const{
-            return edgeMap_(label);
-        }
-
-        void changePqWeight(const IdType l,const T newWeigt){
-            pq_.changeValue(l,newWeigt);
-        }
-
-
-        const MergeGraphType & mergeGraph_;
-        const EdgeMapType    & edgeMap_;
-        vigra::MinIndexedPQ<T>     pq_;
-    };
 
 } // end namespace view_maps
 } // end namespace vigra

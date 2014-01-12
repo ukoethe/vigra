@@ -75,6 +75,8 @@ void defineRagClass(){
         >()
     )
     .def("__init__",python::make_constructor(registerConverters(&makeRag<RagType,NumpyLabelArray>) /*,python::with_custodian_and_ward<1,2>()*/ ) )
+    .add_property("shape",&RagType::shape)
+    .add_property("topolocgialShape",&RagType::topolocgialShape)
     ;
 }
 
@@ -127,6 +129,13 @@ void defineRag(){
         )
     );
 
+    python::def("extractEdgeSizeFromCoords",
+        & edgeSizeMapFromCoordMap<
+            RagType,
+            RagEdgeCoordinatesMap,
+            RagEdgeFloatMap
+        >
+    );
 
     python::def("ucmTransform",
         & ucmTransform<
@@ -134,6 +143,17 @@ void defineRag(){
             RagEdgeFloatMap,
             RagEdgeFloatMap
         >
+    );
+
+    python::def("edgeValueImage",
+        registerConverters(
+            & edgeValueImage<
+                RagType,
+                RagEdgeCoordinatesMap,
+                RagEdgeFloatMap,
+                SingleBandFloatImage
+            >
+        )
     );
 }
 

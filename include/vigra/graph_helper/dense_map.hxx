@@ -36,7 +36,6 @@ public:
 	}
 
 	size_t size()const{
-		std::cout<<"INTERAL SIZE IMPL \n";
 		return this->shape(0);
 	}
 private:

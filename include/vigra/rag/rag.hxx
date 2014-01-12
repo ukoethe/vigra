@@ -76,7 +76,7 @@ namespace vigra{
         typedef detail::GenericEdge<index_type>                           Edge;
         typedef detail::GenericArc<index_type>                            Arc;
         typedef detail::RagItemIt<RagType,Edge>                           EdgeIt;
-        typedef detail::RagItemIt<RagType,Node>                           NodeIt;
+        typedef detail::RagItemIt<RagType,Node>                           NodeIt; 
         typedef detail::RagItemIt<RagType,Arc>                            ArcIt;
         typedef detail::GenericIncEdgeIt<RagType,NodeStorage,NnFilter  >  NeighborNodeIt;
         typedef detail::GenericIncEdgeIt<RagType,NodeStorage,IncFilter >  IncEdgeIt;
@@ -149,9 +149,27 @@ namespace vigra{
         EdgeIt edgesEnd()const  ;
 
 
+        typedef typename InputLabelingView::difference_type Shape;
+
+        const Shape  shape()const{
+            return labeling_.shape();
+        }
+
+        const Shape  topolocgialShape()const{
+            Shape r=shape();
+            r-=Shape(1);
+            r*=2;
+            return r;
+        }
+
+
+
+
+
         // extractors
         void extractEdgeCoordinates( EdgeCoordinatesMap & coordsVec )const;
         void extractNodeCoordinates( NodeCoordinatesMap & coordsVec )const;
+
 
     private:
         // private typedefs
@@ -685,6 +703,9 @@ namespace vigra{
         OUT_MAP &             outMap
     ){
 
+
+
+
         // typedefs of graph
         typedef typename G::EdgeIt EdgeIt;
         typedef typename G::Edge   Edge;
@@ -720,6 +741,64 @@ namespace vigra{
 
         }
     }
+
+
+    template<class G,class COORD_MAP,class EDGE_VALUE_MAP,class OUT_IMG>
+    void edgeValueImage(
+        const G &                   g,
+        const COORD_MAP &           coordMap,
+        const EDGE_VALUE_MAP &      edgeValues,
+        OUT_IMG                     outImg    // VIGRA NUMPY BUG IF "REF"
+    ){
+        // typedefs of graph
+        typedef typename G::EdgeIt EdgeIt;
+        typedef typename G::Edge   Edge;
+
+        // typedefs of coord map
+        typedef typename COORD_MAP::ConstReference      ConstCordVecRef;
+        typedef typename COORD_MAP::Value::value_type   Coordinate;
+
+        std::cout<<"loop over edges\n";
+        for(EdgeIt e(g);e!=lemon::INVALID;++e){
+            const Edge edge = *e;
+            // get a const reference to the coordinates for the edge
+            ConstCordVecRef coordVec = coordMap[edge];
+            
+
+            for(size_t ci=0;ci<coordVec.size(); ci+=2){
+                const Coordinate & u = coordVec[ci];
+                const Coordinate & v = coordVec[ci+1];
+                const Coordinate  t  = u+v;
+                outImg[t]=edgeValues[edge];
+            }
+            //std::cout<<"break after "<<g.id(edge)<<"\n";
+            //break;
+        }
+        std::cout<<"loop over edges done \n";
+    }
+
+
+    template<class G,class COORD_MAP,class EDGE_SIZE_MAP>
+    void edgeSizeMapFromCoordMap(
+        const G &              g,
+        const COORD_MAP &      coordMap,
+        EDGE_SIZE_MAP   &      edgeSizeMap
+    ){
+        // typedefs of graph
+        typedef typename G::EdgeIt EdgeIt;
+        typedef typename G::Edge   Edge;
+        // typedefs of coord map
+        typedef typename COORD_MAP::ConstReference      ConstCordVecRef;
+        typedef typename COORD_MAP::Value::value_type   Coordinate;
+        // typedefs of size map
+        typedef typename EDGE_SIZE_MAP::Value SizeType;
+        for(EdgeIt e(g);e!=lemon::INVALID;++e){
+            const Edge edge = *e;
+            ConstCordVecRef coordVec = coordMap[edge];
+            edgeSizeMap[edge]=static_cast<SizeType>(coordVec.size());
+        }
+    }
+
 
 }
 

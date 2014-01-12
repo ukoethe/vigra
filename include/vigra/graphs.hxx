@@ -300,8 +300,8 @@ struct GraphItemHelper<GRAPH,typename GRAPH::Edge>{
 template<class GRAPH>
 struct GraphItemHelper<GRAPH,typename GRAPH::Node>{
     typedef typename GRAPH::index_type index_type ;
-    typedef typename GRAPH::Edge Item;
-    typedef typename GRAPH::EdgeIt ItemIt;
+    typedef typename GRAPH::Node Item;
+    typedef typename GRAPH::NodeIt ItemIt;
 
 
     static index_type maxItemId(const GRAPH & g){
