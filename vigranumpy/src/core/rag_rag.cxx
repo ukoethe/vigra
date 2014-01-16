@@ -58,15 +58,16 @@ RAG * makeRag(const LABELS & labeling){
 
 // exporter  / definer functions 
 
-void defineRagClass(){
+template<unsigned int DIM>
+void defineRagClass(const std::string & clsName ){
 
-    typedef Rag<2,UInt32> RagType;
-    typedef RagType::InputLabelingView InputLabelingView;
-    typedef RagType::InLabelType InLabelType;
+    typedef Rag<DIM,UInt32> RagType;
+    typedef typename RagType::InputLabelingView InputLabelingView;
+    typedef typename RagType::InLabelType InLabelType;
     typedef NumpyArray<RagType::Dimension ,vigra::Singleband < InLabelType > > NumpyLabelArray;
 
     // rag class itself
-    python::class_<RagType>("Rag",python::init<>())
+    python::class_<RagType>(clsName.c_str(),python::init<>())
     //python::class_<RagType>("Rag",python::init<const NumpyLabelArray & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const InputLabelingView & */>()] )
     .def(LemonDirectedGraphCoreVisitor<
             RagType,
@@ -80,41 +81,38 @@ void defineRagClass(){
     ;
 }
 
-void defineRagMaps(){
-    typedef Rag<2,UInt32> RagType;
-    typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+template<unsigned int DIM>
+void defineRagMaps(const std::string & clsNamePrefix){
+    typedef Rag<DIM,UInt32> RagType;
+    typedef typename GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
     typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
 
     
-    python::class_<RagEdgeCoordinatesMap>("RagEdgeCoordinatesMap",python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
+    const std::string edgeCoordClsName = clsNamePrefix+std::string("EdgeCoordinatesMap");
+    python::class_<RagEdgeCoordinatesMap>(edgeCoordClsName.c_str(),python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
     .def("size",&RagEdgeCoordinatesMap::size,"size");
     ;
 
-    
-    python::class_<RagEdgeFloatMap>("RagEdgeFloatMap",python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
+    const std::string edgeMapFloatClsName = clsNamePrefix+std::string("EdgeFloatMap");
+    python::class_<RagEdgeFloatMap>(edgeMapFloatClsName.c_str(),python::init<const RagType & >()[python::with_custodian_and_ward<1 /*custodian == self*/, 2 /*ward == const RagType & */>()] )
     .def("size",&RagEdgeFloatMap::size,"size");
     ;
 }
 
 // .def("__init__",make_constructor(registerConverters(&constructPythonMap<PythonMapType,MergeGraphType>)))
 
+template<unsigned  int DIM>
+void defineRagFunctions(){
 
-void defineRag(){
-
-    typedef Rag<2,UInt32> RagType;
-    typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+    typedef Rag<DIM,UInt32> RagType;
+    typedef typename GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
     typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
     typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
     //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
-    // the rag class itself
-    defineRagClass();
-    // define all maps
-    defineRagMaps();
-
     
 
     // free functions
-    python::def("extractEdgeCoordinates",& extractEdgeCoordinates<2,UInt32>,
+    python::def("extractEdgeCoordinates",& extractEdgeCoordinates<DIM,UInt32>,
         "extract the coordinates of the given graph");
 
 
@@ -155,6 +153,37 @@ void defineRag(){
             >
         )
     );
+}
+
+
+void defineRagT(){
+
+    {
+        typedef Rag<2,UInt32> RagType;
+        typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+        typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
+        typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+        //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
+        // the rag class itself
+        defineRagClass<2>("Rag2d");
+        // define all maps
+        defineRagMaps<2>("Rag2d");
+        // define free functions
+        defineRagFunctions<2>();
+    }
+    {
+        typedef Rag<3,UInt32> RagType;
+        typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
+        typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
+        typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+        //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
+        // the rag class itself
+        defineRagClass<3>("Rag2d");
+        // define all maps
+        defineRagMaps<3>("Rag3d");
+        // define free functions
+        defineRagFunctions<3>();
+    }
 }
 
 } // namespace vigra

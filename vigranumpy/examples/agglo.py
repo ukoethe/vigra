@@ -23,7 +23,7 @@ def visualizeEdgeWeights(rag,coordMap,edgeWeightMap):
 	pylab.show()
 
 
-f       = '100075.jpg'
+f       = '69015.jpg'
 sigma   = 1.5
 
 print "get input"
@@ -75,34 +75,3 @@ visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
 #visualizeEdgeWeights(rag,edgeSizeMap)
 #visualizeEdgeWeights(rag,edgeSizeMap)
 
-
-
-int  a1 = blabla;
-int  a2 = blabla;
-int  a3 = blabla;
-int  a4 = blabla;
-int  a4 = blabla;
-int  a = blabla;
-int  a = blabla;
-
-
-
-
-class A{
-	A():
-	a_()
-	b_(){
-	}
-	float a_;
-	float b_;
-}
-
-
-class B{
-	B():
-	a_()
-	b_(){
-	}
-	float a_;
-	float b_;
-}
