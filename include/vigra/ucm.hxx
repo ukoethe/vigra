@@ -16,7 +16,7 @@ namespace vigra{
         EDGE_SIZE_MAP      &  edgeSizeMap
     ){
 
-        CALLGRIND_START_INSTRUMENTATION
+        CALLGRIND_START_INSTRUMENTATION;
 
         // typedefs graph and merge graph
         typedef typename G::Edge     Edge;
