@@ -77,3 +77,32 @@ visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
 
 
 
+int  a1 = blabla;
+int  a2 = blabla;
+int  a3 = blabla;
+int  a4 = blabla;
+int  a4 = blabla;
+int  a = blabla;
+int  a = blabla;
+
+
+
+
+class A{
+	A():
+	a_()
+	b_(){
+	}
+	float a_;
+	float b_;
+}
+
+
+class B{
+	B():
+	a_()
+	b_(){
+	}
+	float a_;
+	float b_;
+}
