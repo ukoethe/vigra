@@ -256,7 +256,12 @@ class MergeGraphAdaptor
     typedef typename Graph::Edge GraphEdge;
     typedef typename Graph::Node GraphArc;
 
-    typedef detail::GenericNodeImpl<index_type,std::set<index_type> >  NodeStorage;
+
+
+    
+    //typedef  RandomAccessSet<index_type>   NodeStorageEdgeSet;
+    typedef  std::set<index_type>   NodeStorageEdgeSet;
+    typedef detail::GenericNodeImpl<index_type,NodeStorageEdgeSet >  NodeStorage;
     typedef detail::GenericEdgeImpl<index_type >                       EdgeStorage;
 
 
@@ -918,7 +923,7 @@ void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
 ){
     // loop over all edges of the new formed region
     for(
-        typename std::set<IdType>::const_iterator  edgeIter = node.edges_.begin();
+        typename NodeStorageEdgeSet::const_iterator  edgeIter = node.edges_.begin();
         edgeIter!=node.edges_.end();
         ++edgeIter
     ){
@@ -964,9 +969,12 @@ void MergeGraphAdaptor<GRAPH>::mergeRegions(
 
     const Edge toDeleteEdge = edgeFromId(toDeleteEdgeIndex);
     //const size_t nodes[2]= {dynamicEdges_[toDeleteEdgeIndex].first,dynamicEdges_[toDeleteEdgeIndex].second };
-    std::vector<size_t> nodes(2);
-    nodes[0]=id(u(toDeleteEdge));
-    nodes[1]=id(v(toDeleteEdge));
+    //std::vector<size_t> nodes(2);
+    //nodes[0]=id(u(toDeleteEdge));
+    //nodes[1]=id(v(toDeleteEdge));
+
+    const index_type nodes[2]={id(u(toDeleteEdge)),id(v(toDeleteEdge))};
+
     //CGP_ASSERT_OP(nodes[0],!=,nodes[1]);
 
 
@@ -1040,7 +1048,7 @@ void MergeGraphAdaptor<GRAPH>::mergeRegions(
             // furthermore  the edge-sets all nodes adjacent to the "newFormedNode"
             // must be visited since they might refere to nodes which are deleted /merged
             
-            
+            newFormedNode.insertEdgeId(newEdgeRep);
 
             for(size_t td=0;td<edgeVec.size();++td){
 
@@ -1050,7 +1058,7 @@ void MergeGraphAdaptor<GRAPH>::mergeRegions(
                 if(toMergeEdgeIndex!=newEdgeRep){
 
                     // delete the edge from the new formed region
-                    newFormedNode.edges_.erase(toMergeEdgeIndex);
+                    //newFormedNode.edges_.erase(toMergeEdgeIndex);
 
                     //  not true any more
                     //CGP_ASSERT_OP(hasEdgeId(toMergeEdgeIndex),==,true);
@@ -1061,8 +1069,9 @@ void MergeGraphAdaptor<GRAPH>::mergeRegions(
                     const index_type nodeUId = uId(toMergeEdgeIndex);
                     const index_type nodeVId = vId(toMergeEdgeIndex); 
                     const size_t adjacentNodeIndex = nodeUId == newNodeRep ? nodeVId : nodeUId ;
-                    newFormedNode.eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
 
+                    //newFormedNode.eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
+                    newFormedNode.eraseEdge(toMergeEdgeIndex);
                     if(nodeVector_[adjacentNodeIndex].hasEdgeId(toMergeEdgeIndex)){
                         nodeVector_[adjacentNodeIndex].eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                     }

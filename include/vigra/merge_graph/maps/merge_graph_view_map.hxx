@@ -40,7 +40,7 @@ struct MergeGraphItemHelper<MG,typename MG::Node>{
     typedef typename MG::index_type index_type ;
     typedef typename MG::Node Item;
     typedef typename Graph::Node GraphItem;
-    typedef typename MG::EdgeIt ItemIt;
+    typedef typename MG::NodeIt ItemIt;
 
 
     static index_type maxItemId(const MG & g){
@@ -100,6 +100,7 @@ public:
         Reference vb=this->operator[](b);
         va*=weight(a);
         vb*=weight(b);
+        va+=vb;
         va/=(weight(a)+weight(b));
         vb/=weight(b);
     }
@@ -141,6 +142,7 @@ public:
 
 
     void mergeEdges(const Edge & a,const Edge & b){
+        edgeMap_.merge(a,b);
         pq_.deleteValue(b.id());
         changePqWeight(a.id(),edgeMap_[a]);
     } 

@@ -110,7 +110,7 @@ import colors
 import noise
 import geometry
 import optimization
-import clustering
+#import clustering
 import cgp
 import rag
 

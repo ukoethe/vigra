@@ -156,7 +156,7 @@ void defineRagFunctions(){
 }
 
 
-void defineRagT(){
+void defineRag(){
 
     {
         typedef Rag<2,UInt32> RagType;
@@ -171,6 +171,7 @@ void defineRagT(){
         // define free functions
         defineRagFunctions<2>();
     }
+    
     {
         typedef Rag<3,UInt32> RagType;
         typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
@@ -178,12 +179,13 @@ void defineRagT(){
         typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
         //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
         // the rag class itself
-        defineRagClass<3>("Rag2d");
+        defineRagClass<3>("Rag3d");
         // define all maps
         defineRagMaps<3>("Rag3d");
         // define free functions
         defineRagFunctions<3>();
     }
+    
 }
 
 } // namespace vigra

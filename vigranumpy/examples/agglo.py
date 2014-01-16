@@ -11,10 +11,14 @@ def visualizeEdgeWeights(rag,coordMap,edgeWeightMap):
 	#edgeWeightImg  = vigra.taggedView(edgeWeightImg,"xy")
 
 	edgeWeightImg[:]=-1
+
+	print "get edgeValueImage"
 	vigra.rag.edgeValueImage(
 		rag,coordMap,edgeWeightMap,edgeWeightImg
 	)
+	print "done"
 	edgeVal = numpy.where(edgeWeightImg>=-0.5)
+	edgeWeightImg[edgeVal]-=edgeWeightImg[edgeVal].min()
 	edgeWeightImg[edgeVal]-=edgeWeightImg[edgeVal].min()
 	edgeWeightImg[edgeVal]/=edgeWeightImg[edgeVal].max()
 	nonEdgeVal = numpy.where(edgeWeightImg<-0.5)
@@ -23,8 +27,8 @@ def visualizeEdgeWeights(rag,coordMap,edgeWeightMap):
 	pylab.show()
 
 
-f       = '69015.jpg'
-sigma   = 1.5
+f       = '100075.jpg'
+sigma   = 1.0
 
 print "get input"
 img     = vigra.impex.readImage(f)#[0:100,0:100,:]
@@ -36,11 +40,11 @@ if False:
     pylab.show()
 
 print "slic"
-labels ,nseg = vigra.analysis.slicSuperpixels(vigra.colors.transform_RGB2Lab(img),10.0,5)
+labels ,nseg = vigra.analysis.slicSuperpixels(vigra.colors.transform_RGB2Lab(img),10.0,15)
 labels 		 = vigra.analysis.labelImage(labels)
 
 print "get RAG"
-rag = vigra.rag.Rag(labels)
+rag = vigra.rag.Rag2d(labels)
 
 
 
@@ -49,9 +53,9 @@ print "maxEdgeId,maxNodeId" ,rag.maxEdgeId ,rag.maxNodeId
 
 
 print "alloc maps"
-edgeCoordMap     = vigra.rag.RagEdgeCoordinatesMap(rag)
-edgeIndicatorMap = vigra.rag.RagEdgeFloatMap(rag)
-edgeSizeMap      = vigra.rag.RagEdgeFloatMap(rag)
+edgeCoordMap     = vigra.rag.Rag2dEdgeCoordinatesMap(rag)
+edgeIndicatorMap = vigra.rag.Rag2dEdgeFloatMap(rag)
+edgeSizeMap      = vigra.rag.Rag2dEdgeFloatMap(rag)
 
 print "extract edge values"
 vigra.rag.extractEdgeCoordinates(rag,edgeCoordMap)
@@ -60,17 +64,14 @@ vigra.rag.extractEdgeFeaturesFromImage(rag,edgeCoordMap,gradmag,edgeIndicatorMap
 
 
 print "visulize weights bevore ucm"
-visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
-visualizeEdgeWeights(rag,edgeCoordMap,edgeSizeMap)
+#visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
 
 print "do ucm transform (inplace)"
 vigra.rag.ucmTransform(rag,edgeIndicatorMap,edgeSizeMap)
 
-
 print "visulize weights after ucm"
-visualizeEdgeWeights(rag,edgeCoordMap,edgeSizeMap)
-visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
-
+#visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
+#visualizeEdgeWeights(rag,edgeCoordMap,edgeSizeMap)
 #visualizeEdgeWeights(rag,edgeSizeMap)
 #visualizeEdgeWeights(rag,edgeSizeMap)
 #visualizeEdgeWeights(rag,edgeSizeMap)
