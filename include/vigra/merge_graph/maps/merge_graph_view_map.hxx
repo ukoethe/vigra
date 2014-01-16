@@ -101,7 +101,8 @@ public:
         va*=weight(a);
         vb*=weight(b);
         va+=vb;
-        va/=(weight(a)+weight(b));
+        weight(a)+=weight(b);
+        va/=(weight(a));
         vb/=weight(b);
     }
 private:
@@ -134,7 +135,7 @@ public:
     typedef typename MergeGraphType::Edge   Edge;
     typedef typename MergeGraphType::EdgeIt EdgeIt;
     typedef typename MergeGraphType::index_type index_type;
-
+    typedef typename EDGE_MAP::Value Value;
 
     void operator[](const Edge & edge)const{
         return edgeMap_[edge];
@@ -179,6 +180,11 @@ public:
         }
         return Edge(minLabel);
     }
+
+    Value minWeight()const{
+        return pq_.minValue();
+    }
+
 
 private:
     void changePqWeight(const index_type l,const typename EDGE_MAP::Value newWeigt){

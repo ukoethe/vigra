@@ -39,7 +39,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/rag/rag.hxx>
-#include <vigra/ucm.hxx>
+#include <vigra/hiracical_clustering.hxx>
 #include "export_graph_visitor.hxx"
 
 namespace python = boost::python;
@@ -101,7 +101,7 @@ void defineRagMaps(const std::string & clsNamePrefix){
 
 // .def("__init__",make_constructor(registerConverters(&constructPythonMap<PythonMapType,MergeGraphType>)))
 
-template<unsigned  int DIM>
+template<unsigned int DIM>
 void defineRagFunctions(){
 
     typedef Rag<DIM,UInt32> RagType;
@@ -135,14 +135,6 @@ void defineRagFunctions(){
         >
     );
 
-    python::def("ucmTransform",
-        & ucmTransform<
-            RagType,
-            RagEdgeFloatMap,
-            RagEdgeFloatMap
-        >
-    );
-
     python::def("edgeValueImage",
         registerConverters(
             & edgeValueImage<
@@ -153,6 +145,71 @@ void defineRagFunctions(){
             >
         )
     );
+}
+
+
+template<class HCLUSTER>
+python::tuple mergeTreeEncodingAsNumpyArray(const HCLUSTER & hcluster) {
+    typedef typename HCLUSTER::MergeTreeEncoding      MergeTreeEncoding;
+    typedef typename HCLUSTER::MergeGraphIndexType    MergeGraphIndexType;
+    typedef typename HCLUSTER::ValueType              ValueType;
+    const MergeTreeEncoding & encoding = hcluster.mergeTreeEndcoding();
+    const MergeGraphIndexType numMerges = encoding.size();
+    //CPP BUG?!?
+    NumpyArray<1,ValueType> w = NumpyArray<1,ValueType>(typename NumpyArray<1,ValueType>::difference_type(numMerges));
+    NumpyArray<2,MergeGraphIndexType> indices = NumpyArray<2,MergeGraphIndexType>(typename NumpyArray<2,MergeGraphIndexType>::difference_type(numMerges,3));
+    for(MergeGraphIndexType m=0;m<numMerges;++m){
+        w(int(m))=encoding[m].w_;
+        indices(m,0)=encoding[m].a_;
+        indices(m,1)=encoding[m].b_;
+        indices(m,2)=encoding[m].r_;
+    }
+    return python::make_tuple(indices,w);
+} 
+
+
+template<class HCLUSTER>
+python::tuple leadNodeIdsAsNumpyArray(
+    const HCLUSTER &            hcluster,
+    const typename HCLUSTER::MergeGraphIndexType treeNodeId,
+    NumpyArray<1,UInt32>  leafes  = NumpyArray<1,UInt32>()
+) {
+    typedef typename HCLUSTER::MergeTreeEncoding      MergeTreeEncoding;
+    typedef typename HCLUSTER::MergeGraphIndexType    MergeGraphIndexType;
+    typedef typename HCLUSTER::ValueType              ValueType;
+    
+    leafes.reshapeIfEmpty( typename NumpyArray<1,UInt32>::difference_type( hcluster.graph().nodeNum()) );
+
+    if(leafes.shape(0)!=hcluster.graph().nodeNum()){
+        throw std::runtime_error("out.shape(0) must be equal nodeNum");
+    }
+
+    // todo make leafes size check
+    const size_t leafNum=hcluster.leafNodeIds(treeNodeId,leafes.begin());
+    return python::make_tuple(leafes,leafNum);
+} 
+
+
+template<unsigned int DIM>
+void defineHiracicalClustering(const std::string & clsNamePrefix){
+    typedef Rag<DIM,UInt32> RagType;
+    typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap; 
+    typedef HiracicalClustering<RagType,RagEdgeFloatMap,RagEdgeFloatMap> HiracicalClusteringType;
+
+
+    const std::string hcClsName = clsNamePrefix+std::string("HiracicalClustering");
+    python::class_<HiracicalClusteringType,boost::noncopyable>(hcClsName.c_str(),python::init<const RagType & , RagEdgeFloatMap &, RagEdgeFloatMap &>() )
+    .def("cluster",&HiracicalClusteringType::cluster)
+    .def("transformInputMaps",&HiracicalClusteringType::transformInputMaps)
+    .def("mergeTreeEncoding",&mergeTreeEncodingAsNumpyArray<HiracicalClusteringType>)
+
+    .def("leafNodeIds",&leadNodeIdsAsNumpyArray<HiracicalClusteringType>,
+        (
+            python::arg("treeNodeId"),
+            python::arg("out")=python::object()
+        )
+    )
+    ;
 }
 
 
@@ -170,6 +227,9 @@ void defineRag(){
         defineRagMaps<2>("Rag2d");
         // define free functions
         defineRagFunctions<2>();
+
+        // define hiracical clustering
+        defineHiracicalClustering<2>("Rag2d");
     }
     
     {

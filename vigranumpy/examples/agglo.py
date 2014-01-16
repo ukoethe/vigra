@@ -62,17 +62,25 @@ vigra.rag.extractEdgeCoordinates(rag,edgeCoordMap)
 vigra.rag.extractEdgeSizeFromCoords(rag,edgeCoordMap,edgeSizeMap)
 vigra.rag.extractEdgeFeaturesFromImage(rag,edgeCoordMap,gradmag,edgeIndicatorMap)
 
-
 print "visulize weights bevore ucm"
-#visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
+visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
 
 print "do ucm transform (inplace)"
-vigra.rag.ucmTransform(rag,edgeIndicatorMap,edgeSizeMap)
+
+
+hcluster = vigra.rag.Rag2dHiracicalClustering(rag,edgeIndicatorMap,edgeSizeMap)
+hcluster.cluster()
+hcluster.transformInputMaps()
+indices,w = hcluster.mergeTreeEncoding()
+
+print indices
+
+
+for i in range(rag.maxNodeId+1,rag.maxNodeId*2-200):
+	leafs,nLeafs =  hcluster.leafNodeIds(i)
+	leafs = leafs[0:nLeafs]
+	print "leafs",leafs
 
 print "visulize weights after ucm"
-#visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
-#visualizeEdgeWeights(rag,edgeCoordMap,edgeSizeMap)
-#visualizeEdgeWeights(rag,edgeSizeMap)
-#visualizeEdgeWeights(rag,edgeSizeMap)
-#visualizeEdgeWeights(rag,edgeSizeMap)
-
+visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
+visualizeEdgeWeights(rag,edgeCoordMap,edgeSizeMap)

@@ -68,7 +68,7 @@ namespace vigra{
         }
      
         // returns the minimal value
-        T minValue()    {
+        T minValue() const {
             return values[heap[1]];
         }
      
