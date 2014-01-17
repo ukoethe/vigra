@@ -7,7 +7,8 @@
 #include <queue>          
 
 /*vigra*/
-#include <vigra/merge_graph/new_merge_graph.hxx>
+
+#include <vigra/merge_graph/merge_graph_adaptor.hxx>
 #include <vigra/merge_graph/maps/multi_array_map.hxx>
 #include <vigra/merge_graph/maps/merge_graph_view_map.hxx>
 namespace vigra{      

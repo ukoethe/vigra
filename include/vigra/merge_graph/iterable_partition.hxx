@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <map>
-#include "macros.hxx"
 #include <vigra/graphs.hxx>
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -58,7 +57,6 @@ struct  ConstRepIter
 
    void increment(){
       if(partition_->jumpVec_[currentRep_].second==0){
-         VIGRA_ASSERT_OP(currentRep_,==,partition_->lastRep());
          currentRep_+=1;
       }
       else{
@@ -68,7 +66,7 @@ struct  ConstRepIter
 
    void decrement(){
       if(partition_->jumpVec_[currentRep_].first==0){
-         VIGRA_ASSERT_OP(currentRep_,==,partition_->firstRep());
+         //VIGRA_ASSERT_OP(currentRep_,==,partition_->firstRep());
          //currentRep_+=1;
       }
       else{
@@ -180,16 +178,14 @@ public:
       const T notRep=value;
       const T jumpMinus = jumpVec_[notRep].first;
       const T jumpPlus  = jumpVec_[notRep].second;
-      VIGRA_ASSERT_OP(jumpMinus+jumpPlus,>=,0);
 
       if(jumpMinus==0){
-         VIGRA_ASSERT_OP(firstRep_,==,notRep);
          const T nextRep = notRep+jumpPlus;
          firstRep_=nextRep;
          jumpVec_[nextRep].first=0;
       }
       else if(jumpPlus==0){
-         VIGRA_ASSERT_OP(lastRep_,==,notRep);
+         //VIGRA_ASSERT_OP(lastRep_,==,notRep);
          const T prevRep = notRep-jumpMinus;
          lastRep_=prevRep;
          jumpVec_[prevRep].second=0;

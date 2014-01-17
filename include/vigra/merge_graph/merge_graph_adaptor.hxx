@@ -25,18 +25,9 @@
 #include <vigra/graphs.hxx>
 #include <vigra/graph_helper/graph_item_impl.hxx>
 
-
-
-
-
-
-
-/* this project*/
+/* vigra merge graph */
 #include "merge_graph_callbacks.hxx"
-
-/* this project (TO BE REFACTORED) */
 #include "iterable_partition.hxx"
-#include "macros.hxx"
 
 namespace vigra {
 
