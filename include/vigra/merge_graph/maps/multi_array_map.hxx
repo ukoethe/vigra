@@ -124,6 +124,7 @@ namespace view_maps {
     };
 
 
+
     template<unsigned int DIM,class T,class WEIGHT_MAP>
     class WeightedMeanMap : public MultiArrayView<DIM+1,T> {
     private:
