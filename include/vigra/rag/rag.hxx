@@ -213,9 +213,7 @@ namespace vigra{
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>
-    Rag<DIM,IN_LABEL_TYPE>::Rag(
-        const typename Rag<DIM,IN_LABEL_TYPE>::InputLabelingView & labels
-    )
+    Rag<DIM,IN_LABEL_TYPE>::Rag(InputLabelingView const & labels)
     :   nodes_(),
         edges_(),
         invalidNode_(),
@@ -223,44 +221,49 @@ namespace vigra{
         labeling_(labels),
         gridEdges_(0)
     {
-        
         // get min max label
-        const UInt64 minLabel = *std::min_element(labels.begin(),labels.end());
-        const UInt64 maxLabel = *std::max_element(labels.begin(),labels.end());
+        IN_LABEL_TYPE minLabel = *std::min_element(labels.begin(),labels.end());
+        IN_LABEL_TYPE maxLabel = *std::max_element(labels.begin(),labels.end());
+        /* FIXME: the following would be faster for grid graphs:
+        labels.minmax(&minLabel, &maxLabel);
+        */
         if(minLabel!=1){
+            // FIXME: Why is this required? (When the node sequence can have gaps,
+            //        it can also start with a gap.)
             throw std::runtime_error("minimum label must be 1");
         }
 
         // allocate space for nodes
+        // FIXME: Why use zero-based indexing? The off-by-one relation between
+        //        labels and indices looks like a big source of errors.
         nodes_.resize(maxLabel);
 
-        for(index_type nodeLabel=1;nodeLabel<=maxLabel;++nodeLabel){
+        for(IN_LABEL_TYPE nodeLabel=1;nodeLabel<=maxLabel;++nodeLabel){
             nodes_[nodeLabel-1].id_=nodeLabel;
         }
 
         // get grid graph from shape
+        // FIXME: the IndexMap is not needed => removed
         typedef GridGraph<DIM,boost::undirected_tag> GridGraphType;
-        typedef typename GridGraphType::IndexMap GridGraphIndexMapType;
         typedef typename GridGraphType::Node     GridGraphNode;
         typedef typename GridGraphType::NodeIt   GridGraphGraphScanner;
         typedef typename GridGraphType::OutArcIt GridGraphNeighborIterator;
 
         GridGraphType   g(labeling_.shape());
-        GridGraphIndexMapType indexMap = g.indexMap();
 
         std::set<UInt64> edgeSet;
 
         // iterate over all nodes (i.e. pixels)
         for (GridGraphGraphScanner node(g); node != lemon::INVALID; ++node){
-            const InLabelType label = labeling_[indexMap[*node]];
+            const InLabelType label = labeling_[*node];
             // iterate over all neighbors of the current node
             for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
-                const GridGraphNode otherNode = g.target(*arc);
-                const InLabelType otherLabel = labeling_[indexMap[otherNode]];
+                GridGraphNode otherNode = g.target(*arc);
+                InLabelType otherLabel = labeling_[otherNode];
                 if(otherLabel!=label){
-                    const UInt64 l0 = std::min(label,otherLabel);
-                    const UInt64 l1 = std::max(label,otherLabel);
-                    const UInt64 key = l0 + l1*(maxLabel+1);
+                    UInt64 l0 = std::min(label,otherLabel);
+                    UInt64 l1 = std::max(label,otherLabel);
+                    UInt64 key = l0 + l1*(maxLabel+1);
                     edgeSet.insert(key);
                     ++gridEdges_;
                 }
@@ -288,7 +291,8 @@ namespace vigra{
             n1.insertEdgeId(edgeLabel);
             ++edgeLabel;
         }
-
+        // FIXME: I don't see any place where this code is specific to grid graphs.
+        //        Why not generalize to any input graph?
     }
 
     template<unsigned int DIM , class IN_LABEL_TYPE>

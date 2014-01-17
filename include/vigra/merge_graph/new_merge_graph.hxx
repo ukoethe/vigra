@@ -668,7 +668,7 @@ MergeGraphAdaptor<GRAPH>::id(
 template<class GRAPH>
 inline size_t 
 MergeGraphAdaptor<GRAPH>::degree(
-    const MergeGraphAdaptor<GRAPH>::Node & node
+    typename MergeGraphAdaptor<GRAPH>::Node const & node
 )const{
     return static_cast<size_t>( nodeVector_[id(node)].edgeNum() );
 }
@@ -916,10 +916,10 @@ void MergeGraphAdaptor<GRAPH>::combineDoubleEdges(
 
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
-    const MergeGraphAdaptor<GRAPH>::NodeStorage & node , 
-    MergeGraphAdaptor<GRAPH>::DoubleMap & doubleMap,
-    const typename MergeGraphAdaptor<GRAPH>::IdType relabelFrom,
-    const typename MergeGraphAdaptor<GRAPH>::IdType relabelTo
+    typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node , 
+    typename MergeGraphAdaptor<GRAPH>::DoubleMap & doubleMap,
+    typename MergeGraphAdaptor<GRAPH>::IdType relabelFrom,
+    typename MergeGraphAdaptor<GRAPH>::IdType relabelTo
 ){
     // loop over all edges of the new formed region
     for(
