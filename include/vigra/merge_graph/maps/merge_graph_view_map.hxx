@@ -193,3 +193,4 @@ private:
     vigra::MinIndexedPQ<typename EDGE_MAP::Value> pq_;
 };
 
+#endif // VIGRA_MERGE_GRAPH_VIEW_MAP_HXX
