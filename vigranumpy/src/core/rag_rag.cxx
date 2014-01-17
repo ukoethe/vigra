@@ -107,7 +107,7 @@ void defineRagFunctions(){
     typedef Rag<DIM,UInt32> RagType;
     typedef typename GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
     typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
-    typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+    typedef NumpyArray<RagType::Dimension ,Singleband < float > > SingleBandFloatImage;
     //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
     
 
@@ -219,7 +219,7 @@ void defineRag(){
         typedef Rag<2,UInt32> RagType;
         typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
         typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
-        typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+        typedef NumpyArray<RagType::Dimension ,Singleband < float > > SingleBandFloatImage;
         //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
         // the rag class itself
         defineRagClass<2>("Rag2d");
@@ -236,7 +236,7 @@ void defineRag(){
         typedef Rag<3,UInt32> RagType;
         typedef GraphCoordinateTraits<RagType>::EdgeCoordinatesMap RagEdgeCoordinatesMap;
         typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap;
-        typedef NumpyArray<RagType::Dimension ,vigra::Singleband < float > > SingleBandFloatImage;
+        typedef NumpyArray<RagType::Dimension ,Singleband < float > > SingleBandFloatImage;
         //typedef NumpyArray<RagType::Dimension ,float > SingleBandFloatImage;
         // the rag class itself
         defineRagClass<3>("Rag3d");
