@@ -64,7 +64,7 @@ void defineRagClass(const std::string & clsName ){
     typedef Rag<DIM,UInt32> RagType;
     typedef typename RagType::InputLabelingView InputLabelingView;
     typedef typename RagType::InLabelType InLabelType;
-    typedef NumpyArray<RagType::Dimension ,vigra::Singleband < InLabelType > > NumpyLabelArray;
+    typedef NumpyArray<RagType::Dimension ,Singleband < InLabelType > > NumpyLabelArray;
 
     // rag class itself
     python::class_<RagType>(clsName.c_str(),python::init<>())
