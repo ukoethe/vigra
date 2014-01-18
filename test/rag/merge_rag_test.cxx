@@ -39,7 +39,7 @@
 #include "vigra/multi_array.hxx"
 #include "vigra/rag/rag.hxx"
 #include "vigra/rag/rag.hxx"
-#include "vigra/merge_graph/new_merge_graph.hxx"
+#include "vigra/merge_graph/merge_graph_adaptor.hxx"
 using namespace vigra;
 
 
@@ -963,31 +963,734 @@ struct Rag2MergeGraphTest{
 
 
         for(size_t e=1;e<=5;++e){
-
-
-
             should(g.edgeNum()==nChainEdges-(e-1));
             should(g.nodeNum()==nChainNodes-(e-1));
             // check that edge is there 
             should(g.hasEdgeId(e));
             should(g.edgeFromId(e)!=lemon::INVALID);
-
-
+            should(g.degree(g.u(e))<=2);
+            should(g.degree(g.v(e))<=2);
             // fist node is rep of e, second node still untouched e+1
             should(g.id(g.u(g.edgeFromId(e)))==g.reprNodeId(e));
-
-
             should(g.id(g.v(g.edgeFromId(e)))==e+1);
-
             // remove the edge
-
-            g.mergeRegions(e);
-
+            g.contractEdge(g.edgeFromId(e));
             should(!g.hasEdgeId(e));
             should(g.edgeFromId(e)==lemon::INVALID);
             should(g.edgeNum()==nChainEdges-(e-1)-1);
             should(g.nodeNum()==nChainNodes-(e-1)-1);
         }
+    }
+
+
+    void ragMergeGridDegreeTest(){
+        //std::cout<<"ragOutArcItTest \n";
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(3,3));
+
+        // 1 |2 | 3
+        // __ __  _
+        // 4 |5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        labels(0,0)=1;
+        labels(1,0)=2;
+        labels(2,0)=3;
+    
+        labels(0,1)=4;
+        labels(1,1)=5;
+        labels(2,1)=6;
+
+        labels(0,2)=7;
+        labels(1,2)=8;
+        labels(2,2)=9;
+
+        // create rag
+        RagType rag(labels);
+        MergeGraphType g(rag);
+
+        const Node n1 = g.nodeFromId(1);
+        const Node n2 = g.nodeFromId(2);
+        const Node n3 = g.nodeFromId(3);
+        const Node n4 = g.nodeFromId(4);
+        const Node n5 = g.nodeFromId(5);
+        const Node n6 = g.nodeFromId(6);
+        const Node n7 = g.nodeFromId(7);
+        const Node n8 = g.nodeFromId(8);
+        const Node n9 = g.nodeFromId(9);
+
+        // "|" edges
+        const Edge e12 = g.findEdge(n1,n2);
+        const Edge e23 = g.findEdge(n2,n3);
+        const Edge e45 = g.findEdge(n4,n5);
+        const Edge e56 = g.findEdge(n5,n6);
+        const Edge e78 = g.findEdge(n7,n8);
+        const Edge e89 = g.findEdge(n8,n9);
+
+        // "--" edges
+        const Edge e14 = g.findEdge(n1,n4);
+        const Edge e25 = g.findEdge(n2,n5);
+        const Edge e36 = g.findEdge(n3,n6);
+        const Edge e47 = g.findEdge(n4,n7);
+        const Edge e58 = g.findEdge(n5,n8);
+        const Edge e69 = g.findEdge(n6,n9);
+
+
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2 | 3
+        // __ __  _
+        // 4 |5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        shouldEqual(g.nodeNum(),9);
+        shouldEqual(g.maxNodeId(),rag.maxNodeId());
+        shouldEqual(g.edgeNum(),12);
+        shouldEqual(g.maxEdgeId(),rag.maxEdgeId());
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(n1),2);
+        shouldEqual(g.degree(n2),3);
+        shouldEqual(g.degree(n3),2);
+        shouldEqual(g.degree(n4),3);
+        shouldEqual(g.degree(n5),4);
+        shouldEqual(g.degree(n6),3);
+        shouldEqual(g.degree(n7),2);
+        shouldEqual(g.degree(n8),3);
+        shouldEqual(g.degree(n9),2);
+
+        std::cout<<"MERGE 45\n";
+
+        /////////////////
+        // merge 4|5 
+        //////////////////
+        g.contractEdge(e45);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2 | 3
+        // __ __  _
+        // 4  5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        shouldEqual(g.nodeNum(),8);
+        shouldEqual(g.edgeNum(),11);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(n1),2);
+        shouldEqual(g.degree(g.reprNode(n1)),2);
+        shouldEqual(g.degree(g.reprNode(n2)),3);
+        shouldEqual(g.degree(g.reprNode(n3)),2);
+        shouldEqual(g.degree(g.reprNode(n4)),5);
+        shouldEqual(g.degree(g.reprNode(n5)),5);
+        shouldEqual(g.degree(g.reprNode(n6)),3);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),3);
+        shouldEqual(g.degree(g.reprNode(n9)),2);
+
+
+
+        /////////////////
+        // merge 1|4
+        //////////////////
+        g.contractEdge(e14);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2 | 3
+        //   __  _
+        // 4  5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        shouldEqual(g.nodeNum(),7);
+        shouldEqual(g.edgeNum(),9);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),4);
+        shouldEqual(g.degree(g.reprNode(n2)),2);
+        shouldEqual(g.degree(g.reprNode(n3)),2);
+        shouldEqual(g.degree(g.reprNode(n4)),4);
+        shouldEqual(g.degree(g.reprNode(n5)),4);
+        shouldEqual(g.degree(g.reprNode(n6)),3);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),3);
+        shouldEqual(g.degree(g.reprNode(n9)),2);
+
+
+        /////////////////
+        // merge 2|3
+        //////////////////
+        g.contractEdge(e23);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2   3
+        //   __  _
+        // 4  5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        shouldEqual(g.nodeNum(),6);
+        shouldEqual(g.edgeNum(),8);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),4);
+        shouldEqual(g.degree(g.reprNode(n2)),2);
+        shouldEqual(g.degree(g.reprNode(n3)),2);
+        shouldEqual(g.degree(g.reprNode(n4)),4);
+        shouldEqual(g.degree(g.reprNode(n5)),4);
+        shouldEqual(g.degree(g.reprNode(n6)),3);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),3);
+        shouldEqual(g.degree(g.reprNode(n9)),2);
+
+
+        /////////////////
+        // merge 8|9
+        //////////////////
+        g.contractEdge(e89);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2   3
+        //   __  _
+        // 4  5 | 6
+        // __ __  _
+        // 7 |8   9
+        shouldEqual(g.nodeNum(),5);
+        shouldEqual(g.edgeNum(),7);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),4);
+        shouldEqual(g.degree(g.reprNode(n2)),2);
+        shouldEqual(g.degree(g.reprNode(n3)),2);
+        shouldEqual(g.degree(g.reprNode(n4)),4);
+        shouldEqual(g.degree(g.reprNode(n5)),4);
+        shouldEqual(g.degree(g.reprNode(n6)),3);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),3);
+        shouldEqual(g.degree(g.reprNode(n9)),3);
+
+
+        /////////////////
+        // merge 5|6
+        //////////////////
+        g.contractEdge(e56);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2   3
+        //   __  _
+        // 4  5   6
+        // __ __  _
+        // 7 |8   9
+        shouldEqual(g.nodeNum(),4);
+        shouldEqual(g.edgeNum(),4);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),3);
+        shouldEqual(g.degree(g.reprNode(n2)),1);
+        shouldEqual(g.degree(g.reprNode(n3)),1);
+        shouldEqual(g.degree(g.reprNode(n4)),3);
+        shouldEqual(g.degree(g.reprNode(n5)),3);
+        shouldEqual(g.degree(g.reprNode(n6)),3);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),2);
+        shouldEqual(g.degree(g.reprNode(n9)),2);
+
+
+        /////////////////
+        // merge repr(2|5)
+        //////////////////
+        g.contractEdge(g.reprEdge(e25));
+        // CURRENT GRAPH:
+        // --------------
+        // 1  2   3
+        //         
+        // 4  5   6
+        // __ __  _
+        // 7 |8   9
+        shouldEqual(g.nodeNum(),3);
+        shouldEqual(g.edgeNum(),3);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),2);
+        shouldEqual(g.degree(g.reprNode(n2)),2);
+        shouldEqual(g.degree(g.reprNode(n3)),2);
+        shouldEqual(g.degree(g.reprNode(n4)),2);
+        shouldEqual(g.degree(g.reprNode(n5)),2);
+        shouldEqual(g.degree(g.reprNode(n6)),2);
+        shouldEqual(g.degree(g.reprNode(n7)),2);
+        shouldEqual(g.degree(g.reprNode(n8)),2);
+        shouldEqual(g.degree(g.reprNode(n9)),2);
+
+
+
+        /////////////////
+        // merge repr(5|8)
+        //////////////////
+        g.contractEdge(g.reprEdge(e58));
+        // CURRENT GRAPH:
+        // --------------
+        // 1  2   3
+        //         
+        // 4  5   6
+        // __     
+        // 7 |8   9
+        shouldEqual(g.nodeNum(),2);
+        shouldEqual(g.edgeNum(),1);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),1);
+        shouldEqual(g.degree(g.reprNode(n2)),1);
+        shouldEqual(g.degree(g.reprNode(n3)),1);
+        shouldEqual(g.degree(g.reprNode(n4)),1);
+        shouldEqual(g.degree(g.reprNode(n5)),1);
+        shouldEqual(g.degree(g.reprNode(n6)),1);
+        shouldEqual(g.degree(g.reprNode(n7)),1);
+        shouldEqual(g.degree(g.reprNode(n8)),1);
+        shouldEqual(g.degree(g.reprNode(n9)),1);
+
+
+        /////////////////
+        // merge repr(7|8)
+        //////////////////
+        g.contractEdge(g.reprEdge(e78));
+        // CURRENT GRAPH:
+        // --------------
+        // 1  2   3
+        //         
+        // 4  5   6
+        // __     
+        // 7 |8   9
+        shouldEqual(g.nodeNum(),1);
+        shouldEqual(g.edgeNum(),0);
+        shouldEqual(degreeSum(g),g.edgeNum()*2);
+        // check degrees 
+        shouldEqual(g.degree(g.reprNode(n1)),0);
+        shouldEqual(g.degree(g.reprNode(n2)),0);
+        shouldEqual(g.degree(g.reprNode(n3)),0);
+        shouldEqual(g.degree(g.reprNode(n4)),0);
+        shouldEqual(g.degree(g.reprNode(n5)),0);
+        shouldEqual(g.degree(g.reprNode(n6)),0);
+        shouldEqual(g.degree(g.reprNode(n7)),0);
+        shouldEqual(g.degree(g.reprNode(n8)),0);
+        shouldEqual(g.degree(g.reprNode(n9)),0);
+    }
+
+
+    void ragMergeGridEdgeTest(){
+        //std::cout<<"ragOutArcItTest \n";
+        // create labels
+        InputLabelingArray labels(typename InputLabelingArray::difference_type(3,3));
+
+        // 1 |2 | 3
+        // __ __  _
+        // 4 |5 | 6
+        // __ __  _
+        // 7 |8 | 9
+        labels(0,0)=1;
+        labels(1,0)=2;
+        labels(2,0)=3;
+    
+        labels(0,1)=4;
+        labels(1,1)=5;
+        labels(2,1)=6;
+
+        labels(0,2)=7;
+        labels(1,2)=8;
+        labels(2,2)=9;
+
+        // create rag
+        RagType rag(labels);
+        MergeGraphType g(rag);
+
+        const Node n1 = g.nodeFromId(1);
+        const Node n2 = g.nodeFromId(2);
+        const Node n3 = g.nodeFromId(3);
+        const Node n4 = g.nodeFromId(4);
+        const Node n5 = g.nodeFromId(5);
+        const Node n6 = g.nodeFromId(6);
+        const Node n7 = g.nodeFromId(7);
+        const Node n8 = g.nodeFromId(8);
+        const Node n9 = g.nodeFromId(9);
+
+        // "|" edges
+        const Edge e12 = g.findEdge(n1,n2);
+        const Edge e23 = g.findEdge(n2,n3);
+        const Edge e45 = g.findEdge(n4,n5);
+        const Edge e56 = g.findEdge(n5,n6);
+        const Edge e78 = g.findEdge(n7,n8);
+        const Edge e89 = g.findEdge(n8,n9);
+
+        // "--" edges
+        const Edge e14 = g.findEdge(n1,n4);
+        const Edge e25 = g.findEdge(n2,n5);
+        const Edge e36 = g.findEdge(n3,n6);
+        const Edge e47 = g.findEdge(n4,n7);
+        const Edge e58 = g.findEdge(n5,n8);
+        const Edge e69 = g.findEdge(n6,n9);
+
+
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2 |3
+        // __ __ _
+        // 4 |5 |6
+        // __ __ _
+        // 7 |8 |9
+        shouldEqual(g.nodeNum(),9);
+        shouldEqual(g.maxNodeId(),rag.maxNodeId());
+        shouldEqual(g.edgeNum(),12);
+        shouldEqual(g.maxEdgeId(),rag.maxEdgeId());
+
+
+
+        should( g.findEdge(n1,n2)!=lemon::INVALID);
+        should( g.findEdge(n1,n3)==lemon::INVALID);
+        should( g.findEdge(n1,n4)!=lemon::INVALID);
+        should( g.findEdge(n1,n5)==lemon::INVALID);
+        should( g.findEdge(n1,n6)==lemon::INVALID);
+        should( g.findEdge(n1,n7)==lemon::INVALID);
+        should( g.findEdge(n1,n8)==lemon::INVALID);
+        should( g.findEdge(n1,n9)==lemon::INVALID);
+        // 
+        should( g.findEdge(n2,n3)!=lemon::INVALID);
+        should( g.findEdge(n2,n4)==lemon::INVALID);
+        should( g.findEdge(n2,n5)!=lemon::INVALID);
+        should( g.findEdge(n2,n6)==lemon::INVALID);
+        should( g.findEdge(n2,n7)==lemon::INVALID);
+        should( g.findEdge(n2,n8)==lemon::INVALID);
+        should( g.findEdge(n2,n9)==lemon::INVALID);
+
+        should( g.findEdge(n3,n4)==lemon::INVALID);
+        should( g.findEdge(n3,n5)==lemon::INVALID);
+        should( g.findEdge(n3,n6)!=lemon::INVALID);
+        should( g.findEdge(n3,n7)==lemon::INVALID);
+        should( g.findEdge(n3,n8)==lemon::INVALID);
+        should( g.findEdge(n3,n9)==lemon::INVALID);
+        //
+        should( g.findEdge(n4,n5)!=lemon::INVALID);
+        should( g.findEdge(n4,n6)==lemon::INVALID);
+        should( g.findEdge(n4,n7)!=lemon::INVALID);
+        should( g.findEdge(n4,n8)==lemon::INVALID);
+        should( g.findEdge(n4,n9)==lemon::INVALID);
+        //
+        should( g.findEdge(n5,n6)!=lemon::INVALID);
+        should( g.findEdge(n5,n7)==lemon::INVALID);
+        should( g.findEdge(n5,n8)!=lemon::INVALID);
+        should( g.findEdge(n5,n9)==lemon::INVALID);
+        //
+        should( g.findEdge(n6,n7)==lemon::INVALID);
+        should( g.findEdge(n6,n8)==lemon::INVALID);
+        should( g.findEdge(n6,n9)!=lemon::INVALID);
+        //
+        should( g.findEdge(n7,n8)!=lemon::INVALID);
+        should( g.findEdge(n7,n9)==lemon::INVALID);
+        //
+        should( g.findEdge(n8,n9)!=lemon::INVALID);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
+
+        /////////////////
+        // merge 2|3
+        //////////////////
+        g.contractEdge(e23);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2  3
+        // __ __ _
+        // 4 |5 |6
+        // __ __ _
+        // 7 |8 |9
+        shouldEqual(g.nodeNum(),8);
+        shouldEqual(g.edgeNum(),11);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
+
+
+
+
+        /////////////////
+        // merge 2|5
+        //////////////////
+        g.contractEdge(e25);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2  3
+        // __    _
+        // 4 |5 |6
+        // __ __ _
+        // 7 |8 |9
+        shouldEqual(g.nodeNum(),7);
+        shouldEqual(g.edgeNum(),9);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
+
+
+        /////////////////
+        // merge 5|6
+        //////////////////
+        g.contractEdge(e56);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2  3
+        // __     
+        // 4 |5  6
+        // __ __ _
+        // 7 |8 |9
+        shouldEqual(g.nodeNum(),6);
+        shouldEqual(g.edgeNum(),8);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
+
+
+        /////////////////
+        // merge 4|7
+        //////////////////
+        g.contractEdge(e47);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2  3
+        // __     
+        // 4 |5  6
+        //    __ _
+        // 7 |8 |9
+        shouldEqual(g.nodeNum(),5);
+        shouldEqual(g.edgeNum(),7);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))!=lemon::INVALID);
+
+
+        /////////////////
+        // merge 8|9
+        //////////////////
+        g.contractEdge(e89);
+        // CURRENT GRAPH:
+        // --------------
+        // 1 |2  3
+        // __     
+        // 4 |5  6
+        //    __ _
+        // 7 |8  9
+        shouldEqual(g.nodeNum(),4);
+        shouldEqual(g.edgeNum(),5);
+
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n2))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n3))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n8))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n1),g.reprNode(n9))==lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n3))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n2),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n4))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n5))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n3),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n5))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n6))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n7))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n4),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n6))==lemon::INVALID); // (in same cluster)
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n5),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n7))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n6),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n8))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n7),g.reprNode(n9))!=lemon::INVALID);
+        should( g.findEdge(g.reprNode(n8),g.reprNode(n9))==lemon::INVALID); // (in same cluster)
+
+
+    }
+
+    size_t degreeSum(const MergeGraphType & g){
+        size_t degreeSum=0;
+        for(NodeIt n(g);n!=lemon::INVALID;++n){
+            degreeSum+=g.degree(*n);
+        }
+        return degreeSum;
     }
 };
 
@@ -1010,11 +1713,12 @@ struct RagMergeGraphAdaptorTestSuite
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragIncEdgeItTest));
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragInArcItTest));
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragOutArcItTest));
+        
 
-
-        // test which ragMergeChainTest
+        // test which do some merging
         add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeChainTest));
-
+        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeGridDegreeTest));
+        add( testCase( &Rag2MergeGraphTest<vigra::UInt32>::ragMergeGridEdgeTest));
     }
 };
 

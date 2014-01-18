@@ -227,9 +227,15 @@ namespace vigra{
         /* FIXME: the following would be faster for grid graphs:
         labels.minmax(&minLabel, &maxLabel);
         */
-        if(minLabel!=1){
+        if(!(minLabel==1 || minLabel==0)){
             // FIXME: Why is this required? (When the node sequence can have gaps,
             //        it can also start with a gap.)
+            // 
+            //  - The node sequence should be dense but start at 1
+            //    (this is what wahtershed returns), 
+            //    and i think it make thinks easier when just "0"-labels are allowed to be ignored labels 
+            //    (so far 0 label ignoring is not tested)
+            //
             throw std::runtime_error("minimum label must be 1");
         }
 
@@ -257,15 +263,17 @@ namespace vigra{
         for (GridGraphGraphScanner node(g); node != lemon::INVALID; ++node){
             const InLabelType label = labeling_[*node];
             // iterate over all neighbors of the current node
-            for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
-                GridGraphNode otherNode = g.target(*arc);
-                InLabelType otherLabel = labeling_[otherNode];
-                if(otherLabel!=label){
-                    UInt64 l0 = std::min(label,otherLabel);
-                    UInt64 l1 = std::max(label,otherLabel);
-                    UInt64 key = l0 + l1*(maxLabel+1);
-                    edgeSet.insert(key);
-                    ++gridEdges_;
+            if(label!=0){
+                for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
+                    GridGraphNode otherNode = g.target(*arc);
+                    InLabelType otherLabel = labeling_[otherNode];
+                    if(otherLabel!=label){
+                        UInt64 l0 = std::min(label,otherLabel);
+                        UInt64 l1 = std::max(label,otherLabel);
+                        UInt64 key = l0 + l1*(maxLabel+1);
+                        edgeSet.insert(key);
+                        ++gridEdges_;
+                    }
                 }
             }
         }
@@ -642,24 +650,26 @@ namespace vigra{
 
 
             const InLabelType label = labeling_[indexMap[*node]];
-            // iterate over all neighbors of the current node
-            for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
-                const GridGraphNode otherNode = g.target(*arc);
-                const InLabelType otherLabel = labeling_[indexMap[otherNode]];
+            if(label!=0){
+                // iterate over all neighbors of the current node
+                for (GridGraphNeighborIterator arc(g, node); arc != lemon::INVALID; ++arc){
+                    const GridGraphNode otherNode = g.target(*arc);
+                    const InLabelType otherLabel = labeling_[indexMap[otherNode]];
 
-                if(otherLabel!=label){
-                    // find the the edge
-                    const Edge edge = findEdge(nodeFromId(label),nodeFromId(otherLabel));
-                    // remove when unit tests are finished
-                    if(edge==lemon::INVALID){
-                        throw std::runtime_error("internal error");
+                    if(otherLabel!=label){
+                        // find the the edge
+                        const Edge edge = findEdge(nodeFromId(label),nodeFromId(otherLabel));
+                        // remove when unit tests are finished
+                        if(edge==lemon::INVALID){
+                            throw std::runtime_error("internal error");
+                        }
+                        // add coordinates
+                        EdgeCoordinate e1=indexMap[*node];
+                        EdgeCoordinate e2=indexMap[otherNode];
+                        EdgeCoordinates & coords = coordMap[edge];
+                        coords.push_back(e1);
+                        coords.push_back(e2);
                     }
-                    // add coordinates
-                    EdgeCoordinate e1=indexMap[*node];
-                    EdgeCoordinate e2=indexMap[otherNode];
-                    EdgeCoordinates & coords = coordMap[edge];
-                    coords.push_back(e1);
-                    coords.push_back(e2);
                 }
             }
         }

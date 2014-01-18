@@ -110,7 +110,7 @@ namespace vigra{
                     const ValueType w             = minWeightOperator_.minWeight();
 
                     // do the merge 
-                    mergeGraph_.mergeRegions( mergeGraph_.id(edgeToRemove));
+                    mergeGraph_.contractEdge( edgeToRemove);
 
                     const MergeGraphIndexType aliveNodeId = mergeGraph_.hasNodeId(uid) ? uid : vid;
                     const MergeGraphIndexType deadNodeId  = aliveNodeId==vid ? uid : vid;
@@ -121,7 +121,7 @@ namespace vigra{
                 }
                 else{
                     // do the merge 
-                    mergeGraph_.mergeRegions( mergeGraph_.id(edgeToRemove));
+                    mergeGraph_.contractEdge( edgeToRemove );
                 }
                 
             }
