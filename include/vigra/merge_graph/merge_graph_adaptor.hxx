@@ -492,8 +492,21 @@ class MergeGraphAdaptor
 
 
         // BUFFERS
+
+        struct KeyEdge{
+            KeyEdge():key_(),edge_(){}
+            KeyEdge(const UInt64 key,const index_type edge):key_(key),edge_(edge){}
+            UInt64      key_;
+            index_type  edge_;
+            bool operator<(const KeyEdge & other ){return key_<other.key_;}
+            bool operator>(const KeyEdge & other ){return key_>other.key_;}
+        };
+
+
         size_t nDoubleEdges_;
         std::vector<std::pair<index_type,index_type> > doubleEdges_;
+
+        std::vector<KeyEdge> vectorMap_;
 };
 
 
@@ -513,7 +526,8 @@ MergeGraphAdaptor<GRAPH>::MergeGraphAdaptor(const GRAPH & graph )
     edgeUfd_(graph.maxEdgeId()+1),
     nodeVector_(graph.maxNodeId()+1),
     nDoubleEdges_(0),
-    doubleEdges_(graph_.edgeNum()/2 +1)
+    doubleEdges_(graph_.edgeNum()/2 +1),
+    vectorMap_(graph_.edgeNum())
 {
     for(index_type possibleNodeId = 0 ; possibleNodeId <= graph_.maxNodeId(); ++possibleNodeId){
         if(graph_.nodeFromId(possibleNodeId)==lemon::INVALID){
@@ -752,7 +766,7 @@ inline bool
 MergeGraphAdaptor<GRAPH>::hasEdgeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType edgeIndex
 )const{
-    if(!edgeUfd_.isErased(edgeIndex)){
+    if(edgeIndex<=maxEdgeId() && !edgeUfd_.isErased(edgeIndex)){
         const IdType reprEdgeIndex = reprEdgeId(edgeIndex);
         if(reprEdgeIndex!=edgeIndex){
             return false;
@@ -773,7 +787,8 @@ inline bool
 MergeGraphAdaptor<GRAPH>::hasNodeId(
     const typename MergeGraphAdaptor<GRAPH>::IdType nodeIndex
 )const{
-    return !nodeUfd_.isErased(nodeIndex) && nodeUfd_.find(nodeIndex)==nodeIndex;
+
+    return nodeIndex<=maxNodeId() &&  !nodeUfd_.isErased(nodeIndex) && nodeUfd_.find(nodeIndex)==nodeIndex;
 }
 
 template<class GRAPH>
@@ -889,7 +904,6 @@ template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
     typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
 ){  
-    std::cout<<"   - #DEGREE "<<node.edges_.size()<<"\n";
     // set buffer to zero
     nDoubleEdges_=0;
     //std::map<UInt64,index_type> eMap;
