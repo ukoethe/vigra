@@ -493,20 +493,43 @@ class MergeGraphAdaptor
 
         // BUFFERS
 
-        struct KeyEdge{
-            KeyEdge():key_(),edge_(){}
-            KeyEdge(const UInt64 key,const index_type edge):key_(key),edge_(edge){}
-            UInt64      key_;
+        struct NodeNodeEdge{
+            index_type  n0_;
+            index_type  n1_;
             index_type  edge_;
-            bool operator<(const KeyEdge & other ){return key_<other.key_;}
-            bool operator>(const KeyEdge & other ){return key_>other.key_;}
+            bool operator<(const NodeNodeEdge & other )const{
+                if(n0_<other.n0_){
+                    return true;
+                }
+                else if(n0_>other.n0_){
+                    return false;
+                }
+                else{
+                    return n1_<other.n1_;
+                }
+
+            }
+            bool operator>(const NodeNodeEdge & other )const{
+                if(n0_>other.n0_){
+                    return true;
+                }
+                else if(n0_<other.n0_){
+                    return false;
+                }
+                else{
+                    return n1_>other.n1_;
+                }
+            }
+            bool operator==(const NodeNodeEdge & other )const{
+                return n0_==other.n0_ && n1_==other.n1_;
+            }
         };
 
 
         size_t nDoubleEdges_;
         std::vector<std::pair<index_type,index_type> > doubleEdges_;
 
-        std::vector<KeyEdge> vectorMap_;
+        std::vector<NodeNodeEdge> vectorMap_;
 };
 
 
@@ -899,7 +922,7 @@ void MergeGraphAdaptor<GRAPH>::combineDoubleEdges(
 }
 
 
-
+/*
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
     typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
@@ -941,42 +964,54 @@ void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
 
     }
 }
+*/
+template<class GRAPH>
+void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
+    typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
+){  
 
-//template<class GRAPH>
-//void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
-//    typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
-//){  
-//    // set buffer to zero
-//    nDoubleEdges_  = 0;
-//
-//    size_t degree = node.edges_.size();
-//    std::copy(node.edges_.begin(),node.edges_.end(),incEdgeIdBuffer_.begin());
-//
-//
-//    for(size_t e0=0;   e0<degree-1;++e0){
-//
-//        // get key 0
-//        const IdType ei0 = reprEdgeId(incEdgeIdBuffer_[e0]);
-//        IdType nn0[2]={uId(ei0),vId(ei0)};
-//        if(nn0[1]<nn0[0]){std::swap(nn0[1],nn0[0]);}
-//        const UInt64  key0 = nn0[0] + nn0[1]*(this->maxNodeId()+1);
-//
-//        for(size_t e1=e0+1;e1<degree  ;++e1){
-//            // get key 0
-//            const IdType ei1 = reprEdgeId(incEdgeIdBuffer_[e1]);
-//            IdType nn1[2]={uId(ei1),vId(ei1)};
-//            if(nn1[1]<nn1[0]){std::swap(nn1[1],nn1[0]);}
-//            const UInt64  key1 = nn1[0] + nn1[1]*(this->maxNodeId()+1);
-//
-//            if(key0==key1){
-//                doubleEdges_[nDoubleEdges_].first =ei0;
-//                doubleEdges_[nDoubleEdges_].second=ei1;
-//                ++nDoubleEdges_;
-//            }
-//        }
-//    }    
-//
-//}
+    nDoubleEdges_=0;
+    size_t counter=0;
+    if(node.edges_.size()>1){
+        for(
+            typename NodeStorageEdgeSet::const_iterator  edgeIter = node.edges_.begin();
+            edgeIter!=node.edges_.end();
+            ++edgeIter
+        ){
+            const IdType outEdgeIndex = reprEdgeId(*edgeIter);
+            IdType newNodes[2]={
+                uId(outEdgeIndex),vId(outEdgeIndex)
+            };
+            if(newNodes[1]<newNodes[0]){
+                std::swap(newNodes[0],newNodes[1]);
+            }
+
+            vectorMap_[counter].edge_=outEdgeIndex;
+            vectorMap_[counter].n0_=newNodes[0];
+            vectorMap_[counter].n1_=newNodes[1];
+
+            //std::cout<<"INIT "<<counter<<" n "<<vectorMap_[counter].n0_ <<" "<< vectorMap_[counter].n1_<<"\n";
+            ++counter;
+        }
+
+
+        //std::cout<<"start sort\n";
+        std::sort(vectorMap_.begin(),vectorMap_.begin()+node.edges_.size());
+        //std::cout<<"end sort\n";
+        for(size_t i=0;i<node.edges_.size()-1;++i){
+            //std::cout<<"i "<<i<<" n "<<vectorMap_[i].n0_ <<" "<< vectorMap_[i].n1_<<"\n";
+            if(vectorMap_[i+1]==vectorMap_[i] ){
+                doubleEdges_[nDoubleEdges_].first =vectorMap_[i  ].edge_;
+                doubleEdges_[nDoubleEdges_].second=vectorMap_[i+1].edge_;
+                ++nDoubleEdges_;
+                ++i;
+            }
+        }
+        //std::cout<<"end local search\n";
+    }
+}
+
+
 
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::contractEdge(
@@ -993,7 +1028,7 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
     const IdType notNewNodeRep =  (newNodeRep == nodes[0] ? nodes[1] : nodes[0] );
 
 
-    std::cout<<"merge "<<newNodeRep<<" "<<notNewNodeRep<<"\n";
+    //std::cout<<"merge "<<newNodeRep<<" "<<notNewNodeRep<<"\n";
 
     // the new region wich is the result of the merge
     NodeStorage & newFormedNode = nodeVector_[newNodeRep];
