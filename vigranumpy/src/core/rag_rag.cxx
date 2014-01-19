@@ -39,6 +39,9 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/rag/rag.hxx>
+#include <vigra/graph_helper/dense_map.hxx>
+#include <vigra/graph_helper/dense_multi_map.hxx>
+
 #include <vigra/hierarchical_clustering.hxx>
 #include "export_graph_visitor.hxx"
 
@@ -113,8 +116,8 @@ void defineRagFunctions(){
 
     // free functions
     python::def("extractEdgeCoordinates",& extractEdgeCoordinates<DIM,UInt32>,
-        "extract the coordinates of the given graph");
-
+        "extract the edge coordinates of the given graph");
+    
 
     python::def("extractEdgeFeaturesFromImage",
         registerConverters(

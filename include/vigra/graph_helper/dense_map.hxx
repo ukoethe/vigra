@@ -1,5 +1,5 @@
-#ifndef VIGRA_DEGREE_MAP_HXX
-#define VIGRA_DEGREE_MAP_HXX
+#ifndef VIGRA_DENSE_REFERENCE_MAP_HXX
+#define VIGRA_DENSE_REFERENCE_MAP_HXX
 
 /*vigra*/
 //#include <vigra/array_vector.hxx>
@@ -112,4 +112,4 @@ class DenseArcReferenceMap
 
 }
 
-#endif //VIGRA_DEGREE_MAP_HXX 
+#endif //VIGRA_DENSE_REFERENCE_MAP_HXX 

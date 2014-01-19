@@ -680,6 +680,28 @@ namespace vigra{
         typename Rag<DIM,IN_LABEL_TYPE>::NodeCoordinatesMap & coordsVec 
     )const{
 
+        // get min max label (todo , remove this / refactore minLabel-maxLabel)
+        const UInt64 minLabel = *std::min_element(labeling_.begin(),labeling_.end());
+        const UInt64 maxLabel = *std::max_element(labeling_.begin(),labeling_.end());
+        if(minLabel!=1){
+            throw std::runtime_error("minimum label must be 1");
+        }
+        // get grid graph types
+        typedef GridGraph<DIM,boost::undirected_tag> GridGraphType;
+        typedef typename GridGraphType::IndexMap     GridGraphIndexMapType;
+        typedef typename GridGraphType::Node         GridGraphNode;
+        typedef typename GridGraphType::NodeIt       GridGraphGraphScanner;
+        typedef typename GridGraphType::OutArcIt     GridGraphNeighborIterator;
+        // construct grid graph
+        GridGraphType   g(labeling_.shape());
+        GridGraphIndexMapType indexMap = g.indexMap();
+        // iterate over all nodes (i.e. pixels)
+        for (GridGraphGraphScanner node(g); node != lemon::INVALID; ++node){
+            const InLabelType label = labeling_[indexMap[*node]];
+            if(label!=0){
+                coordsVec[nodeFromId(label)].push_back(*node);
+            }
+        }
     }
 
 
@@ -706,6 +728,12 @@ namespace vigra{
         g.extractEdgeCoordinates(coordMap);
     }
 
+    template<unsigned int DIM,class IN_LABEL_TYPE>
+    void extractNodeCoordinates(
+        const Rag<DIM,IN_LABEL_TYPE> & g, typename GraphCoordinateTraits< Rag<DIM,IN_LABEL_TYPE> >::NodeCoordinatesMap & coordMap
+    ){
+        g.extractNodeCoordinates(coordMap);
+    }
 
 
 

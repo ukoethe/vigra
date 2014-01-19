@@ -39,6 +39,7 @@
 /* vigra merge graph */
 #include "merge_graph_callbacks.hxx"
 #include "iterable_partition.hxx"
+#include <vigra/random_access_set.hxx>
 
 namespace vigra {
 
@@ -140,7 +141,6 @@ private:
     mutable Edge  edge_;
 };
 
-
 template<class GRAPH>
 class MergeGraphArcIt
 : public boost::iterator_facade<
@@ -233,7 +233,6 @@ private:
     mutable Arc arc_;
 };
 
-
 template<class GRAPH>
 class MergeGraphAdaptor 
 :   public NewMergeGraphCallbacks<
@@ -261,8 +260,8 @@ class MergeGraphAdaptor
 
 
     
-    //typedef  RandomAccessSet<index_type>   NodeStorageEdgeSet;
-    typedef  std::set<index_type>   NodeStorageEdgeSet;
+    typedef  RandomAccessSet<index_type>   NodeStorageEdgeSet;
+    //typedef  std::set<index_type>   NodeStorageEdgeSet;
     typedef detail::GenericNodeImpl<index_type,NodeStorageEdgeSet >  NodeStorage;
     typedef detail::GenericEdgeImpl<index_type >                       EdgeStorage;
 
