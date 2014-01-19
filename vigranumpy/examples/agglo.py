@@ -68,7 +68,7 @@ visualizeEdgeWeights(rag,edgeCoordMap,edgeIndicatorMap)
 print "do ucm transform (inplace)"
 
 
-hcluster = vigra.rag.Rag2dHiracicalClustering(rag,edgeIndicatorMap,edgeSizeMap)
+hcluster = vigra.rag.Rag2dHierarchicalClustering(rag,edgeIndicatorMap,edgeSizeMap)
 hcluster.cluster()
 hcluster.transformInputMaps()
 indices,w = hcluster.mergeTreeEncoding()

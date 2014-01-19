@@ -1,5 +1,5 @@
-#ifndef VIGRA_HIRACICAL_CLUSTERING_HXX
-#define VIGRA_HIRACICAL_CLUSTERING_HXX
+#ifndef VIGRA_HIERARCHICAL_CLUSTERING_HXX
+#define VIGRA_HIERARCHICAL_CLUSTERING_HXX
 
 //#include <valgrind/callgrind.h>
 
@@ -9,13 +9,12 @@
 /*vigra*/
 
 #include <vigra/merge_graph/merge_graph_adaptor.hxx>
-#include <vigra/merge_graph/maps/multi_array_map.hxx>
 #include <vigra/merge_graph/maps/merge_graph_view_map.hxx>
 namespace vigra{      
 
 
     template<class G,class EDGE_INDICATOR_MAP,class EDGE_SIZE_MAP>
-    class HiracicalClustering{
+    class HierarchicalClustering{
 
     public:
 
@@ -66,7 +65,7 @@ namespace vigra{
         typedef std::vector<MergeItem> MergeTreeEncoding;
 
 
-        HiracicalClustering(
+        HierarchicalClustering(
             const Graph      & graph,
             EdgeIndicatorMap & edgeIndicatorMap,
             EdgeSizeMap      & edgeSizeMap,
@@ -94,7 +93,6 @@ namespace vigra{
         }
 
         void cluster(){
-            std::cout<<"cpp START CLUSTER\n";
             //mg.registerMergeEdgeCallBack(mgWeightedMeanView,& MgWeightedMeanView::merge);
             mergeGraph_.registerMergeEdgeCallBack(minWeightOperator_,& MgMinWeightOperator::mergeEdges);
             mergeGraph_.registerEraseEdgeCallBack(minWeightOperator_,& MgMinWeightOperator::eraseEdge);
@@ -221,4 +219,4 @@ namespace vigra{
 
 
 
-#endif // VIGRA_HIRACICAL_CLUSTERING_HXX
+#endif // VIGRA_HIERARCHICAL_CLUSTERING_HXX

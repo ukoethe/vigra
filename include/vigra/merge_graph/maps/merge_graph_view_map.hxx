@@ -2,7 +2,7 @@
 #define VIGRA_MERGE_GRAPH_VIEW_MAP_HXX
 
 /* vigra - merge graph */
-#include <vigra/merge_graph/min_indexed_pq.hxx>
+#include <vigra/priority_queue.hxx>
 
 namespace vigra{
 
@@ -142,11 +142,11 @@ public:
 
     void mergeEdges(const Edge & a,const Edge & b){
         edgeMap_.merge(a,b);
-        pq_.deleteValue(b.id());
+        pq_.deletePriority(b.id());
         changePqWeight(a.id(),edgeMap_[a]);
     }
     void eraseEdge(const Edge & edge){
-        pq_.deleteValue(edge.id());
+        pq_.deletePriority(edge.id());
     }
 
     template<class CB>
@@ -166,31 +166,31 @@ public:
         for(EdgeIt e(mergeGraph);e!=lemon::INVALID;++e){
             const Edge edge = *e;
             const index_type edgeId = mergeGraph_.id(edge);
-            pq_.insert(edgeId,edgeMap_[edge]);
+            pq_.push(edgeId,edgeMap_[edge]);
         }
     }
 
     Edge minWeightEdge(){
-        index_type minLabel = pq_.minIndex();
+        index_type minLabel = pq_.top();
         while(mergeGraph_.hasEdgeId(minLabel)==false){
-            pq_.deleteValue(minLabel);
-            index_type minLabel = pq_.minIndex();
+            pq_.deletePriority(minLabel);
+            index_type minLabel = pq_.top();
         }
         return Edge(minLabel);
     }
 
     Value minWeight()const{
-        return pq_.minValue();
+        return pq_.topPriority();
     }
 
 
 private:
     void changePqWeight(const index_type l,const typename EDGE_MAP::Value newWeigt){
-        pq_.changeValue(l,newWeigt);
+        pq_.push(l,newWeigt);
     }
     const MergeGraphType & mergeGraph_;
     EDGE_MAP & edgeMap_;
-    vigra::MinIndexedPQ<typename EDGE_MAP::Value> pq_;
+    vigra::DynamicPriorityQueue<typename EDGE_MAP::Value> pq_;
 };
 
 

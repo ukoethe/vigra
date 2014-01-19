@@ -39,7 +39,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/rag/rag.hxx>
-#include <vigra/hiracical_clustering.hxx>
+#include <vigra/hierarchical_clustering.hxx>
 #include "export_graph_visitor.hxx"
 
 namespace python = boost::python;
@@ -191,19 +191,19 @@ python::tuple leadNodeIdsAsNumpyArray(
 
 
 template<unsigned int DIM>
-void defineHiracicalClustering(const std::string & clsNamePrefix){
+void defineHierarchicalClustering(const std::string & clsNamePrefix){
     typedef Rag<DIM,UInt32> RagType;
     typedef DenseEdgeReferenceMap<RagType,float> RagEdgeFloatMap; 
-    typedef HiracicalClustering<RagType,RagEdgeFloatMap,RagEdgeFloatMap> HiracicalClusteringType;
+    typedef HierarchicalClustering<RagType,RagEdgeFloatMap,RagEdgeFloatMap> HierarchicalClusteringType;
 
 
-    const std::string hcClsName = clsNamePrefix+std::string("HiracicalClustering");
-    python::class_<HiracicalClusteringType,boost::noncopyable>(hcClsName.c_str(),python::init<const RagType & , RagEdgeFloatMap &, RagEdgeFloatMap &>() )
-    .def("cluster",&HiracicalClusteringType::cluster)
-    .def("transformInputMaps",&HiracicalClusteringType::transformInputMaps)
-    .def("mergeTreeEncoding",&mergeTreeEncodingAsNumpyArray<HiracicalClusteringType>)
+    const std::string hcClsName = clsNamePrefix+std::string("HierarchicalClustering");
+    python::class_<HierarchicalClusteringType,boost::noncopyable>(hcClsName.c_str(),python::init<const RagType & , RagEdgeFloatMap &, RagEdgeFloatMap &>() )
+    .def("cluster",&HierarchicalClusteringType::cluster)
+    .def("transformInputMaps",&HierarchicalClusteringType::transformInputMaps)
+    .def("mergeTreeEncoding",&mergeTreeEncodingAsNumpyArray<HierarchicalClusteringType>)
 
-    .def("leafNodeIds",&leadNodeIdsAsNumpyArray<HiracicalClusteringType>,
+    .def("leafNodeIds",&leadNodeIdsAsNumpyArray<HierarchicalClusteringType>,
         (
             python::arg("treeNodeId"),
             python::arg("out")=python::object()
@@ -229,7 +229,7 @@ void defineRag(){
         defineRagFunctions<2>();
 
         // define hiracical clustering
-        defineHiracicalClustering<2>("Rag2d");
+        defineHierarchicalClustering<2>("Rag2d");
     }
     
     {

@@ -6,7 +6,7 @@
 #include <vigra/convolution.hxx>
 #include <vigra/labelvolume.hxx>
 
-#include <vigra/hiracical_clustering.hxx>
+#include <vigra/hierarchical_clustering.hxx>
 #include <vigra/rag/rag.hxx>
 
 int main() {   
@@ -77,9 +77,9 @@ int main() {
     CALLGRIND_START_INSTRUMENTATION;
 
 
-    std::cout<<"Do clustering\n";
-    typedef HiracicalClustering<RagType,RagEdgeFloatMap,RagEdgeFloatMap> HiracicalClusteringType;
-    HiracicalClusteringType hcluster(rag,edgeIndicatorMap,edgeSizeMap);
+    std::cout<<"Construct hierarchical-clustering object \n";
+    typedef HierarchicalClustering<RagType,RagEdgeFloatMap,RagEdgeFloatMap> HierarchicalClusteringType;
+    HierarchicalClusteringType hcluster(rag,edgeIndicatorMap,edgeSizeMap);
 
     std::cout<<"Do clustering\n";
     hcluster.cluster();
