@@ -2,9 +2,10 @@
 #ifndef VIGRA_NEW_MERGE_GRAPH_HXX
 #define VIGRA_NEW_MERGE_GRAPH_HXX
 
+
+
+
 /* boost */
-
-
 #include <boost/function.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 //#include <boost/unordered_map.hpp> 
@@ -23,6 +24,8 @@
 #include <stdexcept>
 #include <sstream>
 
+/*parallel std*/
+//#include <parallel/algorithm>
 
 
 /* vigra */
@@ -497,31 +500,40 @@ class MergeGraphAdaptor
             index_type  n0_;
             index_type  n1_;
             index_type  edge_;
-            bool operator<(const NodeNodeEdge & other )const{
-                if(n0_<other.n0_){
-                    return true;
-                }
-                else if(n0_>other.n0_){
-                    return false;
-                }
-                else{
-                    return n1_<other.n1_;
-                }
 
+            NodeNodeEdge(){}
+            NodeNodeEdge(
+                const index_type  n0,
+                const index_type  n1,
+                const index_type  edge
+            )   
+            :   n0_(n0<n1 ? n0 : n1),
+                n1_(n0<n1 ? n1 : n0),
+                edge_(edge){
+            }
+
+
+            bool operator<(const NodeNodeEdge & other )const{
+                if(n0_<other.n0_)
+                    return true;
+                else if(n0_>other.n0_)
+                    return false;
+                else
+                    return n1_<other.n1_;
             }
             bool operator>(const NodeNodeEdge & other )const{
-                if(n0_>other.n0_){
+                if(n0_>other.n0_)
                     return true;
-                }
-                else if(n0_<other.n0_){
+                else if(n0_<other.n0_)
                     return false;
-                }
-                else{
+                else
                     return n1_>other.n1_;
-                }
             }
             bool operator==(const NodeNodeEdge & other )const{
                 return n0_==other.n0_ && n1_==other.n1_;
+            }
+            bool operator!=(const NodeNodeEdge & other )const{
+                return n0_!=other.n0_ ||n1_!=other.n1_;
             }
         };
 
@@ -921,93 +933,29 @@ void MergeGraphAdaptor<GRAPH>::combineDoubleEdges(
     //CGP_ASSERT_OP(dynamicEdges_.size(),==,edgeUfd_.numberOfSets());
 }
 
-
-/*
 template<class GRAPH>
 void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
     typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
 ){  
-    // set buffer to zero
     nDoubleEdges_=0;
-    //std::map<UInt64,index_type> eMap;
-    //typedef std::tr1::unordered_map<UInt64,index_type>                EMapType;
-    typedef std::map<UInt64,index_type>                               EMapType;
-    //typedef boost::unordered_map<UInt64,index_type<UInt64,index_type> EMapType;
-    EMapType eMap;
-    //> eMap;
-    // loop over all edges of the new formed region
-    for(
-        typename NodeStorageEdgeSet::const_iterator  edgeIter = node.edges_.begin();
-        edgeIter!=node.edges_.end();
-        ++edgeIter
-    ){
-        const IdType outEdgeIndex = reprEdgeId(*edgeIter);
-        //const Edge  oldEdge    = this->edgeFromIdUnsave(reprEdgeId(outEdgeIndex));
-        const IdType newNodes[2]={
-            uId(outEdgeIndex),vId(outEdgeIndex)
-        };
-
-
-        const UInt64 key = newNodes[0]<newNodes[1] ? 
-            newNodes[0] + newNodes[1]*(this->maxNodeId()+1) : 
-            newNodes[1] + newNodes[0]*(this->maxNodeId()+1);
-
-        typename EMapType::iterator keyIter=eMap.find(key);
-        if(keyIter!=eMap.end()){
-            doubleEdges_[nDoubleEdges_].first =keyIter->second;
-            doubleEdges_[nDoubleEdges_].second=outEdgeIndex;
-            ++nDoubleEdges_;
-        }
-        else{
-            eMap.insert(std::pair<UInt64,index_type>(key,outEdgeIndex));
-        }
-
-    }
-}
-*/
-template<class GRAPH>
-void MergeGraphAdaptor<GRAPH>::searchLocalDoubleEdges(
-    typename MergeGraphAdaptor<GRAPH>::NodeStorage const & node 
-){  
-
-    nDoubleEdges_=0;
-    size_t counter=0;
     if(node.edges_.size()>1){
-        for(
-            typename NodeStorageEdgeSet::const_iterator  edgeIter = node.edges_.begin();
-            edgeIter!=node.edges_.end();
-            ++edgeIter
-        ){
+        size_t counter=0;
+        for(typename NodeStorageEdgeSet::const_iterator  edgeIter = node.edges_.begin();edgeIter!=node.edges_.end();++edgeIter){
             const IdType outEdgeIndex = reprEdgeId(*edgeIter);
-            IdType newNodes[2]={
-                uId(outEdgeIndex),vId(outEdgeIndex)
-            };
-            if(newNodes[1]<newNodes[0]){
-                std::swap(newNodes[0],newNodes[1]);
-            }
-
-            vectorMap_[counter].edge_=outEdgeIndex;
-            vectorMap_[counter].n0_=newNodes[0];
-            vectorMap_[counter].n1_=newNodes[1];
-
-            //std::cout<<"INIT "<<counter<<" n "<<vectorMap_[counter].n0_ <<" "<< vectorMap_[counter].n1_<<"\n";
+            vectorMap_[counter]= NodeNodeEdge(uId(outEdgeIndex),vId(outEdgeIndex), outEdgeIndex);
             ++counter;
         }
-
-
-        //std::cout<<"start sort\n";
         std::sort(vectorMap_.begin(),vectorMap_.begin()+node.edges_.size());
-        //std::cout<<"end sort\n";
+
+        //__gnu_parallel::sort(vectorMap_.begin(),vectorMap_.begin()+node.edges_.size());
         for(size_t i=0;i<node.edges_.size()-1;++i){
-            //std::cout<<"i "<<i<<" n "<<vectorMap_[i].n0_ <<" "<< vectorMap_[i].n1_<<"\n";
-            if(vectorMap_[i+1]==vectorMap_[i] ){
+            if(vectorMap_[i]==vectorMap_[i+1] ){
                 doubleEdges_[nDoubleEdges_].first =vectorMap_[i  ].edge_;
                 doubleEdges_[nDoubleEdges_].second=vectorMap_[i+1].edge_;
                 ++nDoubleEdges_;
                 ++i;
             }
         }
-        //std::cout<<"end local search\n";
     }
 }
 
@@ -1046,21 +994,14 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
 
     edgeUfd_.eraseElement(toDeleteEdgeIndex);
 
-    // construct the "DoubleMap"
-    // - if an vector in the map has a size >=2 
-    //   this means that there are multiple edges
-    //   between a pair of regions which needs to be merged
-    //DoubleMap doubleEdgeMap;
-
-    //std::cout<<"searchLocalDoubleEdges..\n";
+    // find all "double edges"
+    // => therefore all pairs of edges which have same u and v
+    //    after the contraction
     this->searchLocalDoubleEdges(newFormedNode);//,doubleEdgeMap);
-    //std::cout<<"nDoubleEdges_ "<<nDoubleEdges_<<"\n";
 
-    // loop over the double map
-    // if an vector in the map has a size >=2 
-    // this means that there are multiple edges
-    // between a pair of regions which needs to be merged
-    //for( typename DoubleMap::const_iterator dIter = doubleEdgeMap.begin();dIter!=doubleEdgeMap.end();++dIter){
+    // loop over all doubles edges
+    // => therefore all pairs of edges which have same u and v
+    //    after the contraction
     for(size_t i=0;i<nDoubleEdges_;++i){
 
         // if this vector has a size >=2 this means we have multiple
@@ -1068,16 +1009,8 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
         // the 2 regions are encoded in the key (dIter->first)
         // but we do not need them here
         const index_type edgeVec[2]={doubleEdges_[i].first,doubleEdges_[i].second};
-
-
+        // TODO REFACTOR ME  ...remove multi merge
         const IdType newEdgeRep = edgeUfd_.multiMerge(edgeVec[0],edgeVec+1,edgeVec+2);
-        //CGP_ASSERT_OP(hasEdgeId(toMergeEdgeIndex),==,false);
-        // delte all edges which are not needed any more
-        //  - edgeVec.size() -1 edges will be deleted 
-        //  - (all edges except the new representative "newEdgeRep")
-        // furthermore  the edge-sets all nodes adjacent to the "newFormedNode"
-        // must be visited since they might refere to nodes which are deleted /merged
-        
         newFormedNode.insertEdgeId(newEdgeRep);
 
         for(size_t td=0;td<2;++td){
@@ -1086,13 +1019,6 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
             const IdType toMergeEdgeIndex = edgeVec[td];
             // delte this edge only if it is NOT the new representative edge
             if(toMergeEdgeIndex!=newEdgeRep){
-
-                // delete the edge from the new formed region
-                //newFormedNode.edges_.erase(toMergeEdgeIndex);
-
-                //  not true any more
-                //CGP_ASSERT_OP(hasEdgeId(toMergeEdgeIndex),==,true);
-                
 
                 // at least one of the nodes of the edge "toMergeEdgeIndex" must be the "newFormedNode"
                 //  - we want to get the nodes adjacent to the "newFormedNode"
@@ -1105,19 +1031,8 @@ void MergeGraphAdaptor<GRAPH>::contractEdge(
                 if(nodeVector_[adjacentNodeIndex].hasEdgeId(toMergeEdgeIndex)){
                     nodeVector_[adjacentNodeIndex].eraseAndInsert(toMergeEdgeIndex,newEdgeRep);  
                 }
-
-                
-                
-                // finaly delete the unneeded edge
-                //dynamicEdges_.erase(toMergeEdgeIndex);
-                //CGP_ASSERT_OP(hasEdge_OLD(toMergeEdgeIndex),==,false);
             }
         }
-        //CGP_ASSERT_OP(edgeVec.size(),==,2)
-        //CGP_ASSERT_OP(edgeVec[0],!=,toDeleteEdgeIndex);
-        //CGP_ASSERT_OP(edgeVec[1],!=,toDeleteEdgeIndex);
-        //CGP_ASSERT_OP(edgeVec[0],!=,edgeVec[1]);
-        //CGP_ASSERT_OP(hasEdgeId(newEdgeRep),==,true);
         // CALL CALLBACKS TO MERGE EDGES
         //this->callMergeEdgeCallbacks(newEdgeRep, (newEdgeRep==edgeVec[0] ? edgeVec[1] : edgeVec[0]));
         this->callMergeEdgeCallbacks(Edge(newEdgeRep), Edge(newEdgeRep==edgeVec[0] ? edgeVec[1] : edgeVec[0]));

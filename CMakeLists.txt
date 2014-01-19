@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT(vigra)
 
-
 # options
 OPTION( WITH_PROFILING "build profiling code" ON)
 
